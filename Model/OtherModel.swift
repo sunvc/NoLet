@@ -91,20 +91,20 @@ enum Identifiers:String, CaseIterable, Codable {
 // MARK: - MessageAction model
 
 enum MessageAction: String, CaseIterable, Equatable{
-	case lastHour = "hourAgo"
-	case lastDay = "dayAgo"
-	case lastWeek = "weekAgo"
-	case lastMonth = "monthAgo"
-	case allTime = "allTime"
-	case cancel = "cancel"
+	case lastHour
+	case lastDay
+	case lastWeek
+	case lastMonth
+	case allTime
+	case cancel
 	
-	var localized:String{
+	var title:String{
 		switch self {
-		case .lastHour: String(localized: "一小时前")
-		case .lastDay: String(localized: "一天前")
-		case .lastWeek: String(localized: "一周前")
-		case .lastMonth: String(localized: "一月前")
-		case .allTime: String(localized: "所有时间")
+		case .lastHour: String(localized: "一小时前")+String(localized: "的消息")
+		case .lastDay: String(localized: "一天前")+String(localized: "的消息")
+		case .lastWeek: String(localized: "一周前")+String(localized: "的消息")
+		case .lastMonth: String(localized: "一月前")+String(localized: "的消息")
+		case .allTime: String(localized: "所有消息")
 		case .cancel: String(localized: "取消")
 		}
 	}
@@ -125,25 +125,34 @@ enum MessageAction: String, CaseIterable, Equatable{
 
 // MARK: - QuickAction model
 
-enum QuickAction: String{
+enum QuickAction: String, CaseIterable{
     
     case assistant
-
+    case scan
+    
     static func allShortcutItems(showAssistant:Bool) -> [UIApplicationShortcutItem] {
         
+        var items = [UIApplicationShortcutItem(
+            type: Self.scan.name,
+            localizedTitle: String(localized:  "扫描二维码"),
+            localizedSubtitle: "",
+            icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder"),
+            userInfo: ["name": assistant.name as NSSecureCoding]
+        )]
+        
         if showAssistant{
-            return [UIApplicationShortcutItem(
-                type: Self.assistant.rawValue,
+            items.insert(UIApplicationShortcutItem(
+                type: Self.assistant.name,
                 localizedTitle: String(localized:  "问智能助手"),
                 localizedSubtitle: "",
                 icon: UIApplicationShortcutIcon(systemImageName: "message.and.waveform"),
-                userInfo: ["name":"assistant" as NSSecureCoding]
-            )]
+                userInfo: ["name": scan.name as NSSecureCoding]
+            ), at: 0)
         }
-        
-        return []
+        return items
         
     }
+    var name: String{ self.rawValue.lowercased() }
 }
 
 // MARK: - PushServerModel

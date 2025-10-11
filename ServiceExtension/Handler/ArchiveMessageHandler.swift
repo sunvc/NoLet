@@ -20,7 +20,7 @@ class ArchiveMessageHandler: NotificationContentHandler{
         var body:String =  {
             if let body:String = userInfo.raw(.body){
                 /// 解决换行符渲染问题
-                return DatabaseManager.ensureMarkdownLineBreaks(body)
+                return MessagesManager.ensureMarkdownLineBreaks(body)
             }
            return ""
         }()
@@ -100,7 +100,7 @@ class ArchiveMessageHandler: NotificationContentHandler{
         
         
         Task.detached(priority: .userInitiated) {
-            await DatabaseManager.shared.add(message)
+            await MessagesManager.shared.add(message)
         }
         
         return bestAttemptContent

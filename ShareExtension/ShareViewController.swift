@@ -102,7 +102,7 @@ fileprivate struct ShareView: View {
                         do{
                             try pngData.write(to: tempURL)
                         }catch{
-                            Log.error(error.localizedDescription)
+                            NLog.error(error.localizedDescription)
                             return
                         }
                         

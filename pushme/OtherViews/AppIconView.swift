@@ -125,7 +125,7 @@ struct AppIconView: View {
 		if application.supportsAlternateIcons {
             application.setAlternateIconName(setting_active_app_icon.name) { err in
 				if let err{
-					Log.log(err)
+					NLog.log(err)
                     DispatchQueue.main.async{
                         setting_active_app_icon = setting_active_app_icon_backup
                     }

@@ -438,7 +438,7 @@ struct ChangeKeyView: View {
                             .blur(radius: appearBackground ? 0 : 40)
                             .hueRotation(.degrees(viewState.width / 5))
                     )
-            }.frame(maxWidth: ISPAD ? minSize / 2 : .infinity)
+            }.frame(maxWidth: .ISPAD ? minSize / 2 : .infinity)
             
             VStack{
                 HStack{

@@ -163,7 +163,7 @@ struct PromptDetailView: View {
                     self.dismiss()
                 }
             } catch {
-                Log.error("❌ 插入 ChatPrompt 失败:", error)
+                NLog.error("❌ 插入 ChatPrompt 失败:", error)
             }
         }
        
@@ -182,7 +182,7 @@ struct PromptDetailView: View {
                     }
                 }
             } catch {
-                Log.error("❌ 更新 ChatPrompt 失败:", error)
+                NLog.error("❌ 更新 ChatPrompt 失败:", error)
             }
             await MainActor.run {
                 if prompt == nil {

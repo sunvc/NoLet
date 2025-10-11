@@ -139,6 +139,9 @@ struct CryptoConfigListView: View {
             .swipeActions{
                 Button(role: .destructive){
                     self.cryptoConfigs.removeAll(where: {$0.id == item.id})
+                    if self.cryptoConfigs.count == 0{
+                        self.cryptoConfigs.append( CryptoModelConfig.creteNewModel())
+                    }
 
                 }label:{
                     Label("删除", systemImage: "trash")

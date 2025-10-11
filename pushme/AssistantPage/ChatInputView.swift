@@ -20,7 +20,7 @@ struct ChatInputView<Content: View>: View  {
     
     private var quote:Message?{
         guard let messageId = manager.askMessageId else { return nil }
-        return  DatabaseManager.shared.query(id: messageId)
+        return  MessagesManager.shared.query(id: messageId)
     }
    
     var body: some View {

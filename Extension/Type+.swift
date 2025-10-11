@@ -11,3 +11,10 @@ import UniformTypeIdentifiers
 extension UTType {
     static var trnExportType = UTType(exportedAs: "me.uuneo.pushback.exv")
 }
+
+extension Bundle {
+    /// 判断当前是否是 App Extension
+    var isAppExtension: Bool {
+        return bundlePath.hasSuffix(".appex")
+    }
+}

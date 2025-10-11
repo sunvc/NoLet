@@ -23,6 +23,7 @@ struct MessageCard: View {
     @State private var showLoading:Bool = false
     
     @State private var timeMode:Int = 0
+    @Default(.limitMessageLine) var limitMessageLine
     
     var dateTime:String{
         if showAllTTL{
@@ -217,26 +218,23 @@ struct MessageCard: View {
                     }
                     
                     if let body = message.body{
-                        ScrollView(.vertical) {
-                            MarkdownCustomView(content: body, searchText: searchText)
-                                .font(.body)
-                                .textSelection(.enabled)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.bottom, 5)
-                        }
-                        .frame(maxHeight: 365)
-                        .scrollIndicators(.hidden)
-                        .onTapGesture(count: 2) {
-                            showFull()
-                        }
-
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityValue("\(PBMarkdown.plain(message.accessibilityValue()))")
-                        .accessibilityLabel("消息内容`")
-                        .accessibilityHint("双击全屏显示")
-                        .accessibilityAction(named: "显示全屏") {
-                            showFull()
-                        }
+                        MarkdownCustomView(content: body, searchText: searchText)
+                            .font(.body)
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.bottom, 5)
+                            .lineLimit(limitMessageLine)
+                            .onTapGesture(count: 2) {
+                                showFull()
+                            }
+                        
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityValue("\(PBMarkdown.plain(message.accessibilityValue()))")
+                            .accessibilityLabel("消息内容`")
+                            .accessibilityHint("双击全屏显示")
+                            .accessibilityAction(named: "显示全屏") {
+                                showFull()
+                            }
                     }
                 }
                 
@@ -297,11 +295,13 @@ struct MessageCard: View {
             .frame(minHeight: 50)
             .mbackground26(.message, radius: 15)
             .onAppear{
-                Task(priority: .userInitiated) {
-                    if let image = message.image,
-                       let file = await ImageManager.downloadImage(image){
-                        self.image = UIImage(contentsOfFile: file)
-                        
+                if self.image == nil{
+                    Task(priority: .background) {
+                        if let image = message.image,
+                           let file = await ImageManager.downloadImage(image){
+                            self.image = UIImage(contentsOfFile: file)
+                            
+                        }
                     }
                 }
             }
@@ -335,22 +335,6 @@ struct MessageCard: View {
         }header: {
             MessageViewHeader()
 
-        }footer: {
-            
-            HStack{
-                if showGroup{
-                    MarkdownCustomView.highlightedText(searchText: searchText, text: message.group)
-                        .textSelection(.enabled)
-                        .accessibilityLabel("群组名")
-                        .accessibilityValue( message.group)
-                }
-                Spacer()
-                
-            }
-            .padding(.horizontal,15)
-            .padding(.top, 3)
-            
-            
         }
         
     }
@@ -388,7 +372,12 @@ struct MessageCard: View {
 
             Spacer()
 
-            
+            if showGroup{
+                MarkdownCustomView.highlightedText(searchText: searchText, text: message.group)
+                    .textSelection(.enabled)
+                    .accessibilityLabel("群组名")
+                    .accessibilityValue( message.group)
+            }
             
         }
         .background(linColor.gradient)
@@ -421,7 +410,7 @@ struct MessageCard: View {
 #Preview {
     
     List {
-        MessageCard(message: DatabaseManager.examples().first!){
+        MessageCard(message: MessagesManager.examples().first!){
 
         }delete:{
 

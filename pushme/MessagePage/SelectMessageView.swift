@@ -421,7 +421,7 @@ struct SelectMessageView:View {
                 }
             case .failure(let error):
                 //Handle chunk error here
-                Log.error(error)
+                NLog.error(error)
                 Toast.error(title: "发生错误\(error.localizedDescription)")
             }
             
@@ -460,7 +460,7 @@ struct SelectMessageView:View {
                 }
             case .failure(let error):
                 //Handle chunk error here
-                Log.error(error)
+                NLog.error(error)
                 Toast.error(title: "发生错误\(error.localizedDescription)")
             }
             

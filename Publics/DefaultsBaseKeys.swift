@@ -52,8 +52,10 @@ extension Defaults.Keys{
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
     static let widgetURL = Key<String>(.widgetURL, "")
 
-    static let feedback = Key<(Bool)>(.feedback, true)
-    static let limitScanningArea = Key<(Bool)>(.limitScanningArea, false)
+    static let feedback = Key<Bool>(.feedback, true)
+    static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
+    
+    static let limitMessageLine = Key<Int>(.limitMessageLine, 6)
 
 }
 
@@ -93,4 +95,5 @@ enum NoletKey:String, CaseIterable{
     case exampleCustom
     case feedback
     case limitScanningArea
+    case limitMessageLine
 }

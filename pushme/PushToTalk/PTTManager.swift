@@ -82,7 +82,7 @@ final class PushTalkManager: PTTManager{
             in: database.dbQueue,
             scheduling: .async(onQueue: .global()),
             onError: { error in
-                Log.error("Failed to observe unread count:", error)
+                NLog.error("Failed to observe unread count:", error)
             },
             onChange: { [weak self] newMessages in
                 guard let self = self else { return }
@@ -96,7 +96,7 @@ final class PushTalkManager: PTTManager{
     
     
     func Join(channel: PTTChannel) {
-        Log.log("进入频道")
+        NLog.log("进入频道")
         Task{
             let success = await self.network.JoinOrLeval(channel: channel, api: .join)
             
@@ -114,7 +114,7 @@ final class PushTalkManager: PTTManager{
     }
     
     func Level(channel: PTTChannel) {
-        Log.log("离开频道")
+        NLog.log("离开频道")
         Task{
             let success = await self.network.JoinOrLeval(channel: channel, api: .leave)
             await MainActor.run{
@@ -247,7 +247,7 @@ final class PushTalkManager: PTTManager{
                     }
                     
                 }catch{
-                    Log.error(error.localizedDescription)
+                    NLog.error(error.localizedDescription)
                     self.stopPlay()
                 }
                 
@@ -284,7 +284,7 @@ final class PushTalkManager: PTTManager{
             }
             return voice
         }catch{
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return nil
         }
     }
@@ -351,7 +351,7 @@ extension PushTalkManager{
                 try await Task.sleep(for: .seconds(1))
                 self.resumePlay()
             }
-            Log.error("恢复播放")
+            NLog.error("恢复播放")
         case .other:
             stop()
         }
@@ -397,7 +397,7 @@ extension PushTalkManager{
             let url = server.url + api.rawValue
             
             do{
-                Log.log("channel:", channel.hex())
+                NLog.log("channel:", channel.hex())
                 
                 guard let result:baseResponse<Int> =  try await self.fetch(url: url, method: .POST, params: [
                     "id": server.key, "channel": channel.hex()
@@ -409,12 +409,12 @@ extension PushTalkManager{
                     DispatchQueue.main.async{
                         PushTalkManager.shared.channelUsers = data
                     }
-                    Log.log("频道人数:", data)
+                    NLog.log("频道人数:", data)
                 }
                 
                 return result.code == 0
             }catch{
-                Log.error(error)
+                NLog.error(error)
                 return false
             }
             
@@ -431,7 +431,7 @@ extension PushTalkManager{
                 return data.data ?? 0
                 
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
                 return -1
             }
             
@@ -458,10 +458,10 @@ extension PushTalkManager{
                                                     mimeType: "audio/ogg")
                 
                 let result = try JSONDecoder().decode(String.self, from: response)
-                Log.log(result)
+                NLog.log(result)
                 return result == "ok"
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
                 return false
             }
         }
@@ -478,7 +478,7 @@ extension PushTalkManager{
                 
                 return data
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
                 return nil
             }
             

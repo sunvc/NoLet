@@ -66,7 +66,7 @@ struct PromptChooseView: View {
                     self.prompts = results
                 }
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
             }
         }
     }
@@ -209,7 +209,7 @@ private struct PromptSection: View {
                                     .deleteAll(db)
                             }
                         } catch {
-                            Log.error("❌ 删除 ChatPrompt 失败: \(error)")
+                            NLog.error("❌ 删除 ChatPrompt 失败: \(error)")
                         }
                     }
                 }
@@ -287,9 +287,8 @@ private struct PromptSwipeActions: ViewModifier {
                 }
                 .tint(.blue)
             }
-            .if(!prompt.inside) { view in
-                view
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            .if(!prompt.inside) {
+                $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button(role: .destructive) {
                             promptToDelete = prompt
                             showDeleteAlert = true
@@ -374,7 +373,7 @@ struct AddPromptView: View {
                                 }
                                
                             } catch {
-                                Log.error("❌ 插入 ChatPrompt 失败: \(error)")
+                                NLog.error("❌ 插入 ChatPrompt 失败: \(error)")
                             }
                             
                         }

@@ -120,7 +120,7 @@ struct SlideToConfirm: View {
                 Rectangle()
                     .frame(height: 15)
                     .rotationEffect(.init(degrees: 90))
-                    .if(true){ view in
+                    .if(true){view in
                         Group{
                             if #available(iOS 17.0, *) {
                                 view

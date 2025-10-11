@@ -118,7 +118,7 @@ struct SoundItemView: View {
                 self.duration =  try await loadVideoDuration(fromURL: self.audio)
             } catch {
 #if DEBUG
-                Log.error("Error loading aideo duration: \(error.localizedDescription)")
+                NLog.error("Error loading aideo duration: \(error.localizedDescription)")
 #endif
                 
             }

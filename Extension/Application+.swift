@@ -56,3 +56,9 @@ extension View{
         windowSize.height
     }
 }
+
+extension Bool{
+    static var ISPAD:Bool{
+        UIDevice.current.userInterfaceIdiom == .pad
+    }
+}

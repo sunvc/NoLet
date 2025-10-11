@@ -56,11 +56,9 @@ final class openChatManager: ObservableObject {
             in: DB.dbQueue,
             scheduling: .async(onQueue: .global()),
             onError: { error in
-                Log.error("Failed to observe unread count:", error)
+                NLog.error("Failed to observe unread count:", error)
             },
             onChange: { [weak self] newUnreadCount in
-                Log.log("监听 SqlLite \(newUnreadCount)")
-                
                 DispatchQueue.main.async {
                     self?.groupsCount = newUnreadCount.0
                     self?.chatMessages = newUnreadCount.1
@@ -74,7 +72,7 @@ final class openChatManager: ObservableObject {
         Task.detached(priority: .userInitiated) {
             do {
                 try await self.DB.dbQueue.write { db in
-                    if var group = try ChatGroup.filter(Column("id") == groupId).fetchOne(db) {
+                    if var group = try ChatGroup.filter(ChatGroup.Columns.id == groupId).fetchOne(db) {
                         group.name = newName
                         try group.update(db)
                         DispatchQueue.main.async {
@@ -84,7 +82,7 @@ final class openChatManager: ObservableObject {
                     }
                 }
             } catch {
-                Log.error("更新失败: \(error)")
+                NLog.error("更新失败: \(error)")
             }
         }
         
@@ -116,7 +114,7 @@ extension openChatManager{
         
         do{
             if account.host.isEmpty || account.key.isEmpty || account.basePath.isEmpty || account.model.isEmpty{
-                Log.log(account)
+                NLog.log(account)
                 return false
             }
             
@@ -130,7 +128,7 @@ extension openChatManager{
             return true
             
         }catch{
-            Log.error(error)
+            NLog.error(error)
             return false
         }
         
@@ -168,7 +166,7 @@ extension openChatManager{
         
         var inputText:String{
             
-            if let messageId = messageId, let message = DatabaseManager.shared.query(id: messageId){
+            if let messageId = messageId, let message = MessagesManager.shared.query(id: messageId){
                 return message.search + "\n" + text
             }
             return text
@@ -258,7 +256,7 @@ extension openChatManager{
                     }
                 }
             } catch {
-                Log.error("GRDB 错误: \(error)")
+                NLog.error("GRDB 错误: \(error)")
             }
         }
        

@@ -27,11 +27,11 @@ struct DeleteMessageIntent: AppIntent {
         do {
            _ = try await DatabaseManager.shared.dbQueue.write { db in
                 try Message
-                    .filter(Column("createDate") < date)
+                   .filter(Message.Columns.createDate < date)
                     .deleteAll(db)
             }
         } catch {
-            Log.error("❌ 删除旧消息失败: \(error)")
+            NLog.error("❌ 删除旧消息失败: \(error)")
         }
         return .result()
     }

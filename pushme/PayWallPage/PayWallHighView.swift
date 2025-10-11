@@ -46,32 +46,32 @@ struct PayWallHighView: View {
                 .storeButton(.visible, for: .restorePurchases)
                 .storeButton(.hidden, for: .policies)
                 .onInAppPurchaseStart { product in
-                    Log.log("Show Loading Screen")
-                    Log.log("Purchasing \(product.displayName)")
+                    NLog.log("Show Loading Screen")
+                    NLog.log("Purchasing \(product.displayName)")
                 }
                 .onInAppPurchaseCompletion { product, result in
                     switch result {
                     case .success(let result):
                         switch result {
                         case .success(_):
-                            Log.log("Success and verify purchase using verification result")
+                            NLog.log("Success and verify purchase using verification result")
                         case .pending:
-                            Log.log("Pending Action")
+                            NLog.log("Pending Action")
                         case .userCancelled:
-                            Log.log("User Cancelled")
+                            NLog.log("User Cancelled")
                         @unknown default:
                             fatalError()
                         }
                     case .failure(let error):
-                        Log.error(error.localizedDescription)
+                        NLog.error(error.localizedDescription)
                     }
                     
-                    Log.log("Hide Loading Screen")
+                    NLog.log("Hide Loading Screen")
                 }
                 .subscriptionStatusTask(for: "21582431") {
                     if let result = $0.value {
                         let premiumUser = !result.filter({ $0.state == .subscribed }).isEmpty
-                        Log.log("User Subscribed = \(premiumUser)")
+                        NLog.log("User Subscribed = \(premiumUser)")
                         manager.PremiumUser = premiumUser
                     }
                     

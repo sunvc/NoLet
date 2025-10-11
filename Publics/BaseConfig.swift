@@ -9,7 +9,6 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-let ISPAD = UIDevice.current.userInterfaceIdiom == .pad
 
 let CONTAINER =  FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BaseConfig.groupName)
 
@@ -42,6 +41,10 @@ class BaseConfig {
     static let appSource = "https://github.com/sunvc/NoLet"
     static let serverSource = "https://github.com/sunvc/NoLets"
     static let appStore = "https://apps.apple.com/app/id6615073345"
+    
+    static var bundleIdentifier: String {
+        Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
+    }
 
     static var AppName: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
@@ -67,7 +70,9 @@ class BaseConfig {
         case voice
         case ptt
         case image
+        case tem
         case sounds = "Library/Sounds"
+        case caches = "Library/Caches"
         
         var name:String{  self.rawValue }
         
@@ -91,6 +96,10 @@ class BaseConfig {
     
     // Get the directory to store images in the App Group
     class func getDir(_ name:FolderType) -> URL? {
+        if name == .tem{
+            return FileManager.default.temporaryDirectory
+        }
+        
         guard let containerURL = CONTAINER else { return nil }
         
         let voicesDirectory = containerURL.appendingPathComponent(name.rawValue)
@@ -100,7 +109,7 @@ class BaseConfig {
             do {
                 try FileManager.default.createDirectory(at: voicesDirectory, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                Log.error("Failed to create images directory: \(error.localizedDescription)")
+                NLog.error("Failed to create images directory: \(error.localizedDescription)")
                 return nil
             }
         }
@@ -119,7 +128,7 @@ class BaseConfig {
                 (try? $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == false
             }
         } catch {
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return []
         }
         
@@ -145,7 +154,7 @@ class BaseConfig {
             )
             return filePaeh.appendingPathComponent(fileName, conformingTo: fileType)
         }catch{
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return nil
         }
         

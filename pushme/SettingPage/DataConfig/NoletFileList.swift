@@ -56,7 +56,7 @@ struct FileItem: Identifiable, Hashable {
                     return item1.name.localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
                 }
         } catch {
-            Log.error("加载子项失败: \(error.localizedDescription)")
+            NLog.error("加载子项失败: \(error.localizedDescription)")
             return []
         }
     }
@@ -85,9 +85,10 @@ class FileTreeManager: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     
-    private let rootURL: URL = CONTAINER!
+    private let rootURL: URL
 
-    init( ) {
+    init(rootURL: URL ) {
+        self.rootURL = rootURL
         loadRootItems()
     }
     
@@ -117,7 +118,7 @@ class FileTreeManager: ObservableObject {
         let contents = try FileManager.default.contentsOfDirectory(
             at: url,
             includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey],
-            options: [.skipsHiddenFiles]
+            options: [ .skipsHiddenFiles ]
         )
         
         return contents.map { FileItem(url: $0) }
@@ -136,11 +137,11 @@ class FileTreeManager: ObservableObject {
 
             try FileManager.default.removeItem(at: item.url)
             // 重新加载根目录项
-            Task {
-                loadRootItems()
+            Task {@MainActor in
+                self.loadRootItems()
             }
         } catch {
-            DispatchQueue.main.async {
+            Task {@MainActor in
                 self.errorMessage = "删除失败: \(error.localizedDescription)"
             }
         }
@@ -221,7 +222,7 @@ struct FileRowContent: View {
         .padding(.vertical, 8)
         .contentShape(Rectangle())
         .contextMenu {
-            if let uiImage = imageIcon, let sharedFile{
+            if let uiImage = imageIcon, let sharedFile, !item.isDirectory{
                 ShareLink(
                     item: sharedFile,
                     preview:  SharePreview(
@@ -241,6 +242,7 @@ struct FileRowContent: View {
                 Label("删除", systemImage: "trash")
             }
         }
+        
 
         .alert("确认删除", isPresented: $showDeleteAlert) {
             Button("取消", role: .cancel) { }
@@ -274,7 +276,7 @@ struct FileRowContent: View {
     func thumbnail(url: URL, size:CGFloat = 100, defaultIcon: String) async  -> Image{
 
         do{
-            Log.log(url.absoluteString)
+            NLog.log(url.absoluteString)
             if url.path.contains("ImageCache"), let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data){
                 return Image(uiImage: uiImage)
 
@@ -307,7 +309,12 @@ struct FileRowContent: View {
 
 // MARK: - 主文件列表视图
 struct NoletFileList: View {
-    @StateObject private var fileManager = FileTreeManager()
+    @StateObject private var fileManager:FileTreeManager
+    
+    init(rootURL: URL ) {
+        self._fileManager = StateObject(wrappedValue: FileTreeManager(rootURL: rootURL))
+    }
+    
 
     var body: some View {
 
@@ -371,6 +378,6 @@ extension DateFormatter {
 
 #Preview {
     NavigationStack {
-        NoletFileList()
+        NoletFileList(rootURL: CONTAINER!)
     }
 }

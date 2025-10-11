@@ -113,7 +113,7 @@ class PttAudioManager {
 
         _ = await playerNode.scheduleFile(audioFile, at: nil, completionCallbackType: .dataPlayedBack)
 
-        Log.error("播放成功")
+        NLog.error("播放成功")
     }
 
     func stop() {
@@ -151,7 +151,7 @@ class PttAudioManager {
         }
 
         try recordEngine.start()
-        Log.log("🎤 开始录音（AGC 已启用）")
+        NLog.log("🎤 开始录音（AGC 已启用）")
     }
 
     func end() -> Data? {
@@ -355,7 +355,7 @@ class PttAudioManager {
                 }
             }
         } catch {
-            Log.error("设置setActive失败：", error.localizedDescription)
+            NLog.error("设置setActive失败：", error.localizedDescription)
         }
     }
 
@@ -375,20 +375,20 @@ class PttAudioManager {
         switch type {
         case .began:
             // 中断开始，比如电话进来 -> 暂停播放
-            Log.log("🔴 音频被打断（开始）")
+            NLog.log("🔴 音频被打断（开始）")
             sessionInterrupted?(.begin)
             // 在这里暂停播放器
             return
 
         case .ended:
             // 中断结束，可以恢复播放
-            Log.log("🟢 音频打断结束")
+            NLog.log("🟢 音频打断结束")
             // 系统会告诉你是否可以恢复
             if let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt {
                 let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
                 if options.contains(.shouldResume) {
                     // 恢复播放
-                    Log.log("✅ 可以恢复播放")
+                    NLog.log("✅ 可以恢复播放")
                     sessionInterrupted?(.resume)
                     return
                 }

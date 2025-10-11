@@ -19,6 +19,28 @@ struct GroupMessagesView: View {
             
             List{
                 
+                if messageManager.showGroupLoading && messageManager.groupMessages.count == 0{
+                    HStack{
+                        Spacer()
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .primary))
+                                .scaleEffect(1.5)
+                            
+                            Text("数据分组中...")
+                                .foregroundColor(.primary)
+                                .font(.body)
+                                .bold()
+                        }
+                        Spacer()
+                    }
+                    .padding(24)
+                    .shadow(radius: 10)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    
+                }
+                
                 ForEach(messageManager.groupMessages, id: \.id){ message in
                     
                     MessageRow(message: message)
@@ -53,26 +75,7 @@ struct GroupMessagesView: View {
                         .accessibilityHint("点击进入分组列表")
 
                 }
-                if messageManager.showGroupLoading && messageManager.groupMessages.count == 0{
-                    HStack{
-                        Spacer()
-                        VStack(spacing: 16) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .primary))
-                                .scaleEffect(1.5)
-                            
-                            Text("数据分组中...")
-                                .foregroundColor(.primary)
-                                .font(.body)
-                                .bold()
-                        }
-                        Spacer()
-                    }
-                    .padding(24)
-                    .shadow(radius: 10)
-                    .listRowBackground(Color.clear)
-                    
-                }
+                
                 
             }
             .listStyle(.grouped)
@@ -81,7 +84,7 @@ struct GroupMessagesView: View {
                 if let selectGroup = manager.selectGroup{
                     proxyTo(proxy: proxy, selectGroup: selectGroup)
                     Task{@MainActor in
-                        manager.router.append(.messageDetail(selectGroup))
+                        manager.router = [.messageDetail(selectGroup)]
                     }
                 }
                 
@@ -171,7 +174,7 @@ struct MessageRow: View {
         .swipeActions(edge: .leading) {
             Button {
                 Task.detached(priority: .userInitiated) {
-                    await DatabaseManager.shared.markAllRead(group: message.group)
+                    await MessagesManager.shared.markAllRead(group: message.group)
                 }
             } label: {
                 
@@ -191,7 +194,7 @@ struct MessageRow: View {
                 
                 Task.detached(priority: .background){
                     
-                    _ = await DatabaseManager.shared.delete(message, in: true)
+                    _ = await MessagesManager.shared.delete(message, in: true)
                 }
                 
             } label: {

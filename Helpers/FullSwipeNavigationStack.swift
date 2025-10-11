@@ -127,10 +127,10 @@ fileprivate struct AttachGestureView: UIViewRepresentable {
 				if let navigationController = parentViewController.navigationController {
 					/// Checking if already the gesture has been added to the controller
 					if let _ = navigationController.view.gestureRecognizers?.first(where: { $0.name == gesture.name }) {
-                        Log.log("Already Attached")
+                        NLog.log("Already Attached")
 					} else {
 						navigationController.addFullSwipeGesture(gesture)
-                        Log.log("Attached")
+                        NLog.log("Attached")
 					}
 				}
 			}

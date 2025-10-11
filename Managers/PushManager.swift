@@ -38,7 +38,7 @@ class APNs {
             throw NSError(domain: "APNs", code: -1,
                           userInfo: [NSLocalizedDescriptionKey: "Invalid base64 in private key"])
         }
-        Log.log("Private key length:", keyData.count)
+        NLog.log("Private key length:", keyData.count)
         
         // 使用CryptoKit处理私钥 - 直接使用DER格式
         let privateKey: P256.Signing.PrivateKey
@@ -47,7 +47,7 @@ class APNs {
             // PEM格式的私钥通常是DER编码的，直接使用DER格式
             privateKey = try P256.Signing.PrivateKey(derRepresentation: keyData)
         } catch {
-            Log.log("Error creating private key with DER: \(error)")
+            NLog.log("Error creating private key with DER: \(error)")
             throw NSError(domain: "APNs", code: -2,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to import private key: \(error)"])
         }
@@ -137,10 +137,10 @@ class APNs {
             let (status, data) = try await apns.push(deviceToken: "8ca2f941c93d4058f3003fd2f602b005c3ddd71d5ede389255dc7202847887ec",headers:[
                 :
             ] ,aps: aps)
-            Log.log("Status:", status)
-            Log.log("Response:", String(data: data, encoding: .utf8) ?? "")
+            NLog.log("Status:", status)
+            NLog.log("Response:", String(data: data, encoding: .utf8) ?? "")
         } catch {
-            Log.error(error)
+            NLog.error(error)
         }
     }
     

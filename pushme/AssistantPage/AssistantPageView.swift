@@ -309,7 +309,7 @@ struct AssistantPageView:View {
                     
                 case .failure(let error):
                     //Handle chunk error here
-                    Log.error(error)
+                    NLog.error(error)
                     Toast.error(title: "发生错误\(error.localizedDescription)")
                 }
             } completion: {  error in
@@ -319,7 +319,7 @@ struct AssistantPageView:View {
                 
                 if let error{
                     Toast.error(title: "发生错误\(error.localizedDescription)")
-                    Log.error(error)
+                    NLog.error(error)
                     Task{@MainActor in
                         manager.isLoading = false
                         chatManager.currentRequest = ""
@@ -357,7 +357,7 @@ struct AssistantPageView:View {
                         
                         
                     }catch{
-                        Log.error(error.localizedDescription)
+                        NLog.error(error.localizedDescription)
                     }
                 }
             }

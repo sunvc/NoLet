@@ -30,53 +30,78 @@ struct SingleMessagesView: View {
 
     @State private var selectMessage: Message? = nil
     @State private var messages:[Message] = []
+    
+    private let messagePage:Int = 100
 
     var body: some View {
         
         ScrollViewReader { proxy in
             List{
-               
-                    ForEach(messages, id: \.id) { message in
-
-                        MessageCard(message: message, searchText: "",showAllTTL: showAllTTL,showAvatar:showMessageAvatar){
-                            withAnimation(.easeInOut) {
-                                manager.selectMessage = message
-                            }
-                        }delete:{
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
-                                withAnimation(.default){
-                                    messages.removeAll(where: {$0.id == message.id})
-                                }
-                            }
-
-                            Task.detached(priority: .background){
-                                _ = await DatabaseManager.shared.delete(message)
-                            }
-                            Toast.success(title: "删除成功")
-                        }
-                        .id(message.id)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        .listSectionSeparator(.hidden)
-                        .onAppear{
-                            if messages.count < messageManager.allCount &&
-                                messages.last == message{
-                                self.loadData(proxy: proxy, item: message)
-                            }
-                        }
-
-
-                    }
                 
+                ForEach(messages, id: \.id) { message in
+                    
+                    MessageCard(message: message, searchText: "",showAllTTL: showAllTTL,showAvatar:showMessageAvatar){
+                        withAnimation(.easeInOut) {
+                            manager.selectMessage = message
+                        }
+                    }delete:{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                            withAnimation(.default){
+                                messages.removeAll(where: {$0.id == message.id})
+                            }
+                        }
+                        
+                        Task.detached(priority: .background){
+                            _ = await messageManager.delete(message)
+                        }
+                        Toast.success(title: "删除成功")
+                    }
+                    .id(message.id)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listSectionSeparator(.hidden)
+                    .onAppear{
+                        if messages.count < messageManager.allCount &&
+                            messages.last == message{
+                            self.loadData(proxy: proxy, item: message)
+                        }
+                    }
+                    
+                    
+                }
+                
+                if messages.count == 0 && showLoading{
+                    HStack{
+                        Spacer()
+                        VStack(spacing: 16) {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .primary))
+                                .scaleEffect(2)
+                                .padding(.vertical, 30)
+                                .padding()
+                            
+                            Text("数据加载中...")
+                                .foregroundColor(.primary)
+                                .font(.body)
+                                .bold()
+                        }
+                        Spacer()
+                    }
+                    .padding(24)
+                    .shadow(radius: 10)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listSectionSeparator(.hidden)
+                }
                 
             }
             .listStyle(.grouped)
             .animation(.easeInOut, value: messages)
             .refreshable {
-                self.loadData(proxy: proxy , limit: min(messages.count, 150))
+                self.loadData(proxy: proxy , limit: min(messages.count, messagePage * 2))
             }
             .onChange(of: messageManager.updateSign) {  newValue in
-                loadData(proxy: proxy, limit: max(messages.count, 50))
+                loadData(proxy: proxy, limit: max(messages.count, messagePage))
             }
         }
         .diff{ view in
@@ -104,22 +129,17 @@ struct SingleMessagesView: View {
             }
         }
         .task {
-
             self.loadData()
             Task.detached(priority: .background) {
                 
-                try? await DatabaseManager.shared.dbQueue.write { db in
-                    // 批量更新 read 字段为 true
-                    try Message
-                        .filter(Message.Columns.read == false)
-                        .updateAll(db, [Message.Columns.read.set(to: true)])
-                    
-                    // 清除徽章
-                    if Defaults[.badgeMode] == .auto {
-                        UNUserNotificationCenter.current().setBadgeCount(0)
-                    }
+                guard let count = await messageManager.updateRead() else{ return }
+                
+                // 清除徽章
+                if Defaults[.badgeMode] == .auto {
+                    try await UNUserNotificationCenter.current().setBadgeCount(0)
                 }
-
+                
+                NLog.log("更新未读条数: \(count)")
             }
             
         }
@@ -145,18 +165,19 @@ struct SingleMessagesView: View {
         }
     }
     
-    private func loadData(proxy:ScrollViewProxy? = nil, limit:Int = 50, item:Message? = nil){
+    private func loadData(proxy:ScrollViewProxy? = nil,
+                          limit:Int = 100,
+                          item:Message? = nil){
         guard !self.showLoading else { return }
         self.showLoading = true
 
        Task.detached(priority: .userInitiated) {
 
-           let results = await DatabaseManager.shared.query( limit: limit, item?.createDate)
+           let results = await MessagesManager.shared.query( limit: limit, item?.createDate)
             
-             DispatchQueue.main.async {
+           await MainActor.run {
  
                 if item == nil {
-                    
                     self.messages = results
                 }else{
                     self.messages += results
@@ -176,26 +197,3 @@ struct SingleMessagesView: View {
 #Preview {
     SingleMessagesView()
 }
-
-
-struct BottomScrollDetector: View {
-    let onBottomReached: () -> Void
-    
-    var body: some View {
-        GeometryReader { geo in
-            Color.clear
-                .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).maxY)
-        }
-        .frame(height: 0) // 不占空间
-    }
-}
-
-struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = nextValue()
-    }
-}
-
-
-

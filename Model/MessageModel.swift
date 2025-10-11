@@ -26,23 +26,22 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     var other:String?
     
     enum Columns{
-        static let id = Column(CodingKeys.id)
-        static let group = Column(CodingKeys.group)
-        static let createDate = Column(CodingKeys.createDate)
-        static let title = Column(CodingKeys.title)
-        static let subtitle = Column(CodingKeys.subtitle)
-        static let body = Column(CodingKeys.body)
-        static let icon = Column(CodingKeys.icon)
-        static let url = Column(CodingKeys.url)
-        static let image = Column(CodingKeys.image)
-        static let from = Column(CodingKeys.from)
-        static let host = Column(CodingKeys.host)
-        static let level = Column(CodingKeys.level)
-        static let ttl = Column(CodingKeys.ttl)
-        static let read = Column(CodingKeys.read)
-        static let other = Column(CodingKeys.other)
+        static let id = Column(CodingKeys.id.lows)
+        static let group = Column(CodingKeys.group.lows)
+        static let createDate = Column(CodingKeys.createDate.lows)
+        static let title = Column(CodingKeys.title.lows)
+        static let subtitle = Column(CodingKeys.subtitle.lows)
+        static let body = Column(CodingKeys.body.lows)
+        static let icon = Column(CodingKeys.icon.lows)
+        static let url = Column(CodingKeys.url.lows)
+        static let image = Column(CodingKeys.image.lows)
+        static let from = Column(CodingKeys.from.lows)
+        static let host = Column(CodingKeys.host.lows)
+        static let level = Column(CodingKeys.level.lows)
+        static let ttl = Column(CodingKeys.ttl.lows)
+        static let read = Column(CodingKeys.read.lows)
+        static let other = Column(CodingKeys.other.lows)
     }
-    
 }
 
 
@@ -70,17 +69,22 @@ extension Message{
                 t.column(CodingKeys.read.lows, .boolean).notNull()
                 t.column(CodingKeys.other.lows, .text)
             }
+            
+            try db.execute(sql: """
+                CREATE INDEX IF NOT EXISTS idx_message_createdate
+                ON message(createdate DESC)
+            """)
+
             try db.execute(sql: """
                 CREATE INDEX IF NOT EXISTS idx_message_group_createdate
-                ON message("group", createDate DESC)
+                ON message("group", createdate DESC)
             """)
         }
         
-
+        
     }
     
-   var search:String{  [ group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ";") + ";" }
-    
+    var search:String{  [ group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ";") + ";" }  
     
     func isExpired() -> Bool{
         /// 兼容老版本的使用

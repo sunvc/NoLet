@@ -260,7 +260,7 @@ struct SpeakSettingsView:View {
                             proxy.scrollTo(voiceConfig.defaultVoice, anchor: .center)
                         }
                     }catch{
-                        Log.error(error)
+                        NLog.error(error)
                     }
                 })
                 .navigationTitle("选择语音模型")

@@ -565,7 +565,7 @@ extension JSON: Swift.RawRepresentable {
 		do {
 			return try _rawString(encoding, options: [.jsonSerialization: opt])
 		} catch {
-            Log.error("Could not serialize object to JSON because:", error.localizedDescription)
+            NLog.error("Could not serialize object to JSON because:", error.localizedDescription)
 			return nil
 		}
 	}
@@ -576,7 +576,7 @@ extension JSON: Swift.RawRepresentable {
 		do {
 			return try _rawString(encoding, options: options, maxObjectDepth: maxObjectDepth)
 		} catch {
-            Log.error("Could not serialize object to JSON because:", error.localizedDescription)
+            NLog.error("Could not serialize object to JSON because:", error.localizedDescription)
 			return nil
 		}
 	}

@@ -24,6 +24,7 @@ struct MoreOperationsView: View {
     @Default(.muteSetting) var muteSetting
     @Default(.feedback) var feedback
     @Default(.limitScanningArea) var limitScanningArea
+    @Default(.limitMessageLine) var limitMessageLine
 
 
     var body: some View {
@@ -43,7 +44,7 @@ struct MoreOperationsView: View {
                     
                 } action:{
                     Task{@MainActor in
-                        manager.router.append(.tts)
+                        manager.router = [.more, .tts]
                     }
                     return true
                 }
@@ -110,7 +111,18 @@ struct MoreOperationsView: View {
                     }
                     
                 }
-
+                
+                Stepper(
+                    value: $limitMessageLine,
+                    in: 1...999999,
+                    step: 1
+                ) {
+                    Label("消息显示行数", systemImage: "\(String(format: "%02d", limitMessageLine)).circle")
+                        .onLongPressGesture {
+                            limitMessageLine = 3
+                        }
+                }
+              
                 Picker(selection: $badgeMode) {
                     Text( "自动").tag(BadgeAutoMode.auto)
                     Text( "自定义").tag(BadgeAutoMode.custom)
@@ -126,7 +138,7 @@ struct MoreOperationsView: View {
                     }
                 }.onChange(of: badgeMode) { newValue in
                     if Defaults[.badgeMode] == .auto{
-                        let unRead =  DatabaseManager.shared.unreadCount()
+                        let unRead =  MessagesManager.shared.unreadCount()
                         UNUserNotificationCenter.current().setBadgeCount( unRead )
                     }
                 }

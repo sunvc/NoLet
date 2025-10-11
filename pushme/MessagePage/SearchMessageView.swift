@@ -3,33 +3,32 @@ import SwiftUI
 
 struct SearchMessageView:View {
 
-	@Binding var searchText: String
     var group:String?
-
     
     @Environment(\.colorScheme) var  colorScheme
     @State private var messages:[Message] = []
     @State private var allCount:Int = 0
     @State private var searchTask: Task<Void, Never>?
     @StateObject private var manager = AppManager.shared
-
+    @StateObject private var messageManager = MessagesManager.shared
+    @State private var searchText:String = ""
     var body: some View {
         List{
             ForEach(messages, id: \.id) { message in
-                MessageCard(message: message, searchText: searchText, showGroup: true){
+                MessageCard(message: message, searchText: manager.searchText, showGroup: true){
                     self.hideKeyboard()
                     withAnimation(.easeInOut){
                         manager.selectMessage = message
                     }
                 }delete:{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
                         withAnimation(.default){
                             messages.removeAll(where: {$0.id == message.id})
                         }
                     }
 
                     Task.detached(priority: .background){
-                        _ = await DatabaseManager.shared.delete(message)
+                        _ = await messageManager.delete(message)
                     }
                 }
                 .listRowInsets(EdgeInsets())
@@ -56,14 +55,25 @@ struct SearchMessageView:View {
         .if(colorScheme == .light) { view in
             view.background(.ultraThinMaterial)
         }
-        .if(
-            (manager.router.count == 0 && manager.page == .message ) ||  manager.page == .search
-        ){ view in
+        .diff{ view in
             Group{
                 if #available(iOS 26.0, *){
                     view
-                        .searchable(text: $manager.searchText)
-                        .navigationTitle("搜索数据")
+                        .if(manager.page == .search){ view in
+                            view
+                                .searchable(text: $searchText)
+                                .onChange(of: searchText){ value in
+                                    if value.isEmpty{
+                                        manager.searchText = ""
+                                    }
+                                }
+                                .onSubmit(of: .search){
+                                    manager.searchText = searchText
+                                }
+                                .navigationTitle("搜索数据")
+                        }
+                        
+                        
                         .safeAreaInset(edge: .top) {
                             HStack{
                                 Spacer()
@@ -94,13 +104,13 @@ struct SearchMessageView:View {
                 }
             }
         }
-        .onChange(of: searchText) {  newValue in
-            loadData()
-        }
         .onAppear{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
                 loadData()
             }
+        }
+        .onChange(of: manager.searchText) { _ in
+            loadData()
         }
 
 	}
@@ -113,7 +123,10 @@ struct SearchMessageView:View {
             try? await Task.sleep(nanoseconds: 200_000_000) // 防抖延迟
             guard !Task.isCancelled else { return }
             
-            let results = await DatabaseManager.shared.query(search: searchText, group: group, limit: limit, item?.createDate)
+            let results:([Message], Int)
+            
+            results = await messageManager.query(search: manager.searchText, group: group, limit: limit, item?.createDate)
+            
             await MainActor.run{
                 if item == nil{
                     self.messages = results.0
@@ -132,7 +145,7 @@ struct SearchMessageView:View {
 
 #Preview {
     NavigationStack{
-        SearchMessageView(searchText: .constant(""))
+        SearchMessageView()
     }
 
 }

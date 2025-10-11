@@ -58,9 +58,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let manager = AppManager.shared
         
-        manager.page = .message
-        if shortcutItem.type == QuickAction.assistant.rawValue{
+        switch QuickAction(rawValue: shortcutItem.type.lowercased()){
+        case .assistant:
+            manager.page = .message
             manager.router = [.assistant]
+        case .scan:
+            manager.page = .setting
+            manager.router = []
+            manager.fullPage = .scan
+        default:
+            break
         }
         
         completionHandler(true)
@@ -72,10 +79,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let manager = AppManager.shared
         if !manager.isWarmStart{
-            Log.log("❄️ 冷启动")
+            NLog.log("❄️ 冷启动")
             manager.isWarmStart = true
             openChatManager.shared.clearunuse()
-            
         }
         Task.detached(priority: .userInitiated) {
             await MessagesManager.shared.updateGroup()
@@ -93,10 +99,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         UIApplication.shared.shortcutItems = QuickAction.allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        UNUserNotificationCenter.current().setBadgeCount(DatabaseManager.shared.unreadCount())
+        
         WidgetCenter.shared.reloadAllTimelines()
         Task.detached(priority: .userInitiated) {
-            await DatabaseManager.shared.deleteExpired()
+            await MessagesManager.shared.deleteExpired()
+            let unread = MessagesManager.shared.unreadCount()
+            try await UNUserNotificationCenter.current().setBadgeCount(unread)
         }
     }
 

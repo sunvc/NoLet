@@ -54,37 +54,30 @@ struct ChangeCryptoConfigView: View {
                         }
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
+                        .padding(10)
                         .overlay{
                             if success{
-                                ColoredBorder(cornerRadius: 10,padding: 0)
+                                ColoredBorder(cornerRadius: 10,padding: 10)
                             }
                         }
                         .frame(maxHeight: 150)
                         .onChange(of: sharkfocused) { value in
                             
                             guard !value else { return }
-                            
-                            let data = AppManager.shared.outParamsHandler(address: sharkText)
-                            var result:String{
-                                switch data {
-                                case .text(let string): string
-                                case .crypto(let string): string
-                                default: ""
-                                }
-                            }
-                            if let config = CryptoModelConfig(inputText: result){
-                                cryptoConfig = config
-                                self.success = true
-
-                            }else{
-                                self.success = false
-                                self.sharkText = ""
-                                Toast.error(title: "数据不正确")
-                            }
+                            self.handler(self.sharkText)
                         }
                     
                 }header: {
-                    Text("导入配置")
+                    HStack{
+                        Text("导入配置")
+                        PasteButton(payloadType: String.self) { strings in
+                            if let str = strings.first{
+                                self.sharkText = str
+                                self.handler(sharkText)
+                            }
+                        }
+                    }
+                    
                 }
                 Section{
                     
@@ -253,4 +246,28 @@ struct ChangeCryptoConfigView: View {
 
     }
     
+    func handler(_ text: String){
+        let data = AppManager.shared.outParamsHandler(address: text)
+        var result:String{
+            switch data {
+            case .text(let string): string
+            case .crypto(let string): string
+            default: ""
+            }
+        }
+        if let config = CryptoModelConfig(inputText: result){
+            cryptoConfig = config
+            self.success = true
+
+        }else{
+            self.success = false
+            self.sharkText = ""
+            Toast.error(title: "数据不正确")
+        }
+    }
+    
+}
+
+#Preview {
+    ChangeCryptoConfigView(item: CryptoModelConfig.creteNewModel())
 }

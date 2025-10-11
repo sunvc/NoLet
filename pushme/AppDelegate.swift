@@ -137,7 +137,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         
-        if let id:String = userInfo.raw(.id), let group = DatabaseManager.shared.delete(id) {
+        if let id:String = userInfo.raw(.id), let group = MessagesManager.shared.delete(id) {
             UNUserNotificationCenter.current()
                 .removeDeliveredNotifications(withIdentifiers: [group])
         }

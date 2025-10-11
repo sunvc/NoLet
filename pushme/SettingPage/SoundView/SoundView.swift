@@ -75,7 +75,7 @@ struct SoundView: View {
                             }
                             
                         case .failure(let err):
-                            Log.log(err)
+                            NLog.log(err)
                             self.uploadLoading = false
                             Toast.shared.present(title: err.localizedDescription, symbol: .error)
                         }

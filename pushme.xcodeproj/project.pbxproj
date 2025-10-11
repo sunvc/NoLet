@@ -462,6 +462,7 @@
 				cryptoManager.swift,
 				DatabaseManager.swift,
 				ImageManager.swift,
+				MessagesManager.swift,
 				NetworkManager.swift,
 				VoiceManager.swift,
 			);
@@ -503,6 +504,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DatabaseManager.swift,
+				MessagesManager.swift,
 			);
 			target = B5835CA72DEDE88D0066B32E /* PushWidgetExtension */;
 		};

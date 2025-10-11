@@ -620,7 +620,7 @@ struct PushToTalkView: View {
                     dotColor($0, $1)
                 } rotate: { changeTalkChannel($0) }
                     .padding(50)
-                    .frame(maxWidth: ISPAD ? minSize / 2 : windowWidth, maxHeight: ISPAD ? minSize / 2 : windowWidth)
+                    .frame(maxWidth: .ISPAD ? minSize / 2 : windowWidth, maxHeight: .ISPAD ? minSize / 2 : windowWidth)
                     .scaleEffect(buttonType ==  .prefix || buttonType == .suffix  ? 1 : 0.5)
                     .opacity(buttonType ==  .prefix || buttonType == .suffix  ? 1 : 0)
                 
@@ -667,7 +667,7 @@ struct PushToTalkView: View {
                     .disabled(!pttManager.active)
                     
                 }
-                .frame(maxWidth: ISPAD ? minSize / 2 : windowWidth, maxHeight: ISPAD ? minSize / 2 : windowWidth)
+                .frame(maxWidth: .ISPAD ? minSize / 2 : windowWidth, maxHeight: .ISPAD ? minSize / 2 : windowWidth)
                 .animation(Animation.easeInOut(duration: 0.1), value: ispress)
                 .scaleEffect(buttonType == .call ? 1 : 0.5)
                 .opacity(buttonType == .call ? 1 : 0)

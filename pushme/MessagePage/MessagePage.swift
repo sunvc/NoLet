@@ -14,18 +14,27 @@ struct MessagePage: View {
     @Default(.servers) private var servers
     @StateObject private var messageManager = MessagesManager.shared
     @State private var showDeleteAction: Bool = false
-    @State private var selectAction: MessageAction? = nil
+    @State private var searchText:String = ""
     
     var body: some View {
         ZStack {
-            if manager.searchText.isEmpty {
+            
+            if showGroup{
+                GroupMessagesView()
+                    
+            }else{
                 SingleMessagesView()
-                    .if(showGroup) { GroupMessagesView() }
-                    .transition(.opacity)
-            } else {
-                SearchMessageView(searchText: $manager.searchText)
-                    .transition(.move(edge: .trailing))
             }
+            
+            if #unavailable(iOS 26.0){
+                if !manager.searchText.isEmpty{
+                    SearchMessageView()
+                        
+                }
+            }
+            
+            
+            
         }
         .navigationTitle("消息")
         .animation(.easeInOut, value: showGroup)
@@ -35,7 +44,15 @@ struct MessagePage: View {
                     view
                 } else {
                     view
-                        .searchable(text: $manager.searchText)
+                        .searchable(text: $searchText)
+                        .onChange(of: searchText){ value in
+                            if value.isEmpty{
+                                manager.searchText = ""
+                            }
+                        }
+                        .onSubmit(of: .search){
+                            manager.searchText = searchText
+                        }
                 }
             }
         }
@@ -43,68 +60,11 @@ struct MessagePage: View {
         .environmentObject(messageManager)
         .toolbar {
 
-#if DEBUG
             ToolbarItem(placement: .topBarTrailing) {
-
-                Menu{
-                    ForEach([10000, 30000, 50000, 100000], id: \.self) { item in
-                        Button{
-                            Task{
-                                _ =  await DatabaseManager.CreateStresstest(max: item)
-                            }
-
-                        }label:{
-
-                            Label {
-                                Text(verbatim: "\(item)")
-                            } icon: {
-                                Image(systemName: "plus.message.fill")
-                            }
-
-                        }
-                    }
-
-                }label: {
-                    Image(systemName: "plus.bubble")
-                }
-            }
-
-#endif
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        ForEach(MessageAction.allCases, id: \.self) { item in
-                            if item == .cancel {
-                                Section {
-                                    Button(role: .destructive) {} label: {
-                                        Label(item.localized, systemImage: "xmark.seal")
-                                            .symbolRenderingMode(.palette)
-                                            .customForegroundStyle(.accent, .primary)
-                                    }
-                                }
-                            } else {
-                                Button {
-                                    self.selectAction = item
-                                } label: {
-                                    Label(item.localized, systemImage: "trash")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, .primary)
-                                }
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "trash.circle")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.green, Color.primary)
-                    }
-                }
-
-
-            ToolbarItem(placement: .topBarLeading) {
                 Menu {
                     Section {
                         Button {
-                            manager.router.append(.example)
+                            manager.router = [.example]
                             Haptic.impact()
                         } label: {
                             Label("使用示例", systemImage: "questionmark.bubble")
@@ -158,23 +118,8 @@ struct MessagePage: View {
                     }
 
                 } label: {
-                    Label("更多", systemImage: "shippingbox.circle")
+                    Label("更多", systemImage: "fuelpump")
                 }
-            }
-        }
-        .alert("确认删除", isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })) {
-            Button("取消", role: .cancel) { }
-            Button("删除", role: .destructive) {
-                if let mode = selectAction {
-                    Task.detached(priority: .userInitiated) {
-                        await DatabaseManager.shared.delete(date: mode.date)
-                        
-                    }
-                }
-            }
-        } message: {
-            if let selectAction {
-                Text("此操作将删除 \(selectAction.localized) 数据，且无法恢复。确定要继续吗？")
             }
         }
         .fullScreenCover(item: $manager.selectMessage){ message in
@@ -193,5 +138,5 @@ struct MessagePage: View {
 }
 
 #Preview {
-    MessagePage()
+    ContentView()
 }

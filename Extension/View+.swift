@@ -182,9 +182,8 @@ struct TextFieldModifier: ViewModifier {
 			)
 			.padding()
 			.padding(.leading, 43)
-            .if(background){ view in
-                view
-                    .background(.ultraThinMaterial)
+            .if(background){ 
+                $0.background(.ultraThinMaterial)
             }
 			.cornerRadius(20)
 			.modifier(OutlineOverlay(cornerRadius: 20))
@@ -311,7 +310,7 @@ extension View {
     ///   - transform: The transform to apply to the source `View`.
     /// - Returns: Either the original `View` or the modified `View` if the condition is `true`.
     /// https://www.avanderlee.com/swiftui/conditional-view-modifier/
-    @ViewBuilder func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+    @ViewBuilder func `if`<Content: View>(_ condition: Bool,_ transform: (Self) -> Content) -> some View {
         if condition {
             transform(self)
         } else {
@@ -319,7 +318,7 @@ extension View {
         }
     }
     
-    @ViewBuilder func `if` <Content: View>(_ condition: Bool, transform: () -> Content) -> some View {
+    @ViewBuilder func `if` <Content: View>(_ condition: Bool,_ transform: () -> Content) -> some View {
         if condition {
             transform()
         } else {
@@ -327,7 +326,7 @@ extension View {
         }
     }
     
-    @ViewBuilder func diff<Content: View>(transform: (Self) -> Content) -> some View {
+    @ViewBuilder func diff<Content: View>(_ transform: (Self) -> Content) -> some View {
         transform(self)
     }
     
@@ -526,5 +525,3 @@ extension View {
         }
     }
 }
-
-

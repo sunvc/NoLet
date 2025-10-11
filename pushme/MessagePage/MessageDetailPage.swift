@@ -47,7 +47,7 @@ struct MessageDetailPage: View {
                                 }
 
                                 Task.detached(priority: .background){
-                                    _ = await DatabaseManager.shared.delete(message)
+                                    _ = await MessagesManager.shared.delete(message)
                                 }
                             }
                             .listRowInsets(EdgeInsets())
@@ -70,12 +70,19 @@ struct MessageDetailPage: View {
                     }
 
                 }
-                
             }else {
-                SearchMessageView(searchText: $searchText, group: group)
+                SearchMessageView(group: group)
             }
         }
         .searchable(text: $searchText)
+        .onSubmit(of: .search){
+            manager.searchText = searchText
+        }
+        .onChange(of: searchText){ value in
+            if value.isEmpty{
+                manager.searchText = ""
+            }
+        }
 
         .refreshable {
             loadData( limit: min(messages.count, 50))
@@ -127,7 +134,6 @@ struct MessageDetailPage: View {
                         .filter(Message.Columns.read == false)
                         .updateAll(db, [Message.Columns.read.set(to: true)])
 
-                    // 重新计算未读数，更新通知角标（假设有同步环境）
                     if Defaults[.badgeMode] == .auto {
                         let unRead = try Message
                             .filter(Message.Columns.read == false)
@@ -148,8 +154,8 @@ struct MessageDetailPage: View {
         
         
         Task.detached(priority: .userInitiated) {
-            let results = await DatabaseManager.shared.query(group: self.group, limit: limit, item?.createDate)
-            let count = DatabaseManager.shared.count(group: self.group)
+            let results = await MessagesManager.shared.query(group: self.group, limit: limit, item?.createDate)
+            let count = MessagesManager.shared.count(group: self.group)
             await MainActor.run {
                 self.allCount = count
                 if item == nil {

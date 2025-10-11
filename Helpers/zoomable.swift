@@ -27,11 +27,11 @@ struct ZoomableModifier: ViewModifier {
             }
             .animatableTransformEffect(transform)
             .gesture(dragGesture, including: transform == .identity ? .none : .all)
-            .modify { view in
+            .modify {
                 if #available(iOS 17.0, *) {
-                    view.gesture(magnificationGesture)
+                    $0.gesture(magnificationGesture)
                 } else {
-                    view.gesture(oldmagnificationGesture)
+                    $0.gesture(oldmagnificationGesture)
                 }
             }
             .gesture(doubleTapGesture)

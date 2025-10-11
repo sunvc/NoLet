@@ -18,20 +18,16 @@ struct ServerCardView:View {
 	var item: PushServerModel
 	var isCloud:Bool = false
     var complete:() -> Void
-
+    
     var accessText: String{
-        if item.status {
-            return String(localized: "服务器:") + item.url + String(localized: "状态正常")
-        }else{
-            return String(localized: "服务器:") + item.url + String(localized: "状态异常")
-        }
+        item.status ? String(localized: "服务器:") + item.url + String(localized: "状态正常"):
+        String(localized: "服务器:") + item.url + String(localized: "状态异常")
     }
 
 
 	var body: some View {
         VStack{
 
-            
             HStack(spacing: 10){
                 
                 Group{
@@ -41,11 +37,9 @@ struct ServerCardView:View {
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(item.status ? .green : .red, Color.primary)
                             .padding(.horizontal,5)
-                            .if(!item.status, transform: { view in
-                                view
-                                    .symbolEffect(.variableColor, delay: 1)
-                                
-                            })
+                            .if(!item.status){
+                                $0.symbolEffect(.variableColor, delay: 1)
+                            }
                     }else{
                         Image(systemName: "externaldrive.badge.icloud")
                             .scaleEffect(1.5)
@@ -139,14 +133,11 @@ struct ServerCardView:View {
                 
             }
             
-            
         }
         .padding(10)
         .background26(.message, radius: 15)
         .padding(.vertical, 5)
-        .transaction { view in
-            view.animation = .snappy
-        }
+        .transaction { $0.animation = .snappy }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessText)
         .accessibilityAction(named: "分享"){

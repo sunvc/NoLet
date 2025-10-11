@@ -128,26 +128,26 @@ extension WidgetData{
         let calendar = Calendar.current
         let now = Date()
         
-        let unRead = DatabaseManager.shared.unreadCount()
+        let unRead = MessagesManager.shared.unreadCount()
         
         // 分组个数
         
-        let groups = DatabaseManager.shared.queryGroup().count
+        let groups = MessagesManager.shared.queryGroup().count
         
-        let total = DatabaseManager.shared.count()
+        let total = MessagesManager.shared.count()
         
         // 本周
         let startOfWeek = calendar.startOfWeek(for: now)
         
         let weekMessages = try? DatabaseManager.shared.dbQueue.read ({ db in
-            try Message.filter(Column("createDate") > startOfWeek).fetchCount(db)
+            try Message.filter(Message.Columns.createDate > startOfWeek).fetchCount(db)
         })
-//        let weekMessages = total.filter({$0.createDate > startOfWeek})
+//        let weekMessages = total.filter({$0.createdate > startOfWeek})
         
         // 本月
         let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
         let monthMessages = try? DatabaseManager.shared.dbQueue.read ({ db in
-            try Message.filter(Column("createDate") > startOfMonth).fetchCount(db)
+            try Message.filter(Message.Columns.createDate > startOfMonth).fetchCount(db)
         })
    
         /// 平均每天多少条

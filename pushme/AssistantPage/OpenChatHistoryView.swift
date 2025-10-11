@@ -72,7 +72,7 @@ struct OpenChatHistoryView: View {
                                     }
                                 }
                             } catch {
-                                Log.error("❌ 更新 group.name 失败: \(error)")
+                                NLog.error("❌ 更新 group.name 失败: \(error)")
                             }
                         }
                     }
@@ -273,7 +273,7 @@ struct OpenChatHistoryView: View {
                     self.chatGroups = groups
                 }
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
             }
         }
     }

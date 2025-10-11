@@ -121,12 +121,12 @@ class CloudManager {
                 case .success(let record):
                     return record
                 case .failure(let error):
-                    Log.error("获取单个记录失败: \(error.localizedDescription)")
+                    NLog.error("获取单个记录失败: \(error.localizedDescription)")
                     return nil
                 }
             }
         } catch {
-            Log.error("查询失败: \(error.localizedDescription)")
+            NLog.error("查询失败: \(error.localizedDescription)")
             return []  // 查询失败返回空数组
         }
     }
@@ -138,7 +138,7 @@ class CloudManager {
             
             return datas
         }catch {
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return []
         }
     }
@@ -180,7 +180,7 @@ class CloudManager {
             }
         }
 
-        Log.log("查询到 \(uniqueRecords.count) 条记录")
+        NLog.log("查询到 \(uniqueRecords.count) 条记录")
         
         return uniqueRecords
     }
@@ -192,7 +192,7 @@ class CloudManager {
         
         guard success else { return .authority(message)}
         
-        Log.log(model.name,model.description)
+        NLog.log(model.name,model.description)
         
         if model.name.isEmpty  {
             return .paramsSpace(String(localized: "参数不全"))
@@ -206,10 +206,10 @@ class CloudManager {
         
         do{
             let recordRes = try await database.save(record)
-            Log.error(recordRes)
+            NLog.error(recordRes)
             return .success(String(localized: "保存成功"))
         }catch{
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return .saveError(String(localized: "保存失败：\(error.localizedDescription)"))
         }
         
@@ -260,7 +260,7 @@ class CloudManager {
             let recordRes = try await database.save(user)
             return recordRes
         }catch{
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return nil
         }
     }

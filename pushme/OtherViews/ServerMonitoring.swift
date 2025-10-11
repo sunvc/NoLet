@@ -89,14 +89,14 @@ struct ServerMonitoringView: View {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
                     updateData()
                 }
-                Log.error("启动定时器")
+                NLog.error("启动定时器")
             }
         }
         .onDisappear {
 
             self.timer?.invalidate()
             self.timer = nil
-            Log.error("离开页面")
+            NLog.error("离开页面")
         }
         .navigationTitle("服务器监控")
         .navigationBarTitleDisplayMode(.inline)
@@ -144,7 +144,7 @@ struct ServerMonitoringView: View {
 
                 }
             } catch {
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
                 Toast.error(title: "服务器连接失败")
             }
         }

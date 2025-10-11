@@ -300,14 +300,14 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
             
             let end = DispatchTime.now()
             let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
-            Log.log("运行时间：",Double(nanoTime) / 1_000_000_000)
+            NLog.log("运行时间：",Double(nanoTime) / 1_000_000_000)
             return self.speakPlayer
         }catch{
             await MainActor.run {
                 self.speakPlayer = nil
                 self.loading = false
             }
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return nil
         }
     }
@@ -360,7 +360,7 @@ extension AudioManager{
                 }
             }
         } catch {
-            Log.error("设置setActive失败：", error.localizedDescription)
+            NLog.error("设置setActive失败：", error.localizedDescription)
         }
     }
 

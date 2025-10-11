@@ -29,8 +29,14 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     @Published var searchText:String = ""
     
     
-    @Published var router:[RouterPage] = []
-
+    @Published var mrouter:[RouterPage] = []
+    @Published var srouter:[RouterPage] = []
+    @Published var sorouter:[RouterPage] = []
+    @Published var prouter:[RouterPage] = []
+    
+    
+    
+    
     @Published var isWarmStart:Bool = false
     
     @Published var selectMessage:Message? = nil
@@ -47,6 +53,24 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     @Published var customServerURL:String = ""
 
 
+    var router:[RouterPage] = []{
+        didSet{
+            if .ISPAD{
+                self.prouter = router
+            }else{
+                
+                switch page {
+                case .message:
+                    self.mrouter = router
+                case .setting:
+                    self.srouter = router
+                case .search:
+                    self.sorouter = router
+                   
+                }
+            }
+        }
+    }
     
     var fullShow:Binding<Bool>{
         Binding {
@@ -68,6 +92,8 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     private var appending:Bool = false
 	
     private override init() { super.init() }
+    
+   
     
     
     func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
@@ -140,7 +166,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
             
             return server
         }catch{
-            Log.error(error.localizedDescription)
+            NLog.error(error.localizedDescription)
             return server
         }
     }
@@ -187,7 +213,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
 
         switch self.outParamsHandler(address: url) {
         case .crypto(let text):
-            Log.log(text)
+            NLog.log(text)
             if let config = CryptoModelConfig(inputText: text){
                 Task{@MainActor in
                     self.page = .setting
@@ -219,6 +245,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                 Task{@MainActor in
                     self.page = .setting
                     self.router = [.assistantSetting(account)]
+                   
                 }
             }
             return nil
@@ -310,15 +337,15 @@ extension AppManager{
             for fileURL in contents {
                 do{
                     try fileManager.removeItem(at: fileURL)
-                    Log.log("✅ 删除: \(fileURL.lastPathComponent)")
+                    NLog.log("✅ 删除: \(fileURL.lastPathComponent)")
                 }catch{
-                    Log.error("❌ 清空失败: \(error.localizedDescription)")
+                    NLog.error("❌ 清空失败: \(error.localizedDescription)")
                 }
             }
             
-            Log.log("🧹 清空完成：\(url.path)")
+            NLog.log("🧹 清空完成：\(url.path)")
         } catch {
-            Log.error("❌ 清空失败: \(error.localizedDescription)")
+            NLog.error("❌ 清空失败: \(error.localizedDescription)")
         }
     }
     
@@ -335,7 +362,7 @@ extension AppManager{
                         }
                     }
                 } catch {
-                    Log.error("❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)")
+                    NLog.error("❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)")
                 }
             }
         }
@@ -390,12 +417,12 @@ extension AppManager{
         var isDir: ObjCBool = false
 
         guard fileManager.fileExists(atPath: path, isDirectory: &isDir) else {
-            Log.error("\(indent)❌ Path not found: \(path)")
+            NLog.error("\(indent)❌ Path not found: \(path)")
             return
         }
 
         if isDir.boolValue {
-            Log.log("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
+            NLog.log("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
 
             if let contents = try? fileManager.contentsOfDirectory(atPath: path) {
                 for item in contents {
@@ -407,7 +434,7 @@ extension AppManager{
             if let attrs = try? fileManager.attributesOfItem(atPath: path),
                let fileSize = attrs[.size] as? UInt64 {
                 let sizeMB = Double(fileSize) / (1024.0 * 1024.0)
-                Log.log("\(indent)📄 \(URL(fileURLWithPath: path).lastPathComponent) (\(String(format: "%.2f", sizeMB)) MB)")
+                NLog.log("\(indent)📄 \(URL(fileURLWithPath: path).lastPathComponent) (\(String(format: "%.2f", sizeMB)) MB)")
             }
         }
     }
@@ -426,7 +453,7 @@ extension AppManager{
                 return pathTem
             }
         }catch{
-            Log.error("配置文件加密失败")
+            NLog.error("配置文件加密失败")
         }
 
         return nil
@@ -434,4 +461,3 @@ extension AppManager{
 
     
 }
-

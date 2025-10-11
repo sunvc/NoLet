@@ -11,7 +11,7 @@ struct ChatMessageView: View {
     
     private var quote:Message?{
         guard let messageId = AppManager.shared.askMessageId  else { return nil }
-        return  DatabaseManager.shared.query(id: messageId)
+        return  MessagesManager.shared.query(id: messageId)
     }
     
     
@@ -38,9 +38,7 @@ struct ChatMessageView: View {
                             Spacer()
                             
                             userMessageView
-                                .if(isLoading) { view in
-                                    view.lineLimit(2)
-                                }
+                                .if(isLoading) {  $0.lineLimit(2) }
                                 .assistantMenu(message.request)
                                 
                             
@@ -61,9 +59,6 @@ struct ChatMessageView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
             }
-            
-            
-            
             
         }
         .padding(.vertical, 4)

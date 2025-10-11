@@ -264,7 +264,7 @@ struct CloudIcon: View {
                         }
                         
                     }catch{
-                        Log.error(error.localizedDescription)
+                        NLog.error(error.localizedDescription)
                     }
                     await MainActor.run {
                         self.selectItem = nil
@@ -300,7 +300,7 @@ struct CloudIcon: View {
                 return PushIcon(id: UUID().uuidString, name: "",
                              description: [], size: pngData.count, sha256: pngData.sha256(), file: tempURL, previewImage: image)
             }catch{
-                Log.error(error.localizedDescription)
+                NLog.error(error.localizedDescription)
             }
             
            

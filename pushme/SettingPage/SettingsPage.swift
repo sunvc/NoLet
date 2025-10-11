@@ -56,7 +56,7 @@ struct SettingsPage: View {
 
 
 
-            if ISPAD{
+            if .ISPAD{
                 ListButton {
                     Label( "消息", systemImage: "ellipsis.message")
                 } action: {
@@ -80,8 +80,7 @@ struct SettingsPage: View {
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(serverTypeColor, Color.primary)
                             .if(serverTypeColor == .red){view in
-                                view
-                                    .symbolEffect(.variableColor, delay: 0.5)
+                                view.symbolEffect(.variableColor, delay: 0.5)
                             }
                     }
                 } action: {
