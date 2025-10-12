@@ -76,64 +76,64 @@ struct DataSettingView: View {
             
             Section {
                 
-                Menu{
-                    if messageManager.allCount > 0{
-                        Section{
-                            Button{
-                                guard !showexportLoading else { return }
-                                self.showexportLoading = true
-                                cancelTask = Task.detached(priority: .userInitiated) {
-                                    do{
-                                        
-                                        let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("pushback_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
-                                        try await messageManager.exportToJSONFile(fileURL: filepath)
-                                        
-                                        
-                                        DispatchQueue.main.async {
-                                            AppManager.shared.sheetPage = .share(contents: [filepath])
-                                            self.showexportLoading = false
-                                        }
-                                    }catch{
-                                        NLog.error(error.localizedDescription)
-                                        DispatchQueue.main.async{
-                                            self.showexportLoading = false
+                HStack{
+                    Menu{
+                        if messageManager.allCount > 0{
+                            Section{
+                                Button{
+                                    guard !showexportLoading else { return }
+                                    self.showexportLoading = true
+                                    cancelTask = Task.detached(priority: .userInitiated) {
+                                        do{
+                                            
+                                            let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("pushback_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
+                                            try await messageManager.exportToJSONFile(fileURL: filepath)
+                                            
+                                            
+                                            DispatchQueue.main.async {
+                                                AppManager.shared.sheetPage = .share(contents: [filepath])
+                                                self.showexportLoading = false
+                                            }
+                                        }catch{
+                                            NLog.error(error.localizedDescription)
+                                            DispatchQueue.main.async{
+                                                self.showexportLoading = false
+                                            }
                                         }
                                     }
+                                }label: {
+                                    Label("消息列表", systemImage: "list.bullet.clipboard")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(.tint, Color.primary)
+
                                 }
-                            }label: {
-                                Label("消息列表", systemImage: "list.bullet.clipboard")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.tint, Color.primary)
+                            }
+                        }
+
+                        
+                        if let configPath{
+                            Section{
+                                ShareLink( item: configPath) {
+                                    Label("配置文件", systemImage: "doc.badge.gearshape")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(.tint, Color.primary)
+
+                                }
 
                             }
                         }
-                    }
 
-                    
-                    if let configPath{
-                        Section{
-                            ShareLink( item: configPath) {
-                                Label("配置文件", systemImage: "doc.badge.gearshape")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.tint, Color.primary)
-
-                            }
-
-                        }
-                    }
-
-                    if let database = BaseConfig.databasePath{
-                        Section{
-                            ShareLink( item: database) {
-                                Label("数据库文件", systemImage: "internaldrive")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.tint, Color.primary)
+                        if let database = BaseConfig.databasePath{
+                            Section{
+                                ShareLink( item: database) {
+                                    Label("数据库文件", systemImage: "internaldrive")
+                                        .symbolRenderingMode(.palette)
+                                        .foregroundStyle(.tint, Color.primary)
+                                }
                             }
                         }
-                    }
 
-                }label: {
-                    HStack{
+                    }label: {
                         Label("导出", systemImage: "square.and.arrow.up")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
@@ -144,30 +144,27 @@ struct DataSettingView: View {
                                     .foregroundStyle(.tint, Color.primary)
                                     .symbolEffect(.rotate)
                             }
-
-                        Spacer()
-                        Text(String(format: String(localized: "%d条消息"), messageManager.allCount) )
-                            .foregroundStyle(Color.green)
                     }
+                    Spacer()
+                    Text(String(format: String(localized: "%d条消息"), messageManager.allCount) )
+                        .foregroundStyle(Color.green)
                 }
-            
                 .onDisappear{
                     cancelTask?.cancel()
                 }
                 
 
 
-
-                Button{
-                    self.showImport.toggle()
-                }label: {
-                    HStack{
+                HStack{
+                    Button{
+                        self.showImport.toggle()
+                    }label: {
                         Label( "导入", systemImage: "arrow.down.circle")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
                             .symbolEffect(.wiggle, delay: 6)
-                        Spacer()
                     }
+                    Spacer()
                 }
                 .fileImporter(
                     isPresented: $showImport,
@@ -186,10 +183,10 @@ struct DataSettingView: View {
                         
                     })
             } header: {
-                Text( "导出消息列表")
-                    .textCase(.none)
+                Text(verbatim: "")
             } footer:{
-                Text("导入 消息/配置/数据库")
+                Text("导出/导入(消息/配置/数据库)")
+                    .textCase(.none)
             }
 
 
@@ -322,7 +319,6 @@ struct DataSettingView: View {
 
         }
         .navigationTitle("数据管理")
-        .navigationBarTitleDisplayMode(.inline)
         .if(selectAction != nil ){ view in
             view.alert("确认删除", isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })) {
                 Button("取消", role: .cancel) {
