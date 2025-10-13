@@ -263,7 +263,7 @@ struct PermissionsStartView: View {
                                 showAlert = true
                                 return
                             }
-                                // 检查如果开启了自定义服务器，需要验证URL
+                            // 检查如果开启了自定义服务器，需要验证URL
                             if useCustomServer {
 
 

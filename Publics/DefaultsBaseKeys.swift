@@ -11,22 +11,17 @@ import Foundation
 let DEFAULTSTORE = UserDefaults(suiteName: BaseConfig.groupName)!
 
 #if DEBUG
-private var uniquekeys: Set<String> = []
+private var uniquekeys: Set<NoletKey> = []
 #endif
 
 
 extension Defaults.Key{
     convenience init(_ name: NoletKey, _ defaultValue: Value, iCloud: Bool = false){
 #if DEBUG
-        assert(!uniquekeys.contains(name.rawValue), "错误：\(name.rawValue) 已经存在！")
-        uniquekeys.insert(name.rawValue)
+        assert(!uniquekeys.contains(name), "错误：\(name.rawValue) 已经存在！")
+        uniquekeys.insert(name)
 #endif
-        self.init(
-            name.rawValue,
-            default: defaultValue,
-            suite: DEFAULTSTORE,
-            iCloud: iCloud
-        )
+        self.init( name.rawValue, default: defaultValue, suite: DEFAULTSTORE, iCloud: iCloud )
     }
 }
 
@@ -52,9 +47,8 @@ extension Defaults.Keys{
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
     static let widgetURL = Key<String>(.widgetURL, "")
 
-    static let feedback = Key<Bool>(.feedback, true)
+    static let feedbackSound = Key<Bool>(.feedbackSound, true)
     static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
-    
     static let limitMessageLine = Key<Int>(.limitMessageLine, 6)
 
 }
@@ -93,7 +87,7 @@ enum NoletKey:String, CaseIterable{
     case SpeakEndpointExpiry
     case SpeakVoicesCacheExpiry
     case exampleCustom
-    case feedback
+    case feedbackSound
     case limitScanningArea
     case limitMessageLine
 }

@@ -192,6 +192,7 @@ struct ContentView: View {
             }, set: { value in
                 manager.router = value
             })){
+
                 MessagePage()
                     .router(manager)
             }

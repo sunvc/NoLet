@@ -151,6 +151,7 @@ class NetworkManager: NSObject {
                 String(cString: $0)
             }
         }
+       
         let systemVer   = UIDevice.current.systemVersion
         
         let locale      = Locale.current

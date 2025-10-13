@@ -10,6 +10,7 @@ import CryptoKit
 
 
 public enum Domap{
+    static let Beta = false
     static let KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF"
     static let IV = "ABCDEFGHIJKLMNOP"
 

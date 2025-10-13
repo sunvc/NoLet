@@ -224,6 +224,7 @@ struct MessageCard: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, 5)
                             .lineLimit(limitMessageLine)
+                            .contentShape(Rectangle())
                             .onTapGesture(count: 2) {
                                 showFull()
                             }

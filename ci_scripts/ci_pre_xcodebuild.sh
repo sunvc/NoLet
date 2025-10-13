@@ -5,7 +5,7 @@
 #
 #
 
-if [[ $NOLET_BUILD_MODE = 'dev' && $CI_XCODEBUILD_ACTION = 'archive' ]];
+if [[ $NOLET_BUILD_MODE = 'main' && $CI_XCODEBUILD_ACTION = 'archive' ]];
 then
     echo "Setting NoLet Beta App Icon"
     APP_ICON_PATH=$CI_PRIMARY_REPOSITORY_PATH/pushme/Assets.xcassets/AppIcon

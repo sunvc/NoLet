@@ -34,38 +34,37 @@ struct DataSettingView: View {
 
     @State private var cancelTask: Task<Void, Never>?
 
-    @State private var configPath:URL? = nil
     @State private var selectAction: MessageAction? = nil
     @State private var addLoading:Bool = false
+    
+    @State private var exampleValue = 10000.0
     
     var body: some View {
         List{
 #if DEBUG
                 Section{
-                    
-                    Button{
-                        self.addLoading = true
-                        Task.detached(priority: .high){
-                            _ =  await MessagesManager.createStressTest()
-                            await MainActor.run{
-                                self.addLoading = false
+                    Stepper(value: $exampleValue,
+                            in: 10000...1000000,
+                            step: 50000) {
+                        Button{
+                            self.addLoading = true
+                            Task.detached(priority: .high){
+                                _ =  await MessagesManager.createStressTest(max: Int(exampleValue), len: 500)
+                                await MainActor.run{
+                                    self.addLoading = false
+                                    self.calculateSize()
+                                }
                             }
-                        }
-                    }label:{
-                        HStack{
-                            
-                            Spacer()
+                        }label:{
                             Label {
-                                Text(verbatim: addLoading ? "Adding..." : "Add 100,000 Test Message")
+                                Text(verbatim: addLoading ? "Adding..." : "Add \(Int(exampleValue)) Test")
                             } icon: {
                                 Image(systemName: "plus.message.fill")
                             }
-                            Spacer()
                         }
-                        .padding(.vertical, 10)
+                        .button26(BorderedProminentButtonStyle())
+                        .disabled(addLoading)
                     }
-                    .button26(BorderedProminentButtonStyle())
-                    .disabled(addLoading)
                     
                 }header:{
                     Text(verbatim: "")
@@ -76,64 +75,72 @@ struct DataSettingView: View {
             
             Section {
                 
-                HStack{
-                    Menu{
-                        if messageManager.allCount > 0{
-                            Section{
-                                Button{
-                                    guard !showexportLoading else { return }
-                                    self.showexportLoading = true
-                                    cancelTask = Task.detached(priority: .userInitiated) {
-                                        do{
-                                            
-                                            let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("pushback_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
-                                            try await messageManager.exportToJSONFile(fileURL: filepath)
-                                            
-                                            
-                                            DispatchQueue.main.async {
-                                                AppManager.shared.sheetPage = .share(contents: [filepath])
-                                                self.showexportLoading = false
-                                            }
-                                        }catch{
-                                            NLog.error(error.localizedDescription)
-                                            DispatchQueue.main.async{
-                                                self.showexportLoading = false
-                                            }
+                
+                Menu{
+                    if messageManager.allCount > 0{
+                        Section{
+                            Button{
+                                guard !showexportLoading else { return }
+                                self.showexportLoading = true
+                                cancelTask = Task.detached(priority: .userInitiated) {
+                                    do{
+                                        
+                                        let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("pushback_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
+                                        try await messageManager.exportToJSONFile(fileURL: filepath)
+                                        
+                                        
+                                        DispatchQueue.main.async {
+                                            AppManager.shared.sheetPage = .share(contents: [filepath])
+                                            self.showexportLoading = false
+                                            self.calculateSize()
+                                        }
+                                    }catch{
+                                        NLog.error(error.localizedDescription)
+                                        DispatchQueue.main.async{
+                                            self.showexportLoading = false
                                         }
                                     }
-                                }label: {
-                                    Label("消息列表", systemImage: "list.bullet.clipboard")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.tint, Color.primary)
-
                                 }
+                            }label: {
+                                Label("消息列表", systemImage: "list.bullet.clipboard")
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.tint, Color.primary)
+                                
                             }
                         }
-
-                        
-                        if let configPath{
-                            Section{
-                                ShareLink( item: configPath) {
-                                    Label("配置文件", systemImage: "doc.badge.gearshape")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.tint, Color.primary)
-
-                                }
-
+                    }
+                    
+                    
+                    Section{
+                        Button{
+                            if let configPath = AppManager.createDatabaseFileTem(){
+                                AppManager.shared.sheetPage = .share(contents: [configPath])
+                                self.calculateSize()
                             }
+                            
+                        }label:{
+                            Label("配置文件", systemImage: "doc.badge.gearshape")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.tint, Color.primary)
                         }
-
-                        if let database = BaseConfig.databasePath{
-                            Section{
-                                ShareLink( item: database) {
-                                    Label("数据库文件", systemImage: "internaldrive")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.tint, Color.primary)
-                                }
+                    }
+                    
+                    Section{
+                        Button{
+                            if let database = BaseConfig.databasePath{
+                                AppManager.shared.sheetPage = .share(contents: [database])
+                                self.calculateSize()
                             }
+                            
+                        }label:{
+                            Label("数据库文件", systemImage: "internaldrive")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.tint, Color.primary)
                         }
-
-                    }label: {
+                    }
+                    
+                }label: {
+                    HStack{
                         Label("导出", systemImage: "square.and.arrow.up")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
@@ -144,17 +151,17 @@ struct DataSettingView: View {
                                     .foregroundStyle(.tint, Color.primary)
                                     .symbolEffect(.rotate)
                             }
+                        Spacer()
+                        Text(String(format: String(localized: "%d条消息"), messageManager.allCount) )
+                            .foregroundStyle(Color.green)
                     }
-                    Spacer()
-                    Text(String(format: String(localized: "%d条消息"), messageManager.allCount) )
-                        .foregroundStyle(Color.green)
                 }
                 .onDisappear{
                     cancelTask?.cancel()
                 }
                 
-
-
+                
+                
                 HStack{
                     Button{
                         self.showImport.toggle()
@@ -429,10 +436,7 @@ struct DataSettingView: View {
         .onChange(of: messageManager.allCount) { _ in
             self.calculateSize()
         }
-        .task{
-            calculateSize()
-            self.configPath = AppManager.createDatabaseFileTem()
-        }
+        .task{ calculateSize() }
     }
 
     

@@ -48,29 +48,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let url = urlContext.url
             // 处理这个 URL
             _ = AppManager.shared.HandlerOpenUrl(url: url.absoluteString)
+        }else if let shortcutItem = connectionOptions.shortcutItem{
+            _ = AppManager.runQuick(shortcutItem.type)
         }
         
     }
     
-    
-    
-    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        
-        let manager = AppManager.shared
-        
-        switch QuickAction(rawValue: shortcutItem.type.lowercased()){
-        case .assistant:
-            manager.page = .message
-            manager.router = [.assistant]
-        case .scan:
-            manager.page = .setting
-            manager.router = []
-            manager.fullPage = .scan
-        default:
-            break
-        }
-        
-        completionHandler(true)
+    @MainActor
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem) async -> Bool{
+
+        return AppManager.runQuick(shortcutItem.type)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {  }
@@ -95,12 +82,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillResignActive(_ scene: UIScene) {  }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-
-
-        UIApplication.shared.shortcutItems = QuickAction.allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        
-        WidgetCenter.shared.reloadAllTimelines()
         Task.detached(priority: .userInitiated) {
             await MessagesManager.shared.deleteExpired()
             let unread = MessagesManager.shared.unreadCount()
@@ -108,7 +89,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    func sceneDidEnterBackground(_ scene: UIScene) { }
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        UIApplication.shared.shortcutItems = QuickAction.allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 
     
     func setLangAssistantPrompt(){

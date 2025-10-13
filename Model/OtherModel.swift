@@ -127,32 +127,34 @@ enum MessageAction: String, CaseIterable, Equatable{
 
 enum QuickAction: String, CaseIterable{
     
+    static var selectAction:UIApplicationShortcutItem?
+    
     case assistant
     case scan
     
     static func allShortcutItems(showAssistant:Bool) -> [UIApplicationShortcutItem] {
         
         var items = [UIApplicationShortcutItem(
-            type: Self.scan.name,
+            type: Self.scan.rawValue,
             localizedTitle: String(localized:  "扫描二维码"),
             localizedSubtitle: "",
             icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder"),
-            userInfo: ["name": assistant.name as NSSecureCoding]
+            userInfo: ["name": assistant.rawValue as NSSecureCoding]
         )]
         
         if showAssistant{
             items.insert(UIApplicationShortcutItem(
-                type: Self.assistant.name,
+                type: Self.assistant.rawValue,
                 localizedTitle: String(localized:  "问智能助手"),
                 localizedSubtitle: "",
                 icon: UIApplicationShortcutIcon(systemImageName: "message.and.waveform"),
-                userInfo: ["name": scan.name as NSSecureCoding]
+                userInfo: ["name": scan.rawValue as NSSecureCoding]
             ), at: 0)
         }
         return items
         
     }
-    var name: String{ self.rawValue.lowercased() }
+    
 }
 
 // MARK: - PushServerModel
@@ -212,6 +214,7 @@ enum AppIconEnum:String, CaseIterable, Equatable{
     case pushback
     case pushback1
     case pushback2
+    case pushback3
     
     var name: String? { self == .pushback ? nil : self.rawValue }
     
@@ -220,6 +223,7 @@ enum AppIconEnum:String, CaseIterable, Equatable{
         case .pushback: "logo"
         case .pushback1: "logo1"
         case .pushback2: "logo2"
+        case .pushback3: "logo3"
         }
     }
 }

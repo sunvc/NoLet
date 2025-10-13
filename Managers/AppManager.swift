@@ -460,4 +460,16 @@ extension AppManager{
     }
 
     
+    static func runQuick(_ action: String) -> Bool{
+        switch QuickAction(rawValue: action.lowercased()){
+        case .assistant:
+            Self.shared.router = [.assistant]
+        case .scan:
+            Self.shared.fullPage = .scan
+        default:
+           return false
+        }
+        return true
+    }
+    
 }

@@ -2,6 +2,7 @@ import UniformTypeIdentifiers
 import UIKit
 import os
 
+
 public class Clipboard {
 
     class func set(_ message: String? = nil, _ items:[String : Any]...) {

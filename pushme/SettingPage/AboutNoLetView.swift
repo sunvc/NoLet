@@ -136,6 +136,24 @@ struct AboutNoLetView: View {
                     Toast.copy(title:  "复制成功")
                     return true
                 }
+                
+                ListButton {
+                    Label {
+                        Text( "系统设置")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        Image(systemName: "gear.circle")
+
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                            .symbolEffect(.rotate)
+                    }
+                } action:{
+                    Task{@MainActor in
+                        AppManager.openSetting()
+                    }
+                    return true
+                }
 
                 ListButton {
                     Label {

@@ -366,7 +366,7 @@ extension AudioManager{
 
     // MARK: - OTHER
     static func tips(_ fileName: TipsSound, fileExtension: String = "aac", complete: (() -> Void)? = nil) {
-        guard Defaults[.feedback] else { return }
+        guard Defaults[.feedbackSound] else { return }
         guard let url = Bundle.main.url(forResource: fileName.rawValue, withExtension: fileExtension) else { return }
         var soundID: SystemSoundID = 0
         AudioServicesCreateSystemSoundID(url as CFURL, &soundID)

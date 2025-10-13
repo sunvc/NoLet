@@ -35,9 +35,6 @@ public class DatabaseManager {
         try PttMessageModel.createInit(dbQueue: dbQueue)
         
     }
-    deinit{
-        try? self.dbQueue.close()
-    }
     
 }
 
