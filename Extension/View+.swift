@@ -518,7 +518,8 @@ extension View {
     public func button26<S>(_ style: S) -> some View where S : PrimitiveButtonStyle{
         Group{
             if #available(iOS 26.0, *) {
-                self.buttonStyle(.glassProminent)
+                self
+                    .buttonStyle(.glass)
             }else{
                 self.buttonStyle(style)
             }

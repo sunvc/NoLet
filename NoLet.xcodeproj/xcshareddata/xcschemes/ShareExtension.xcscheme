@@ -16,10 +16,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B5835B102DEDE07C0066B32E"
-               BuildableName = "ServiceExtension.appex"
-               BlueprintName = "ServiceExtension"
-               ReferencedContainer = "container:pushme.xcodeproj">
+               BlueprintIdentifier = "B58359E62DEDDF860066B32E"
+               BuildableName = "ShareExtension.appex"
+               BlueprintName = "ShareExtension"
+               ReferencedContainer = "container:NoLet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,9 +31,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-               BuildableName = "pushme.app"
-               BlueprintName = "pushme"
-               ReferencedContainer = "container:pushme.xcodeproj">
+               BuildableName = "NoLet.app"
+               BlueprintName = "NoLet"
+               ReferencedContainer = "container:NoLet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-            BuildableName = "pushme.app"
-            BlueprintName = "pushme"
-            ReferencedContainer = "container:pushme.xcodeproj">
+            BuildableName = "NoLet.app"
+            BlueprintName = "NoLet"
+            ReferencedContainer = "container:NoLet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -81,9 +81,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-            BuildableName = "pushme.app"
-            BlueprintName = "pushme"
-            ReferencedContainer = "container:pushme.xcodeproj">
+            BuildableName = "NoLet.app"
+            BlueprintName = "NoLet"
+            ReferencedContainer = "container:NoLet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

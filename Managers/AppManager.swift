@@ -9,19 +9,18 @@ import UIKit
 import SwiftUI
 import Defaults
 import Foundation
+import StoreKit
 
 
-class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
-	static let shared = AppManager()
+final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
+    static let shared = AppManager()
     
     
     @Published var page:TabPage = .message
-	@Published var sheetPage:SubPage = .none
-	@Published var fullPage:SubPage = .none
-	@Published var scanUrl:String = ""
+    @Published var sheetPage:SubPage = .none
+    @Published var fullPage:SubPage = .none
+    @Published var scanUrl:String = ""
     @Published var crashLog:String?
-    
-	@Published var PremiumUser:Bool = false
     
     
     @Published var selectId:String? = nil
@@ -51,8 +50,8 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     @Published var speaking:Bool = false
     
     @Published var customServerURL:String = ""
-
-
+    @Published var VipInfo: SubscribeUser? = nil
+    
     var router:[RouterPage] = []{
         didSet{
             if .ISPAD{
@@ -66,7 +65,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                     self.srouter = router
                 case .search:
                     self.sorouter = router
-                   
+                    
                 }
             }
         }
@@ -88,12 +87,17 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
         }
     }
     
-
-    private var appending:Bool = false
-	
-    private override init() { super.init() }
     
-   
+    private var appending:Bool = false
+    
+    private override init() {
+        super.init()
+        updates = newTransactionListenerTask()
+    }
+    
+    deinit {  updates?.cancel() }
+    
+    var updates: Task<Void, Never>? = nil
     
     
     func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
@@ -126,20 +130,20 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                 // 按 index 排序，保证和 servers 顺序一致
                 return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
             }
-
+            
             await MainActor.run {
                 Defaults[.servers] = results
                 Self.syncLocalToCloud()
             }
-
+            
         }
     }
-
+    
     
     func register(server:PushServerModel, reset:Bool = false, msg:Bool = true) async -> PushServerModel{
         var server = server
         
-        do{ 
+        do{
             
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
             let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken ).toEncodableDictionary() ?? [:]
@@ -171,7 +175,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
         }
     }
     
-
+    
     func appendServer(server:PushServerModel) async -> Bool{
         
         guard !appending && !Defaults[.deviceToken].isEmpty else { return false}
@@ -198,19 +202,19 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     class func syncLocalToCloud() {
         let locals = Defaults[.servers]
         var clouds = Defaults[.cloudServers]
-
+        
         let cloudServerSet = Set(clouds.map { $0.server })
-
+        
         let newItems = locals.filter { !cloudServerSet.contains($0.server) }
-
+        
         if !newItems.isEmpty {
             clouds.append(contentsOf: newItems)
             Defaults[.cloudServers] = clouds
         }
     }
-
+    
     func HandlerOpenUrl(url:String) -> String?{
-
+        
         switch self.outParamsHandler(address: url) {
         case .crypto(let text):
             NLog.log(text)
@@ -226,7 +230,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                     }
                 }
             }
-           return nil
+            return nil
         case .server(let url, let key, let sign):
             Task.detached(priority: .userInitiated) {
                 let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
@@ -245,7 +249,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                 Task{@MainActor in
                     self.page = .setting
                     self.router = [.assistantSetting(account)]
-                   
+                    
                 }
             }
             return nil
@@ -263,7 +267,7 @@ class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
             return nil
         default:
             return url
-
+            
         }
     }
     
@@ -287,14 +291,14 @@ extension AppManager{
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
-
+    
     class func openUrl(url: String) {
         if let url = URL(string: url) {
             self.openUrl(url: url)
         }
     }
-
-
+    
+    
     
     class func hideKeyboard(){
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),to: nil,from: nil,for: nil)
@@ -309,7 +313,7 @@ extension AppManager{
         if isCriticalAlert{
             auths.insert(.criticalAlert)
         }
-      
+        
         
         guard let granted = try? await UNUserNotificationCenter.current()
             .requestAuthorization(options: auths)
@@ -330,10 +334,10 @@ extension AppManager{
     
     func clearContentsOfDirectory(at url: URL) {
         let fileManager = FileManager.default
-
+        
         do {
             let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-
+            
             for fileURL in contents {
                 do{
                     try fileManager.removeItem(at: fileURL)
@@ -351,7 +355,7 @@ extension AppManager{
     
     func calculateDirectorySize(at url: URL) -> UInt64 {
         var totalSize: UInt64 = 0
-
+        
         if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.fileSizeKey], options: [], errorHandler: nil) {
             for case let fileURL as URL in enumerator {
                 do {
@@ -366,7 +370,7 @@ extension AppManager{
                 }
             }
         }
-
+        
         return totalSize
     }
     
@@ -411,19 +415,19 @@ extension AppManager{
         
         return .otherUrl(address)
     }
-
+    
     func printDirectoryContents(at path: String, indent: String = "") {
         let fileManager = FileManager.default
         var isDir: ObjCBool = false
-
+        
         guard fileManager.fileExists(atPath: path, isDirectory: &isDir) else {
             NLog.error("\(indent)❌ Path not found: \(path)")
             return
         }
-
+        
         if isDir.boolValue {
             NLog.log("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
-
+            
             if let contents = try? fileManager.contentsOfDirectory(atPath: path) {
                 for item in contents {
                     let itemPath = (path as NSString).appendingPathComponent(item)
@@ -438,13 +442,13 @@ extension AppManager{
             }
         }
     }
-
+    
     static func createDatabaseFileTem() -> URL?{
         guard let path = BaseConfig.configPath else{ return nil }
         do{
             let data = try Data(contentsOf: path)
             if let cryptData = CryptoManager(.data).encrypt(inputData: data){
-
+                
                 let pathTem = FileManager.default.temporaryDirectory.appendingPathComponent(
                     path.lastPathComponent,
                     conformingTo: .data
@@ -455,10 +459,10 @@ extension AppManager{
         }catch{
             NLog.error("配置文件加密失败")
         }
-
+        
         return nil
     }
-
+    
     
     static func runQuick(_ action: String) -> Bool{
         switch QuickAction(rawValue: action.lowercased()){
@@ -467,9 +471,97 @@ extension AppManager{
         case .scan:
             Self.shared.fullPage = .scan
         default:
-           return false
+            return false
         }
         return true
     }
     
+}
+
+
+extension AppManager{
+    private func newTransactionListenerTask() -> Task<Void, Never> {
+        Task(priority: .background) {
+            for await verificationResult in Transaction.updates {
+                self.handle(updatedTransaction: verificationResult)
+            }
+            
+            for await result in Transaction.currentEntitlements {
+                self.handle(updatedTransaction: result)
+            }
+        }
+    }
+    
+    
+    private func handle(updatedTransaction verificationResult: VerificationResult<StoreKit.Transaction>) {
+    
+        
+        guard case .verified(let transaction) = verificationResult else {
+            // Ignore unverified transactions.
+            return
+        }
+        
+        if let revocationDate = transaction.revocationDate {
+            // Remove access to the product identified by transaction.productID.
+            // Transaction.revocationReason provides details about
+            // the revoked transaction.
+            if let reason = transaction.revocationReason {
+                NLog.log("Transaction revoked due to: \(revocationDate) - \(reason) ")
+            }
+        
+            if self.VipInfo?.productID == transaction.productID{
+                self.VipInfo = nil
+            }
+            return
+    
+        } else if let expirationDate = transaction.expirationDate, expirationDate < Date() {
+            // Do nothing, this subscription is expired.
+            if self.VipInfo?.productID == transaction.productID{
+                self.VipInfo = nil
+            }
+            return
+        } else if transaction.isUpgraded {
+            // Do nothing, there is an active transaction
+            // for a higher level of service.
+            return
+        }else{
+            DispatchQueue.main.async{
+                self.VipInfo = SubscribeUser( expirationDate: transaction.expirationDate,
+                                              productID: transaction.productID)
+            }
+        }
+    }
+}
+
+
+struct SubscribeUser: Codable, Hashable, Identifiable{
+    var id: String = UUID().uuidString
+    var expirationDate: Date?
+    var productID: String = ""
+    
+    var isVip: Bool{
+        if let expirationDate{
+            return expirationDate > Date() && level != .none
+        }
+        return false
+    }
+    
+    var level:levelType{
+        if productID == StoreProduct.monthly{
+            return .monthly
+        }else if productID == StoreProduct.yearly{
+            return .yearly
+        }else if productID == StoreProduct.once{
+            return .onece
+        }else{
+            return .none
+        }
+    }
+    
+    enum levelType{
+        case monthly
+        case yearly
+        case onece
+        case none
+    }
 }

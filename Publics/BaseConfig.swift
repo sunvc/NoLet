@@ -33,7 +33,7 @@ class BaseConfig {
     static let delpoydoc = docServer + String(localized: "/#/deploy")
     static let privacyURL = docServer + String(localized: "/#/policy")
     static let tutorialURL = docServer + String(localized: "/#/tutorial")
-
+    static let telegram = "https://t.me/PushToMe"
 
     static let longSoundPrefix = "pb.sounds.30s"
     static let userAgreement = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
@@ -165,3 +165,6 @@ class BaseConfig {
 enum NoletError: Error{
     case basic(_ msg: String)
 }
+
+
+

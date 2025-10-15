@@ -10,7 +10,7 @@ import GRDB
 import UniformTypeIdentifiers
 import WidgetKit
 import Defaults
-
+import StoreKit
 
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -18,7 +18,6 @@ struct ContentView: View {
     @Default(.showGroup) private var showGroup
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
-    
     @Default(.firstStart) private var firstStart
     @Default(.badgeMode) private var badgeMode
     
@@ -45,26 +44,9 @@ struct ContentView: View {
                 ColoredBorder()
             }
         }
-        .if( !Defaults[.firstStart] ){ view in
-            Group{
-                if #available(iOS 17.0, *) {
-                    view.subscriptionStatusTask(for: "21582431") {
-                            if let result = $0.value {
-                                let premiumUser = result.filter({ $0.state == .subscribed })
-                                NLog.log("User Subscribed = \(!premiumUser.isEmpty)")
-                                manager.PremiumUser = !premiumUser.isEmpty
-                            }
-                        }
-                } else {
-                    // Fallback on earlier versions
-                    view
-                }
-            }
-            
-        }
         .sheet(isPresented: manager.sheetShow){ ContentSheetViewPage() }
         .fullScreenCover(isPresented: manager.fullShow){ ContentFullViewPage() }
-
+       
     }
     
     @ViewBuilder

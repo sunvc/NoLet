@@ -16,9 +16,10 @@ struct AboutNoLetView: View {
     @Default(.appIcon) var setting_active_app_icon
     @Default(.deviceToken) var deviceToken
     @Default(.id) var id
-
-    @State private var buildDetail: Bool = false
     
+    @State private var buildDetail: Bool = false
+    @State private var product: Product?
+    @State private var purchaseResult: Product.PurchaseResult?
     var buildVersion: String {
         // 版本号
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -30,12 +31,12 @@ struct AboutNoLetView: View {
             }
             return ""
         }
-
+        
         return buildDetail ? "\(appVersion)(\(buildNumber))" : appVersion
     }
-
-
-
+    
+    
+    
     var body: some View {
         List {
             // Logo 部分
@@ -54,7 +55,7 @@ struct AboutNoLetView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                 .accessibilityLabel("点击切换应用图标")
                         }
-
+                        
                         
                         Text(BaseConfig.AppName)
                             .font(.title2)
@@ -75,12 +76,14 @@ struct AboutNoLetView: View {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
-
-
-
+            
+            
+            
             // 应用信息部分
             Section {
-
+                
+                
+                
                 ListButton(leading: {
                     Label {
                         Text( "TOKEN")
@@ -90,28 +93,28 @@ struct AboutNoLetView: View {
                         Image(systemName: "captions.bubble")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.primary, .accent)
-
+                        
                     }
                 }, trailing: {
                     HackerTextView(text: maskString(deviceToken), trigger: false)
                         .foregroundStyle(.gray)
-
+                    
                     Image(systemName: "doc.on.doc")
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle( .accent, Color.primary)
-
-
+                    
+                    
                 }, showRight: false) {
                     if deviceToken != ""{
                         Clipboard.set(deviceToken)
                         Toast.copy(title: "复制成功")
-
+                        
                     }else{
                         Toast.question(title: "请先注册")
                     }
                     return true
                 }
-
+                
                 ListButton(leading: {
                     Label {
                         Text( "ID")
@@ -119,60 +122,24 @@ struct AboutNoLetView: View {
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "person.badge.key")
-
+                        
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(Color.primary, .accent)
                     }
                 }, trailing: {
                     HackerTextView(text: maskString(id), trigger: false)
                         .foregroundStyle(.gray)
-
+                    
                     Image(systemName: "doc.on.doc")
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle( .accent, Color.primary)
-
+                    
                 }, showRight: false) {
                     Clipboard.set(id)
                     Toast.copy(title:  "复制成功")
                     return true
                 }
                 
-                ListButton {
-                    Label {
-                        Text( "系统设置")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "gear.circle")
-
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, Color.primary)
-                            .symbolEffect(.rotate)
-                    }
-                } action:{
-                    Task{@MainActor in
-                        AppManager.openSetting()
-                    }
-                    return true
-                }
-
-                ListButton {
-                    Label {
-                        Text( "使用帮助")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "questionmark.bubble")
-
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, Color.primary)
-                    }
-                } action: {
-                    manager.fullPage = .web(BaseConfig.tutorialURL)
-                    return true
-                }
-
-
-
-
                 // App开源地址
                 ListButton {
                     Label {
@@ -184,7 +151,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.blue, Color.primary)
                     }
                 } action: {
-
+                    
                     AppManager.openUrl(url: BaseConfig.appSource)
                     return true
                 }
@@ -203,37 +170,39 @@ struct AboutNoLetView: View {
                     AppManager.openUrl(url: BaseConfig.serverSource)
                     return true
                 }
-
-
+                
             } header: {
                 Text("应用信息")
                     .textCase(.none)
             }
             
             Section{
+                
+                
                 VStack{
+                    
                     HStack(spacing: 7){
                         Spacer(minLength: 10)
-
+                        
                         Button{
                             manager.fullPage = .web(BaseConfig.privacyURL)
                             Haptic.impact()
                         }label: {
                             Text("隐私政策")
-
-
+                            
+                            
                         }
                         Circle()
                             .frame(width: 3,height: 3)
-
+                        
                         Button{
                             manager.fullPage = .web(BaseConfig.userAgreement)
                             Haptic.impact()
                         }label: {
                             Text("用户协议")
-
+                            
                         }
-
+                        
                         Spacer(minLength: 10)
                     }
                     .font(.caption)
@@ -242,7 +211,7 @@ struct AboutNoLetView: View {
                     .padding(.bottom)
                     HStack{
                         Spacer()
-                        Text(verbatim: "© 2024 uuneo. All rights reserved.")
+                        Text(verbatim: "© 2024 WZS. All rights reserved.")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                             .padding(.bottom, 8)
@@ -250,7 +219,9 @@ struct AboutNoLetView: View {
                     }
                 }
             }.listRowBackground(Color.clear)
-                
+           
+            
+            
         }
         .toolbar{
             if #available(iOS 26.0, *){
@@ -258,6 +229,7 @@ struct AboutNoLetView: View {
                     Text(verbatim: "")
                 }
             }
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button{
                     requestReview()
@@ -270,23 +242,34 @@ struct AboutNoLetView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-
-
+        .task {
+            await loadProduct()
+        }
+        
     }
-
+    
+    func loadProduct() async {
+        do {
+            let products = try await Product.products(for: ["one_time_support_2_99"])
+            product = products.first
+        } catch {
+            print("Failed to load products: \(error)")
+        }
+    }
+    
     func requestReview() {
         if let scene = UIApplication.shared.connectedScenes
             .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
-
+    
     fileprivate func maskString(_ str: String) -> String {
         guard str.count > 9 else { return String(repeating: "*", count: 3) +  str }
         return str.prefix(3) + String(repeating: "*", count: 5) + str.suffix(4)
     }
-
-
+    
+    
 }
 
 #Preview {

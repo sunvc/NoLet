@@ -13,7 +13,6 @@ import Defaults
 struct AppIconView: View {
     @Environment(\.dismiss) var dismiss
 	@Default(.appIcon) var setting_active_app_icon
-    @State private var PremiumUser:Bool = false
     @EnvironmentObject private var manager:AppManager
     var body: some View {
         ScrollViewReader { proxy in

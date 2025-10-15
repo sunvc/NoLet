@@ -238,7 +238,7 @@
 		B542AC252E083D80001B0919 /* Color+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+.swift"; sourceTree = "<group>"; };
 		B55BD5522E21EFE300A1F014 /* Lang.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lang.swift; sourceTree = "<group>"; };
 		B56D83A52E378C88002B3377 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
-		B58357F72DEDD3B10066B32E /* pushme.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pushme.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B58357F72DEDD3B10066B32E /* NoLet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoLet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58358AD2DEDD65A0066B32E /* WidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetData.swift; sourceTree = "<group>"; };
 		B58358AE2DEDD65A0066B32E /* ParamsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParamsModel.swift; sourceTree = "<group>"; };
 		B58358AF2DEDD65A0066B32E /* MessageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageModel.swift; sourceTree = "<group>"; };
@@ -289,12 +289,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B58358092DEDD3B40066B32E /* Exceptions for "pushme" folder in "pushme" target */ = {
+		B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = B58357F62DEDD3B10066B32E /* pushme */;
+			target = B58357F62DEDD3B10066B32E /* NoLet */;
 		};
 		B58359F52DEDDF860066B32E /* Exceptions for "ShareExtension" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -310,7 +310,7 @@
 			);
 			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
 		};
-		B5835B0B2DEDE0490066B32E /* Exceptions for "Managers" folder in "pushme" target */ = {
+		B5835B0B2DEDE0490066B32E /* Exceptions for "Managers" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AppManager.swift,
@@ -327,7 +327,7 @@
 				Queue.swift,
 				VoiceManager.swift,
 			);
-			target = B58357F62DEDD3B10066B32E /* pushme */;
+			target = B58357F62DEDD3B10066B32E /* NoLet */;
 		};
 		B5835B1C2DEDE07C0066B32E /* Exceptions for "ServiceExtension" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -343,7 +343,7 @@
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
-		B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "pushme" target */ = {
+		B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				alarm.caf,
@@ -378,7 +378,7 @@
 				typewriter.caf,
 				xiu.caf,
 			);
-			target = B58357F62DEDD3B10066B32E /* pushme */;
+			target = B58357F62DEDD3B10066B32E /* NoLet */;
 		};
 		B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -390,7 +390,7 @@
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 		};
-		B5835C532DEDE3450066B32E /* Exceptions for "pushme" folder in "ShareExtension" target */ = {
+		B5835C532DEDE3450066B32E /* Exceptions for "NoLet" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
@@ -508,35 +508,35 @@
 			);
 			target = B5835CA72DEDE88D0066B32E /* PushWidgetExtension */;
 		};
-		B5835E742DEE8F440066B32E /* Exceptions for "pushme" folder in "SafariExtension" target */ = {
+		B5835E742DEE8F440066B32E /* Exceptions for "NoLet" folder in "SafariExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
 			);
 			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
 		};
-		B5835E762DEE8F4C0066B32E /* Exceptions for "pushme" folder in "ServiceExtension" target */ = {
+		B5835E762DEE8F4C0066B32E /* Exceptions for "NoLet" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
-		B5835E782DEE8F550066B32E /* Exceptions for "pushme" folder in "ContentExtension" target */ = {
+		B5835E782DEE8F550066B32E /* Exceptions for "NoLet" folder in "ContentExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
-		B5835E7A2DEE8F5D0066B32E /* Exceptions for "pushme" folder in "PushWidgetExtension" target */ = {
+		B5835E7A2DEE8F5D0066B32E /* Exceptions for "NoLet" folder in "PushWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
 			);
 			target = B5835CA72DEDE88D0066B32E /* PushWidgetExtension */;
 		};
-		B5835E7C2DEE8F640066B32E /* Exceptions for "pushme" folder in "MarkdownExtension" target */ = {
+		B5835E7C2DEE8F640066B32E /* Exceptions for "NoLet" folder in "MarkdownExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Localizable.xcstrings,
@@ -595,7 +595,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		B58A9A122E2BB1DC00422C2D /* Exceptions for "pushme" folder in "Embed Foundation Extensions" phase from "pushme" target */ = {
+		B58A9A122E2BB1DC00422C2D /* Exceptions for "NoLet" folder in "Embed Foundation Extensions" phase from "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = B58359CB2DEDDF180066B32E /* Embed Foundation Extensions */;
 			membershipExceptions = (
@@ -605,19 +605,19 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B58357F92DEDD3B10066B32E /* pushme */ = {
+		B58357F92DEDD3B10066B32E /* NoLet */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B58358092DEDD3B40066B32E /* Exceptions for "pushme" folder in "pushme" target */,
-				B58A9A122E2BB1DC00422C2D /* Exceptions for "pushme" folder in "Embed Foundation Extensions" phase from "pushme" target */,
-				B5835C532DEDE3450066B32E /* Exceptions for "pushme" folder in "ShareExtension" target */,
-				B5835E742DEE8F440066B32E /* Exceptions for "pushme" folder in "SafariExtension" target */,
-				B5835E762DEE8F4C0066B32E /* Exceptions for "pushme" folder in "ServiceExtension" target */,
-				B5835E782DEE8F550066B32E /* Exceptions for "pushme" folder in "ContentExtension" target */,
-				B5835E7A2DEE8F5D0066B32E /* Exceptions for "pushme" folder in "PushWidgetExtension" target */,
-				B5835E7C2DEE8F640066B32E /* Exceptions for "pushme" folder in "MarkdownExtension" target */,
+				B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */,
+				B58A9A122E2BB1DC00422C2D /* Exceptions for "NoLet" folder in "Embed Foundation Extensions" phase from "NoLet" target */,
+				B5835C532DEDE3450066B32E /* Exceptions for "NoLet" folder in "ShareExtension" target */,
+				B5835E742DEE8F440066B32E /* Exceptions for "NoLet" folder in "SafariExtension" target */,
+				B5835E762DEE8F4C0066B32E /* Exceptions for "NoLet" folder in "ServiceExtension" target */,
+				B5835E782DEE8F550066B32E /* Exceptions for "NoLet" folder in "ContentExtension" target */,
+				B5835E7A2DEE8F5D0066B32E /* Exceptions for "NoLet" folder in "PushWidgetExtension" target */,
+				B5835E7C2DEE8F640066B32E /* Exceptions for "NoLet" folder in "MarkdownExtension" target */,
 			);
-			path = pushme;
+			path = NoLet;
 			sourceTree = "<group>";
 		};
 		B58359E82DEDDF860066B32E /* ShareExtension */ = {
@@ -643,7 +643,7 @@
 		B5835A7B2DEDE0490066B32E /* Managers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B5835B0B2DEDE0490066B32E /* Exceptions for "Managers" folder in "pushme" target */,
+				B5835B0B2DEDE0490066B32E /* Exceptions for "Managers" folder in "NoLet" target */,
 				B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */,
 				B5835D422DEDF94F0066B32E /* Exceptions for "Managers" folder in "ServiceExtension" target */,
 				B5835D2B2DEDF0E50066B32E /* Exceptions for "Managers" folder in "ContentExtension" target */,
@@ -686,7 +686,7 @@
 		B5835BC12DEDE1020066B32E /* Sounds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "pushme" target */,
+				B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "NoLet" target */,
 				B5A832462DFFFBC600274589 /* Exceptions for "Sounds" folder in "ServiceExtension" target */,
 			);
 			path = Sounds;
@@ -823,7 +823,7 @@
 				B58358B12DEDD65A0066B32E /* Model */,
 				B5835A7B2DEDE0490066B32E /* Managers */,
 				B5835ABD2DEDE0490066B32E /* Publics */,
-				B58357F92DEDD3B10066B32E /* pushme */,
+				B58357F92DEDD3B10066B32E /* NoLet */,
 				B58359E82DEDDF860066B32E /* ShareExtension */,
 				B5835A192DEDE00B0066B32E /* SafariExtension */,
 				B5835B122DEDE07C0066B32E /* ServiceExtension */,
@@ -841,7 +841,7 @@
 		B58357F82DEDD3B10066B32E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B58357F72DEDD3B10066B32E /* pushme.app */,
+				B58357F72DEDD3B10066B32E /* NoLet.app */,
 				B58359E72DEDDF860066B32E /* ShareExtension.appex */,
 				B5835A182DEDE00B0066B32E /* SafariExtension.appex */,
 				B5835B112DEDE07C0066B32E /* ServiceExtension.appex */,
@@ -928,9 +928,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B58357F62DEDD3B10066B32E /* pushme */ = {
+		B58357F62DEDD3B10066B32E /* NoLet */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B583580A2DEDD3B40066B32E /* Build configuration list for PBXNativeTarget "pushme" */;
+			buildConfigurationList = B583580A2DEDD3B40066B32E /* Build configuration list for PBXNativeTarget "NoLet" */;
 			buildPhases = (
 				B58357F32DEDD3B10066B32E /* Sources */,
 				B58357F42DEDD3B10066B32E /* Frameworks */,
@@ -949,10 +949,10 @@
 				B5835D092DEDECA10066B32E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				B58357F92DEDD3B10066B32E /* pushme */,
+				B58357F92DEDD3B10066B32E /* NoLet */,
 				B5835ABD2DEDE0490066B32E /* Publics */,
 			);
-			name = pushme;
+			name = NoLet;
 			packageProductDependencies = (
 				B58358912DEDD4E10066B32E /* Defaults */,
 				B58358942DEDD55B0066B32E /* GRDB */,
@@ -966,7 +966,7 @@
 				B5D1B5912E5B3D5800661C28 /* Opus */,
 			);
 			productName = pushme;
-			productReference = B58357F72DEDD3B10066B32E /* pushme.app */;
+			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B58359E62DEDDF860066B32E /* ShareExtension */ = {
@@ -1153,7 +1153,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B58357F22DEDD3B10066B32E /* Build configuration list for PBXProject "pushme" */;
+			buildConfigurationList = B58357F22DEDD3B10066B32E /* Build configuration list for PBXProject "NoLet" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1180,7 +1180,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B58357F62DEDD3B10066B32E /* pushme */,
+				B58357F62DEDD3B10066B32E /* NoLet */,
 				B58359E62DEDDF860066B32E /* ShareExtension */,
 				B5835A172DEDE00B0066B32E /* SafariExtension */,
 				B5835B102DEDE07C0066B32E /* ServiceExtension */,
@@ -2017,7 +2017,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B58357F22DEDD3B10066B32E /* Build configuration list for PBXProject "pushme" */ = {
+		B58357F22DEDD3B10066B32E /* Build configuration list for PBXProject "NoLet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B583580D2DEDD3B40066B32E /* Debug */,
@@ -2026,7 +2026,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B583580A2DEDD3B40066B32E /* Build configuration list for PBXNativeTarget "pushme" */ = {
+		B583580A2DEDD3B40066B32E /* Build configuration list for PBXNativeTarget "NoLet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B583580B2DEDD3B40066B32E /* Debug */,

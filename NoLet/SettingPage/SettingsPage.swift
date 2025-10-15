@@ -13,14 +13,12 @@ import Defaults
 struct SettingsPage: View {
 
 	@EnvironmentObject private var manager:AppManager
-    
 	
 	@Default(.appIcon) var setting_active_app_icon
 	
     @Default(.sound) var sound
 	@Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
-    
     
 	@State private var webShow:Bool = false
 	@State private var showLoading:Bool = false
@@ -232,32 +230,48 @@ struct SettingsPage: View {
                 }
 
                 
-                if #available(iOS 18.0, *) {
-                    ListButton {
-                        Label {
-                            
-                            Text("开发者支持计划")
-                                .foregroundStyle(.textBlack)
-                        } icon: {
-                            Image(systemName: "creditcard.circle")
-                            
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, Color.primary)
-
+                if #available(iOS 17.0, *) {
+                    
+                   
+                        ListButton {
+                            if let vipInfo = manager.VipInfo, vipInfo.isVip{
+                                Label {
+                                    Text("获取开发者支持")
+                                        .foregroundStyle(.textBlack)
+                                } icon: {
+                                    Image(systemName: "questionmark.app.dashed")
+                                        .symbolRenderingMode(.palette)
+                                        .customForegroundStyle(.accent, Color.primary)
+                                }
+                            }else{
+                                
+                                Label {
+                                    Text("开发者支持计划")
+                                        .foregroundStyle(.textBlack)
+                                } icon: {
+                                    Image(systemName: "creditcard.circle")
+                                        .symbolRenderingMode(.palette)
+                                        .customForegroundStyle(.accent, Color.primary)
+                                }
+                                
+                            }
+                        } action: {
+                            if  let vipInfo = manager.VipInfo, vipInfo.isVip{
+                                AppManager.openUrl(url: BaseConfig.telegram)
+                            }else{
+                                Task{@MainActor in
+                                    manager.sheetPage = .paywall
+                                }
+                            }
+                            return true
                         }
-                    } action: {
-                        Task{@MainActor in
-                            manager.sheetPage = .paywall
-                        }
-                        return true
-                    }
                 }
                 
             }header:{
                 Text( "其他" )
                     .textCase(.none)
             }
-            
+           
             
         }
         .navigationTitle("设置")

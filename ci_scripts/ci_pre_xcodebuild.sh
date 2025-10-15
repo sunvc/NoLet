@@ -8,8 +8,8 @@
 if [[ $NOLET_BUILD_MODE = 'main' && $CI_XCODEBUILD_ACTION = 'archive' ]];
 then
     echo "Setting NoLet Beta App Icon"
-    APP_ICON_PATH=$CI_PRIMARY_REPOSITORY_PATH/pushme/Assets.xcassets/AppIcon
-    APP_LOGO_PATH=$CI_PRIMARY_REPOSITORY_PATH/pushme/Assets.xcassets/logo
+    APP_ICON_PATH=$CI_PRIMARY_REPOSITORY_PATH/NoLet/Assets.xcassets/AppIcon
+    APP_LOGO_PATH=$CI_PRIMARY_REPOSITORY_PATH/NoLet/Assets.xcassets/logo
     
     # Remove existing App Icon
     rm -rf $APP_ICON_PATH

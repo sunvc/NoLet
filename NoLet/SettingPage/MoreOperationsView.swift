@@ -196,9 +196,6 @@ struct MoreOperationsView: View {
 
             Section{
                 
-                
-                
-                
                 ListButton {
                     Label {
                         Text("小组件")
@@ -214,9 +211,23 @@ struct MoreOperationsView: View {
                     return true
                 }
                 
-                
-                
+                ListButton {
+                    Label {
+                        Text( "系统设置")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        Image(systemName: "gear.circle")
 
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                            .symbolEffect(.rotate)
+                    }
+                } action:{
+                    Task{@MainActor in
+                        AppManager.openSetting()
+                    }
+                    return true
+                }
             } footer:{
                 Text( "自动模式按照未读数，自定义按照推送badge参数")
                     .foregroundStyle(.gray)
@@ -225,6 +236,25 @@ struct MoreOperationsView: View {
         }
         .navigationTitle("更多设置")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                
+                Button{
+                    manager.fullPage = .web(BaseConfig.tutorialURL)
+                }label:{
+                    Label {
+                        Text( "使用帮助")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        Image(systemName: "questionmark.bubble")
+
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                    }
+                }
+                
+            }
+        }
 
     }
 

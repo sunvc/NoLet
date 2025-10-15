@@ -19,7 +19,7 @@
                BlueprintIdentifier = "B5835C5C2DEDE5540066B32E"
                BuildableName = "PushMeWidgetExtension.appex"
                BlueprintName = "PushMeWidgetExtension"
-               ReferencedContainer = "container:pushme.xcodeproj">
+               ReferencedContainer = "container:NoLet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,9 +31,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-               BuildableName = "pushme.app"
-               BlueprintName = "pushme"
-               ReferencedContainer = "container:pushme.xcodeproj">
+               BuildableName = "NoLet.app"
+               BlueprintName = "NoLet"
+               ReferencedContainer = "container:NoLet.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-            BuildableName = "pushme.app"
-            BlueprintName = "pushme"
-            ReferencedContainer = "container:pushme.xcodeproj">
+            BuildableName = "NoLet.app"
+            BlueprintName = "NoLet"
+            ReferencedContainer = "container:NoLet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <EnvironmentVariables>
@@ -98,9 +98,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B58357F62DEDD3B10066B32E"
-            BuildableName = "pushme.app"
-            BlueprintName = "pushme"
-            ReferencedContainer = "container:pushme.xcodeproj">
+            BuildableName = "NoLet.app"
+            BlueprintName = "NoLet"
+            ReferencedContainer = "container:NoLet.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

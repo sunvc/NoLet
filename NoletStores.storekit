@@ -1,0 +1,219 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "CE4C9D1C",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "22.0",
+      "familyShareable" : false,
+      "internalID" : "6744296851",
+      "localizations" : [
+        {
+          "description" : "개발자 지원 계획",
+          "displayName" : "일회성 지원",
+          "locale" : "ko"
+        },
+        {
+          "description" : "开发者支持计划",
+          "displayName" : "一次性支持",
+          "locale" : "zh_Hans"
+        },
+        {
+          "description" : "Developer Support Plan",
+          "displayName" : "One-time Support",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "開発者支援プラン",
+          "displayName" : "一度きりのサポート",
+          "locale" : "ja"
+        }
+      ],
+      "productID" : "one_time_support_2_99",
+      "referenceName" : "单次支持",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6615073345",
+    "_askToBuyEnabled" : true,
+    "_billingGracePeriodEnabled" : true,
+    "_billingIssuesEnabled" : true,
+    "_compatibilityTimeRate" : {
+      "3" : 6
+    },
+    "_developerTeamID" : "FUWV6U942Q",
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 782318702.79982603,
+    "_locale" : "zh_Hans",
+    "_renewalBillingIssuesEnabled" : true,
+    "_storefront" : "CHN",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 1002
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21582431",
+      "localizations" : [
+
+      ],
+      "name" : "Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+            {
+              "eligibility" : [
+                "new"
+              ],
+              "internalID" : "A08F23B5",
+              "isStackable" : true,
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "referenceName" : "pushback free",
+              "subscriptionPeriod" : "P1Y"
+            }
+          ],
+          "displayPrice" : "22.0",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "6738301302",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "每年自动续订",
+              "displayName" : "Premium 会员",
+              "locale" : "zh_Hans"
+            },
+            {
+              "description" : "매년 자동 갱신",
+              "displayName" : "프리미엄 회원",
+              "locale" : "ko"
+            },
+            {
+              "description" : "Yearly Renewal",
+              "displayName" : "Premium Vip",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "まいとし じどう こうしん",
+              "displayName" : "プレミアム会員",
+              "locale" : "ja"
+            },
+            {
+              "description" : "まいとし じどう こうしん",
+              "displayName" : "開発者をサポート",
+              "locale" : "ja"
+            },
+            {
+              "description" : "每年自动续订",
+              "displayName" : "支持开发者",
+              "locale" : "zh_Hans"
+            },
+            {
+              "description" : "Yearly Renewal",
+              "displayName" : "Support the Developer",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "매년 자동 갱신",
+              "displayName" : "개발자를 지원",
+              "locale" : "ko"
+            }
+          ],
+          "productID" : "pushback_yearly_128_intro7days_free",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "年度持续支持",
+          "subscriptionGroupID" : "21582431",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.0",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "6738301125",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "매월 자동 갱신",
+              "displayName" : "개발자를 지원",
+              "locale" : "ko"
+            },
+            {
+              "description" : "매월 자동 갱신",
+              "displayName" : "프리미엄 회원",
+              "locale" : "ko"
+            },
+            {
+              "description" : "每月自动续订",
+              "displayName" : "Premium 会员",
+              "locale" : "zh_Hans"
+            },
+            {
+              "description" : "Monthly Renewal",
+              "displayName" : "Premium Vip",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "まいつき こうしん",
+              "displayName" : "プレミアム会員",
+              "locale" : "ja"
+            },
+            {
+              "description" : "Monthly Renewal",
+              "displayName" : "Support the Developer",
+              "locale" : "en_US"
+            },
+            {
+              "description" : "まいつき こうしん",
+              "displayName" : "開発者をサポート",
+              "locale" : "ja"
+            },
+            {
+              "description" : "每月自动续订",
+              "displayName" : "支持开发者",
+              "locale" : "zh_Hans"
+            }
+          ],
+          "productID" : "pushback_monthly_18_intro7days_free",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "月度持续支持",
+          "subscriptionGroupID" : "21582431",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

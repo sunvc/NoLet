@@ -1625,34 +1625,6 @@
         }
       }
     },
-    "Premium 会员" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium Member"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プレミアム会員"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프리미엄 회원"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premium 会员"
-          }
-        }
-      }
-    },
     "pushback.mp3" : {
       "localizations" : {
         "en" : {
@@ -1677,34 +1649,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "pushback.mp3"
-          }
-        }
-      }
-    },
-    "Pushback（反推）是一款消息提醒应用程序" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pushback is a message reminder application"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pushbackはメッセージリマインダーアプリケーションです"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pushback는 메시지 알림 애플리케이션입니다"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pushback（反推）是一款消息提醒应用程序"
           }
         }
       }
@@ -5210,6 +5154,7 @@
       }
     },
     "和" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9501,6 +9446,34 @@
         }
       }
     },
+    "本App免费使用,赞助不会开启任何新功能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This app is free to use; sponsorship does not unlock any new features."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリは無料で利用でき、寄付をしても新機能は解放されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 앱은 무료로 사용할 수 있으며, 후원해도 새로운 기능이 해금되지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本App免费使用，赞助不会开启任何新功能"
+          }
+        }
+      }
+    },
     "本周" : {
       "localizations" : {
         "en" : {
@@ -13116,6 +13089,9 @@
           }
         }
       }
+    },
+    "获取开发者支持" : {
+
     },
     "葡萄牙语" : {
       "localizations" : {

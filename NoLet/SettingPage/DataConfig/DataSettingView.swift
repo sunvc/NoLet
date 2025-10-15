@@ -319,7 +319,8 @@ struct DataSettingView: View {
 
                     }
                     .tint(.red)
-                    .button26(BorderedProminentButtonStyle())
+                    .buttonStyle(.borderedProminent)
+                    
                 }
             }
 
@@ -502,7 +503,6 @@ struct DataSettingView: View {
 
                 default:
                     try messageManager.importJSONFile(fileURL: url)
-    
                 }
 
             }
