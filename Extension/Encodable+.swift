@@ -33,8 +33,7 @@ extension Dictionary where Key == AnyHashable, Value == Any {
             switch valueAny {
             case let v as String: strValue = v
             case let v as CustomStringConvertible: strValue = v.description
-            default:
-                strValue = String(describing: valueAny)
+            default: strValue = String(describing: valueAny)
             }
             
             result[key] = strValue
@@ -45,7 +44,7 @@ extension Dictionary where Key == AnyHashable, Value == Any {
     /// 转成 JSON 字符串
     func toJSONString(excluding keysToExclude: [String] = []) -> String? {
         let stringDict = self.toStringDict(excluding: keysToExclude)
-        guard  stringDict.count > 0 else { return nil }
+        guard stringDict.count > 0 else { return nil }
          
         guard JSONSerialization.isValidJSONObject(stringDict),
               let data = try? JSONSerialization.data(withJSONObject: stringDict, options: [.prettyPrinted]) else {
@@ -53,5 +52,4 @@ extension Dictionary where Key == AnyHashable, Value == Any {
         }
         return String(data: data, encoding: .utf8)
     }
-
 }

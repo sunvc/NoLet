@@ -235,10 +235,6 @@ struct SelectMessageView:View {
                                 }
                                
                             }
-                            
-                           
-                            
-                            
                         }
                         
                     }
