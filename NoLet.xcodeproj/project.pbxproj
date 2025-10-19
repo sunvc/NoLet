@@ -1430,16 +1430,16 @@
 		B583580B2DEDD3B40066B32E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = pushback;
+				ASSETCATALOG_COMPILER_APPICON_NAME = nolet;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = pushme/pushme.entitlements;
+				CODE_SIGN_ENTITLEMENTS = NoLet/NoLet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1000001;
 				DEVELOPMENT_TEAM = FUWV6U942Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = pushme/Info.plist;
+				INFOPLIST_FILE = NoLet/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
@@ -1459,7 +1459,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/pushme",
+					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.1.6;
@@ -1478,16 +1478,16 @@
 		B583580C2DEDD3B40066B32E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = pushback;
+				ASSETCATALOG_COMPILER_APPICON_NAME = nolet;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = pushme/pushme.entitlements;
+				CODE_SIGN_ENTITLEMENTS = NoLet/NoLet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1000001;
 				DEVELOPMENT_TEAM = FUWV6U942Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = pushme/Info.plist;
+				INFOPLIST_FILE = NoLet/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
@@ -1507,7 +1507,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/pushme",
+					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.1.6;

@@ -1,6 +1,6 @@
 //
 //  WidgetData.swift
-//  pushback
+//  NoLet
 //
 //  Created by lynn on 2025/5/9.
 //
@@ -80,7 +80,7 @@ struct WidgetData: WidgetDataType {
 }
 
 extension WidgetData{
-    static let title = "PUSHBACK"
+    static let title = "NoLet"
     static func subTitle()-> String {
         String(format: String(localized: "总计收到%1$d条"), Defaults[.allMessagecount])
     }

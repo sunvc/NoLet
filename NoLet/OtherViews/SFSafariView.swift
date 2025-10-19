@@ -1,6 +1,6 @@
 //
 //  SFSafariView.swift
-//  pushback
+//  NoLet
 //
 //  Created by uuneo 2024/10/8.
 //
@@ -12,7 +12,7 @@ import SwiftUI
 
 
 
-class PushbackSafariViewController: SFSafariViewController {
+class NoLetSafariViewController: SFSafariViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view.
@@ -46,7 +46,7 @@ struct SFSafariView: UIViewControllerRepresentable {
         let requestUrl: URL = URL(string: url) ?? URL(
             string: BaseConfig.defaultServer
         )!
-		let sfVC = PushbackSafariViewController(url: requestUrl)
+		let sfVC = NoLetSafariViewController(url: requestUrl)
 		sfVC.delegate = context.coordinator // 设置委托
 
 		return sfVC

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #  ci_post_clone.sh
-#  pushme
+#  NoLet
 #
 #  Created by lynn on 2025/9/7.
 #  

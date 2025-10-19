@@ -1,6 +1,6 @@
 //
-//  PushbackManager.swift
-//  pushback
+//  NoLetManager.swift
+//  NoLet
 //
 //  Created by uuneo 2024/10/26.
 //

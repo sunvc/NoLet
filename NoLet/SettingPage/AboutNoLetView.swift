@@ -1,6 +1,6 @@
 //
 //  AboutNoLetView.swift
-//  pushme
+//  NoLet
 //
 //  Created by AI Assistant 2024/05/29.
 //

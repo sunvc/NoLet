@@ -1,6 +1,6 @@
 //
 //  OtherModel.swift
-//  pushback
+//  NoLet
 //
 //  Created by uuneo 2024/10/26.
 //
@@ -211,19 +211,19 @@ enum BadgeAutoMode:String, CaseIterable {
 // MARK: - AppIconMode
 
 enum AppIconEnum:String, CaseIterable, Equatable{
-    case pushback
-    case pushback1
-    case pushback2
-    case pushback3
+    case nolet
+    case nolet1
+    case nolet2
+    case nolet3
     
-    var name: String? { self == .pushback ? nil : self.rawValue }
+    var name: String? { self == .nolet ? nil : self.rawValue }
     
     var logo: String{
         switch self {
-        case .pushback: "logo"
-        case .pushback1: "logo1"
-        case .pushback2: "logo2"
-        case .pushback3: "logo3"
+        case .nolet: "logo"
+        case .nolet1: "logo1"
+        case .nolet2: "logo2"
+        case .nolet3: "logo3"
         }
     }
 }
@@ -386,6 +386,8 @@ struct SelectMessage: Codable{
 enum PBScheme: String, CaseIterable{
     case pb
     case mw
+    case nolet
+    
     static var schemes:[String]{ Self.allCases.compactMap({ $0.rawValue }) }
     
     enum HostType: String{

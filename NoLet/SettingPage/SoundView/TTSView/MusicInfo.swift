@@ -110,7 +110,7 @@ struct MusicInfo: View {
                 
                 VStack{
                     if let audioUrl = audioManager.ShareURL{
-                        ShareLink(item: audioUrl, preview: SharePreview("pushback.mp3")){
+                        ShareLink(item: audioUrl, preview: SharePreview(String("Audio.mp3"))){
                             Image(systemName: "display.and.arrow.down")
                         }.simultaneousGesture(
                             TapGesture()

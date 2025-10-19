@@ -1,6 +1,6 @@
 //
 //  Equatable+.swift
-//  pushme
+//  NoLet
 //
 //  Created by lynn on 2025/6/5.
 //

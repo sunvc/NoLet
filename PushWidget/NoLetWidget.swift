@@ -1,6 +1,6 @@
 //
-//  PushbackWidget.swift
-//  PushbackWidget
+//  NoLetWidget.swift
+//  NoLetWidget
 //
 //  Created by lynn on 2025/5/6.
 //
@@ -66,8 +66,8 @@ struct CryptoWidgetEntryView : View {
     
 }
 
-struct PushbackWidget: Widget {
-    let kind: String = "PushbackCryptoWidget"
+struct NoLetWidget: Widget {
+    let kind: String = "NoLetCryptoWidget"
     
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in

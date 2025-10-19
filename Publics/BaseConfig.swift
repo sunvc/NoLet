@@ -1,6 +1,6 @@
 //
 //  BaseConfig.swift
-//  pushback
+//  NoLet
 //
 //  Created by uuneo 2024/10/25.
 //
@@ -20,7 +20,6 @@ class BaseConfig {
     static let icloudName = "iCloud.pushback"
     static let databaseName = "pushback.sqlite"
 
-    static let signKey = "com.uuneo.pushback.xxxxxxxxxxxxxxxxxxxxxx"
 #if DEBUG
     static let defaultServer = "https://dev.uuneo.com"
 #else

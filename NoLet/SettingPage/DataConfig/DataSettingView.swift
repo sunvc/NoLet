@@ -1,6 +1,6 @@
     //
     //  DataSettingView.swift
-    //  pushme
+    //  NoLet
     //
     //  Created by lynn on 2025/9/22.
     //
@@ -85,7 +85,7 @@ struct DataSettingView: View {
                                 cancelTask = Task.detached(priority: .userInitiated) {
                                     do{
                                         
-                                        let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("pushback_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
+                                        let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("NoLet_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
                                         try await messageManager.exportToJSONFile(fileURL: filepath)
                                         
                                         

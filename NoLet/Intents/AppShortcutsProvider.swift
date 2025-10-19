@@ -1,6 +1,6 @@
 //
 //  AppShortcutsProvider.swift
-//  pushback
+//  NoLet
 //
 //  Created by lynn on 2025/4/14.
 //
@@ -8,7 +8,7 @@
 import AppIntents
 
 
-class PushbackShortcuts:  AppShortcutsProvider, @unchecked Sendable {
+class NoLetShortcuts:  AppShortcutsProvider, @unchecked Sendable {
     
 
     static var appShortcuts: [AppShortcut] {

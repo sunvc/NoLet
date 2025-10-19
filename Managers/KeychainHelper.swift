@@ -1,6 +1,6 @@
 //
 //  KeychainHelper.swift
-//  pushme
+//  NoLet
 //
 //  Created by lynn on 2025/9/22.
 //
@@ -13,7 +13,7 @@ final class KeychainHelper {
     private init() {}
 
     private let service = Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
-    private let account = "PUSHBACKDEVICEID"
+    private let account = "NOLETDEVICEID"
 
         // 读取设备唯一ID，如果不存在则创建并保存一个新的 UUID
     func getDeviceID(_ newData:Bool = false) -> String {

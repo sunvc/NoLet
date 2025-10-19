@@ -1,6 +1,6 @@
     //
     //  PermissionsStartView.swift
-    //  pushme
+    //  NoLet
     //
     //  Created by AI Assistant on 2024/7/13.
     //

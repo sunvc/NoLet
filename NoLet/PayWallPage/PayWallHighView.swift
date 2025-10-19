@@ -1,6 +1,6 @@
 //
 //  PayWallHighView.swift
-//  pushback
+//  NoLet
 //
 //  Created by lynn on 2025/5/15.
 //
@@ -196,7 +196,7 @@ struct PayWallHighView: View {
     }
 }
 
-@available(iOS 18.0, *)
+@available(iOS 17.0, *)
 #Preview {
     PayWallHighView()
         .environmentObject(AppManager.shared)

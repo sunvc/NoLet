@@ -1,6 +1,6 @@
 //
 //  LocalKeys.swift
-//  pushback
+//  NoLet
 //
 //  Created by uuneo 2024/10/26.
 //
@@ -14,7 +14,7 @@ extension Defaults.Keys {
     static let cloudServers = Key<[PushServerModel]>(.serverArrayCloudStroage, [], iCloud: true)
 
     static let badgeMode = Key<BadgeAutoMode>(.Meowbadgemode, .auto)
-    static let appIcon = Key<AppIconEnum>(.setting_active_app_icon, .pushback)
+    static let appIcon = Key<AppIconEnum>(.setting_active_app_icon, .nolet)
     static let messageExpiration = Key<ExpirationTime>(.messageExpirtionTime, .forever)
     static let defaultBrowser = Key<DefaultBrowserModel>(.defaultBrowserOpen, .safari)
     static let imageSaveDays = Key<ExpirationTime>(.imageSaveDays, .forever)

@@ -1,10 +1,10 @@
 {
     "extension_description": {
         "message": "Push pictures and text to the phone",
-        "description": "This is an extension of pushback that allows you to send pictures and text to your phone"
+        "description": "This is an extension of NoLet that allows you to send pictures and text to your phone"
     },
-    "appNameLocal": { "message": "Pushback+", "description": "appTitle" },
-    "appStoreLocal": { "message": "Get Key in Pushback", "description": "appTitle" },
+    "appNameLocal": { "message": "NoLet+", "description": "appTitle" },
+    "appStoreLocal": { "message": "Get Key in NoLet", "description": "appTitle" },
     "pushConfigLocal": { "message": "Push Config", "description": "pushConfigTitle" },
     "saveLocal": { "message": "save", "description": "save" },
     "keyListLocal": { "message": "keylist", "description": "keylist" },

@@ -1,10 +1,10 @@
 {
     "extension_description": {
         "message": "사진과 텍스트를 휴대폰으로 전송",
-        "description": "This is an extension of pushback that allows you to send pictures and text to your phone"
+        "description": "This is an extension of NoLet that allows you to send pictures and text to your phone"
     },
-    "appNameLocal": { "message": "Pushback+", "description": "appTitle" },
-    "appStoreLocal": { "message": "Pushback에서 키 받기", "description": "appTitle" },
+    "appNameLocal": { "message": "NoLet+", "description": "appTitle" },
+    "appStoreLocal": { "message": "NoLet 에서 키 받기", "description": "appTitle" },
     "pushConfigLocal": { "message": "푸시 설정", "description": "pushConfigTitle" },
     "saveLocal": { "message": "저장", "description": "save" },
     "keyListLocal": { "message": "키 목록", "description": "keylist" },
