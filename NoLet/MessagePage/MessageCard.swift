@@ -99,6 +99,7 @@ struct MessageCard: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             .foregroundStyle(.accent)
+                            .lineLimit(2)
                         }
                     }
                     Spacer(minLength: 0)
@@ -230,7 +231,7 @@ struct MessageCard: View {
                             }
                         
                             .accessibilityElement(children: .ignore)
-                            .accessibilityValue("\(PBMarkdown.plain(message.accessibilityValue()))")
+                            .accessibilityValue(String("\(PBMarkdown.plain(message.accessibilityValue()))"))
                             .accessibilityLabel("消息内容`")
                             .accessibilityHint("双击全屏显示")
                             .accessibilityAction(named: "显示全屏") {

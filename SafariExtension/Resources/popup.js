@@ -127,3 +127,14 @@ function setLang() {
 }
 
 
+
+// 点击跳转到 App Store
+document.getElementById("openAppStore").addEventListener("click", function () {
+    browser.tabs.update({ url: "https://apps.apple.com/app/id6615073345"});
+});
+
+// 点击触发本地协议
+document.getElementById("openLocal").addEventListener("click", function () {
+//    window.location.href = "pb://";
+    browser.tabs.update({ url: "pb://" });
+});

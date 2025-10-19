@@ -101,7 +101,7 @@ struct VoiceCard: View {
                 
                 Spacer(minLength: 0)
                 
-                Text("\(String(format: "%.1f", duration))″")
+                Text(verbatim: "\(String(format: "%.1f", duration))")
                     .font(.headline)
 
                 Spacer(minLength: 0)

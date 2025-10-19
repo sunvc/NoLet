@@ -15,17 +15,17 @@
 	"videoLocal": { "message": "视频", "description": "pageLocal" },
 	"audioLocal": { "message": "音频", "description": "pageLocal" },
 	"sendAnyToIphoneLocal": {
-		"message": "发送 [$details$] 到手机",
+		"message": "发送 $details$ 到手机",
 		"description": "发送数据到手机",
 		"placeholders": {
 			"details": {
 				"content": "$1",
-				"example": "NULL"
+				"example": "页面"
 			}
 		}
 	},
 	"browserDataLocal": {
-		"message": "Browser Data",
+		"message": "浏览器数据",
 		"description": "Params title"
 	}
 }

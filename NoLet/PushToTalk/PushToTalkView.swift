@@ -760,7 +760,7 @@ struct PushToTalkView: View {
                                 }
                                 Haptic.impact()
                             }, label: {
-                                Text("0")
+                                Text(verbatim: "0")
                                     .font(.title)
                                     .fontWeight(.black)
                                     .frame(maxWidth: .infinity)

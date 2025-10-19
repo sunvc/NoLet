@@ -15,12 +15,12 @@
     "videoLocal": { "message": "動画", "description": "pageLocal" },
     "audioLocal": { "message": "音声", "description": "pageLocal" },
     "sendAnyToIphoneLocal": {
-        "message": "[$details$]を携帯電話に送信",
+        "message": "$details$ を携帯電話に送信",
         "description": "send any to iphone",
         "placeholders": {
             "details": {
                 "content": "$1",
-                "example": "NULL"
+                "example": "リンク"
             }
         }
     },
@@ -28,4 +28,4 @@
         "message": "ブラウザデータ",
         "description": "Params title"
     }
-} 
+}

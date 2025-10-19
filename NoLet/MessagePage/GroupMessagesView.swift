@@ -70,7 +70,7 @@ struct GroupMessagesView: View {
                         .listRowBackground(Color.clear)
                         .listSectionSeparator(.hidden)
                         .accessibilityElement(children: .ignore)
-                        .accessibilityValue("\(message.group)")
+                        .accessibilityValue(String("\(message.group)"))
                         .accessibilityLabel("分组消息")
                         .accessibilityHint("点击进入分组列表")
 

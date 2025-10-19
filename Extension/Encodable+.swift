@@ -44,8 +44,8 @@ extension Dictionary where Key == AnyHashable, Value == Any {
     
     /// 转成 JSON 字符串
     func toJSONString(excluding keysToExclude: [String] = []) -> String? {
-        
         let stringDict = self.toStringDict(excluding: keysToExclude)
+        guard  stringDict.count > 0 else { return nil }
          
         guard JSONSerialization.isValidJSONObject(stringDict),
               let data = try? JSONSerialization.data(withJSONObject: stringDict, options: [.prettyPrinted]) else {
@@ -53,11 +53,5 @@ extension Dictionary where Key == AnyHashable, Value == Any {
         }
         return String(data: data, encoding: .utf8)
     }
-    
-    /// 转成 URL query 样式字符串 key=value&key2=value2
-    func toQueryString(excluding keysToExclude: [String] = []) -> String {
-        let stringDict = self.toStringDict(excluding: keysToExclude)
-        return stringDict.map { "\($0.key)=\($0.value)" }
-                         .joined(separator: "&")
-    }
+
 }

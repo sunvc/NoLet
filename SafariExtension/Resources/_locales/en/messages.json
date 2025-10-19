@@ -15,17 +15,17 @@
     "videoLocal": { "message": "VIDEO", "description": "pageLocal" },
     "audioLocal": { "message": "AUDIO", "description": "pageLocal" },
     "sendAnyToIphoneLocal": {
-        "message": "Send [$details$] To Phone",
+        "message": "Send $details$ To Phone",
         "description": "send any to iphone",
         "placeholders": {
             "details": {
                 "content": "$1",
-                "example": "NULL"
+                "example": "LINK"
             }
         }
     },
     "browserDataLocal": {
-        "message": "浏览器数据",
+        "message": "Browser Data",
         "description": "Params title"
     }
 }

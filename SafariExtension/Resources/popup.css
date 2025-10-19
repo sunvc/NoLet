@@ -130,3 +130,15 @@ button {
 }
 
 
+/* 可点击的部分 */
+.store-button {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+/* 悬停时放大一点 */
+.store-button:hover {
+    transform: scale(1.05);
+}
+
+

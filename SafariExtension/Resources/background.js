@@ -46,12 +46,9 @@ function genericOnClick(info) {
     }
     console.log("点击结束", info)
     sendToPhone(result, info.menuItemId);
-
 }
 
-
 function sendToPhone(data, mode) {
-
     chrome.storage.sync.get("config", (result) => {
         let keys = result.config.keys || [];
         if (!keys || keys.length === 0) {
@@ -87,32 +84,24 @@ function sendToPhone(data, mode) {
 }
 
 
-
-
 // 编写一个请求函数，使用 encodeURIComponent 对参数进行编码
 function makeRequest(key, params) {
-    let urlWithParams = key;
-
-    // 构建查询字符串并对参数进行编码
-    const encodedParams = Object.keys(params)
-    .map((key1) => {
-        // 使用 encodeURIComponent 对键和值进行编码
-        return `${encodeURIComponent(key1)}=${encodeURIComponent(params[key1])}`;
-    })
-    .join("&");
-
-    // 拼接 URL 和查询字符串
-    urlWithParams = `${key}?${encodedParams}`;
-
-    // 发送 GET 请求
-    fetch(urlWithParams, {
-        method: "GET",
-        mode: "no-cors",
+    // 优先使用 CORS + JSON 发送
+    const jsonBody = JSON.stringify(params);
+    fetch(key, {
+        method: "POST",
+        mode: "cors",
         headers: {
             "Content-Type": "application/json",
         },
+        body: jsonBody,
     })
-    .then((response) => response.json()).then(console.log).catch(console.log);
+    .then((resp) => {
+        console.log("CORS JSON response status:", resp.status);
+        // 尝试读取文本以便排查（若服务端允许）
+        return resp.text().then((t) => console.log("CORS JSON response body:", t)).catch(() => {});
+    })
+    .catch(console.log);
 }
 
 // 创建右键菜单

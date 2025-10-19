@@ -44,6 +44,7 @@ struct SelectMessageView:View {
     @State private var showAssistantSetting:Bool = false
     
     @State private var showOther:Bool = false
+    @State private var showUrl:Bool = false
     
     @State private var cancels:CancellableRequest? = nil
     
@@ -188,6 +189,31 @@ struct SelectMessageView:View {
                                 }
                             }
                             
+                            if let url =  message.url{
+                                Divider().padding(.top, 10)
+                                
+                                DisclosureGroup(String("URL"), isExpanded: $showUrl){
+                                    HStack(spacing: 1){
+                                        Image(systemName: "network")
+                                            .imageScale(.small)
+                                            
+                                        MarkdownCustomView.highlightedText(searchText: "", text: url)
+                                            .font(.subheadline)
+                                            .fontWeight(.bold)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
+                                    .foregroundStyle(.accent)
+                                    .padding(10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill( .gray.opacity(0.1))
+                                    )
+                                    Divider()
+                                    
+                                }
+                                
+                                
+                            }
                            
                             
                             if let other = message.other{
@@ -209,6 +235,8 @@ struct SelectMessageView:View {
                                 }
                                
                             }
+                            
+                           
                             
                             
                         }
@@ -254,7 +282,7 @@ struct SelectMessageView:View {
                     Picker("选择翻译语言", selection: $translateLang) {
                         ForEach(Multilingual.commonLanguages, id: \.id) { country in
 
-                            Text("\(country.flag)  \(country.name)")
+                            Text(verbatim: "\(country.flag)  \(country.name)")
                                 .tag(country)
                         }
                     }

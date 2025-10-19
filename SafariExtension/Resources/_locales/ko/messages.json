@@ -15,12 +15,12 @@
     "videoLocal": { "message": "비디오", "description": "pageLocal" },
     "audioLocal": { "message": "오디오", "description": "pageLocal" },
     "sendAnyToIphoneLocal": {
-        "message": "[$details$]를 휴대폰으로 전송",
+        "message": "$details$를 휴대폰으로 전송",
         "description": "send any to iphone",
         "placeholders": {
             "details": {
                 "content": "$1",
-                "example": "NULL"
+                "example": "링크"
             }
         }
     },
@@ -28,4 +28,4 @@
         "message": "브라우저 데이터",
         "description": "Params title"
     }
-} 
+}

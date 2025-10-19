@@ -10,18 +10,21 @@
         <div id="iframe-container" class="popup123">
             <iframe></iframe>
         </div>
-
-        <a href="https://apps.apple.com/us/app/id6615073345" target="_blank" class="footer-a">
-            <div class="footer">
+        
+        <div class="footer">
+            <div class="store-button" id="openAppStore">
                 <img
                 src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                 width="100"
                 height="50"
                 alt="appStore"
                 />
-                <span id="appStoreLocal">Get Key in NoLet </span>
             </div>
-        </a>
+            
+            <div class="store-button" id="openLocal">
+                <span id="appStoreLocal">Get Key in NoLet</span>
+            </div>
+        </div>
 
         <form id="config-form">
             <div class="title">
@@ -51,7 +54,7 @@
 
             <div class="form-group">
                 <label for="key-input">KEY:</label>
-                <input type="text" id="key-input" placeholder="https://push.uuneo.com/key" value="" />
+                <input type="text" id="key-input" placeholder="https://wzs.app/key" value="" />
                 <button type="button" id="add-key">add</button>
             </div>
 

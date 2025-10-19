@@ -92,11 +92,11 @@ struct PTTChannelListView: View {
                         
                     }header:{
                         HStack{
-                            Text("\(item.timestamp.agoFormatString())")
+                            Text(verbatim: "\(item.timestamp.agoFormatString())")
                                 .padding(.leading)
                             Spacer()
                             if let server = item.server{
-                                Text("\(server.name)")
+                                Text(verbatim: "\(server.name)")
                                     .padding(.trailing)
                                     .textCase(.lowercase)
                             }
