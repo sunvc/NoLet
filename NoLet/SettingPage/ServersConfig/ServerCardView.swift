@@ -155,6 +155,7 @@ struct ServerCardView:View {
             if let sign = item.sign, let crypto = CryptoModelConfig(inputText: sign),
                let result = crypto.obfuscator(sign: true){
                 return ["text": item.url, "sign": result]
+
             }
             return ["text": item.url]
         }
