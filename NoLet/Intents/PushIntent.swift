@@ -30,10 +30,10 @@ struct EasyPushIntent: AppIntent {
             throw "Invalid URL"
         }
         
-        let http = NetworkManager()
-        
-        
-        let res:APIPushToDeviceResponse? = try await http.fetch(url: address.absoluteString, method: .POST, params: ["body": body])
+        let res:APIPushToDeviceResponse? = try await NetworkManager()
+            .fetch( url: address.absoluteString,
+                    method: .POST,
+                    params: ["body": body])
         
         
         return .result(value: res?.code == 200)

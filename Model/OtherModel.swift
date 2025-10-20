@@ -453,17 +453,4 @@ struct PushToTalkGroup: Codable, Hashable{
 
 
 
-enum TipsSound: String {
-    case pttconnect
-    case pttnotifyend
-    case cbegin
-    case bottle
-    case qrcode
-    case share
-    case toolSent
-    case pull
-    case refresh
-    case tabSelection
-    case number
-}
 

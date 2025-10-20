@@ -21,7 +21,7 @@ struct ExampleView: View {
     @State private var showCustomMode:Bool = false
     
     var currentServer:PushServerModel{
-        servers.count > pickerSelection ? servers[pickerSelection] : PushServerModel(url: BaseConfig.defaultServer)
+        servers.count > pickerSelection ? servers[pickerSelection] : PushServerModel(url: BaseConfig.server)
     }
     
     @Default(.exampleCustom) var params
@@ -195,7 +195,7 @@ struct ExampleView: View {
                 }
                 
                 HStack{
-                    Text("URL")
+                    Text(verbatim: "URL")
                     TextField("输入跳转地址", text: $params.url)
                         .foregroundStyle(contentColor)
                 }
@@ -296,7 +296,7 @@ struct ExampleView: View {
                     }
                     
                     HStack{
-                        Text("ID")
+                        Text(verbatim: "ID")
                         TextField("输入ID", text: $params.id)
                             .foregroundStyle(contentColor)
                         Image(systemName: "dice")
@@ -492,7 +492,9 @@ extension ExampleView{
         let http = NetworkManager()
         
         Task{
-            let res:APIPushToDeviceResponse? = try await http.fetch(url: params.server, method: .POST, params: query)
+            let res:APIPushToDeviceResponse? = try await http.fetch(url: params.server,
+                                                                    method: .POST,
+                                                                    params: query)
             if res?.code == 200{
                 Toast.success(title:  "操作成功")
             }else{

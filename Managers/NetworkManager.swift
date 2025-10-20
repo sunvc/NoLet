@@ -13,12 +13,12 @@ import UIKit
 import Foundation
 import CommonCrypto
 import Defaults
+import os
+import UniformTypeIdentifiers
 
+class NetworkManager: NSObject, URLSessionDataDelegate {
 
-class NetworkManager: NSObject {
-
-    let session = URLSession(configuration: .default)
-    
+    private var session: URLSession!
 
 	enum requestMethod:String{
 		case GET = "GET"
@@ -28,49 +28,57 @@ class NetworkManager: NSObject {
 		var method:String{ self.rawValue }
 	}
     
+    
     struct EmptyResponse: Codable {}
    
-    
-    
-    /// 无返回值
-    func fetchVoid(url: String, method: requestMethod = .GET, params: [String: Any] = [:], sign: String? = nil) async {
-        _ = try? await self.fetch(url: url, method: method, params: params, timeout: 3, sign: sign)
-    }
-    
+
     /// 通用网络请求方法
     /// - Parameters:
     ///   - url: 接口地址
     ///   - method: 请求方法（默认为 GET）
     ///   - params: 请求参数（支持 GET 查询参数或 POST body）
     /// - Returns: 返回泛型解码后的模型数据
-    func fetch<T: Codable>(url: String, method: requestMethod = .GET, params: [String: Any] = [:], headers:[String:String] = [:], timeout:Double = 30, sign: String? = nil) async throws -> T {
-        let data  = try await self.fetch(url: url, method: method, params: params, headers: headers, timeout: timeout, sign: sign)
+    func fetch<T: Codable>(url: String,
+                           path:String = "",
+                           method: requestMethod = .GET,
+                           params: [String: Any] = [:],
+                           headers:[String:String] = [:],
+                           timeout:Double = 30) async throws -> T {
+        let (data, response)  = try await self.fetch(url: url,
+                                                     path: path,
+                                                     method: method,
+                                                     params: params,
+                                                     headers: headers,
+                                                     timeout: timeout)
         
-        guard let response = data.1 as? HTTPURLResponse else{ throw APIError.invalidURL}
-        guard 200...299 ~= response.statusCode else{ throw APIError.invalidCode(response.statusCode)}
+        guard let response = response as? HTTPURLResponse else{ throw APIError.invalidURL}
+        guard 200...299 ~= response.statusCode else{
+            throw APIError.invalidCode(response.statusCode)
+        }
         
         // 尝试将响应的 JSON 解码为泛型模型 T
-        do{
-            let result = try JSONDecoder().decode(T.self, from: data.0)
-            return result
-        }catch{
-            NLog.error(String(data: data.0, encoding: .utf8))
-            throw error
-        }
+        let result = try JSONDecoder().decode(T.self, from: data)
+        return result
         
     }
     
-    func health(url: String, sign: String? = nil) async -> Bool {
-        guard let data  = try? await self.fetch(url: url + "/health", method: .GET, params: [:], headers: [:], timeout: 3, sign: sign),  let response = data.1 as? HTTPURLResponse  else {
-            return false
-        }
-        return String(bytes: data.0, encoding: .utf8) == "OK" && response.statusCode == 200
-    }
-
     
-    func fetch(url: String, method: requestMethod = .GET, params: [String: Any] = [:], headers:[String:String] = [:], timeout:Double = 30, sign: String? = nil) async throws -> (Data, URLResponse) {
+    
+    func fetch(url: String,
+               path:String = "",
+               method: requestMethod = .GET,
+               params: [String: Any] = [:],
+               headers:[String:String] = [:],
+               timeout:Double = 30) async throws -> (Data, URLResponse) {
+        
+        if self.session == nil {
+            let config = URLSessionConfiguration.default
+            config.requestCachePolicy = .reloadIgnoringLocalCacheData
+            self.session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
+        }
         
         // 尝试将字符串转换为 URL，如果失败则抛出错误
+        let url = (url + path).normalizedURLString()
         guard var requestUrl = URL(string: url) else {
             throw APIError.invalidURL
         }
@@ -91,15 +99,16 @@ class NetworkManager: NSObject {
         var request = URLRequest(url: requestUrl)
         request.httpMethod = method.method  // .get 或 .post
         
-        if let signStr = signature(url: url, sign: sign){
+        
+        if let signStr = signature(url: url){
             request.setValue( signStr, forHTTPHeaderField:"X-Signature")
         }
+        
         request.setValue(self.customUserAgentDetailed(), forHTTPHeaderField: "User-Agent" )
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
         request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
 
-
-
+        
         for (key,value) in headers{
             request.setValue(value, forHTTPHeaderField: key)
         }
@@ -111,23 +120,56 @@ class NetworkManager: NSObject {
         request.timeoutInterval = timeout
         
         // 打印请求信息（用于调试）
-        NLog.log(request.debugDescription)
         
-
-       return try await session.data(for: request)
+        request.assumesHTTP3Capable = true
+        
+        NLog.log(request.description)
+        let (data, response) = try await session.data(for: request)
+        NLog.log(String(data: data, encoding: .utf8))
+        return (data, response)
+    }
+    
+    func test(url: String = "https://example.com") async -> Bool {
+        guard let (_, response)  = try? await self.fetch(url: url,
+                                                         method: .HEAD,
+                                                         params: [:],
+                                                         headers: [:],
+                                                         timeout: 3),
+              let response = response as? HTTPURLResponse  else {
+            return false
+        }
+        return response.statusCode == 200
+    }
+    
+    func health(url: String) async -> Bool {
+        guard let data  = try? await self.fetch(url: url + "/health",
+                                                method: .GET,
+                                                params: [:],
+                                                headers: [:],
+                                                timeout: 3),  let response = data.1 as? HTTPURLResponse  else {
+            return false
+        }
+        return String(bytes: data.0, encoding: .utf8) == "OK" && response.statusCode == 200
     }
 
-    func signature( url: String, sign:String? = nil) -> String?{
+
+    func signature(url: String) -> String?{
+        
         var config:CryptoModelConfig?{
-            if url.contains(BaseConfig.defaultServer){
+            
+            guard let url = URL(string: url),
+                  let scheme = url.scheme,
+                  let host = url.host else { return .data }
+            
+            let baseURL = "\(scheme)://\(host)"
+            guard let data = Defaults[.servers].first(where: {$0.url == baseURL}),
+               let sign = data.sign else {
                 return .data
             }
-            if let sign {
-                return CryptoModelConfig(inputText: sign)
-            }
-            return .data
+            return CryptoModelConfig(inputText: sign) ?? .data
         }
         guard let config else{ return nil }
+        
         return CryptoManager(config)
             .encrypt("\(Int(Date().timeIntervalSince1970))")?
             .replacingOccurrences(of: "+", with: "-")
@@ -135,6 +177,7 @@ class NetworkManager: NSObject {
             .replacingOccurrences(of: "=", with: "")
     }
 
+    
 
     func customUserAgentDetailed() -> String {
         let info = Bundle.main.infoDictionary
@@ -161,16 +204,6 @@ class NetworkManager: NSObject {
         return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
     }
     
-
-    func appendQueryParameter(to urlString: String, key: String, value: String) -> String? {
-        guard var components = URLComponents(string: urlString) else { return nil }
-
-        var queryItems = components.queryItems ?? []
-        queryItems.append(URLQueryItem(name: key, value: value))
-        components.queryItems = queryItems
-
-        return components.url?.absoluteString
-    }
     
     enum APIError:Error{
         case invalidURL
@@ -192,6 +225,7 @@ extension NetworkManager {
     ///   - params: 其他表单数据
     /// - Returns: 返回服务器响应的 Data
     func uploadFile(url: String,
+                    path: String?,
                     method: requestMethod = .POST,
                     fileData: Data,
                     fileName: String,
@@ -247,4 +281,18 @@ extension NetworkManager {
         
         return data
     }
+}
+
+extension NetworkManager {
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
+#if DEBUG
+        let protocols = metrics.transactionMetrics.map { $0.networkProtocolName ?? "-" }.joined(separator: "-")
+        os_log("protocols: \(protocols)")
+        // 这里获取响应信息
+#endif
+    }
+    
+    
+
 }

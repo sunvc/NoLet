@@ -115,12 +115,12 @@ struct LargeSizeWidget:View {
                             /// NEW API
                             /// Pie/Donut Chart
                             SectorMark(
-                                angle: .value("Name", item.value),
+                                angle: .value(String("Name"), item.value),
                                 innerRadius: .ratio(0),
                                 angularInset:  1
                             )
                             .cornerRadius(8)
-                            .foregroundStyle(by: .value("Name", item.name))
+                            .foregroundStyle(by: .value(String("Name"), item.name))
                             .annotation(position: .overlay) {
                                 Text(item.tips())
                                     .font(.caption.bold())
@@ -129,10 +129,10 @@ struct LargeSizeWidget:View {
                             }
                         } else {
                             BarMark(
-                                x: .value("Name", item.name),
-                                y: .value("Value", item.value)
+                                x: .value(String("Name"), item.name),
+                                y: .value(String("Value"), item.value)
                             )
-                            .foregroundStyle(by: .value("Name", item.name))
+                            .foregroundStyle(by: .value(String("Name"), item.name))
                             .annotation(position: .top) {
                                 Text(item.tips())
                                     .font(.caption2)
@@ -144,7 +144,7 @@ struct LargeSizeWidget:View {
                         if chartType == .bar, let lines = group.lines {
                             ForEach(lines, id: \.self) { item in
                                 // 添加水平线，比如 y = 10000
-                                RuleMark(y: .value("Name", item))
+                                RuleMark(y: .value(String("Name"), item))
                                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [5]))
                                     .foregroundStyle(.red)
                                     .annotation(position: .trailing, alignment: .center, spacing: 5) {

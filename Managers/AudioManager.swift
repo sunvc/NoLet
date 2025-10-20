@@ -14,6 +14,8 @@ import Foundation
 import AVFoundation
 import SwiftUI
 import ActivityKit
+import Defaults
+
 
 
 class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
@@ -213,18 +215,7 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
                 }
             }
         }
-        
-        
-        
     }
-    
-    
-    static func playNumber(number: String){
-        guard let number = Int(number) else { return }
-        AudioServicesPlaySystemSound(SystemSoundID(number))
-    }
-    
-    
     
     
     func convertAudioToCAF(inputURL: URL) async -> URL?  {
@@ -365,16 +356,42 @@ extension AudioManager{
     }
 
     // MARK: - OTHER
-    static func tips(_ fileName: TipsSound, fileExtension: String = "aac", complete: (() -> Void)? = nil) {
+    static func tips(_ sound: TipsSound, fileExtension: String = "aac", complete: (() -> Void)? = nil) {
+        self.tips(sound.rawValue, fileExtension: fileExtension, complete: complete)
+    }
+  
+    static func tips(_ sound: String, fileExtension: String = "aac", complete: (() -> Void)? = nil){
         guard Defaults[.feedbackSound] else { return }
-        guard let url = Bundle.main.url(forResource: fileName.rawValue, withExtension: fileExtension) else { return }
+        
         var soundID: SystemSoundID = 0
-        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
-            // 播放音频，播放完成后执行回调
-        AudioServicesPlaySystemSoundWithCompletion(soundID) {
-            AudioServicesDisposeSystemSoundID(soundID)
+        
+        if let number = Int(sound){
+            soundID = SystemSoundID(number)
+        }else if let url = Bundle.main.url(forResource: sound, withExtension: fileExtension) {
+            AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        }
+        if soundID != 0{
+            AudioServicesPlaySystemSoundWithCompletion(soundID) {
+                AudioServicesDisposeSystemSoundID(soundID)
+                complete?()
+            }
+        }else{
             complete?()
         }
     }
 
 }
+
+enum TipsSound: String{
+    case pttconnect
+    case pttnotifyend
+    case cbegin
+    case bottle
+    case qrcode
+    case share
+    case toolSent
+    case pull
+    case refresh
+    case tabSelection
+}
+

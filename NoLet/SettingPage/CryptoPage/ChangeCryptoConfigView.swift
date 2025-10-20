@@ -116,7 +116,7 @@ struct ChangeCryptoConfigView: View {
                     
                     HStack{
                         Label {
-                            Text("Padding:")
+                            Text(verbatim: "Padding:")
                         } icon: {
                             Image(systemName: "p.circle")
                                 .symbolRenderingMode(.palette)
@@ -133,15 +133,21 @@ struct ChangeCryptoConfigView: View {
                     
                     
                     HStack{
-                        Label {
-                            Text("Iv：")
-                        } icon: {
-                            Image(systemName: "dice")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(cryptoConfig.iv.count != 16 ? .red : .accent,
-                                                 cryptoConfig.iv.count != 16 ? .red : Color.primary)
-                            
+                        Button{
+                            Clipboard.set(cryptoConfig.iv)
+                            Toast.copy(title: "复制成功")
+                        }label:{
+                            Label {
+                                Text(verbatim: "IV:")
+                            } icon: {
+                                Image(systemName: "doc.on.doc")
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(cryptoConfig.iv.count != 16 ? .red : .accent,
+                                                     cryptoConfig.iv.count != 16 ? .red : Color.primary)
+                                
+                            }
                         }
+                        
                         Spacer()
                         TextField("请输入16位Iv",text: $cryptoConfig.iv)
                             .focused($ivFocus)
@@ -149,13 +155,18 @@ struct ChangeCryptoConfigView: View {
                     }
                     
                     HStack{
-                        Label {
-                            Text("Key:")
-                        } icon: {
-                            Image(systemName: "key")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle( cryptoConfig.key.count == expectKeyLength ? Color.primary : .red,
-                                                  cryptoConfig.key.count == expectKeyLength ? Color.accent : .red)
+                        Button{
+                            Clipboard.set(cryptoConfig.key)
+                            Toast.copy(title: "复制成功")
+                        }label:{
+                            Label {
+                                Text(verbatim: "KEY:")
+                            } icon: {
+                                Image(systemName: "doc.on.doc")
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle( cryptoConfig.key.count == expectKeyLength ? Color.primary : .red,
+                                                      cryptoConfig.key.count == expectKeyLength ? Color.accent : .red)
+                            }
                         }
                         Spacer()
                         
@@ -166,19 +177,6 @@ struct ChangeCryptoConfigView: View {
                         
                     }
                     
-                }header:{
-                    
-                    Button {
-                        cryptoConfig.iv = CryptoModelConfig.generateRandomString()
-                        cryptoConfig.key = CryptoModelConfig.generateRandomString(cryptoConfig.algorithm.rawValue)
-                        Haptic.impact()
-                    } label: {
-                        Label("随机生成密钥", systemImage: "dice")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.green, Color.primary)
-                            .textCase(.none)
-                        
-                    }
                 }
                 
                 Section{
@@ -237,6 +235,20 @@ struct ChangeCryptoConfigView: View {
                     }label:{
                         Label("关闭", systemImage: "xmark")
                     }.tint(.red)
+                }
+                
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        cryptoConfig.iv = CryptoModelConfig.generateRandomString()
+                        cryptoConfig.key = CryptoModelConfig.generateRandomString(cryptoConfig.algorithm.rawValue)
+                        Haptic.impact()
+                    } label: {
+                        Label("随机生成密钥", systemImage: "dice")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.green, Color.primary)
+                            .textCase(.none)
+                        
+                    }
                 }
                 
                 

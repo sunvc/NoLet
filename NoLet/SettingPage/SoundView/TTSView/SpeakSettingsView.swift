@@ -300,7 +300,7 @@ struct SpeakSettingsView:View {
     }
     
     private var baseRegionField: some View {
-        TextField("Region", text: $voiceConfig.region)
+        TextField(String("Region"), text: $voiceConfig.region)
             .autocapitalization(.none)
             .customField(
                 icon: "atom", false
@@ -308,7 +308,7 @@ struct SpeakSettingsView:View {
     }
     
     private var baseVoiceField: some View {
-        TextField("Voice", text: $voiceConfig.defaultVoice)
+        TextField(String("Voice"), text: $voiceConfig.defaultVoice)
             .autocapitalization(.none)
             .disabled(true)
             .customField(
@@ -319,7 +319,7 @@ struct SpeakSettingsView:View {
     
     
     private var baseFormatField: some View {
-        TextField("Format", text: Binding(get: {  voiceConfig.defaultFormat.rawValue }, set: { _ in}))
+        TextField(String("Format"), text: Binding(get: {  voiceConfig.defaultFormat.rawValue }, set: { _ in}))
             .autocapitalization(.none)
             .disabled(true)
             .customField(

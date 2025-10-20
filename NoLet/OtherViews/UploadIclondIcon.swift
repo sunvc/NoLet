@@ -171,7 +171,7 @@ struct UploadIclondIcon:View {
                 tips = nil
             }
         })){
-            Alert(title: Text("提示"), message: Text(tips ?? ""), dismissButton: .default(Text("ok")){
+            Alert(title: Text("提示"), message: Text(tips ?? ""), dismissButton: .default(Text(verbatim: "ok")){
                 if saveOk{
                     self.dismiss(pushIcon)
                 }

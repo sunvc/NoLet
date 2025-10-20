@@ -111,7 +111,8 @@ struct ServerMonitoringView: View {
             }
             do {
                 let data: ServerData = try await network.fetch(
-                    url: server.url + "/monitor",
+                    url: server.url,
+                    path: "/monitor",
                     method: .GET
                 )
 

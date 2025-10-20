@@ -394,14 +394,18 @@ extension PushTalkManager{
         func JoinOrLeval(channel: PTTChannel, api:API = .join) async -> Bool {
             
             guard let server = channel.server else { return false }
-            let url = server.url + api.rawValue
             
             do{
                 NLog.log("channel:", channel.hex())
                 
-                guard let result:baseResponse<Int> =  try await self.fetch(url: url, method: .POST, params: [
-                    "id": server.key, "channel": channel.hex()
-                ], headers: [:], timeout: 3)else {
+                guard let result:baseResponse<Int> =
+                        try await self.fetch(url: server.url,
+                                             path: api.rawValue,
+                                             method: .POST,
+                                             params: [ "id": server.key,
+                                                       "channel": channel.hex() ],
+                                             headers: [:],
+                                             timeout: 3)else {
                     throw "请求失败"
                 }
                 
@@ -424,10 +428,15 @@ extension PushTalkManager{
             guard  let channel =  Defaults[.pttHisChannel].first(where: {$0.isActive}),
                    let server = channel.server else { return -2}
             
-            let url = server.url + API.ping.rawValue + "/\(channel.hex())"
+            let url = server.url
             let token = Defaults[.pttToken]
             do{
-                let data:baseResponse<Int> = try await self.fetch(url: url, method: .GET, params: [:], headers: [ "X-Q": token ], timeout: 3)
+                let data:baseResponse<Int> = try await self.fetch(url: url,
+                                                                  path: API.ping.rawValue + "/\(channel.hex())",
+                                                                  method: .GET,
+                                                                  params: [:],
+                                                                  headers: [ "X-Q": token ],
+                                                                  timeout: 3)
                 return data.data ?? 0
                 
             }catch{
@@ -442,7 +451,7 @@ extension PushTalkManager{
                    let server = channel.server,
                    let filePath = message.filePath() else { return false}
             
-            let url =  server.url + API.send.rawValue
+            let url =  server.url
             
             do{
                 let data = try Data(contentsOf: filePath)
@@ -453,6 +462,7 @@ extension PushTalkManager{
                 }
                 
                 let response = try await uploadFile(url: url,
+                                                    path: API.send.rawValue,
                                                     fileData: data,
                                                     fileName:  message.file,
                                                     mimeType: "audio/ogg")
@@ -471,8 +481,12 @@ extension PushTalkManager{
                    let server = channel.server else { return nil }
             
             do{
-                let url = server.url + API.getVoice.rawValue + "/\(fileName)"
-                let data = try await self.fetch(url: url, method: .GET, params: [:], headers: [:])
+                
+                let data = try await self.fetch(url: server.url,
+                                                path: API.getVoice.rawValue + "/\(fileName)",
+                                                method: .GET,
+                                                params: [:],
+                                                headers: [:])
                 /// 解密
                 guard let data = CryptoModelConfig.data.decrypt(inputData: data.0) else { throw "decrypt error"}
                 

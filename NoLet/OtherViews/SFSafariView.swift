@@ -44,7 +44,7 @@ struct SFSafariView: UIViewControllerRepresentable {
 
 	func makeUIViewController(context: Context) -> SFSafariViewController {
         let requestUrl: URL = URL(string: url) ?? URL(
-            string: BaseConfig.defaultServer
+            string: BaseConfig.server
         )!
 		let sfVC = NoLetSafariViewController(url: requestUrl)
 		sfVC.delegate = context.coordinator // 设置委托

@@ -90,4 +90,5 @@ enum NoletKey:String, CaseIterable{
     case feedbackSound
     case limitScanningArea
     case limitMessageLine
+    case scanTypes
 }

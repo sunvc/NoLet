@@ -72,7 +72,7 @@ struct ServerCardView:View {
                     .minimumScaleFactor(0.5)
                     Divider()
                     HStack(alignment: .center){
-                        Text("KEY:")
+                        Text(verbatim: "KEY:")
                             .font(.caption2)
                             .frame(width:40, alignment: .trailing)
                             .foregroundStyle(.gray)
@@ -150,20 +150,11 @@ struct ServerCardView:View {
 	}
     
     private func sharedSever(){
-        var config:String?{
-            if item.url.contains(BaseConfig.defaultServer){
-                return nil
-            }
-            if let sign = item.sign,
-               let crypto = CryptoModelConfig(inputText: sign),
-               let result = crypto.obfuscator(sign: true) {
-                return result
-            }
-            return nil
-        }
+        
         var params:[String: Any]{
-            if let config = config, !item.url.contains(BaseConfig.defaultServer){
-                return ["text": item.url, "sign": config]
+            if let sign = item.sign, let crypto = CryptoModelConfig(inputText: sign),
+               let result = crypto.obfuscator(sign: true){
+                return ["text": item.url, "sign": result]
             }
             return ["text": item.url]
         }

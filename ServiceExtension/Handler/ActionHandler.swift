@@ -53,13 +53,11 @@ class ActionHandler: NotificationContentHandler{
         // MARK: -  回调
         if let host:String = bestAttemptContent.userInfo.raw(.host),
            let id = bestAttemptContent.targetContentIdentifier{
-            let http = NetworkManager()
-            if let url = http.appendQueryParameter(to: host.hasHttp() ? host : "https://\(host)", key: "id", value: id){
-                await http.fetchVoid(url: url)
-            }
+            _ = try? await NetworkManager()
+                .fetch(url: host, params: ["id" : id])
             
         }
-    
+        
         
         if let widget:String = bestAttemptContent.userInfo.raw(.widget), let _ = URL(string: widget){
             Defaults[.widgetURL] = widget

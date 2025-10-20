@@ -51,7 +51,7 @@ struct ScanView: View {
                     }
                 },
                 onFailure: { error in
-                    AudioServicesPlaySystemSound(1053)
+                    
                     switch error{
                     case .unauthorized(let status):
                         if status != .authorized{
@@ -59,6 +59,7 @@ struct ScanView: View {
                         }
                     default:
                         Toast.error(title: "扫码失败")
+                        AudioManager.tips("1053")
                     }
                     self.code = nil
                 },

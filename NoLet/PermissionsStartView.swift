@@ -87,7 +87,7 @@ struct PermissionsStartView: View {
         if useCustomServer && !appManager.customServerURL.isEmpty {
             return appManager.customServerURL
         } else {
-            return BaseConfig.defaultServer
+            return BaseConfig.server
         }
     }
 
@@ -417,9 +417,6 @@ struct PermissionsStartView: View {
         if urlString.isEmpty {
             return false
         }
-
-
-
             // 检查URL格式是否有效
         if let url = URL(string: urlString) {
                 // 确保URL有scheme和host
@@ -483,21 +480,17 @@ struct PermissionOptionCard: View {
                 .labelsHidden()
                 .onChange(of: option.isSelected) {  newValue in
                     if newValue{
-                        switch option.mode {
-                        case .base:
-                            Task{
-                                await AppManager.shared.registerForRemoteNotifications()
-                            }
-
-                        case .critical:
-                            Task{
-                                await AppManager.shared.registerForRemoteNotifications(true)
-                            }
-                        case .network:
-                            Task{
-                                await NetworkManager().fetchVoid(url: BaseConfig.defaultServer)
+                        Task{
+                            switch option.mode {
+                            case .base:
+                                _ = await AppManager.shared.registerForRemoteNotifications()
+                            case .critical:
+                                _ = await AppManager.shared.registerForRemoteNotifications(true)
+                            case .network:
+                                option.isSelected = await NetworkManager().test()
                             }
                         }
+                        
                     }
                 }
         }

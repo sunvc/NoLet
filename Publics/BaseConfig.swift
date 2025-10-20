@@ -10,36 +10,36 @@ import UIKit
 import UniformTypeIdentifiers
 
 
-let CONTAINER =  FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BaseConfig.groupName)
+let CONTAINER = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BaseConfig.groupName)
 
 class BaseConfig {
 
 
-    static let appSymbol = "NoLet"
-    static let groupName = "group.pushback"
-    static let icloudName = "iCloud.pushback"
-    static let databaseName = "pushback.sqlite"
+    static let appSymbol       = "NoLet"
+    static let groupName       = "group.pushback"
+    static let icloudName      = "iCloud.pushback"
+    static let databaseName    = "pushback.sqlite"
+    static let longSoundPrefix = "pb.sounds.30s"
 
 #if DEBUG
-    static let defaultServer = "https://dev.uuneo.com"
+    static let server = "https://dev.uuneo.com"
 #else
-    static let defaultServer = "https://wzs.app"
+    static let server = "https://wzs.app"
 #endif
-
-    static let docServer = "https://wiki.wzs.app"
-    static let logoImage = docServer + "/_media/egglogo.png"
-    static let ogImage = docServer + "/_media/og.png"
-    static let delpoydoc = docServer + String(localized: "/#/deploy")
-    static let privacyURL = docServer + String(localized: "/#/policy")
+    
+    static let docServer   = "https://wiki.wzs.app"
+    static let logoImage   = docServer + "/_media/egglogo.png"
+    static let ogImage     = docServer + "/_media/og.png"
+    static let delpoydoc   = docServer + String(localized: "/#/deploy")
+    static let privacyURL  = docServer + String(localized: "/#/policy")
     static let tutorialURL = docServer + String(localized: "/#/tutorial")
-    static let telegram = "https://t.me/PushToMe"
-
-    static let longSoundPrefix = "pb.sounds.30s"
-    static let userAgreement = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
-
-    static let appSource = "https://github.com/sunvc/NoLet"
-    static let serverSource = "https://github.com/sunvc/NoLets"
-    static let appStore = "https://apps.apple.com/app/id6615073345"
+    
+    
+    static let userAgreement   = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+    static let appSource       = "https://github.com/sunvc/NoLet"
+    static let serverSource    = "https://github.com/sunvc/NoLets"
+    static let telegram        = "https://t.me/PushToMe"
+    static let appStore        = "https://apps.apple.com/app/id6615073345"
     
     static var bundleIdentifier: String {
         Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
@@ -92,7 +92,6 @@ class BaseConfig {
         }
     }
     
-    
     // Get the directory to store images in the App Group
     class func getDir(_ name:FolderType) -> URL? {
         if name == .tem{
@@ -142,7 +141,6 @@ class BaseConfig {
         return "\(deviceName) (\(deviceModel)-\(systemName)-\(systemVersion))"
     }
     
-    
     static func documentUrl(_ fileName: String, fileType: UTType = .image) -> URL?{
         do{
             let filePaeh =  try FileManager.default.url(
@@ -164,6 +162,3 @@ class BaseConfig {
 enum NoletError: Error{
     case basic(_ msg: String)
 }
-
-
-

@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 if !manager.customServerURL.isEmpty{
                     _ = await manager.appendServer(server: PushServerModel(url: manager.customServerURL))
                 }else{
-                    _ = await manager.appendServer(server: PushServerModel(url: BaseConfig.defaultServer))
+                    _ = await manager.appendServer(server: PushServerModel(url: BaseConfig.server))
                 }
 
             }

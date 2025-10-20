@@ -100,104 +100,7 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     var updates: Task<Void, Never>? = nil
     
     
-    func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
-        let response:baseResponse<String>? = try? await self.fetch(url: address + "/register/\(deviceKey)")
-        if let msg = response?.message, let code = response?.code,code == 200, msg == "success"{
-            let serever = PushServerModel(url: address,key: deviceKey, sign: sign)
-            let success = await self.appendServer(server: serever)
-            return success
-        }else{
-            return false
-        }
-    }
     
-    func registers(msg:Bool = false){
-        Task.detached(priority: .userInitiated) {
-            let servers = Defaults[.servers]
-            let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
-                for (index, server) in servers.enumerated() {
-                    group.addTask {
-                        let result = await self.register(server: server, msg: msg)
-                        return (index, result)
-                    }
-                }
-                
-                var tmp: [(Int, PushServerModel)] = []
-                for await pair in group {
-                    tmp.append(pair)
-                }
-                
-                // 按 index 排序，保证和 servers 顺序一致
-                return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
-            }
-            
-            await MainActor.run {
-                Defaults[.servers] = results
-                Self.syncLocalToCloud()
-            }
-            
-        }
-    }
-    
-    
-    func register(server:PushServerModel, reset:Bool = false, msg:Bool = true) async -> PushServerModel{
-        var server = server
-        
-        do{
-            
-            let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
-            let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken ).toEncodableDictionary() ?? [:]
-            
-            let response:baseResponse<DeviceInfo> = try await self.fetch(url: server.url + "/register",method: .POST, params: params, sign: server.sign)
-            
-            
-            if let data = response.data {
-                server.key = data.deviceKey
-                server.status = true
-                
-                if msg{
-                    if reset{ Toast.info(title: "解绑成功") }else{
-                        Toast.success(title: "注册成功")
-                    }
-                }
-            }else{
-                server.status = false
-                server.voice = false
-                if msg{
-                    Toast.error(title: "注册失败")
-                }
-            }
-            
-            return server
-        }catch{
-            NLog.error(error.localizedDescription)
-            return server
-        }
-    }
-    
-    
-    func appendServer(server:PushServerModel) async -> Bool{
-        
-        guard !appending && !Defaults[.deviceToken].isEmpty else { return false}
-        self.appending = true
-        
-        guard !Defaults[.servers].contains(where: {$0.key == server.key && $0.url == server.url})else{
-            Toast.error(title: "服务器已存在")
-            return false
-        }
-        
-        
-        let server = await self.register(server: server)
-        if server.status {
-            await MainActor.run {
-                Defaults[.servers].insert(server, at: 0)
-                Self.syncLocalToCloud()
-            }
-            Toast.success(title: "添加成功")
-        }
-        self.appending = false
-        return server.status
-    }
     
     class func syncLocalToCloud() {
         let locals = Defaults[.servers]
@@ -476,6 +379,137 @@ extension AppManager{
         return true
     }
     
+}
+
+extension AppManager{
+    func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
+        do{
+            let response:baseResponse<String> =
+            try await self.fetch(url: address, path: "/register/\(deviceKey)")
+            
+            
+            guard 200...299 ~= response.code else{
+                Toast.shared.present(title: response.message, symbol: .error)
+                return false
+            }
+            
+            
+            if response.message == "success"{
+                let serever = PushServerModel(url: address,key: deviceKey, sign: sign)
+                let success = await self.appendServer(server: serever)
+                return success
+            }else{
+                return false
+            }
+        }catch{
+            Toast.error(title: "数据不正确")
+            return false
+        }
+        
+    }
+    
+    func registers(){
+        Task.detached(priority: .userInitiated) {
+            let servers = Defaults[.servers]
+            let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
+                for (index, server) in servers.enumerated() {
+                    group.addTask {
+                        let result = await self.register(server: server, msg: false)
+                        return (index, result)
+                    }
+                }
+                
+                var tmp: [(Int, PushServerModel)] = []
+                for await pair in group {
+                    tmp.append(pair)
+                }
+                
+                // 按 index 排序，保证和 servers 顺序一致
+                return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
+            }
+            
+            if results.filter({$0.status}).count == servers.count{
+                Toast.success(title: "注册成功")
+            }else if results.filter({!$0.status}).count == servers.count{
+                Toast.error(title: "注册失败")
+            }else{
+                Toast.info(title: "部分注册成功")
+            }
+            
+            await MainActor.run {
+                Defaults[.servers] = results
+                Self.syncLocalToCloud()
+            }
+            
+        }
+    }
+    
+    func register(server:PushServerModel, reset:Bool = false, msg:Bool = false) async -> PushServerModel{
+        var server = server
+        
+        do{
+            
+            let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
+            let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken ).toEncodableDictionary() ?? [:]
+            
+            let response:baseResponse<DeviceInfo> = try await self.fetch(url: server.url,
+                                                                         path: "/register",
+                                                                         method: .POST,
+                                                                         params: params)
+            
+            guard 200...299 ~= response.code else{
+                server.status = false
+                server.voice = false
+                Toast.shared.present(title: response.message, symbol: .error)
+                return server
+            }
+
+            if let data = response.data {
+                server.key = data.deviceKey
+                server.status = true
+                
+                if msg{
+                    if reset{ Toast.info(title: "解绑成功") }else{
+                        Toast.success(title: "注册成功")
+                    }
+                }
+            }else{
+                server.status = false
+                server.voice = false
+                if msg{
+                    Toast.error(title: "注册失败")
+                }
+            }
+            
+            return server
+        }catch{
+            NLog.error(error.localizedDescription)
+            return server
+        }
+    }
+    
+    func appendServer(server:PushServerModel) async -> Bool{
+        
+        guard !appending && !Defaults[.deviceToken].isEmpty else { return false}
+        self.appending = true
+        
+        guard !Defaults[.servers].contains(where: {$0.key == server.key && $0.url == server.url})else{
+            Toast.error(title: "服务器已存在")
+            return false
+        }
+        
+        
+        let server = await self.register(server: server, msg: true)
+        if server.status {
+            await MainActor.run {
+                Defaults[.servers].insert(server, at: 0)
+                Self.syncLocalToCloud()
+            }
+            Toast.success(title: "添加成功")
+        }
+        self.appending = false
+        return server.status
+    }
 }
 
 

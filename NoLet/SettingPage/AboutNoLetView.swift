@@ -86,7 +86,7 @@ struct AboutNoLetView: View {
                 
                 ListButton(leading: {
                     Label {
-                        Text( "TOKEN")
+                        Text( verbatim: "TOKEN")
                             .lineLimit(1)
                             .foregroundStyle(.textBlack)
                     } icon: {
@@ -117,7 +117,7 @@ struct AboutNoLetView: View {
                 
                 ListButton(leading: {
                     Label {
-                        Text( "ID")
+                        Text( verbatim: "ID")
                             .lineLimit(1)
                             .foregroundStyle(.textBlack)
                     } icon: {

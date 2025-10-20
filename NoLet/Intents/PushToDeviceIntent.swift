@@ -129,9 +129,11 @@ struct PushToDeviceIntent: AppIntent {
             params = ["cipherText": cipherResult]
         }
         
-        let http = NetworkManager()
         
-        let res:APIPushToDeviceResponse? = try await http.fetch(url: address.absoluteString, method: .POST, params: params)
+        let res:APIPushToDeviceResponse? = try await NetworkManager()
+            .fetch(url: address.absoluteString,
+                   method: .POST,
+                   params: params)
         
         
         return .result(value: res?.code == 200)

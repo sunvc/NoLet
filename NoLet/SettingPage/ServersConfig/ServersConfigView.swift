@@ -25,7 +25,7 @@ struct ServersConfigView: View {
                         
                         ServerCardView( item: item){
                             Clipboard.set(item.url + "/" + item.key)
-                            Toast.copy(title: "复制 URL 和 KEY 成功")
+                            Toast.copy(title: "复制成功")
                         }
                         .padding(.horizontal, 15)
                         .listRowInsets(EdgeInsets())
@@ -41,7 +41,9 @@ struct ServersConfigView: View {
                                         if let index = servers.firstIndex(where:{$0.id == item.id}){
                                             servers.remove(at: index)
                                             Task{
-                                               _ = await manager.register(server: item, reset: true)
+                                               _ = await manager.register(server: item,
+                                                                          reset: true,
+                                                                          msg: true)
                                             }
                                         }
                                     }
@@ -63,7 +65,9 @@ struct ServersConfigView: View {
                                         if let index = servers.firstIndex(where:{$0.id == item.id}){
                                             servers.remove(at: index)
                                             Task{
-                                                _ = await manager.register(server: item, reset: true)
+                                                _ = await manager.register(server: item,
+                                                                           reset: true,
+                                                                           msg: true)
                                             }
                                         }
                                     }label:{
@@ -96,7 +100,7 @@ struct ServersConfigView: View {
                             ServerCardView(item: item,isCloud: true){
                                 servers.append(item)
                                 Task{
-                                    _ = await manager.register(server: item)
+                                    _ = await manager.register(server: item, msg: true)
                                 }
                             }
                             .padding(.horizontal, 15)
@@ -132,7 +136,7 @@ struct ServersConfigView: View {
             .animation(.easeInOut, value: servers)
             .listRowSpacing(10)
             .listStyle(.grouped)
-            .refreshable { manager.registers(msg: true) }
+            .refreshable { manager.registers() }
             .toolbar{
             
                 ToolbarItem {

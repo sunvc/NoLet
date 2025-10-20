@@ -62,12 +62,12 @@ struct LargeSizeWidgetView: View {
                             /// Pie/Donut Chart
                             if #available(iOS 17.0, *) {
                                 SectorMark(
-                                    angle: .value("Name", item.value),
+                                    angle: .value(String("Name"), item.value),
                                     innerRadius: .ratio(0),
                                     angularInset:  1
                                 )
                                 .cornerRadius(8)
-                                .foregroundStyle(by: .value("Name", item.name))
+                                .foregroundStyle(by: .value(String("Name"), item.name))
                                 .annotation(position: .overlay) {
                                     Text(item.tips())
                                         .font(.caption.bold())
@@ -76,10 +76,10 @@ struct LargeSizeWidgetView: View {
                             } else {
                                 // Fallback on earlier versions
                                 BarMark(
-                                    x: .value("Name", item.name),
-                                    y: .value("Value", item.value)
+                                    x: .value(String("Name"), item.name),
+                                    y: .value(String("Value"), item.value)
                                 )
-                                .foregroundStyle(by: .value("Name", item.name))
+                                .foregroundStyle(by: .value(String("Name"), item.name))
                                 .annotation(position: .top) {
                                     Text(item.tips())
                                         .font(.caption2)
@@ -88,10 +88,10 @@ struct LargeSizeWidgetView: View {
                             }
                         } else {
                             BarMark(
-                                x: .value("Name", item.name),
-                                y: .value("Value", item.value)
+                                x: .value(String("Name"), item.name),
+                                y: .value(String("Value"), item.value)
                             )
-                            .foregroundStyle(by: .value("Name", item.name))
+                            .foregroundStyle(by: .value(String("Name"), item.name))
                             .annotation(position: .top) {
                                 Text(item.tips())
                                     .font(.caption)

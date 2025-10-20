@@ -185,14 +185,14 @@ struct AddOrChangeChatAccount:View {
     private var apiKeyField: some View {
         HStack {
             if isSecured {
-                SecureField("API Key", text: $data.key)
+                SecureField(String("API Key"), text: $data.key)
                     .textContentType(.password)
                     .autocapitalization(.none)
                     .customField(
                         icon: "key.icloud"
                     )
             } else {
-                TextField("API Key", text: $data.key)
+                TextField(String("API Key"), text: $data.key)
                     .textContentType(.none)
                     .autocapitalization(.none)
                     .customField(
@@ -210,7 +210,7 @@ struct AddOrChangeChatAccount:View {
     }
     
     private var baseNameField: some View {
-        TextField("Name", text: $data.name)
+        TextField(String("Name"), text: $data.name)
             .autocapitalization(.none)
             .keyboardType(.URL)
             .customField(
@@ -219,7 +219,7 @@ struct AddOrChangeChatAccount:View {
     }
     
     private var baseHostField: some View {
-        TextField("Host", text: $data.host)
+        TextField(String("Host"), text: $data.host)
             .autocapitalization(.none)
             .keyboardType(.URL)
             .customField(
@@ -228,7 +228,7 @@ struct AddOrChangeChatAccount:View {
     }
     
     private var basePathField: some View {
-        TextField("BasePath", text: $data.basePath)
+        TextField(String("BasePath"), text: $data.basePath)
             .autocapitalization(.none)
             .keyboardType(.URL)
             .customField(
@@ -237,7 +237,7 @@ struct AddOrChangeChatAccount:View {
     }
     
     private var baseModelField: some View {
-        TextField("Model", text: $data.model)
+        TextField(String("Model"), text: $data.model)
             .autocapitalization(.none)
             .keyboardType(.URL)
             .customField(icon: "slider.horizontal.2.square.badge.arrow.down")

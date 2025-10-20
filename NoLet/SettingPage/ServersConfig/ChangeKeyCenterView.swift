@@ -34,7 +34,7 @@ struct ChangeKeyCenterView: View {
     
     var serversSelects:[String]{
         var datas = servers.compactMap {  $0.url }
-        datas.insert(BaseConfig.defaultServer, at: 0)
+        datas.insert(BaseConfig.server, at: 0)
         return Array(Set(datas)).sorted()
     }
     
@@ -282,7 +282,7 @@ struct ChangeKeyCenterView: View {
                 
                 await view.next(.loading(1))
                 
-                if keyHost.contains(BaseConfig.defaultServer){
+                if keyHost.contains(BaseConfig.server){
                     self.selectCrypto = nil
                 }
                 
@@ -339,7 +339,7 @@ struct ChangeKeyCenterView: View {
                     return
                 }
 
-                if keyHost.contains(BaseConfig.defaultServer){
+                if keyHost.contains(BaseConfig.server){
                     self.selectCrypto = nil
                 }
                 

@@ -76,7 +76,7 @@ struct CryptoConfigListView: View {
                     }.lineLimit(1)
                     Divider()
                     HStack(spacing: 10){
-                        Text("KEY:")
+                        Text(verbatim: "KEY:")
                             .foregroundStyle(.gray)
                             .padding(.trailing, 5)
                         Text(maskString(item.key))
