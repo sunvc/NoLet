@@ -181,42 +181,39 @@ struct AboutNoLetView: View {
                 
                 VStack{
                     
-                    HStack(spacing: 7){
-                        Spacer(minLength: 10)
+                    HStack(spacing: 10){
+                        Spacer()
                         
                         Button{
                             manager.fullPage = .web(BaseConfig.privacyURL)
                             Haptic.impact()
+                           
                         }label: {
                             Text("隐私政策")
-                            
-                            
-                        }
+                        }.buttonStyle(.borderless)
                         Circle()
                             .frame(width: 3,height: 3)
                         
                         Button{
                             manager.fullPage = .web(BaseConfig.userAgreement)
                             Haptic.impact()
+                            
                         }label: {
                             Text("用户协议")
-                            
-                        }
+                        }.buttonStyle(.borderless)
                         
-                        Spacer(minLength: 10)
+                        Spacer()
                     }
                     .font(.caption)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
-                    .padding(.bottom)
+                    
                     HStack{
                         Spacer()
-                        Text(verbatim: "© 2024 WZS. All rights reserved.")
+                        Text(verbatim: "© 2024 WZS All rights reserved.")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                             .padding(.bottom, 8)
                         Spacer()
-                    }
+                    }.padding(.top)
                 }
             }.listRowBackground(Color.clear)
            
@@ -272,9 +269,12 @@ struct AboutNoLetView: View {
     
 }
 
-#Preview {
-    NavigationStack{
-        AboutNoLetView()
-            .environmentObject(AppManager.shared)
-    }
+//#Preview {
+//    NavigationStack{
+//        AboutNoLetView()
+//            .environmentObject(AppManager.shared)
+//    }
+//}
+#Preview{
+    ContentView()
 }
