@@ -193,16 +193,19 @@ struct ChangeCryptoConfigView: View {
                             cryptoConfig.id = UUID().uuidString
                             Defaults[.cryptoConfigs].append(cryptoConfig)
                         }
-
+                        
                         self.dismiss()
                     }label: {
                         HStack{
                             Spacer()
-                            Label("保存", systemImage: "externaldrive.badge.checkmark")
-                                .foregroundStyle(.white, Color.primary)
-                                .fontWeight(.bold)
-                                .padding(.vertical, 5)
-
+                            Label {
+                                Text("保存")
+                            } icon: {
+                                Image(systemName: "externaldrive.badge.checkmark")
+                                    .foregroundStyle(Color.accent, Color.primary)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.vertical, 5)
                             Spacer()
                         }
 
