@@ -38,8 +38,10 @@ struct MarkdownCustomView:View {
         
         if  !searchText.isEmpty{
             
-            MarkdownCustomView.highlightedText(searchText: searchText, text:  PBMarkdown.plain(content))
+            Self
+                .highlightedText(searchText: searchText, text:  PBMarkdown.plain(content))
                 .transition(.opacity.animation(.easeInOut(duration: 0.1)))
+            
         }else {
             
             Markdown(content)
@@ -56,6 +58,8 @@ struct MarkdownCustomView:View {
         }
         
     }
+    
+    
     
     
     static func highlightedText(searchText: String, text: String) -> Text {
@@ -212,4 +216,9 @@ struct WebImageView: View {
         
     }
     
+}
+
+#Preview {
+    ContentView()
+        .environmentObject(AppManager.shared)
 }

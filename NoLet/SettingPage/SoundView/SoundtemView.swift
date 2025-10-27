@@ -177,6 +177,6 @@ extension SoundItemView{
 
 
 #Preview{
-    SettingsPage()
+    ContentView()
 		.environmentObject(AppManager.shared)
 }

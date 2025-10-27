@@ -31,25 +31,29 @@ struct ServerCardView:View {
             HStack(spacing: 10){
                 
                 Group{
-                    if !isCloud {
-                        Image(systemName:  "externaldrive.badge.wifi")
-                            .scaleEffect(1.5)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(item.status ? .green : .red, Color.primary)
-                            .padding(.horizontal,5)
-                            .if(!item.status){
-                                $0.symbolEffect(.variableColor, delay: 1)
-                            }
-                    }else{
-                        Image(systemName: "externaldrive.badge.icloud")
-                            .scaleEffect(1.5)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.accent, Color.primary)
-                            .padding(.horizontal,5)
-                    }
+             
+                        if !isCloud {
+                            Image(systemName:  "externaldrive.badge.wifi")
+                                .scaleEffect(1.5)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(item.status ? .green : .red, Color.primary)
+                                .padding(.horizontal,5)
+                                .if(!item.status){
+                                    $0.symbolEffect(.variableColor, delay: 1)
+                                }
+                        }else{
+                            Image(systemName: "externaldrive.badge.icloud")
+                                .scaleEffect(1.5)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.accent, Color.primary)
+                                .padding(.horizontal,5)
+                        }
+                   
+                    
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
+                    guard item.group == nil else { return }
                     manager.router.append(.serverInfo(server: item))
                 }
 
@@ -66,24 +70,30 @@ struct ServerCardView:View {
                         Text(item.name)
                             .font(.headline)
                             .foregroundStyle(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .truncationMode(.middle)
                         Spacer()
                     }
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                    
+                    
                     Divider()
+                    
                     HStack(alignment: .center){
                         Text(verbatim: "KEY:")
                             .font(.caption2)
                             .frame(width:40, alignment: .trailing)
                             .foregroundStyle(.gray)
-                        Text(item.key)
+                        Text(item.group ?? item.key)
                             .font(.headline)
                             .foregroundStyle(.primary)
-
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .truncationMode(.middle)
                         Spacer()
                     }
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                    
+                    
 
                 }
 
@@ -120,13 +130,21 @@ struct ServerCardView:View {
                             complete()
                         }
                 }else {
-                    Image(systemName: "doc.on.doc")
+                    
+                    Image(systemName: "person.3.sequence.fill")
+                        .scaleEffect(1.5)
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle( .tint, Color.primary)
+                        .foregroundStyle( Color.green, Color.orange)
                         .symbolEffect(.bounce,delay: 1)
-                        .onTapGesture {
-                            complete()
-                            self.textAnimation.toggle()
+                        .if(item.group == nil) { _ in
+                            Image(systemName: "doc.on.doc")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle( .tint, Color.primary)
+                                .symbolEffect(.bounce,delay: 1)
+                                .onTapGesture {
+                                    complete()
+                                    self.textAnimation.toggle()
+                                }
                         }
                 }
                 
@@ -150,7 +168,7 @@ struct ServerCardView:View {
 	}
     
     private func sharedSever(){
-        
+        guard item.group == nil else { return }
         var params:[String: Any]{
             if let sign = item.sign, let crypto = CryptoModelConfig(inputText: sign),
                let result = crypto.obfuscator(sign: true){
@@ -165,4 +183,11 @@ struct ServerCardView:View {
                                                preview: nil)
     }
 
+}
+
+
+#Preview{
+    ServerCardView(item: .init(url: "https://asddf.asfadsf.com",
+                               group: "9999999999999999999999"), complete: {})
+        .environmentObject(AppManager.shared)
 }

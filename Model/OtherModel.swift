@@ -22,11 +22,13 @@ struct baseResponse<T>: Codable where T: Codable{
 struct DeviceInfo: Codable {
 	var deviceKey: String
 	var deviceToken: String
+    var group: String?
 
 	// 使用 `CodingKeys` 枚举来匹配 JSON 键和你的变量命名
 	enum CodingKeys: String, CodingKey {
 		case deviceKey = "key"
 		case deviceToken = "token"
+        case group = "group"
 	}
 }
 
@@ -164,17 +166,22 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
     var device:String
 	var url:String
 	var key:String = ""
+    var group:String? = nil
 	var status:Bool = false
 	var createDate:Date = .now
 	var updateDate:Date = .now
     var voice: Bool = false
     var sign:String? = nil
     
-    init(id: String = UUID().uuidString, device: String? = nil, url: String, key: String = "", status: Bool = false, createDate: Date = .now, updateDate: Date = .now, voice: Bool = false, sign:String? = nil) {
+    init(id: String = UUID().uuidString, device: String? = nil,
+         url: String, key: String = "",group:String? = nil,
+         status: Bool = false, createDate: Date = .now,
+         updateDate: Date = .now,voice: Bool = false, sign:String? = nil) {
         self.id = id
         self.device = device ?? BaseConfig.deviceInfoString()
         self.url = url
         self.key = key
+        self.group = group
         self.status = status
         self.createDate = createDate
         self.updateDate = updateDate
@@ -325,7 +332,7 @@ enum OutDataType{
     
     case text(String)
     case crypto(String)
-    case server(url: String,key: String?, sign:String?)
+    case server(url: String,key: String?,group: String?,sign: String?)
     case otherUrl(String)
     case assistant(String)
     case page(page:pageType, title:String?, data:String)

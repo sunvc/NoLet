@@ -96,10 +96,10 @@ struct MoreOperationsView: View {
                 
                 Stepper(
                     value: $limitMessageLine,
-                    in: 1...999999,
+                    in: 3...50,
                     step: 1
                 ) {
-                    Label("消息显示行数", systemImage: "\(String(format: "%02d", limitMessageLine)).circle")
+                    Label("消息显示高度", systemImage: "\(String(format: "%02d", limitMessageLine)).circle")
                         .onLongPressGesture {
                             limitMessageLine = 3
                         }

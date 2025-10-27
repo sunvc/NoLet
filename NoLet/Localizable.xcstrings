@@ -85,30 +85,30 @@
         }
       }
     },
-    "* 左上角功能菜单，使用示例，分组\n* 右上角按时间删除消息\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。" : {
+    "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* Top-left menu for functions, examples, and grouping\n* Top-right to delete messages by time\n* Single tap image/double tap message for fullscreen\n* Fullscreen view, translate, summarize, read aloud\n* Swipe left to delete, right for copy and smart reply"
+            "value" : "* Function menu in the top-right corner, usage examples, groups  \n* Tap image / double-tap message to view full-screen  \n* Full-screen view, translate, summarize, read aloud  \n* Swipe left to delete, swipe right to copy and smart reply."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* 左上の機能メニュー、使用例、グループ分け\n* 右上で時間順にメッセージを削除\n* 画像をタップ/メッセージをダブルタップで全画面表示\n* 全画面表示、翻訳、要約、読み上げ\n* 左スワイプで削除、右スワイプでコピーとスマート返信"
+            "value" : "* 右上の機能メニュー、使用例、グループ  \n* 画像をタップ / メッセージをダブルタップで全画面表示  \n* 全画面表示、翻訳、要約、読み上げ  \n* 左にスワイプで削除、右にスワイプでコピーとスマート返信。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* 좌측 상단 기능 메뉴, 사용 예시, 그룹화\n* 우측 상단에서 시간별 메시지 삭제\n* 이미지 클릭/메시지 더블클릭으로 전체화면\n* 전체화면 보기, 번역, 요약, 읽기\n* 왼쪽 스와이프로 삭제, 오른쪽 스와이프로 복사 및 스마트 답변"
+            "value" : "* 우측 상단 기능 메뉴, 사용 예시, 그룹  \n* 이미지 탭 / 메시지 두 번 탭하면 전체 화면 보기  \n* 전체 화면 보기, 번역, 요약, 음성 재생  \n* 왼쪽으로 밀어 삭제, 오른쪽으로 밀어 복사 및 스마트 답변."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* 左上角功能菜单，使用示例，分组\n* 右上角按时间删除消息\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。"
+            "value" : "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。"
           }
         }
       }
@@ -10229,30 +10229,30 @@
         }
       }
     },
-    "消息显示行数" : {
+    "消息显示高度" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message Display Lines"
+            "value" : "Message Display Height"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メッセージ表示行数"
+            "value" : "メッセージ表示高さ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "메시지 표시 줄 수"
+            "value" : "메시지 표시 높이"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "消息显示行数"
+            "value" : "消息显示高度"
           }
         }
       }

@@ -31,45 +31,53 @@ struct ServersConfigView: View {
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        
-                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                            Button{
-                                Task{
-                                    let success = await manager.appendServer(server: PushServerModel(url: item.url ))
+                        .if(item.group == nil){ view in
+                           view
+                                .swipeActions(edge: .leading, allowsFullSwipe: false) {
                                     
-                                    if success {
-                                        if let index = servers.firstIndex(where:{$0.id == item.id}){
-                                            servers.remove(at: index)
-                                            Task{
-                                               _ = await manager.register(server: item,
-                                                                          reset: true,
-                                                                          msg: true)
+                                    Button{
+                                        Task{
+                                            let success = await manager.appendServer(server: PushServerModel(url: item.url ))
+                                            
+                                            if success {
+                                                if let index = servers.firstIndex(where:{$0.id == item.id}){
+                                                    servers.remove(at: index)
+                                                    Task{
+                                                       _ = await manager.register(server: item,
+                                                                                  reset: true,
+                                                                                  msg: true)
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
-                                }
-                                
-                            }label:{
-                                Label("重置", systemImage: "arrow.clockwise")
-                                    .fontWeight(.bold)
-                                    .accessibilityLabel("崇置")
+                                        
+                                    }label:{
+                                        Label("重置", systemImage: "arrow.clockwise")
+                                            .fontWeight(.bold)
+                                            .accessibilityLabel("崇置")
 
-                            }.tint(.accentColor)
+                                    }.tint(.accentColor)
+                                }
                         }
+                       
                         .if( servers.count > 1){ view in
                             view
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true){
                                     
                                     Button{
+                                        if item.group != nil{
                                         
-                                        if let index = servers.firstIndex(where:{$0.id == item.id}){
-                                            servers.remove(at: index)
-                                            Task{
-                                                _ = await manager.register(server: item,
-                                                                           reset: true,
-                                                                           msg: true)
+                                        }else{
+                                            if let index = servers.firstIndex(where:{$0.id == item.id}){
+                                                servers.remove(at: index)
+                                                Task{
+                                                    _ = await manager.register(server: item,
+                                                                               reset: true,
+                                                                               msg: true)
+                                                }
                                             }
                                         }
+                                        
                                     }label:{
                                         Label("移除", systemImage: "arrow.up.bin")
                                             .fontWeight(.bold)

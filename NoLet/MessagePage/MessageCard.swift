@@ -100,6 +100,7 @@ struct MessageCard: View {
                             }
                             .foregroundStyle(.accent)
                             .lineLimit(2)
+                            .truncationMode(.middle)
                         }
                     }
                     Spacer(minLength: 0)
@@ -215,21 +216,20 @@ struct MessageCard: View {
                                 }
                             }
                         }
-
+                        
                     }
                     
                     if let body = message.body{
-                        MarkdownCustomView(content: body, searchText: searchText)
+                        ScrollView(.vertical) {
+                            MarkdownCustomView(content:body, searchText: searchText)
                             .font(.body)
                             .textSelection(.enabled)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, 5)
-                            .lineLimit(limitMessageLine)
                             .contentShape(Rectangle())
-                            .onTapGesture(count: 2) {
+                            .onTapGesture(count: 2){
                                 showFull()
                             }
-                        
                             .accessibilityElement(children: .ignore)
                             .accessibilityValue(String("\(PBMarkdown.plain(message.accessibilityValue()))"))
                             .accessibilityLabel("消息内容`")
@@ -237,6 +237,12 @@ struct MessageCard: View {
                             .accessibilityAction(named: "显示全屏") {
                                 showFull()
                             }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .scrollDisabled(true)
+                        .frame(maxHeight: CGFloat(limitMessageLine) * 30)
+                       
+                        
                     }
                 }
                 
@@ -386,26 +392,6 @@ struct MessageCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 5))
         .padding(.horizontal, 15)
     }
-    
-    
-    
-    func limitTextToLines(_ text: String, charactersPerLine: Int) -> String {
-        var result = ""
-        var currentLineCount = 0
-        
-        for char in text {
-            result.append(char)
-            if char.isNewline || currentLineCount == charactersPerLine {
-                result.append("\n")
-                currentLineCount = 0
-            } else {
-                currentLineCount += 1
-            }
-        }
-        
-        return result
-    }
-    
 }
 
 
@@ -461,4 +447,9 @@ extension View{
             .shadow(color: Color.shadow2, radius: 1, x: -1, y: -1)
             .shadow(color: Color.shadow1, radius: 5, x: 3, y: 5)
     }
+}
+
+#Preview {
+    ContentView()
+        .environmentObject(AppManager.shared)
 }

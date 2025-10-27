@@ -258,6 +258,7 @@ struct SelectMessageView:View {
                 }
                 .frame(width: windowWidth)
                 .padding(.top, 30)
+                .padding(.bottom, 50)
                 .onAppear{
                     Task(priority: .userInitiated) {
                         if let image = message.image,

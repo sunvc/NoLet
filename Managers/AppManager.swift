@@ -108,7 +108,7 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
         
         let cloudServerSet = Set(clouds.map { $0.server })
         
-        let newItems = locals.filter { !cloudServerSet.contains($0.server) }
+        let newItems = locals.filter { !cloudServerSet.contains($0.server) && $0.group == nil }
         
         if !newItems.isEmpty {
             clouds.append(contentsOf: newItems)
@@ -134,10 +134,10 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                 }
             }
             return nil
-        case .server(let url, let key, let sign):
+        case .server(let url, let key,let group, let sign):
             Task.detached(priority: .userInitiated) {
                 let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
-                let server = PushServerModel(url: url,key: key ?? "", sign: crypto)
+                let server = PushServerModel(url: url,key: key ?? "",group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
                 if success{
                     await MainActor.run {
@@ -294,7 +294,7 @@ extension AppManager{
             case .server:
                 if let url = params["text"],let urlResponse = URL(string: url), url.hasHttp() {
                     let (result, key) = urlResponse.findNameAndKey()
-                    return .server(url: result, key:key, sign: params["sign"])
+                    return .server(url: result, key:key,group: params["group"], sign: params["sign"])
                 }
             case .crypto:
                 if let config = params["text"]{
