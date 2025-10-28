@@ -8,7 +8,7 @@
 
 import SwiftUI
 import Defaults
-
+import QRScanner
 
 struct ChangeKeyCenterView: View {
     @EnvironmentObject private var manager:AppManager
@@ -32,11 +32,7 @@ struct ChangeKeyCenterView: View {
     @FocusState private var isPhoneFocused
     @FocusState private var isHostFocused
     
-    var serversSelects:[String]{
-        var datas = servers.compactMap {  $0.url }
-        datas.insert(BaseConfig.server, at: 0)
-        return Array(Set(datas)).sorted()
-    }
+    @State private var showScan = false
     
     var dismiss:() -> Void = {}
     
@@ -47,29 +43,44 @@ struct ChangeKeyCenterView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack{
-                Text( pageTitle )
-                    .font(.largeTitle).bold()
-                    .blendMode(.overlay)
-                    .slideFadeIn(show: appear[0], offset: 30)
                 
-                Spacer()
-                
-                Button {
-                    manager.sheetPage = .scan
-                    Haptic.impact()
-                } label: {
+                Label {
+                    Text( pageTitle )
+                        .font(.largeTitle).bold()
+                        .blendMode(.overlay)
+                        
+                    
+                } icon: {
                     Image(systemName: "qrcode.viewfinder")
-                        .imageScale(.large)
+                        .font(.largeTitle)
+                        .scaleEffect(0.8)
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.accent, Color.primary)
                         .symbolEffect(delay: 5)
-                        .padding(.trailing, 10)
+                        .onTapGesture {
+                            self.showScan = true
+                            Haptic.impact()
+                        }
                 }
+                .slideFadeIn(show: appear[0], offset: 30)
+               
+                
+               
+                
+                Spacer()
             }
             
             if cryptoConfigs.count > 0{
                 HStack{
                     
+                    
+                    if let selectCrypto{
+                        Text( maskString(selectCrypto.key ))
+                            .minimumScaleFactor(0.5)
+                            .foregroundColor(.primary)
+                            .blendMode(.overlay)
+                    }
+                    Spacer()
                     
                     Menu{
                         ForEach(cryptoConfigs, id: \.id) { item in
@@ -97,14 +108,7 @@ struct ChangeKeyCenterView: View {
                     .foregroundColor(.primary)
                     .blendMode(.overlay)
                     
-                    Spacer()
                     
-                    if let selectCrypto{
-                        Text( maskString(selectCrypto.key ))
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.primary)
-                            .blendMode(.overlay)
-                    }
                 }
                 .padding(.horizontal)
             }
@@ -152,7 +156,6 @@ struct ChangeKeyCenterView: View {
         .padding(20)
         .padding(.vertical, 10)
         .background(.ultraThinMaterial)
-        .cornerRadius(30)
         .background(
             VStack {
                 Circle().fill(.blue).frame(width: 68, height: 68)
@@ -164,7 +167,23 @@ struct ChangeKeyCenterView: View {
         .modifier(OutlineModifier(cornerRadius: 30))
         .onAppear { animate() }
         .disabled(disabledPage)
-        
+        .overlay {
+            if showScan{
+                ScanView{ code in
+                    if let data = AppManager.shared.HandlerOpenUrl(url: code),
+                       data.hasHttp(), let url = URL(string: data),
+                       let scheme = url.scheme, let host = url.host(){
+                        self.keyHost = scheme + "://" + host
+                        self.keyName = url.path()
+                        
+                        self.showScan = false
+                    }
+                }close: {
+                    self.showScan = false
+                }
+            }
+        }
+        .cornerRadius(30)
         
     }
     
@@ -482,6 +501,7 @@ struct ChangeKeyView: View {
                 appearBackground = true
             }
         }
+  
         
     }
     

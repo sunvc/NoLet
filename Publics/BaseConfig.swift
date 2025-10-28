@@ -27,13 +27,18 @@ class BaseConfig {
     static let server = "https://wzs.app"
 #endif
     
-    static let docServer   = "https://wiki.wzs.app"
-    static let logoImage   = docServer + "/_media/egglogo.png"
-    static let ogImage     = docServer + "/_media/og.png"
-    static let delpoydoc   = docServer + String(localized: "/#/deploy")
-    static let privacyURL  = docServer + String(localized: "/#/policy")
-    static let tutorialURL = docServer + String(localized: "/#/tutorial")
+    private static let wikiServer = "https://wiki.wzs.app"
+  
+    static let logoImage   = wikiServer + "/_media/egglogo.png"
+    static let ogImage     = wikiServer + "/_media/og.png"
+    static let delpoydoc   = docServer + "deploy"
+    static let privacyURL  = docServer + "policy"
+    static let tutorialURL = docServer + "tutorial"
+    static let encryURL    = docServer + "encryption"
     
+    static var docServer: String{
+        wikiServer + String(localized: "NoletLanguageLocalCode")
+    }
     
     static let userAgreement   = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
     static let appSource       = "https://github.com/sunvc/NoLet"

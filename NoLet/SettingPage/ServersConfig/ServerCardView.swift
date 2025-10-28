@@ -53,7 +53,7 @@ struct ServerCardView:View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    guard item.group == nil else { return }
+                    guard item.group == nil, item.status else { return }
                     manager.router.append(.serverInfo(server: item))
                 }
 

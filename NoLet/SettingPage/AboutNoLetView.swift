@@ -140,6 +140,22 @@ struct AboutNoLetView: View {
                     return true
                 }
                 
+                
+                // App开源地址
+                ListButton {
+                    Label {
+                        Text("使用文档")
+                    } icon: {
+                        Image(systemName: "questionmark.app.dashed")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.blue, Color.primary)
+                    }
+                } action: {
+                    
+                    AppManager.openUrl(url: BaseConfig.docServer)
+                    return true
+                }
+                
                 // App开源地址
                 ListButton {
                     Label {

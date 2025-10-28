@@ -482,7 +482,7 @@ struct DataSettingView: View {
                 switch url.pathExtension{
                 case "plist":
                     let raw = try Data(contentsOf: url)
-                    if let data = CryptoManager(.data).decrypt(inputData: raw),  let path = BaseConfig.configPath{
+                    if let data = CryptoManager(.data).decrypt(data: raw),  let path = BaseConfig.configPath{
                         try data.write(to: path)
                     }else{
                         throw NoletError.basic("解密失败")

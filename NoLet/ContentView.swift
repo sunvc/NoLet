@@ -200,6 +200,7 @@ struct ContentView: View {
         .background26(.ultraThinMaterial, radius: 5)
     }
     
+    
     @ViewBuilder
     func ContentFullViewPage() -> some View{
         Group{
@@ -227,6 +228,8 @@ struct ContentView: View {
         
     }
     
+    
+    
     @ViewBuilder
     func ContentSheetViewPage() -> some View {
         Group{
@@ -249,31 +252,17 @@ struct ContentView: View {
             case .quickResponseCode(let text, let title, let preview):
                 QuickResponseCodeview(text:text, title: title, preview:preview)
                     .presentationDetents([.medium])
-            case .scan:
-                
-                ScanView{ code in
-                    if let data = AppManager.shared.HandlerOpenUrl(url: code),data.hasHttp(){
-                        let success = await manager.appendServer(server: PushServerModel(url: code))
-                        if success{
-                            manager.sheetPage = .none
-                            manager.fullPage = .none
-                            manager.page = .setting
-                            manager.router = [.server]
-                        }else{
-                            Toast.error(title: "添加失败")
-                        }
-                    }else{
-                        manager.sheetPage = .none
-                    }
-                    
-                }
             case .crypto(let item):
                 ChangeCryptoConfigView(item: item)
             case .share(let contents):
                 ActivityViewController(activityItems: contents)
                     .presentationDetents([.medium,.large])
             default:
-                EmptyView().onAppear{ manager.sheetPage = .none }
+                EmptyView().onAppear{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                        manager.sheetPage = .none
+                    }
+                }
             }
         }
         .environmentObject(manager)

@@ -25,19 +25,8 @@ extension CryptoMode: Defaults.Serializable{}
 // MARK: - CryptoMode
 enum CryptoMode: String, Codable,CaseIterable, RawRepresentable {
     
-    case CBC, ECB, GCM
-    var padding: String {
-        self == .GCM ? "Space" : "PKCS7"
-    }
-    
-    var Icon:String{
-        switch self{
-        case .CBC: "circle.grid.cross.left.filled"
-        case .ECB: "circle.grid.cross.up.filled"
-        case .GCM: "circle.grid.cross.right.filled"
-        }
-    }
-    
+    case GCM
+    var Icon:String{ "circle.grid.cross.right.filled" }
     
 }
 
@@ -72,21 +61,22 @@ struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable{
     var mode: CryptoMode
     var key: String
     var iv: String
-
-    static let data = CryptoModelConfig(algorithm: .AES256,
-                                        mode: .GCM,
-                                        key: Domap.KEY,
-                                        iv: Domap.IV)
     
-    static func generateRandomString(_ length: Int = 16) -> String {
+    var length:Int{ algorithm.rawValue }
+
+    static let data = CryptoModelConfig(algorithm: .AES256, mode: .GCM,
+                                        key: Domap.KEY, iv: Domap.IV)
+    
+    static func random(_ length: Int = 16) -> String {
         Domap.generateRandomString(length)
     }
     
     static func creteNewModel() -> Self{
-        CryptoModelConfig(id: UUID().uuidString, algorithm: .AES256,
+        CryptoModelConfig(id: UUID().uuidString,
+                          algorithm: .AES256,
                           mode: .GCM,
-                          key: Self.generateRandomString(32),
-                          iv: Self.generateRandomString())
+                          key: Self.random(32),
+                          iv: Self.random())
     }
     
     static func ==(lls:CryptoModelConfig, rls: CryptoModelConfig) -> Bool{
@@ -102,7 +92,6 @@ extension [CryptoModelConfig]{
     func config(_ number: Int = 0) -> CryptoModelConfig {
         /// number = 0 count > 0 , number = 1 count > 1, number = 3 count > 3
         self.count > number ? self[number] : self.first ?? .data
-
     }
 }
 
@@ -129,11 +118,11 @@ extension CryptoModelConfig {
     
     
     func encrypt(inputData: Data) -> Data?{
-        CryptoManager(self).encrypt(inputData: inputData)
+        CryptoManager(self).encrypt(data: inputData)
     }
     
     func decrypt(inputData: Data) -> Data? {
-       CryptoManager(self).decrypt(inputData: inputData)
+       CryptoManager(self).decrypt(data: inputData)
     }
     
 }
@@ -143,105 +132,50 @@ extension CryptoModelConfig {
 
 final class CryptoManager {
 	
+    typealias BASE64 = String
+    
 	private let algorithm: CryptoAlgorithm
 	private let mode: CryptoMode
 	private let key: Data
 	private let iv: Data
-
+    private let nonceSize = 12
+    private let tagSize = 16
 
 	init(_ data: CryptoModelConfig) {
 		self.key = data.key.data(using: .utf8)!
-		self.iv = data.iv.data(using: .utf8)!
+        self.iv = CryptoModelConfig.random().prefix(nonceSize).data(using: .utf8)!
 		self.mode = data.mode
 		self.algorithm = data.algorithm
 	}
 
     
     // MARK: - Public Methods
-	func encrypt(_ plaintext: String) -> String? {
+	func encrypt(_ plaintext: String) -> BASE64? {
 		guard let plaintextData = plaintext.data(using: .utf8) else { return nil }
         return self.encrypt(plaintextData)
 	}
     
-    func encrypt(_ plaintext: Data) -> String? {
-        let data:Data? = self.encrypt(inputData: plaintext)
+    func encrypt(_ plaintext: Data) -> BASE64? {
+        let data:Data? = self.encrypt(data: plaintext)
             /// .replacingOccurrences(of: "+", with: "%2B")
         return data?.base64EncodedString()
     }
     
-    func decrypt(base64 plaintext: String) -> String? {
-       
-        guard let plaintextData = Data(base64Encoded: plaintext) else { return nil }
-        return self.decrypt(plaintextData)
-    }
-    
-    func decrypt(_ ciphertext: Data) -> String? {
-        if let decryptedData = self.decrypt(inputData: ciphertext){
-            return String(data: decryptedData, encoding: .utf8)
-        }
-        return nil
-    }
-    
-    func encrypt(inputData: Data) -> Data?{
-        let data:Data?
-        switch mode {
-        case .CBC, .ECB:
-            data = commonCryptoEncrypt(data: inputData, operation: CCOperation(kCCEncrypt))
-        case .GCM:
-            data = gcmEncrypt(data: inputData)
-        }
-        return data
-    }
-    
-    func decrypt(inputData: Data) -> Data? {
-        switch mode {
-        case .CBC, .ECB:
-            return commonCryptoEncrypt(data: inputData, operation: CCOperation(kCCDecrypt))
-        case .GCM:
-            return gcmDecrypt(data: inputData)
-        }
+    func decrypt(base64 plaintext: BASE64) -> String? {
         
+        guard let plaintextData = Data(base64Encoded: plaintext),
+              let decryptedData = self.decrypt(data: plaintextData) else { return nil }
+        return String(data: decryptedData, encoding: .utf8)
     }
     
-	// MARK: - Private Methods
-	// CommonCrypto (CBC/ECB) Encryption/Decryption
-	private func commonCryptoEncrypt(data: Data, operation: CCOperation) -> Data? {
-		let algorithm = CCAlgorithm(kCCAlgorithmAES) // AES algorithm
-		let options = mode == .CBC ? CCOptions(kCCOptionPKCS7Padding) : CCOptions(kCCOptionPKCS7Padding | kCCOptionECBMode)
-
-		var numBytesEncrypted: size_t = 0
-		let dataOutLength = data.count + kCCBlockSizeAES128
-		var dataOut = Data(count: dataOutLength)
-		
-		let cryptStatus = dataOut.withUnsafeMutableBytes { dataOutBytes in
-			data.withUnsafeBytes { dataInBytes in
-				key.withUnsafeBytes { keyBytes in
-					iv.withUnsafeBytes { ivBytes in
-						CCCrypt(operation,
-								algorithm, // AES algorithm
-								options,
-								keyBytes.baseAddress!, key.count, // Key length based on key.count
-								mode == .CBC ? ivBytes.baseAddress : nil, // Use IV for CBC, nil for ECB
-								dataInBytes.baseAddress!, data.count,
-								dataOutBytes.baseAddress!, dataOutLength,
-								&numBytesEncrypted)
-					}
-				}
-			}
-		}
-
-		if cryptStatus == kCCSuccess {
-			return dataOut.prefix(numBytesEncrypted)
-		}
-		return nil
-	}
+    
 
 	// CryptoKit (GCM) Encryption
-	private func gcmEncrypt(data: Data) -> Data? {
+	func encrypt(data: Data) -> Data? {
 		let symmetricKey = SymmetricKey(data: key)
 		
 		do {
-			let nonce = try AES.GCM.Nonce(data: iv.prefix(12))
+			let nonce = try AES.GCM.Nonce(data: iv)
 			let sealedBox = try AES.GCM.seal(data, using: symmetricKey, nonce: nonce)
 			return nonce + sealedBox.ciphertext + sealedBox.tag // Nonce + Ciphertext + Tag
 		} catch {
@@ -249,12 +183,10 @@ final class CryptoManager {
 			return nil
 		}
 	}
-
+    
 	// CryptoKit (GCM) Decryption
-	private func gcmDecrypt(data: Data) -> Data? {
-		let nonceSize = 12
-		let tagSize = 16
-
+	func decrypt(data: Data) -> Data? {
+        
 		guard data.count > nonceSize + tagSize else { return nil }
 
 		let symmetricKey = SymmetricKey(data: key)

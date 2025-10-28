@@ -198,9 +198,7 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
 	}
 	
 	var color: Color{ status ? .green : .orange }
-    var server:String{
-        return self.url + "/" + self.key
-    }
+    var server:String{ self.url + "/" + self.key }
 }
 
 

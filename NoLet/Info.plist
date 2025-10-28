@@ -14,19 +14,8 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pb</string>
-				<string>nolet</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLIconFile</key>
-			<string>logo1</string>
-			<key>CFBundleURLName</key>
-			<string>me.uuneo.Meoworld</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
 				<string>mw</string>
+				<string>nolet</string>
 			</array>
 		</dict>
 	</array>

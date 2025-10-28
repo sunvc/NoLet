@@ -10,7 +10,7 @@ import Defaults
 extension Multilingual.Country: Defaults.Serializable{}
 
 extension Defaults.Keys{
-    static let translateLang = Key<Multilingual.Country>("MultilingualCountry", default: Multilingual.commonLanguages.first!)
+    static let translateLang = Key<Multilingual.Country>("MultilingualCountry", default: Multilingual.firstChoice)
 }
 
 enum Multilingual{
@@ -21,9 +21,11 @@ enum Multilingual{
         let flag: String
     }
     
+    static var firstChoice:Country{ commonLanguages.first! }
+    
     static let commonLanguages: [Country] = [
-        Country(code: "zh", name: String(localized: "中文"), flag: "🇨🇳"),
         Country(code: "en", name: String(localized: "英语"), flag: "🇺🇸"),
+        Country(code: "zh", name: String(localized: "中文"), flag: "🇨🇳"),
         Country(code: "ja", name: String(localized: "日语"), flag: "🇯🇵"),
         Country(code: "ko", name: String(localized: "韩语"), flag: "🇰🇷"),
         Country(code: "fr", name: String(localized: "法语"), flag: "🇫🇷"),
@@ -40,9 +42,13 @@ enum Multilingual{
     
     static func resetTransLang(){
         let current = Defaults[.translateLang]
-        if let newCurrent = Self.commonLanguages.first(where: {$0.id == current.id}){
-            Defaults[.translateLang] = newCurrent
+        
+        if let code = Locale.current.language.languageCode?.identifier, current.id != code{
+            if let newCurrent = Self.commonLanguages.first(where: {$0.id == code}){
+                Defaults[.translateLang] = newCurrent
+            }
         }
+        
     }
     
 }

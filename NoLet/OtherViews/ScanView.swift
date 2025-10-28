@@ -24,7 +24,7 @@ struct ScanView: View {
     @EnvironmentObject private var manager:AppManager
     @Default(.limitScanningArea) var limitScanningArea
     var response: (String)async-> Void
-    
+    var close: (() -> Void)? = nil
     var config: QRScannerSwiftUIView.Configuration{
         .init(focusImage: nil,
               focusImagePadding: nil,
@@ -74,7 +74,11 @@ struct ScanView: View {
                     
                     Spacer()
                     Button{
-                        self.dismiss()
+                        if let close = close{
+                            close()
+                        }else{
+                            self.dismiss()
+                        }
                         Haptic.impact()
                     }label: {
                         Image(systemName: "xmark")
@@ -86,7 +90,7 @@ struct ScanView: View {
                     }
 				}
 				.padding()
-				.padding(.top,50)
+                .padding(.top, close == nil ? 50 : 0)
 				Spacer()
                 
                 Group{
@@ -167,28 +171,30 @@ struct ScanView: View {
                         }
                        
                     }
-                } .padding(.bottom,80)
+                } .padding(.bottom,close == nil ? 80 : 10)
                 
-               
-
 			}
 
 		}
         .ignoresSafeArea()
         .contentShape(Rectangle())
-        .gesture(
-            DragGesture(minimumDistance: 30, coordinateSpace: .global)
-                .onChanged({ active in
-                    Haptic.selection()
-                })
-                .onEnded({ action in
-                   
-                    if  action.translation.height > 100{
-                        manager.fullPage = .none
-                        Haptic.impact()
-                    }
-                })
-        )
+        .if(close == nil){view in
+            view
+                .gesture(
+                    DragGesture(minimumDistance: 30, coordinateSpace: .global)
+                        .onChanged({ active in
+                            Haptic.selection()
+                        })
+                        .onEnded({ action in
+                            
+                            if action.translation.height > 100{
+                                self.dismiss()
+                                Haptic.impact()
+                            }
+                        })
+                )
+        }
+
 	}
 
 

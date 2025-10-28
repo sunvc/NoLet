@@ -12,29 +12,25 @@ import Foundation
 import StoreKit
 
 
+
 final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     static let shared = AppManager()
     
     
-    @Published var page:TabPage = .message
-    @Published var sheetPage:SubPage = .none
-    @Published var fullPage:SubPage = .none
-    @Published var scanUrl:String = ""
-    @Published var crashLog:String?
+    @Published var page:      TabPage = .message
+    @Published var sheetPage: SubPage = .none
+    @Published var fullPage:  SubPage = .none
     
     
-    @Published var selectId:String? = nil
-    @Published var selectGroup:String? = nil
-    @Published var searchText:String = ""
+    @Published var selectId:    String? = nil
+    @Published var selectGroup: String? = nil
+    @Published var searchText:  String = ""
     
     
-    @Published var mrouter:[RouterPage] = []
-    @Published var srouter:[RouterPage] = []
-    @Published var sorouter:[RouterPage] = []
-    @Published var prouter:[RouterPage] = []
-    
-    
-    
+    @Published var mrouter:  [RouterPage] = []
+    @Published var srouter:  [RouterPage] = []
+    @Published var sorouter: [RouterPage] = []
+    @Published var prouter:  [RouterPage] = []
     
     @Published var isWarmStart:Bool = false
     
@@ -350,7 +346,8 @@ extension AppManager{
         guard let path = BaseConfig.configPath else{ return nil }
         do{
             let data = try Data(contentsOf: path)
-            if let cryptData = CryptoManager(.data).encrypt(inputData: data){
+            
+            if let cryptData = CryptoManager(.data).encrypt(data: data){
                 
                 let pathTem = FileManager.default.temporaryDirectory.appendingPathComponent(
                     path.lastPathComponent,
@@ -382,6 +379,7 @@ extension AppManager{
 }
 
 extension AppManager{
+    
     func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
         do{
             let response:baseResponse<String> =
@@ -458,40 +456,42 @@ extension AppManager{
                                                                          params: params)
             
             guard 200...299 ~= response.code else{
-                server.status = false
-                server.voice = false
                 Toast.shared.present(title: response.message, symbol: .error)
-                return server
+                throw "erroe"
             }
 
             if let data = response.data {
                 server.key = data.deviceKey
                 server.status = true
-                
                 if msg{
                     if reset{ Toast.info(title: "解绑成功") }else{
                         Toast.success(title: "注册成功")
                     }
                 }
             }else{
-                server.status = false
-                server.voice = false
+                
                 if msg{
                     Toast.error(title: "注册失败")
                 }
+                throw "erroe"
             }
             
             return server
         }catch{
+            server.status = false
+            server.voice = false
             NLog.error(error.localizedDescription)
             return server
         }
     }
     
-    func appendServer(server:PushServerModel) async -> Bool{
+    func appendServer(server:PushServerModel, reset: Bool = false) async -> Bool{
         
         guard !appending && !Defaults[.deviceToken].isEmpty else { return false}
         self.appending = true
+        
+        var serverCopy = server
+        if reset {  serverCopy.key = "" }
         
         guard !Defaults[.servers].contains(where: {$0.key == server.key && $0.url == server.url})else{
             Toast.error(title: "服务器已存在")
@@ -499,16 +499,24 @@ extension AppManager{
         }
         
         
-        let server = await self.register(server: server, msg: true)
-        if server.status {
+        let serverNew = await self.register(server: serverCopy, msg: true)
+        if serverNew.status {
+            if reset{
+                /// 重置后清空老的token
+                _ = await self.register(server: server, reset: true)
+            }
+           
             await MainActor.run {
-                Defaults[.servers].insert(server, at: 0)
+                if reset{
+                    Defaults[.servers].removeAll(where: {$0.id == server.id})
+                }
+                Defaults[.servers].insert(serverNew, at: 0)
                 Self.syncLocalToCloud()
             }
             Toast.success(title: "添加成功")
         }
         self.appending = false
-        return server.status
+        return serverNew.status
     }
 }
 

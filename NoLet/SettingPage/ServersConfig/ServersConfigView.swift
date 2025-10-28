@@ -31,60 +31,50 @@ struct ServersConfigView: View {
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .if(item.group == nil){ view in
-                           view
-                                .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                                    
-                                    Button{
-                                        Task{
-                                            let success = await manager.appendServer(server: PushServerModel(url: item.url ))
-                                            
-                                            if success {
-                                                if let index = servers.firstIndex(where:{$0.id == item.id}){
-                                                    servers.remove(at: index)
-                                                    Task{
-                                                       _ = await manager.register(server: item,
-                                                                                  reset: true,
-                                                                                  msg: true)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        
-                                    }label:{
-                                        Label("重置", systemImage: "arrow.clockwise")
-                                            .fontWeight(.bold)
-                                            .accessibilityLabel("崇置")
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            
+                            Button{
+                                Task{
+                                    _ = await manager
+                                        .appendServer(server: item, reset: true)
+                                }
+                                
+                            }label:{
+                                Label("重置", systemImage: "arrow.clockwise")
+                                    .fontWeight(.bold)
+                                    .accessibilityLabel("崇置")
 
-                                    }.tint(.accentColor)
-                                }
+                            }.tint(.accentColor)
                         }
-                       
-                        .if( servers.count > 1){ view in
-                            view
-                                .swipeActions(edge: .trailing, allowsFullSwipe: true){
-                                    
-                                    Button{
-                                        if item.group != nil{
-                                        
-                                        }else{
-                                            if let index = servers.firstIndex(where:{$0.id == item.id}){
-                                                servers.remove(at: index)
-                                                Task{
-                                                    _ = await manager.register(server: item,
-                                                                               reset: true,
-                                                                               msg: true)
-                                                }
-                                            }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true){
+                            
+                            Button{
+                                guard servers.count > 1 else { return }
+                                if item.group != nil{
+                                    servers.removeAll(where:{$0.id == item.id})
+                                    cloudServers.removeAll(where:{$0.id == item.id})
+                                }else{
+                                    if let index = servers.firstIndex(where:{$0.id == item.id}){
+                                        servers.remove(at: index)
+                                        Task{
+                                            _ = await manager.register(server: item,
+                                                                       reset: true,
+                                                                       msg: true)
                                         }
-                                        
-                                    }label:{
-                                        Label("移除", systemImage: "arrow.up.bin")
-                                            .fontWeight(.bold)
-                                    }.tint(.red)
+                                    }
                                 }
+                                
+                            }label:{
+                                if item.group != nil{
+                                    Label("删除", systemImage: "arrow.up.bin")
+                                        .fontWeight(.bold)
+                                }else{
+                                    Label("移除", systemImage: "arrow.up.bin")
+                                        .fontWeight(.bold)
+                                }
+                               
+                            }.tint(.red)
                         }
-                        
                     }
                     .onMove(perform: { indices, newOffset in
                         servers.move(fromOffsets: indices, toOffset: newOffset)

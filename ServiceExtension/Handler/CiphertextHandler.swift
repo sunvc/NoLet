@@ -22,10 +22,7 @@ class CiphertextHandler:NotificationContentHandler{
 		do {
             let ciphertNumber:Int = userInfo.raw(.cipherNumber) ?? 0
 
-            let ivData: String? = userInfo.raw(.iv)
-            let map = try self.decrypt(ciphertext: ciphertext,
-                                       iv: ivData,
-                                       number: ciphertNumber)
+            let map = try self.decrypt(ciphertext: ciphertext, number: ciphertNumber)
 
 			var alert = [String: Any]()
 			var soundName: String? = nil
@@ -97,10 +94,9 @@ class CiphertextHandler:NotificationContentHandler{
 	
     
 	// MARK: 解密
-    func decrypt(ciphertext: String, iv: String? = nil, number:Int = 0) throws -> [AnyHashable: Any] {
-        var cryptoConfig = Defaults[.cryptoConfigs].config(number)
-		
-		if let iv = iv { cryptoConfig.iv = iv }
+    func decrypt(ciphertext: String, number:Int = 0) throws -> [AnyHashable: Any] {
+        let cryptoConfig = Defaults[.cryptoConfigs].config(number)
+
 
 		guard let json = CryptoManager(cryptoConfig).decrypt(base64: ciphertext),
 			  let data = json.data(using: .utf8),

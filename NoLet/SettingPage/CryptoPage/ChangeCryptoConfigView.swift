@@ -21,7 +21,6 @@ struct ChangeCryptoConfigView: View {
 
     @Environment(\.dismiss) var dismiss
     @FocusState private var keyFocus
-    @FocusState private var ivFocus
     
     @State private var sharkText:String = ""
     @FocusState private var sharkfocused:Bool
@@ -115,46 +114,6 @@ struct ChangeCryptoConfigView: View {
                 Section {
                     
                     HStack{
-                        Label {
-                            Text(verbatim: "Padding:")
-                        } icon: {
-                            Image(systemName: "p.circle")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle( Color.primary, .tint)
-                        }
-                        Spacer()
-                        Text(cryptoConfig.mode.padding)
-                            .foregroundStyle(.gray)
-                    }
-                    
-                }
-                
-                Section {
-                    
-                    
-                    HStack{
-                        Button{
-                            Clipboard.set(cryptoConfig.iv)
-                            Toast.copy(title: "复制成功")
-                        }label:{
-                            Label {
-                                Text(verbatim: "IV:")
-                            } icon: {
-                                Image(systemName: "doc.on.doc")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(cryptoConfig.iv.count != 16 ? .red : .accent,
-                                                     cryptoConfig.iv.count != 16 ? .red : Color.primary)
-                                
-                            }
-                        }
-                        
-                        Spacer()
-                        TextField("请输入16位Iv",text: $cryptoConfig.iv)
-                            .focused($ivFocus)
-                        
-                    }
-                    
-                    HStack{
                         Button{
                             Clipboard.set(cryptoConfig.key)
                             Toast.copy(title: "复制成功")
@@ -169,20 +128,32 @@ struct ChangeCryptoConfigView: View {
                             }
                         }
                         Spacer()
+                       
                         
+                        TextField(String(format: String(localized: "输入%d位数的key"), expectKeyLength),text: Binding(get: {
+                            cryptoConfig.key
+                        }, set: { value in
+                            cryptoConfig.key = String(value.prefix(expectKeyLength))
+                        }))
+                        .focused($keyFocus)
                         
-                        TextField(String(format: String(localized: "输入%d位数的key"), expectKeyLength),text: $cryptoConfig.key)
-                            .focused($keyFocus)
                         
                         
                     }
                     
+                }header: {
+                    HStack{
+                        Text(verbatim: "IV: \(CryptoModelConfig.random())")
+                            .padding(.trailing, 5)
+                        Spacer()
+                        Text(verbatim: "\(expectKeyLength - cryptoConfig.key.count)")
+                    }.padding(.bottom, 10)
                 }
                 
                 Section{
 
                     Button{
-                        if cryptoConfig.iv.count != 16  || cryptoConfig.key.count != expectKeyLength{
+                        if cryptoConfig.key.count != expectKeyLength{
                             Toast.error(title: "参数长度不正确")
                             return
 
@@ -220,11 +191,7 @@ struct ChangeCryptoConfigView: View {
                 
                 ToolbarItemGroup(placement: .keyboard) {
                     Button("清除") {
-                        if keyFocus {
-                            cryptoConfig.key = ""
-                        }else if ivFocus{
-                            cryptoConfig.iv = ""
-                        }
+                        cryptoConfig.key = ""
                     }
                     Spacer()
                     Button( "完成") {
@@ -242,8 +209,7 @@ struct ChangeCryptoConfigView: View {
                 
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        cryptoConfig.iv = CryptoModelConfig.generateRandomString()
-                        cryptoConfig.key = CryptoModelConfig.generateRandomString(cryptoConfig.algorithm.rawValue)
+                        cryptoConfig.key = CryptoModelConfig.random(cryptoConfig.length)
                         Haptic.impact()
                     } label: {
                         Label("随机生成密钥", systemImage: "dice")
