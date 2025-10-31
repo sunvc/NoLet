@@ -63,7 +63,7 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 
 ### Chrome Extension
 
-* [Install Chrome Extension](https://chromewebstore.google.com/detail/NoLet/gadgoijjifgnbeehmcapjfipggiijeej)
+* [Install Chrome Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
 * After installation, click the extension icon and enter your push key for configuration
 * Supports one-click sending of current page, selected text, or images to your device
 * Particularly suitable for directly sending images from websites like Instagram to your phone

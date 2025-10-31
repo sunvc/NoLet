@@ -63,7 +63,7 @@ NoLet 무자서는 강력한 iOS 푸시 도구로, 어떤 기기에서든 iPhone
 
 ### Chrome 확장
 
-* [Chrome 확장 설치](https://chromewebstore.google.com/detail/NoLet/gadgoijjifgnbeehmcapjfipggiijeej)
+* [Chrome 확장 설치](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
 * 설치 후 확장 아이콘을 클릭하고 푸시 키를 입력하여 설정하세요
 * 현재 페이지, 선택된 텍스트 또는 이미지를 기기로 원클릭 전송 지원
 * Instagram 등 웹사이트의 이미지를 휴대폰으로 직접 전송하는 데 특히 적합합니다

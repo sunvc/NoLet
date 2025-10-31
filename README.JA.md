@@ -63,7 +63,7 @@ NoLet 無字書は強力なiOSプッシュツールで、任意のデバイス�
 
 ### Chrome拡張機能
 
-* [Chrome拡張機能をインストール](https://chromewebstore.google.com/detail/NoLet/gadgoijjifgnbeehmcapjfipggiijeej)
+* [Chrome拡張機能をインストール](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
 * インストール後、拡張機能アイコンをクリックし、プッシュキーを入力して設定
 * 現在のページ、選択したテキストや画像をワンクリックでデバイスに送信をサポート
 * Instagramなどのウェブサイトの画像を直接スマートフォンに送信するのに特に適している

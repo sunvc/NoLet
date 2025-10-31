@@ -63,7 +63,7 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 ### Chrome扩展
 
-* [安装Chrome扩展](https://chromewebstore.google.com/detail/NoLet/gadgoijjifgnbeehmcapjfipggiijeej)
+* [安装Chrome扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
 * 安装后点击扩展图标，输入你的推送密钥进行配置
 * 支持一键发送当前页面、选中文本或图片到你的设备
 * 特别适合将Instagram等网站的图片直接发送到手机
