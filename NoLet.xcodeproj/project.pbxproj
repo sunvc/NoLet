@@ -451,6 +451,7 @@
 			membershipExceptions = (
 				cryptoManager.swift,
 				ImageManager.swift,
+				NetworkManager.swift,
 				VoiceManager.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;

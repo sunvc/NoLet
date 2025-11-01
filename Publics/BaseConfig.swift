@@ -68,6 +68,31 @@ class BaseConfig {
     static var testData:String{
         "{\"title\": \"\(String(localized: "这是一个加密示例"))\",\"body\": \"\(String(localized: "这是加密的正文部分"))\", \"sound\": \"typewriter\"}"
     }
+    
+    static var customUserAgent: String {
+        let info = Bundle.main.infoDictionary
+        
+        let appName     = BaseConfig.appSymbol
+        let appVersion  = info?["CFBundleShortVersionString"] as? String ?? "0.0"
+        let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
+        
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        let deviceModel = withUnsafePointer(to: &systemInfo.machine) {
+            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
+                String(cString: $0)
+            }
+        }
+       
+        let systemVer   = UIDevice.current.systemVersion
+        
+        let locale      = Locale.current
+        let regionCode  = locale.region?.identifier ?? "CN"   // e.g. CN
+        let language    = locale.language.languageCode?.identifier ?? "en" // e.g. zh
+        
+        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
+    }
 
     
     enum FolderType: String, CaseIterable{

@@ -19,6 +19,8 @@ struct DataSettingView: View {
 
     @Default(.messageExpiration) var messageExpiration
     @Default(.imageSaveDays) var imageSaveDays
+    @Default(.proxyServer) var proxyServer
+    @Default(.servers) var servers
 
     @State private var showImport:Bool = false
     @State private var showexportLoading:Bool = false
@@ -38,6 +40,9 @@ struct DataSettingView: View {
     @State private var addLoading:Bool = false
     
     @State private var exampleValue = 10000.0
+    var pickerServers:[PushServerModel]{
+        [ PushServerModel.space] + servers
+    }
     
     var body: some View {
         List{
@@ -198,6 +203,35 @@ struct DataSettingView: View {
 
 
             Section{
+                
+                
+      
+                
+                Picker(selection: $proxyServer) {
+                    
+                    ForEach(pickerServers, id: \.id){server in
+                        Text(server.name).tag(server)
+                    }
+                    
+                }label:{
+  
+                    Label {
+                        Text("下载代理")
+                    } icon: {
+                        Image(systemName: "network.badge.shield.half.filled")
+                            .scaleEffect(0.9)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle( proxyServer.status ? .green : .red, Color.primary)
+                            .symbolEffect(.pulse, delay: 1)
+                    }
+                }
+                
+                
+                .pickerStyle(MenuPickerStyle())
+       
+                
+                
+                
                 Picker(selection: $messageExpiration) {
                     ForEach(ExpirationTime.allCases, id: \.self){ item in
                         Text(item.title)

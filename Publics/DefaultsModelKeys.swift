@@ -12,7 +12,7 @@ import Foundation
 extension Defaults.Keys {
     static let servers = Key<[PushServerModel]>(.serverArrayStroage, [])
     static let cloudServers = Key<[PushServerModel]>(.serverArrayCloudStroage, [], iCloud: true)
-
+    
     static let badgeMode = Key<BadgeAutoMode>(.Meowbadgemode, .auto)
     static let appIcon = Key<AppIconEnum>(.setting_active_app_icon, .nolet)
     static let messageExpiration = Key<ExpirationTime>(.messageExpirtionTime, .forever)
@@ -20,6 +20,7 @@ extension Defaults.Keys {
     static let imageSaveDays = Key<ExpirationTime>(.imageSaveDays, .forever)
     static let assistantAccouns = Key<[AssistantAccount]>(.AssistantAccount,[], iCloud: true)
     static let moreMessageCache = Key<[MoreMessage]>(.moreMessageCache, [])
+    static let proxyServer = Key<PushServerModel>(.proxyDownloadServer, PushServerModel.space)
 }
 
 

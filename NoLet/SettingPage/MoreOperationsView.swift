@@ -11,6 +11,7 @@ import SwiftUI
 import Defaults
 import UniformTypeIdentifiers
 import Photos
+
 struct MoreOperationsView: View {
     @EnvironmentObject private var manager:AppManager
 

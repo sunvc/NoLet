@@ -198,7 +198,15 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
 	}
 	
 	var color: Color{ status ? .green : .orange }
+    
     var server:String{ self.url + "/" + self.key }
+    
+    static let space = Self( url: String(localized: "无"))
+    
+    static func == (lhs: Self, rhs: Self) -> Bool{
+        lhs.url == rhs.url && lhs.key == rhs.key
+    }
+    
 }
 
 

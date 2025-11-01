@@ -445,6 +445,10 @@ extension AppManager{
     func register(server:PushServerModel, reset:Bool = false, msg:Bool = false) async -> PushServerModel{
         var server = server
         
+        if  server.name == "uuneo.com" || server.name == "push.uuneo.com"{
+            server.url = BaseConfig.server
+        }
+        
         do{
             
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
