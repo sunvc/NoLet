@@ -47,7 +47,7 @@ struct MarkdownCustomView:View {
             Markdown(content)
                 .markdownImageProvider(WebImageProvider())
                 .environment(\.openURL, OpenURLAction { url in
-                    AppManager.openUrl(url: url)
+                    AppManager.openUrl(url: url, .safari)
                     return .handled // 表示链接已经被处理，不再执行默认行为
                 })
                 .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))

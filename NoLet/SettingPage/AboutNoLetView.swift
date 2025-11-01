@@ -13,10 +13,12 @@ import StoreKit
 
 struct AboutNoLetView: View {
     @EnvironmentObject private var manager: AppManager
-    @Default(.appIcon) var setting_active_app_icon
-    @Default(.deviceToken) var deviceToken
-    @Default(.id) var id
+    @Default(.appIcon) private var setting_active_app_icon
+    @Default(.deviceToken) private var deviceToken
+    @Default(.id) private var id
+    @Default(.nearbyShow) private var nearbyShow
     
+    @State private var showNearbySetting:Bool = false
     @State private var buildDetail: Bool = false
     @State private var product: Product?
     @State private var purchaseResult: Product.PurchaseResult?
@@ -44,20 +46,29 @@ struct AboutNoLetView: View {
                 HStack {
                     Spacer()
                     VStack(spacing: 16) {
-                        Button{
-                            manager.sheetPage = .appIcon
-                            Haptic.impact()
-                        }label:{
-                            Image(setting_active_app_icon.logo)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 100, height: 100)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .accessibilityLabel("点击切换应用图标")
-                        }
+                        
+                        Image(setting_active_app_icon.logo)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 100, height: 100)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .accessibilityLabel("点击切换应用图标")
+                            .onTapGesture {
+                                manager.sheetPage = .appIcon
+                                Haptic.impact()
+                            }
+                            .onLongPressGesture {
+                                if nearbyShow{
+                                    manager.fullPage = .nearby
+                                }else{
+                                    self.showNearbySetting.toggle()
+                                    Haptic.impact()
+                                }
+                                
+                            }
                         
                         
-                        Text(BaseConfig.AppName)
+                        Text(NCONFIG.AppName)
                             .font(.title2)
                             .fontWeight(.bold)
                         
@@ -139,7 +150,11 @@ struct AboutNoLetView: View {
                     Toast.copy(title:  "复制成功")
                     return true
                 }
-                
+                if showNearbySetting || nearbyShow{
+                    Toggle(isOn: $nearbyShow) {
+                        Label("附近的书", systemImage: "location.viewfinder")
+                    }
+                }
                 
                 // App开源地址
                 ListButton {
@@ -151,8 +166,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.blue, Color.primary)
                     }
                 } action: {
-                    
-                    AppManager.openUrl(url: BaseConfig.docServer)
+                    manager.router.append(.web(url:  NCONFIG.docServer.url))
                     return true
                 }
                 
@@ -167,8 +181,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.blue, Color.primary)
                     }
                 } action: {
-                    
-                    AppManager.openUrl(url: BaseConfig.appSource)
+                    manager.router.append(.web(url:  NCONFIG.appSource.url))
                     return true
                 }
                 
@@ -183,7 +196,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.green, Color.primary)
                     }
                 } action: {
-                    AppManager.openUrl(url: BaseConfig.serverSource)
+                    manager.router.append(.web(url:  NCONFIG.serverSource.url))
                     return true
                 }
                 
@@ -201,7 +214,7 @@ struct AboutNoLetView: View {
                         Spacer()
                         
                         Button{
-                            manager.fullPage = .web(BaseConfig.privacyURL)
+                            manager.router.append(.web(url: NCONFIG.privacyURL.url))
                             Haptic.impact()
                            
                         }label: {
@@ -211,7 +224,7 @@ struct AboutNoLetView: View {
                             .frame(width: 3,height: 3)
                         
                         Button{
-                            manager.fullPage = .web(BaseConfig.userAgreement)
+                            manager.router.append(.web(url: NCONFIG.userAgreement.url))
                             Haptic.impact()
                             
                         }label: {
@@ -285,12 +298,6 @@ struct AboutNoLetView: View {
     
 }
 
-//#Preview {
-//    NavigationStack{
-//        AboutNoLetView()
-//            .environmentObject(AppManager.shared)
-//    }
-//}
 #Preview{
     ContentView()
 }

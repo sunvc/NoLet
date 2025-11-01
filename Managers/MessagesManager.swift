@@ -498,7 +498,7 @@ fileprivate class DiskCache {
     
     private init() {
         
-        cacheDirectory = BaseConfig.getDir(.caches)!
+        cacheDirectory = NCONFIG.getDir(.caches)!
         
         try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
     }

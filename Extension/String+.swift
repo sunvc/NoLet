@@ -22,7 +22,7 @@ extension String{
         return self.replacingOccurrences(of: "^(https?:\\/\\/)?", with: "", options: .regularExpression)
     }
     
-    func hasHttp() -> Bool{ ["http", "https"].contains{ self.lowercased().hasPrefix($0) } }
+    var hasHttp:Bool { ["http", "https"].contains{ self.lowercased().hasPrefix($0) } }
     
     
     func sha256() -> String{

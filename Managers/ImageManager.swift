@@ -40,7 +40,7 @@ class ImageManager {
     ///   - mode: The image mode (icon or other) to determine cache location
     ///   - expiration: The expiration time for the cached image
     /// - Returns: The local cache path of the downloaded image, or nil if download fails
-    class func downloadImage(_ imageUrl: String, expiration: StorageExpiration = .never) async -> String? {
+    class func downloadImage(_ imageUrl: String,  expiration: StorageExpiration = .never) async -> String? {
         
         guard let cache = defaultCache() else { return nil }
         
@@ -53,11 +53,21 @@ class ImageManager {
 
         if cache.diskStorage.isCached(forKey: cacheKey) { return cache.cachePath(forKey: cacheKey) }
 
-        // Download image
-        guard let result = try? await downloadImage(url: imageResource).get() else { return nil }
-
+        
+        var responseData: Data? = nil
+        
+        
+        if  let fileUrl = try? await downloadFile(from: imageUrl, proxy: Defaults[.proxyServer]) {
+            responseData = try? Data(contentsOf: fileUrl)
+        }else if let result = try? await downloadImage(url: imageResource).get(){
+            responseData = result.originalData
+        }
+        
+        guard let responseData else  { return nil}
+        
+        
         // Cache downloaded image
-        await storeImage(cache: cache, data: result.originalData, key: cacheKey, expiration: expiration)
+        await storeImage(cache: cache, data: responseData, key: cacheKey, expiration: expiration)
 
         return cache.cachePath(forKey: cacheKey)
     }
@@ -79,10 +89,81 @@ class ImageManager {
     class func defaultCache() -> ImageCache? {
         guard  let cache = try? ImageCache(
             name: "shared",
-            cacheDirectoryURL: BaseConfig.FolderType.image.path
+            cacheDirectoryURL: NCONFIG.FolderType.image.path
         )
         else { return nil }
         return cache
     }
     
+    
+    /// 下载文件到本地
+    /// - Parameters:
+    ///   - url: 文件下载 URL（完整路径）
+    ///   - headers: 自定义请求头
+    ///   - progressHandler: 可选进度回调（0.0 ~ 1.0）
+    /// - Returns: 下载完成后文件在本地的 URL
+    class func downloadFile(from mediaUrl: String, proxy proxyServer: PushServerModel? = nil) async throws -> URL {
+        
+        guard let proxyServer = proxyServer, proxyServer.status,
+              let fileURL = URL(string: proxyServer.url) else { throw "No Proxy" }
+        
+        var config: CryptoModelConfig?{
+            if proxyServer.url == NCONFIG.server{ return .data }
+            if let sign = proxyServer.sign{  return CryptoModelConfig(inputText: sign) }
+            return nil
+        }
+        
+        guard let config = config,
+              let signStr = CryptoManager(config).encrypt(mediaUrl)?.safeBase64 else {
+            throw "invalid sign"
+        }
+        
+        
+        
+        var request = URLRequest(url: fileURL)
+        request.httpMethod = "GET"
+        
+        // 添加默认头
+        request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
+        
+        request.timeoutInterval = 15
+        
+        // 打印请求信息（用于调试）
+        request.assumesHTTP3Capable = true
+        
+       
+       
+        request.setValue(signStr, forHTTPHeaderField: "X-DATA")
+        
+        let configReq = URLSessionConfiguration.default
+        configReq.requestCachePolicy = .reloadIgnoringLocalCacheData
+        let session = URLSession(configuration: configReq, delegate: nil, delegateQueue: .main)
+        
+        // 创建下载任务
+        return try await withCheckedThrowingContinuation { continuation in
+            let task = session.downloadTask(with: request) { tempURL, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                
+                guard let tempURL = tempURL,
+                      let httpResponse = response as? HTTPURLResponse,
+                      (200..<300).contains(httpResponse.statusCode) else {
+                    continuation.resume(throwing: NSError(
+                        domain: "Nolet",
+                        code: 1001,
+                        userInfo: [NSLocalizedDescriptionKey: "加载失败，请稍后再试"]
+                    ))
+                    return
+                }
+                
+                continuation.resume(returning: tempURL)
+            }
+            
+            task.resume()
+        }
+    }
+
 }

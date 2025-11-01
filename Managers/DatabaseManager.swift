@@ -16,14 +16,8 @@ public class DatabaseManager {
     public let localPath:URL
     
     private init() throws {
-        
-        
-        guard let local = CONTAINER else {
-            throw NSError(domain: "App", code: 1, userInfo: [NSLocalizedDescriptionKey: "创建容器失败"])
-        }
-        
-        
-        self.localPath = local.appendingPathComponent( BaseConfig.databaseName, conformingTo: .database)
+    
+        self.localPath = CONTAINER.appendingPathComponent( NCONFIG.databaseName, conformingTo: .database)
         
         // DatabasePool 只在这里创建一次
         self.dbQueue = try DatabaseQueue(path: self.localPath.path)

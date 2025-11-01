@@ -19,6 +19,8 @@ extension URL{
         
         return (scheme + "://" + host, nil)
     }
+    
+    var hasHttp:Bool{  scheme?.hasHttp ?? false }
 }
 
 

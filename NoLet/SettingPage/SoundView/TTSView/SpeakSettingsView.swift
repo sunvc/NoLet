@@ -173,7 +173,7 @@ struct SpeakSettingsView:View {
                 Button{
                     guard !manager.speaking else { return }
                     Task.detached(priority: .userInitiated) {
-                        guard let player = await AudioManager.shared.speak(String(localized: "欢迎使用 \(BaseConfig.AppName)"),noCache: true) else {
+                        guard let player = await AudioManager.shared.speak(String(localized: "欢迎使用 \(NCONFIG.AppName)"),noCache: true) else {
                             return
                         }
                         player.play()

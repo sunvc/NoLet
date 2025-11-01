@@ -378,6 +378,6 @@ extension DateFormatter {
 
 #Preview {
     NavigationStack {
-        NoletFileList(rootURL: CONTAINER!)
+        NoletFileList(rootURL: CONTAINER)
     }
 }

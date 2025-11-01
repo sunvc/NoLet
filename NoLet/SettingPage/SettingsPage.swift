@@ -257,7 +257,7 @@ struct SettingsPage: View {
                             }
                         } action: {
                             if  let vipInfo = manager.VipInfo, vipInfo.isVip{
-                                AppManager.openUrl(url: BaseConfig.telegram)
+                                AppManager.openUrl(url: NCONFIG.telegram, .safari)
                             }else{
                                 Task{@MainActor in
                                     manager.sheetPage = .paywall

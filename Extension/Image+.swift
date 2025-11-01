@@ -16,7 +16,7 @@ extension UIImage {
     /// @param complete `success`代表图片保存是否成功,`authorizationStatus`代表授权状态
     func bat_save(intoAlbum albumName: String?, complete: @escaping (_ success: Bool, _ authorizationStatus: PHAuthorizationStatus) -> ()) {
         
-        let albumName = albumName ?? BaseConfig.AppName
+        let albumName = albumName ?? NCONFIG.AppName
         
         let oldStatus = PHPhotoLibrary.authorizationStatus()
         if oldStatus == .authorized{

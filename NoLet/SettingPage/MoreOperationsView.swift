@@ -11,6 +11,7 @@ import SwiftUI
 import Defaults
 import UniformTypeIdentifiers
 import Photos
+
 struct MoreOperationsView: View {
     @EnvironmentObject private var manager:AppManager
 
@@ -236,25 +237,6 @@ struct MoreOperationsView: View {
         }
         .navigationTitle("更多设置")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                
-                Button{
-                    manager.fullPage = .web(BaseConfig.tutorialURL)
-                }label:{
-                    Label {
-                        Text( "使用帮助")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "questionmark.bubble")
-
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, Color.primary)
-                    }
-                }
-                
-            }
-        }
 
     }
 

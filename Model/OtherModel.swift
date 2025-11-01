@@ -178,7 +178,7 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
          status: Bool = false, createDate: Date = .now,
          updateDate: Date = .now,voice: Bool = false, sign:String? = nil) {
         self.id = id
-        self.device = device ?? BaseConfig.deviceInfoString()
+        self.device = device ?? NCONFIG.deviceInfoString()
         self.url = url
         self.key = key
         self.group = group
@@ -198,7 +198,15 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
 	}
 	
 	var color: Color{ status ? .green : .orange }
+    
     var server:String{ self.url + "/" + self.key }
+    
+    static let space = Self( url: String(localized: "无"))
+    
+    static func == (lhs: Self, rhs: Self) -> Bool{
+        lhs.url == rhs.url && lhs.key == rhs.key
+    }
+    
 }
 
 
@@ -264,11 +272,19 @@ struct PushExampleModel:Identifiable {
 // MARK: - ExpirationTime
 
 enum DefaultBrowserModel: String, CaseIterable {
+    case auto
 	case safari
 	case app
 
 	var title:String{
-        self == .safari ? "Safari" : String(localized: "内部")
+        switch self {
+        case .auto:
+            String(localized: "自动")
+        case .safari:
+            "Safari"
+        case .app:
+            String(localized: "内部")
+        }
 	}
 
 }

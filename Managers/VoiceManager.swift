@@ -505,7 +505,7 @@ class VoiceManager {
         static func FileName(text:String) throws -> URL{
             let fileName = text.sha256()
             
-            guard let group = BaseConfig.getDir(.voice) else {
+            guard let group = NCONFIG.getDir(.voice) else {
                 throw NSError(domain: "writeToFile", code: 1, userInfo: [
                     "msg":"No Group"
                 ])

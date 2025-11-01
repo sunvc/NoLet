@@ -145,7 +145,7 @@ struct ChangeKeyCenterView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.accentColor)
                     .onTapGesture {
-                        manager.fullPage = .web(BaseConfig.delpoydoc)
+                        manager.router.append(.web(url: NCONFIG.delpoydoc.url))
                         Haptic.impact()
                     }
                 
@@ -171,7 +171,7 @@ struct ChangeKeyCenterView: View {
             if showScan{
                 ScanView{ code in
                     if let data = AppManager.shared.HandlerOpenUrl(url: code),
-                       data.hasHttp(), let url = URL(string: data),
+                       data.hasHttp, let url = URL(string: data),
                        let scheme = url.scheme, let host = url.host(){
                         self.keyHost = scheme + "://" + host
                         self.keyName = url.path()
@@ -289,7 +289,7 @@ struct ChangeKeyCenterView: View {
                 try? await Task.sleep(for: .seconds(0.5))
                 
                 
-                guard keyHost.hasHttp(), !keyName.isEmpty else {
+                guard keyHost.hasHttp, !keyName.isEmpty else {
                     await view.next(.fail)
                     Toast.info(title: "参数错误")
                      DispatchQueue.main.async {
@@ -301,7 +301,7 @@ struct ChangeKeyCenterView: View {
                 
                 await view.next(.loading(1))
                 
-                if keyHost.contains(BaseConfig.server){
+                if keyHost.contains(NCONFIG.server){
                     self.selectCrypto = nil
                 }
                 
@@ -358,7 +358,7 @@ struct ChangeKeyCenterView: View {
                     return
                 }
 
-                if keyHost.contains(BaseConfig.server){
+                if keyHost.contains(NCONFIG.server){
                     self.selectCrypto = nil
                 }
                 

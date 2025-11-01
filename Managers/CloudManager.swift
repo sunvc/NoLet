@@ -77,7 +77,7 @@ class CloudManager {
     static let shared = CloudManager()
     
     private init() {}
-    private let container = CKContainer(identifier: BaseConfig.icloudName)
+    private let container = CKContainer(identifier: NCONFIG.icloudName)
     
     private var database: CKDatabase {
         container.publicCloudDatabase

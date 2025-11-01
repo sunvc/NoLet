@@ -39,7 +39,7 @@ struct PttMessageModel: Codable, FetchableRecord, PersistableRecord, Identifiabl
     }
     
     func filePath() -> URL?{
-        BaseConfig.getDir(.ptt)?.appendingPathComponent(file)
+        NCONFIG.getDir(.ptt)?.appendingPathComponent(file)
     }
     
 }

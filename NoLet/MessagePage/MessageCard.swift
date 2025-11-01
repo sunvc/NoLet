@@ -117,7 +117,7 @@ struct MessageCard: View {
                             view
                                 .onTapGesture {
                                     if let url = message.url, let fileUrl = URL(string: url){
-                                        AppManager.openUrl(url: fileUrl)
+                                        AppManager.openUrl(url: fileUrl, .safari)
 
                                     }
                                     Haptic.impact()
@@ -126,7 +126,7 @@ struct MessageCard: View {
                             view
                                 .VButton{ _ in
                                     if let url = message.url, let fileUrl = URL(string: url){
-                                        AppManager.openUrl(url: fileUrl)
+                                        AppManager.openUrl(url: fileUrl, .safari)
 
                                     }
                                     return true

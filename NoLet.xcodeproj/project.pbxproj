@@ -451,6 +451,7 @@
 			membershipExceptions = (
 				cryptoManager.swift,
 				ImageManager.swift,
+				NetworkManager.swift,
 				VoiceManager.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
@@ -1447,6 +1448,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to access your microphone for pushtalk";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo album！";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photo library to select pictures and send notifications";
@@ -1495,6 +1497,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to access your microphone for pushtalk";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo album！";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photo library to select pictures and send notifications";

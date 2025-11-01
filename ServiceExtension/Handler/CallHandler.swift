@@ -13,7 +13,7 @@ import LiveCommunicationKit
 
 class CallHandler: NotificationContentHandler {
     /// 铃声文件夹，扩展访问不到主APP中的铃声，需要先共享铃声文件
-    let soundsDirectoryUrl = BaseConfig.getDir(.sounds)
+    let soundsDirectoryUrl = NCONFIG.getDir(.sounds)
     
     
     func handler(identifier: String, content bestAttemptContent: UNMutableNotificationContent) async throws -> UNMutableNotificationContent {
@@ -60,7 +60,7 @@ extension CallHandler{
         guard let soundsDirectoryUrl else { return nil }
         
         // 已经存在处理过的长铃声，则直接返回
-        let longSoundName = "\(BaseConfig.longSoundPrefix).\(soundName).\(soundType)"
+        let longSoundName = "\(NCONFIG.longSoundPrefix).\(soundName).\(soundType)"
         let longSoundPath = soundsDirectoryUrl.appendingPathComponent(longSoundName)
         if FileManager.default.fileExists(atPath: longSoundPath.path) { return longSoundPath }
         
@@ -84,7 +84,7 @@ extension CallHandler{
         guard let soundsDirectoryUrl else {
             return nil
         }
-        let longSoundName = "\(BaseConfig.longSoundPrefix).\(inputFile.lastPathComponent)"
+        let longSoundName = "\(NCONFIG.longSoundPrefix).\(inputFile.lastPathComponent)"
         let longSoundPath = soundsDirectoryUrl.appendingPathComponent(longSoundName)
         
         do {

@@ -27,17 +27,18 @@ enum SubPage: Equatable{
     case customKey
     case scan
     case appIcon
-    case web(String)
+    case web(URL)
     case cloudIcon
     case paywall
     case quickResponseCode(text:String,title: String?,preview: String?)
     case crypto(CryptoModelConfig)
     case none
     case share(contents: [Any])
+    case nearby
     
 }
 
-enum RouterPage: Hashable, Equatable {
+enum RouterPage: Hashable{
     case example
     case messageDetail(String)
     case assistant
@@ -53,8 +54,38 @@ enum RouterPage: Hashable, Equatable {
     case dataSetting
     case serverInfo(server: PushServerModel)
     case files(url: URL)
+    case web(url: URL)
 }
 
+
+extension RouterPage: Equatable {
+    static func == (lhs: RouterPage, rhs: RouterPage) -> Bool {
+        switch (lhs, rhs) {
+        case (.example, .example),
+             (.assistant, .assistant),
+             (.sound, .sound),
+             (.crypto, .crypto),
+             (.server, .server),
+             (.more, .more),
+             (.tts, .tts),
+             (.pushtalk, .pushtalk),
+             (.about, .about),
+             (.dataSetting, .dataSetting):
+            return true
+
+        case (.messageDetail, .messageDetail),
+             (.assistantSetting, .assistantSetting),
+             (.widget, .widget),
+             (.serverInfo, .serverInfo),
+             (.files, .files),
+             (.web, .web):
+            return true
+
+        default:
+            return false
+        }
+    }
+}
 
 
 

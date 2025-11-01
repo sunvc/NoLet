@@ -47,8 +47,8 @@ struct PayWallHighView: View {
             }
             .subscriptionStorePickerItemBackground(.ultraThinMaterial)
             .storeButton(.visible, for: .restorePurchases)
-            .subscriptionStorePolicyDestination(url: URL(string: BaseConfig.privacyURL)!, for: .privacyPolicy)
-            .subscriptionStorePolicyDestination(url: URL(string: BaseConfig.userAgreement)!, for: .termsOfService)
+            .subscriptionStorePolicyDestination(url: URL(string: NCONFIG.privacyURL)!, for: .privacyPolicy)
+            .subscriptionStorePolicyDestination(url: URL(string: NCONFIG.userAgreement)!, for: .termsOfService)
             .onInAppPurchaseStart { product in
                 NLog.log(" Show Loading Screen Purchasing \(product.displayName)")
             }
@@ -161,7 +161,7 @@ struct PayWallHighView: View {
             /// Replace with your App Information
             VStack(spacing: 6) {
 
-                Text(BaseConfig.AppName)
+                Text(NCONFIG.AppName)
                     .font(.largeTitle.bold())
                 
                 

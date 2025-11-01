@@ -1,5 +1,5 @@
 //
-//  BaseConfig.swift
+//  NCONFIG.swift
 //  NoLet
 //
 //  Created by uuneo 2024/10/25.
@@ -10,9 +10,15 @@ import UIKit
 import UniformTypeIdentifiers
 
 
-let CONTAINER = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BaseConfig.groupName)
+let CONTAINER = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
 
-class BaseConfig {
+typealias NURL = String
+
+extension NURL{
+    var url:URL{  URL(string: self)! }
+}
+
+class NCONFIG {
 
 
     static let appSymbol       = "NoLet"
@@ -27,24 +33,24 @@ class BaseConfig {
     static let server = "https://wzs.app"
 #endif
     
-    private static let wikiServer = "https://wiki.wzs.app"
+    private static let wikiServer: NURL = "https://wiki.wzs.app"
   
-    static let logoImage   = wikiServer + "/_media/egglogo.png"
-    static let ogImage     = wikiServer + "/_media/og.png"
-    static let delpoydoc   = docServer + "deploy"
-    static let privacyURL  = docServer + "policy"
-    static let tutorialURL = docServer + "tutorial"
-    static let encryURL    = docServer + "encryption"
+    static let logoImage: NURL          = wikiServer + "/_media/egglogo.png"
+    static let ogImage: NURL            = wikiServer + "/_media/og.png"
+    static let delpoydoc: NURL          = docServer + "deploy"
+    static let privacyURL: NURL         = docServer + "policy"
+    static let tutorialURL: NURL        = docServer + "tutorial"
+    static let encryURL: NURL           = docServer + "encryption"
     
-    static var docServer: String{
+    static var docServer: NURL {
         wikiServer + String(localized: "NoletLanguageLocalCode")
     }
     
-    static let userAgreement   = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
-    static let appSource       = "https://github.com/sunvc/NoLet"
-    static let serverSource    = "https://github.com/sunvc/NoLets"
-    static let telegram        = "https://t.me/PushToMe"
-    static let appStore        = "https://apps.apple.com/app/id6615073345"
+    static let userAgreement: NURL   = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+    static let appSource: NURL       = "https://github.com/sunvc/NoLet"
+    static let serverSource: NURL    = "https://github.com/sunvc/NoLets"
+    static let telegram: NURL        = "https://t.me/PushToMe"
+    static let appStore: NURL        = "https://apps.apple.com/app/id6615073345"
     
     static var bundleIdentifier: String {
         Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
@@ -56,17 +62,41 @@ class BaseConfig {
         ?? Self.appSymbol
     }
 
-    static var configPath: URL?{
-        CONTAINER?.appendingPathComponent("Library/Preferences", isDirectory: true)
-            .appendingPathComponent( BaseConfig.groupName + ".plist", conformingTo: .propertyList )
+    static var configPath: URL{
+        CONTAINER.appendingPathComponent("Library/Preferences", isDirectory: true)
+            .appendingPathComponent( NCONFIG.groupName + ".plist", conformingTo: .propertyList )
     }
 
-    static var databasePath: URL?{
-        CONTAINER?.appendingPathComponent(BaseConfig.databaseName)
+    static var databasePath: URL{
+        CONTAINER.appendingPathComponent(NCONFIG.databaseName)
     }
 
     static var testData:String{
         "{\"title\": \"\(String(localized: "这是一个加密示例"))\",\"body\": \"\(String(localized: "这是加密的正文部分"))\", \"sound\": \"typewriter\"}"
+    }
+    
+    static var customUserAgent: String {
+        let info = Bundle.main.infoDictionary
+        
+        let appName     = NCONFIG.appSymbol
+        let appVersion  = info?["CFBundleShortVersionString"] as? String ?? "0.0"
+        let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
+        
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        let deviceModel = withUnsafePointer(to: &systemInfo.machine) {
+            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
+                String(cString: $0)
+            }
+        }
+       
+        let systemVer   = UIDevice.current.systemVersion
+        let locale      = Locale.current
+        let regionCode  = locale.region?.identifier ?? "CN"   // e.g. CN
+        let language    = locale.language.languageCode?.identifier ?? "en" // e.g. zh
+        
+        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
     }
 
     
@@ -80,7 +110,7 @@ class BaseConfig {
         
         var name:String{  self.rawValue }
         
-        var path: URL{  BaseConfig.getDir(self)! }
+        var path: URL{  NCONFIG.getDir(self)! }
         
         func all(files: Bool = false) -> [URL] {
             if files {
@@ -93,7 +123,7 @@ class BaseConfig {
         }
         
         func files() -> [URL]{
-            BaseConfig.files(in: self.path)
+            NCONFIG.files(in: self.path)
         }
     }
     
@@ -103,9 +133,7 @@ class BaseConfig {
             return FileManager.default.temporaryDirectory
         }
         
-        guard let containerURL = CONTAINER else { return nil }
-        
-        let voicesDirectory = containerURL.appendingPathComponent(name.rawValue)
+        let voicesDirectory = CONTAINER.appendingPathComponent(name.rawValue)
         
         // If the directory doesn't exist, create it
         if !FileManager.default.fileExists(atPath: voicesDirectory.path) {
@@ -121,10 +149,9 @@ class BaseConfig {
     
     class func files(in folder: URL) -> [URL] {
         
-        guard let containerURL = CONTAINER else { return [] }
 
         do {
-            let items = try FileManager.default.contentsOfDirectory(at: containerURL,
+            let items = try FileManager.default.contentsOfDirectory(at: CONTAINER,
                                                             includingPropertiesForKeys: [.isDirectoryKey],
                                                             options: [.skipsHiddenFiles])
             return items.filter {
@@ -167,3 +194,4 @@ class BaseConfig {
 enum NoletError: Error{
     case basic(_ msg: String)
 }
+

@@ -100,5 +100,9 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_nolet._tcp</string>
+	</array>
 </dict>
 </plist>

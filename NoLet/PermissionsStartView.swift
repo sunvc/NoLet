@@ -87,7 +87,7 @@ struct PermissionsStartView: View {
         if useCustomServer && !appManager.customServerURL.isEmpty {
             return appManager.customServerURL
         } else {
-            return BaseConfig.server
+            return NCONFIG.server
         }
     }
 
@@ -423,7 +423,7 @@ struct PermissionsStartView: View {
             return url.scheme != nil && url.host != nil
         }
 
-        return urlString.hasHttp()
+        return urlString.hasHttp
     }
 
 

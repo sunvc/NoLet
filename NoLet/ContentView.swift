@@ -215,7 +215,8 @@ struct ContentView: View {
                 }
             case .web(let url):
                 SFSafariView(url: url).ignoresSafeArea()
-
+            case .nearby:
+                NearbyNoLetView()
             default:
                 EmptyView().onAppear{
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1){
@@ -321,12 +322,19 @@ extension View{
 
                     case .files(let url):
                         NoletFileList(rootURL: url)
-                           
-
+                    case .web(let url):
+              
+                        SFSafariView(url: url){
+                            manager.router.removeLast()
+                            Haptic.impact()
+                        }
+                        .ignoresSafeArea()
+                        .navigationBarBackButtonHidden()
+                        
                     }
                 }
                 .toolbar(.hidden, for: .tabBar)
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode( .large)
                 .environmentObject(manager)
                 
             }

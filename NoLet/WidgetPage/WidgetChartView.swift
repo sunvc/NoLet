@@ -99,7 +99,7 @@ struct WidgetChartView:View {
 
             ToolbarItem(placement: .keyboard) {
                 Button {
-                    if !widgetUrl.hasHttp(){  self.widgetUrl = "" }
+                    if !widgetUrl.hasHttp{  self.widgetUrl = "" }
                     self.showEdit.toggle()
                 } label: {
                     Text("完成")

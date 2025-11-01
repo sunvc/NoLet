@@ -8,7 +8,7 @@
 @_exported import Defaults
 import Foundation
 
-let DEFAULTSTORE = UserDefaults(suiteName: BaseConfig.groupName)!
+let DEFAULTSTORE = UserDefaults(suiteName: NCONFIG.groupName)!
 
 #if DEBUG
 private var uniquekeys: Set<NoletKey> = []
@@ -46,11 +46,12 @@ extension Defaults.Keys{
     static let voicesViewShow = Key<Bool>(.voicesViewShow, true)
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
     static let widgetURL = Key<String>(.widgetURL, "")
-
+    
     static let feedbackSound = Key<Bool>(.feedbackSound, true)
     static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
     static let limitMessageLine = Key<Int>(.limitMessageLine, 6)
-
+    static let nearbyShow = Key<Bool>(.nearbyShow, false)
+   
 }
 
 enum NoletKey:String, CaseIterable{
@@ -91,4 +92,6 @@ enum NoletKey:String, CaseIterable{
     case limitScanningArea
     case limitMessageLine
     case scanTypes
+    case proxyDownloadServer
+    case nearbyShow
 }

@@ -19,6 +19,8 @@ struct DataSettingView: View {
 
     @Default(.messageExpiration) var messageExpiration
     @Default(.imageSaveDays) var imageSaveDays
+    @Default(.proxyServer) var proxyServer
+    @Default(.servers) var servers
 
     @State private var showImport:Bool = false
     @State private var showexportLoading:Bool = false
@@ -38,6 +40,9 @@ struct DataSettingView: View {
     @State private var addLoading:Bool = false
     
     @State private var exampleValue = 10000.0
+    var pickerServers:[PushServerModel]{
+        [ PushServerModel.space] + servers
+    }
     
     var body: some View {
         List{
@@ -127,11 +132,8 @@ struct DataSettingView: View {
                     
                     Section{
                         Button{
-                            if let database = BaseConfig.databasePath{
-                                AppManager.shared.sheetPage = .share(contents: [database])
-                                self.calculateSize()
-                            }
-                            
+                            AppManager.shared.sheetPage = .share(contents: [NCONFIG.databasePath])
+                            self.calculateSize()
                         }label:{
                             Label("数据库文件", systemImage: "internaldrive")
                                 .symbolRenderingMode(.palette)
@@ -198,6 +200,35 @@ struct DataSettingView: View {
 
 
             Section{
+                
+                
+      
+                
+                Picker(selection: $proxyServer) {
+                    
+                    ForEach(pickerServers, id: \.id){server in
+                        Text(server.name).tag(server)
+                    }
+                    
+                }label:{
+  
+                    Label {
+                        Text("下载代理")
+                    } icon: {
+                        Image(systemName: "network.badge.shield.half.filled")
+                            .scaleEffect(0.9)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle( proxyServer.status ? .green : .red, Color.primary)
+                            .symbolEffect(.pulse, delay: 1)
+                    }
+                }
+                
+                
+                .pickerStyle(MenuPickerStyle())
+       
+                
+                
+                
                 Picker(selection: $messageExpiration) {
                     ForEach(ExpirationTime.allCases, id: \.self){ item in
                         Text(item.title)
@@ -259,10 +290,7 @@ struct DataSettingView: View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    if let container = CONTAINER{
-                        manager.router = [.dataSetting, .files(url: container)]
-                    }
-                    
+                    manager.router = [.dataSetting, .files(url: CONTAINER)]
                 }
                   
 
@@ -376,9 +404,9 @@ struct DataSettingView: View {
                                                       action: {
                         self.showDriveCheckLoading = true
                         if let cache = ImageManager.defaultCache(),
-                           let fileUrl = BaseConfig.getDir(.sounds),
-                           let voiceUrl = BaseConfig.getDir(.voice),
-                           let cacheUrl = BaseConfig.getDir(.tem) {
+                           let fileUrl = NCONFIG.getDir(.sounds),
+                           let voiceUrl = NCONFIG.getDir(.voice),
+                           let cacheUrl = NCONFIG.getDir(.tem) {
                             cache.clearDiskCache()
                             manager.clearContentsOfDirectory(at: fileUrl)
                             manager.clearContentsOfDirectory(at: voiceUrl)
@@ -444,24 +472,21 @@ struct DataSettingView: View {
 
 
     fileprivate func resetApp(){
-        if let group = CONTAINER{
-            manager.clearContentsOfDirectory(at: group)
-            exit(0)
-        }
-
+        manager.clearContentsOfDirectory(at: CONTAINER)
+        exit(0)
     }
     
 
 
     func calculateSize(){
-        if let group = CONTAINER,
-           let soundsUrl = BaseConfig.getDir(.sounds),
-           let imageUrl = BaseConfig.getDir(.image),
-           let voiceUrl = BaseConfig.getDir(.voice),
-           let cacheFileUrl = BaseConfig.getDir(.tem){
+        if
+           let soundsUrl = NCONFIG.getDir(.sounds),
+           let imageUrl = NCONFIG.getDir(.image),
+           let voiceUrl = NCONFIG.getDir(.voice),
+           let cacheFileUrl = NCONFIG.getDir(.tem){
             
            
-            self.totalSize = manager.calculateDirectorySize(at: group)
+            self.totalSize = manager.calculateDirectorySize(at: CONTAINER)
 
             self.cacheSize =  manager.calculateDirectorySize(at: soundsUrl) +  manager.calculateDirectorySize(at: imageUrl) +
             manager.calculateDirectorySize(at: voiceUrl) +
@@ -482,8 +507,8 @@ struct DataSettingView: View {
                 switch url.pathExtension{
                 case "plist":
                     let raw = try Data(contentsOf: url)
-                    if let data = CryptoManager(.data).decrypt(data: raw),  let path = BaseConfig.configPath{
-                        try data.write(to: path)
+                    if let data = CryptoManager(.data).decrypt(data: raw){
+                        try data.write(to: NCONFIG.configPath)
                     }else{
                         throw NoletError.basic("解密失败")
                     }
@@ -492,11 +517,7 @@ struct DataSettingView: View {
                     }
                 case "sqlite":
                     let raw = try Data(contentsOf: url)
-                    if let path = BaseConfig.databasePath{
-                        try raw.write(to: path)
-                    }else{
-                        throw NoletError.basic("导入失败")
-                    }
+                    try raw.write(to: NCONFIG.databasePath)
                     await MainActor.run {
                         self.restartAppShow.toggle()
                     }

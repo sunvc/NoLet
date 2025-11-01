@@ -100,11 +100,11 @@ class NetworkManager: NSObject, URLSessionDataDelegate {
         request.httpMethod = method.method  // .get 或 .post
         
         
-        if let signStr = signature(url: url){
+        if let signStr = signature(url: url, data: "\(Int(Date().timeIntervalSince1970))"){
             request.setValue( signStr, forHTTPHeaderField:"X-Signature")
         }
         
-        request.setValue(self.customUserAgentDetailed(), forHTTPHeaderField: "User-Agent" )
+        request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent" )
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
         request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
 
@@ -153,7 +153,7 @@ class NetworkManager: NSObject, URLSessionDataDelegate {
     }
 
 
-    func signature(url: String) -> String?{
+    func signature(url: String, data: String) -> String?{
         
         var config:CryptoModelConfig?{
             
@@ -163,46 +163,16 @@ class NetworkManager: NSObject, URLSessionDataDelegate {
             
             let baseURL = "\(scheme)://\(host)"
             guard let data = Defaults[.servers].first(where: {$0.url == baseURL}),
-               let sign = data.sign else {
+                  let sign = data.sign else {
                 return .data
             }
             return CryptoModelConfig(inputText: sign) ?? .data
         }
         guard let config else{ return nil }
         
-        return CryptoManager(config)
-            .encrypt("\(Int(Date().timeIntervalSince1970))")?
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
+        return CryptoManager(config).encrypt(data)?.safeBase64
     }
 
-    
-
-    func customUserAgentDetailed() -> String {
-        let info = Bundle.main.infoDictionary
-        
-        let appName     = BaseConfig.appSymbol
-        let appVersion  = info?["CFBundleShortVersionString"] as? String ?? "0.0"
-        let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
-        
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        
-        let deviceModel = withUnsafePointer(to: &systemInfo.machine) {
-            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                String(cString: $0)
-            }
-        }
-       
-        let systemVer   = UIDevice.current.systemVersion
-        
-        let locale      = Locale.current
-        let regionCode  = locale.region?.identifier ?? "XX"   // e.g. CN
-        let language    = locale.language.languageCode?.identifier ?? "en" // e.g. zh
-        
-        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
-    }
     
     
     enum APIError:Error{
@@ -244,7 +214,7 @@ extension NetworkManager {
         
         // 设置 Content-Type 为 multipart/form-data
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
-        request.setValue(self.customUserAgentDetailed(), forHTTPHeaderField: "User-Agent")
+        request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
         request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
         
         // 生成表单数据
@@ -271,7 +241,7 @@ extension NetworkManager {
         request.httpBody = body
         
         // 设置请求超时时间
-        request.timeoutInterval = 60
+        request.timeoutInterval = 15
         
         // 打印请求信息（用于调试）
         NLog.log(request)
@@ -281,6 +251,7 @@ extension NetworkManager {
         
         return data
     }
+    
 }
 
 extension NetworkManager {
@@ -292,7 +263,5 @@ extension NetworkManager {
         // 这里获取响应信息
 #endif
     }
-    
-    
 
 }

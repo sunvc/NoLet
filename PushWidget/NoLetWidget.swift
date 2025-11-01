@@ -10,7 +10,7 @@ import SwiftUI
 import Charts
 
 
-let UserStore = UserDefaults(suiteName: BaseConfig.groupName)!
+let UserStore = UserDefaults(suiteName: NCONFIG.groupName)!
 
 
 struct SimpleEntry: TimelineEntry {

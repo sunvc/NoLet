@@ -176,24 +176,41 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
 extension AppManager{
     /// open app settings
     class func openSetting(){
-        AppManager.openUrl(url: URL(string: UIApplication.openSettingsURLString)!)
+        AppManager.openUrl(url: URL(string: UIApplication.openSettingsURLString)!, .safari)
     }
     /// Open a URL or handle a fallback if the URL cannot be opened
     /// - Parameters:
     ///   - url: The URL to open
     ///   - unOpen: A closure called when the URL cannot be opened, passing the URL as an argument
-    class func openUrl(url: URL) {
-        
-        if url.absoluteString.hasHttp() && Defaults[.defaultBrowser] == .app {
-            AppManager.shared.fullPage = .web(url.absoluteString)
-        } else {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    class func openUrl(url: URL, _ mode: DefaultBrowserModel) {
+        guard url.absoluteString.hasHttp else {
+            // 非 http/https 直接打开
+            UIApplication.shared.open(url, options: [:])
+            return
+        }
+
+        // 优先尝试 Universal Link
+        UIApplication.shared.open(url, options: [.universalLinksOnly: true]) { success in
+            guard !success else { return } // 成功唤起 App，无需 fallback
+
+            switch (Defaults[.defaultBrowser], mode) {
+            case (.app, _):
+                AppManager.shared.fullPage = .web(url)
+            case (.safari, _):
+                UIApplication.shared.open(url, options: [:])
+            case (.auto, .app):
+                AppManager.shared.fullPage = .web(url)
+            case (.auto, .safari):
+                UIApplication.shared.open(url, options: [:])
+            case (.auto, .auto):
+                UIApplication.shared.open(url, options: [:])
+            }
         }
     }
     
-    class func openUrl(url: String) {
+    class func openUrl(url: String, _ mode:DefaultBrowserModel) {
         if let url = URL(string: url) {
-            self.openUrl(url: url)
+            self.openUrl(url: url, mode)
         }
     }
     
@@ -288,7 +305,7 @@ extension AppManager{
             
             switch host {
             case .server:
-                if let url = params["text"],let urlResponse = URL(string: url), url.hasHttp() {
+                if let url = params["text"],let urlResponse = URL(string: url), url.hasHttp {
                     let (result, key) = urlResponse.findNameAndKey()
                     return .server(url: result, key:key,group: params["group"], sign: params["sign"])
                 }
@@ -343,7 +360,7 @@ extension AppManager{
     }
     
     static func createDatabaseFileTem() -> URL?{
-        guard let path = BaseConfig.configPath else{ return nil }
+        let path = NCONFIG.configPath
         do{
             let data = try Data(contentsOf: path)
             
@@ -444,6 +461,10 @@ extension AppManager{
     
     func register(server:PushServerModel, reset:Bool = false, msg:Bool = false) async -> PushServerModel{
         var server = server
+        
+        if  server.name == "uuneo.com" || server.name == "push.uuneo.com"{
+            server.url = NCONFIG.server
+        }
         
         do{
             

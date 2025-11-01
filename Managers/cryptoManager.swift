@@ -80,10 +80,7 @@ struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable{
     }
     
     static func ==(lls:CryptoModelConfig, rls: CryptoModelConfig) -> Bool{
-        return lls.algorithm == rls.algorithm &&
-        lls.mode == rls.mode &&
-        lls.key == rls.key &&
-        lls.iv == rls.iv
+        return lls.algorithm == rls.algorithm && lls.mode == rls.mode && lls.key == rls.key 
     }
     
 }
@@ -202,7 +199,15 @@ final class CryptoManager {
 			return nil
 		}
 	}
-	
 
 }
 
+
+extension String{
+    var safeBase64: String{
+        self
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+    }
+}

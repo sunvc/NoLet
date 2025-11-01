@@ -21,7 +21,7 @@ struct ExampleView: View {
     @State private var showCustomMode:Bool = false
     
     var currentServer:PushServerModel{
-        servers.count > pickerSelection ? servers[pickerSelection] : PushServerModel(url: BaseConfig.server)
+        servers.count > pickerSelection ? servers[pickerSelection] : PushServerModel(url: NCONFIG.server)
     }
     
     @Default(.exampleCustom) var params
@@ -133,7 +133,7 @@ struct ExampleView: View {
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
                             .VButton( onRelease: { _ in
-                                if resultUrl.hasHttp(), let url = URL(string: resultUrl) {
+                                if resultUrl.hasHttp, let url = URL(string: resultUrl) {
                                     UIApplication.shared.open(url)
                                 }
                                 return true
@@ -373,7 +373,7 @@ struct ExampleView: View {
 extension ExampleView{
     func createExample(cryptoData:CryptoModelConfig)-> [PushExampleModel]{
         
-        let ciphertext = CryptoManager(cryptoData).encrypt(BaseConfig.testData)?.replacingOccurrences(of: "+", with: "%2B") ?? ""
+        let ciphertext = CryptoManager(cryptoData).encrypt(NCONFIG.testData)?.replacingOccurrences(of: "+", with: "%2B") ?? ""
         
         return [
             
@@ -426,7 +426,7 @@ extension ExampleView{
                                 },
                              footer: Spacer(),
                              title: String(localized:"自定义icon"),
-                             params:  "\(String(localized: "推送内容"))?icon=\(BaseConfig.logoImage)",
+                             params:  "\(String(localized: "推送内容"))?icon=\(NCONFIG.logoImage)",
                              index: 5),
             
             PushExampleModel(header: Text("可对通知设置中断级别"),
@@ -457,7 +457,7 @@ extension ExampleView{
             PushExampleModel(header: Text( "下拉消息会显示图片"),
                              footer: Text( "携带一个image,会自动下载缓存"),
                              title:  String(localized: "携带图片"),
-                             params:  "?title=\(String(localized: "标题" ))&body=\(String(localized: "内容" ))&image=\(BaseConfig.logoImage)",
+                             params:  "?title=\(String(localized: "标题" ))&body=\(String(localized: "内容" ))&image=\(NCONFIG.logoImage)",
                              index: 9),
 
             PushExampleModel(header:
@@ -508,7 +508,7 @@ extension ExampleView{
         
         let param = params.createParams()
         if let url = URL(string: param){
-            AppManager.openUrl(url: url)
+            AppManager.openUrl(url: url, .safari)
         }else{
             Toast.error(title: "参数错误")
         }

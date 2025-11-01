@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 if !manager.customServerURL.isEmpty{
                     _ = await manager.appendServer(server: PushServerModel(url: manager.customServerURL))
                 }else{
-                    _ = await manager.appendServer(server: PushServerModel(url: BaseConfig.server))
+                    _ = await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
                 }
 
             }
@@ -121,7 +121,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func notificatonHandler(userInfo: [AnyHashable : Any]){
         if let urlStr = userInfo[Params.url.name] as? String, let url = URL(string: urlStr) {
-            AppManager.openUrl(url: url)
+            AppManager.openUrl(url: url, .safari)
         }
     }
     

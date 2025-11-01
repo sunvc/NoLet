@@ -39,16 +39,12 @@ class NoLetSafariViewController: SFSafariViewController {
 
 
 struct SFSafariView: UIViewControllerRepresentable {
-	let url: String
+	let url: URL
 	var onDismiss: (() -> Void)? // 闭包处理关闭事件
 
 	func makeUIViewController(context: Context) -> SFSafariViewController {
-        let requestUrl: URL = URL(string: url) ?? URL(
-            string: BaseConfig.server
-        )!
-		let sfVC = NoLetSafariViewController(url: requestUrl)
+		let sfVC = NoLetSafariViewController(url: url)
 		sfVC.delegate = context.coordinator // 设置委托
-
 		return sfVC
 	}
 

@@ -35,7 +35,7 @@ struct AvatarView: View {
     @ViewBuilder
     private func contentView(size: CGSize) -> some View {
         if let icon, customIcon.isEmpty {
-            if icon.hasHttp() {
+            if icon.hasHttp {
                 if let image {
                     KFImage(image)
                         .resizable()

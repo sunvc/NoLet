@@ -65,7 +65,7 @@ struct PTTChannel:Identifiable,Equatable, Codable{
     }
     
     func filePath(userID: String) -> URL?{
-        BaseConfig.getDir(.ptt)?.appendingPathComponent(fileName(userID: userID))
+        NCONFIG.getDir(.ptt)?.appendingPathComponent(fileName(userID: userID))
     }
     
     func hex() -> String{

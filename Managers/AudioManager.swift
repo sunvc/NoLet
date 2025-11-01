@@ -71,7 +71,7 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
         // 加载 App Group 共享目录中的自定义 caf 音频资源
         let customSounds: [URL] = {
             // 获取共享目录路径
-            guard let soundsDirectoryUrl = BaseConfig.getDir(.sounds) else { return [] }
+            guard let soundsDirectoryUrl = NCONFIG.getDir(.sounds) else { return [] }
             
             // 获取指定后缀（caf），排除长音前缀的文件
             var urlemp = self.getFilesInDirectory(directory: soundsDirectoryUrl.path(), suffix: "caf")
@@ -112,7 +112,7 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
             // 过滤符合条件的文件，并转换为完整的 URL
             return files.compactMap { file -> URL? in
                 // 仅保留指定后缀，且排除带有“长音前缀”的文件
-                if file.lowercased().hasSuffix(suffix.lowercased()), !file.hasPrefix(BaseConfig.longSoundPrefix) {
+                if file.lowercased().hasSuffix(suffix.lowercased()), !file.hasPrefix(NCONFIG.longSoundPrefix) {
                     // 构造完整文件路径 URL
                     return URL(fileURLWithPath: directory).appendingPathComponent(file)
                 }
@@ -131,7 +131,7 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
         maxNameLength:Int = 13
      ) {
         // 获取 App Group 的共享铃声目录路径
-        guard let groupDirectoryUrl = BaseConfig.getDir(.sounds) else { return }
+        guard let groupDirectoryUrl = NCONFIG.getDir(.sounds) else { return }
 
 
         var fileName: String{
@@ -166,13 +166,13 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
     
     func deleteSound(url: URL) {
         // 获取 App Group 中的共享铃声目录
-        guard let soundsDirectoryUrl = BaseConfig.getDir(.sounds) else { return }
+        guard let soundsDirectoryUrl = NCONFIG.getDir(.sounds) else { return }
         
         // 删除本地 sounds 目录下的铃声文件
         try? manager.removeItem(at: url)
         
         // 构造共享目录下对应的长铃声文件路径（带有前缀）
-        let groupSoundUrl = soundsDirectoryUrl.appendingPathComponent("\(BaseConfig.longSoundPrefix).\(url.lastPathComponent)")
+        let groupSoundUrl = soundsDirectoryUrl.appendingPathComponent("\(NCONFIG.longSoundPrefix).\(url.lastPathComponent)")
         
         // 删除共享目录中的铃声文件（如果存在）
         try? manager.removeItem(at: groupSoundUrl)

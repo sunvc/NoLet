@@ -50,7 +50,7 @@ struct CryptoConfigListView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button{
-                    AppManager.openUrl(url: BaseConfig.encryURL)
+                    manager.router.append(.web(url: NCONFIG.encryURL.url))
                     Haptic.impact()
                 }label:{
                     Label {
@@ -210,7 +210,7 @@ struct CryptoConfigListView: View {
         
         
         return """
- # Documentation: \(BaseConfig.encryURL)
+ # Documentation: \(NCONFIG.encryURL)
  # python demo: \(String(localized: "使用AES加密数据，并发送到服务器"))
  # pip3 install pycryptodome
  
@@ -222,7 +222,7 @@ struct CryptoConfigListView: View {
 
  
  # \(String(localized: "JSON数据"))
- json_example = json.dumps(\(BaseConfig.testData))
+ json_example = json.dumps(\(NCONFIG.testData))
  
  # \(String(localized: "KEY长度:")) \(tips)
  key = b"\(config.key)"
