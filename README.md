@@ -13,7 +13,7 @@
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-16.2-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
   </tr>
@@ -55,15 +55,10 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 ## 浏览器扩展
 
-### Safari扩展
+| Safari | Chrome | Firefox | Edge |
+|-------|--------|-------|--------|
+| 系统自带 | [安装扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [安装扩展](https://addons.mozilla.org/firefox/addon/nolet/) | [安装扩展](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
-* Safari扩展无需单独安装，App自带
-* 在iOS设备上打开App后，进入设置页面，按照提示启用Safari扩展
-* 启用后，浏览网页时可以直接分享内容到你的设备
-
-### Chrome扩展
-
-* [安装Chrome扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
 * 安装后点击扩展图标，输入你的推送密钥进行配置
 * 支持一键发送当前页面、选中文本或图片到你的设备
 * 特别适合将Instagram等网站的图片直接发送到手机

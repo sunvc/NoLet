@@ -62,9 +62,8 @@ struct AboutNoLetView: View {
                                     manager.fullPage = .nearby
                                 }else{
                                     self.showNearbySetting.toggle()
-                                    Haptic.impact()
                                 }
-                                
+                                Haptic.impact()
                             }
                         
                         

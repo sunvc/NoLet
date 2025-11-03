@@ -126,11 +126,11 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             print("发送消息失败: \(error.localizedDescription)")
         }
     }
-
+    
     // 群聊：向所有已连接的设备群发消息
     func sendGroupMessage(_ message: String) {
         guard let data = message.data(using: .utf8) else { return }
-
+        
         // 先添加到本地消息列表，确保UI立即更新
         let newMessage = NearbyMessage(
             content: message,
@@ -138,22 +138,22 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             isFromCurrentUser: true,
             senderName: myPeerID.displayName
         )
-
+        
         DispatchQueue.main.async {
             self.messages.append(newMessage)
         }
-
+        
         // 群发到所有已连接的设备
         let peers = session.connectedPeers
         guard !peers.isEmpty else { return }
-
+        
         do {
             try session.send(data, toPeers: peers, with: .reliable)
         } catch {
             print("群发消息失败: \(error.localizedDescription)")
         }
     }
-
+    
     // 群聊：发送图片到所有已连接设备
     func sendGroupImage(_ imageData: Data) {
         // 为了显示进度，改用资源发送：写入临时文件并以资源形式群发
@@ -162,10 +162,10 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             print("写入临时图片失败: \(error.localizedDescription)")
             return
         }
-
+        
         let peers = session.connectedPeers
         guard !peers.isEmpty else { return }
-
+        
         let message = NearbyMessage(
             content: "",
             timestamp: Date(),
@@ -179,45 +179,60 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             totalPeers: peers.count,
             completedPeers: 0
         )
-
+        
         DispatchQueue.main.async { self.messages.append(message) }
         let msgId = message.id
         sendProgressCancellables[msgId] = [:]
-
+        // 为每个设备启动独立并发任务，确保真正并发
         for peer in peers {
-            if let progress = session.sendResource(at: tempURL, withName: "image.jpg", toPeer: peer, withCompletionHandler: { [weak self] error in
+            Task.detached(priority: .userInitiated) { [weak self] in
                 guard let self = self else { return }
-                if let error = error { print("图片发送到 \(peer.displayName) 失败: \(error.localizedDescription)") }
-                // 完成计数
-                self.updateMessage(msgId) { m in
-                    m.completedPeers += 1
-                    m.progress = m.totalPeers > 0 ? (Double(m.completedPeers) / Double(m.totalPeers)) : 1.0
-                    if m.completedPeers >= m.totalPeers { m.isTransferring = false }
-                }
-                self.sendProgressCancellables[msgId]?[peer] = nil
-            }) {
-                let cancellable = progress.publisher(for: \.fractionCompleted)
-                    .receive(on: DispatchQueue.main)
-                    .sink { [weak self] frac in
-                        self?.updateAggregateProgress(messageId: msgId)
+                if let progress = self.session.sendResource(at: tempURL, withName: "image.jpg", toPeer: peer, withCompletionHandler: { [weak self] error in
+                    guard let self = self else { return }
+                    if let error = error { print("图片发送到 \(peer.displayName) 失败: \(error.localizedDescription)") }
+                    // 完成计数
+                    self.updateMessage(msgId) { m in
+                        m.completedPeers += 1
+                        m.progress = m.totalPeers > 0 ? (Double(m.completedPeers) / Double(m.totalPeers)) : 1.0
+                        if m.completedPeers >= m.totalPeers { m.isTransferring = false }
                     }
-                sendProgressCancellables[msgId]?[peer] = cancellable
-                if sendProgresses[msgId] == nil { sendProgresses[msgId] = [:] }
-                sendProgresses[msgId]?[peer] = progress
+                    DispatchQueue.main.async {
+                        self.sendProgressCancellables[msgId]?[peer] = nil
+                    }
+                }) {
+                    let cancellable = progress.publisher(for: \.fractionCompleted)
+                        .receive(on: DispatchQueue.main)
+                        .sink { [weak self] _ in
+                            self?.updateAggregateProgress(messageId: msgId)
+                        }
+                    DispatchQueue.main.async {
+                        self.sendProgressCancellables[msgId]?[peer] = cancellable
+                        if self.sendProgresses[msgId] == nil { self.sendProgresses[msgId] = [:] }
+                        self.sendProgresses[msgId]?[peer] = progress
+                    }
+                }
             }
         }
     }
-
+    
     // 群聊：发送文件到所有已连接设备
     func sendGroupFile(_ fileURL: URL) {
         let fileName = fileURL.lastPathComponent
         let scoped = fileURL.startAccessingSecurityScopedResource()
         defer { if scoped { fileURL.stopAccessingSecurityScopedResource() } }
-        let fileData = try? Data(contentsOf: fileURL)
-
+        // 复制到临时目录，避免在发送过程中失去安全域访问
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("nolet-file-\(UUID().uuidString)-\(fileName)")
+        do {
+            if FileManager.default.fileExists(atPath: tempURL.path) { try? FileManager.default.removeItem(at: tempURL) }
+            try FileManager.default.copyItem(at: fileURL, to: tempURL)
+        } catch {
+            print("复制文件到临时目录失败: \(error.localizedDescription)")
+            return
+        }
+        
         let peers = session.connectedPeers
         guard !peers.isEmpty else { return }
-
+        
         let message = NearbyMessage(
             content: "",
             timestamp: Date(),
@@ -225,7 +240,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             senderName: myPeerID.displayName,
             imageData: nil,
             fileName: fileName,
-            fileData: fileData,
+            fileData: nil,
             isTransferring: true,
             progress: 0.0,
             totalPeers: peers.count,
@@ -234,26 +249,33 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         DispatchQueue.main.async { self.messages.append(message) }
         let msgId = message.id
         sendProgressCancellables[msgId] = [:]
-
+        // 为每个设备启动独立并发任务，确保真正并发
         for peer in peers {
-            if let progress = session.sendResource(at: fileURL, withName: fileName, toPeer: peer, withCompletionHandler: { [weak self] error in
+            Task.detached(priority: .userInitiated) { [weak self] in
                 guard let self = self else { return }
-                if let error = error { print("群发文件失败到 \(peer.displayName): \(error.localizedDescription)") }
-                self.updateMessage(msgId) { m in
-                    m.completedPeers += 1
-                    m.progress = m.totalPeers > 0 ? (Double(m.completedPeers) / Double(m.totalPeers)) : 1.0
-                    if m.completedPeers >= m.totalPeers { m.isTransferring = false }
-                }
-                self.sendProgressCancellables[msgId]?[peer] = nil
-            }) {
-                let cancellable = progress.publisher(for: \.fractionCompleted)
-                    .receive(on: DispatchQueue.main)
-                    .sink { [weak self] frac in
-                        self?.updateAggregateProgress(messageId: msgId)
+                if let progress = self.session.sendResource(at: tempURL, withName: fileName, toPeer: peer, withCompletionHandler: { [weak self] error in
+                    guard let self = self else { return }
+                    if let error = error { print("群发文件失败到 \(peer.displayName): \(error.localizedDescription)") }
+                    self.updateMessage(msgId) { m in
+                        m.completedPeers += 1
+                        m.progress = m.totalPeers > 0 ? (Double(m.completedPeers) / Double(m.totalPeers)) : 1.0
+                        if m.completedPeers >= m.totalPeers { m.isTransferring = false }
                     }
-                sendProgressCancellables[msgId]?[peer] = cancellable
-                if sendProgresses[msgId] == nil { sendProgresses[msgId] = [:] }
-                sendProgresses[msgId]?[peer] = progress
+                    DispatchQueue.main.async {
+                        self.sendProgressCancellables[msgId]?[peer] = nil
+                    }
+                }) {
+                    let cancellable = progress.publisher(for: \.fractionCompleted)
+                        .receive(on: DispatchQueue.main)
+                        .sink { [weak self] _ in
+                            self?.updateAggregateProgress(messageId: msgId)
+                        }
+                    DispatchQueue.main.async {
+                        self.sendProgressCancellables[msgId]?[peer] = cancellable
+                        if self.sendProgresses[msgId] == nil { self.sendProgresses[msgId] = [:] }
+                        self.sendProgresses[msgId]?[peer] = progress
+                    }
+                }
             }
         }
     }
@@ -336,7 +358,7 @@ extension NearbyNoLetManager: MCSessionDelegate {
         let msgId = placeholder.id
         let key = peerID.displayName + "|" + resourceName
         incomingMessageId[key] = msgId
-
+        
         let cancellable = progress.publisher(for: \.fractionCompleted)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] frac in
@@ -352,7 +374,7 @@ extension NearbyNoLetManager: MCSessionDelegate {
             print("接收文件失败: \(error!.localizedDescription)")
             return
         }
-
+        
         guard let localURL = localURL else { return }
         let data = try? Data(contentsOf: localURL)
         let key = peerID.displayName + "|" + resourceName
@@ -386,7 +408,7 @@ extension NearbyNoLetManager: MCSessionDelegate {
         }
         receiveProgressCancellables[key] = nil
     }
-
+    
     // 更新指定消息（线程安全地在主线程）
     private func updateMessage(_ id: UUID, _ mutate: @escaping (inout NearbyMessage) -> Void) {
         DispatchQueue.main.async {
@@ -397,7 +419,7 @@ extension NearbyNoLetManager: MCSessionDelegate {
             }
         }
     }
-
+    
     // 聚合所有 peer 的进度为消息的平均值
     private func updateAggregateProgress(messageId: UUID) {
         let perPeerProgress = sendProgresses[messageId] ?? [:]
@@ -406,6 +428,20 @@ extension NearbyNoLetManager: MCSessionDelegate {
         let fractionalSum = perPeerProgress.values.reduce(0.0) { $0 + $1.fractionCompleted }
         let newProgress = min(max(fractionalSum / Double(total), 0.0), 1.0)
         updateMessage(messageId) { m in m.progress = newProgress }
+    }
+    
+    // 对外：清理临时缓存（发送时写入的临时图片与文件）
+    func clearCaches() {
+        let tempDir = FileManager.default.temporaryDirectory
+        let fm = FileManager.default
+        if let urls = try? fm.contentsOfDirectory(at: tempDir, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles]) {
+            for url in urls {
+                let name = url.lastPathComponent
+                if name.hasPrefix("nolet-image-") || name.hasPrefix("nolet-file-") {
+                    try? fm.removeItem(at: url)
+                }
+            }
+        }
     }
 }
 
@@ -436,7 +472,7 @@ extension NearbyNoLetManager: MCNearbyServiceBrowserDelegate {
                 self.nearbyPeers.append(newPeer)
             }
         }
-
+        
         // 自动邀请对方加入会话，实现自动加入群聊
         browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10)
     }
@@ -452,4 +488,4 @@ extension NearbyNoLetManager: MCNearbyServiceBrowserDelegate {
         print("浏览失败: \(error.localizedDescription)")
     }
 }
-    // 进度观测
+// 进度观测

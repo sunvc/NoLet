@@ -1,9 +1,9 @@
 {
     "ext_desc": {
-        "message": "NoLet Sender は、選択テキストやクリップボード内容を暗号化して iOS 端末へ送信できる拡張機能です。カスタム通知対応。"
+        "message": "Nolet は、選択テキストやクリップボード内容を暗号化して iOS 端末へ送信できる拡張機能です。カスタム通知対応。"
     },
     "extension_installed": {
-        "message": "NoLet Sender がインストールされました"
+        "message": "Nolet がインストールされました"
     },
     "shortcut_triggered": {
         "message": "グローバルショートカットがトリガーされました"
@@ -54,7 +54,7 @@
         "message": "解析して $1 に送信"
     },
     "nolet_sender_title": {
-        "message": "NoLet Sender"
+        "message": "Nolet"
     },
     "sent_to_device": {
         "message": "$1 に送信しました"

@@ -13,7 +13,7 @@
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-16.2-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
   </tr>
@@ -53,20 +53,16 @@ NoLet 無字書は強力なiOSプッシュツールで、任意のデバイス�
 * 独自サーバーは複数プラットフォームでの展開をサポート（Windows、macOS、Linuxなど）
 * Dockerコンテナ化展開をサポートし、メンテナンスとアップグレードが容易
 
+
 ## ブラウザ拡張機能
 
-### Safari拡張機能
+| Safari | Chrome | Firefox | Edge |
+|-------|--------|-------|--------|
+| システム標準 | [拡張機能をインストール](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [拡張機能をインストール](https://addons.mozilla.org/firefox/addon/nolet/) | [拡張機能をインストール](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
-* Safari拡張機能は個別インストール不要で、アプリに内蔵
-* iOSデバイスでアプリを開いた後、設定ページに移動し、指示に従ってSafari拡張機能を有効化
-* 有効化後、Webブラウジング時にコンテンツを直接デバイスに共有可能
-
-### Chrome拡張機能
-
-* [Chrome拡張機能をインストール](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
-* インストール後、拡張機能アイコンをクリックし、プッシュキーを入力して設定
-* 現在のページ、選択したテキストや画像をワンクリックでデバイスに送信をサポート
-* Instagramなどのウェブサイトの画像を直接スマートフォンに送信するのに特に適している
+* インストール後、拡張機能アイコンをクリックし、プッシュキーを入力して設定を行います
+* 現在のページ、選択したテキスト、または画像をワンクリックでデバイスに送信可能
+* Instagramなどのサイトから画像を直接スマートフォンに送信するのに特に便利
 
 
 ## プロジェクトで使用されているサードパーティライブラリ

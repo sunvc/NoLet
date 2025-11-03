@@ -13,7 +13,7 @@
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-16.2-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
   </tr>
@@ -55,18 +55,13 @@ NoLet 무자서는 강력한 iOS 푸시 도구로, 어떤 기기에서든 iPhone
 
 ## 브라우저 확장
 
-### Safari 확장
+| Safari | Chrome | Firefox | Edge |
+|-------|--------|---------|--------|
+| 시스템 기본 제공 | [확장 설치](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [확장 설치](https://addons.mozilla.org/firefox/addon/nolet) | [확장 설치](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
-* Safari 확장은 별도 설치가 필요 없으며 앱에 내장되어 있습니다
-* iOS 기기에서 앱을 열고 설정 페이지로 이동하여 안내에 따라 Safari 확장을 활성화하세요
-* 활성화 후 웹 브라우징 시 콘텐츠를 기기로 직접 공유할 수 있습니다
-
-### Chrome 확장
-
-* [Chrome 확장 설치](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
-* 설치 후 확장 아이콘을 클릭하고 푸시 키를 입력하여 설정하세요
-* 현재 페이지, 선택된 텍스트 또는 이미지를 기기로 원클릭 전송 지원
-* Instagram 등 웹사이트의 이미지를 휴대폰으로 직접 전송하는 데 특히 적합합니다
+* 설치 후 확장 아이콘을 클릭하고 푸시 키를 입력하여 설정합니다
+* 현재 페이지, 선택한 텍스트 또는 이미지를 기기로 한 번에 전송할 수 있습니다
+* Instagram 등 웹사이트의 이미지를 휴대폰으로 바로 전송하기에 특히 적합합니다
 
 
 ## 프로젝트에서 사용된 서드파티 라이브러리

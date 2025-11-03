@@ -23,7 +23,8 @@ struct NearbyNoLetView: View {
     @State private var isShowingFileImporter: Bool = false
     @State private var isExportingFile: Bool = false
     @State private var exportDocument: DataDocument? = nil
-    @State private var exportedFileName: String = "文件"
+    @State private var exportedFileName: String = String(localized: "文件")
+    @State private var exportUTType: UTType = .data
     
     var body: some View {
         NavigationStack{
@@ -65,7 +66,13 @@ struct NearbyNoLetView: View {
                                             },
                                             onSaveFile: { data, name in
                                                 exportDocument = DataDocument(data: data)
-                                                exportedFileName = name ?? "文件"
+                                                exportedFileName = name ?? String(localized: "文件")
+                                                if let name = name {
+                                                    let ext = URL(fileURLWithPath: name).pathExtension
+                                                    exportUTType = UTType(filenameExtension: ext) ?? .data
+                                                } else {
+                                                    exportUTType = .data
+                                                }
                                                 isExportingFile = true
                                             }
                                         )
@@ -202,7 +209,7 @@ struct NearbyNoLetView: View {
             .fileExporter(
                 isPresented: $isExportingFile,
                 document: exportDocument ?? DataDocument(data: Data()),
-                contentType: .data,
+                contentType: exportUTType,
                 defaultFilename: exportedFileName
             ) { result in
                 switch result {
@@ -269,6 +276,7 @@ struct MessageBubble: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill((isFromCurrentUser ? Color.blue : .orange).opacity(0.2))
                                     .frame(width: width)
+                                    .opacity(message.progress == 1 ? 0 : 1)
                             }, alignment: .leading
                         )
                         .overlay(
@@ -301,12 +309,13 @@ struct MessageBubble: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .fill(isFromCurrentUser ? Color.blue : .orange)
                                 .frame(width: width)
+                                .opacity(message.progress == 1 ? 0 : 1)
                         }
                         HStack(spacing: 8) {
                             Image(systemName: "doc.fill")
                                 .foregroundColor(isFromCurrentUser ? .white : .blue)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(message.fileName ?? "文件")
+                                Text(message.fileName ?? String(localized: "文件"))
                                     .font(.subheadline)
                                     .foregroundColor(isFromCurrentUser ? .white : .primary)
                                 if let data = message.fileData {

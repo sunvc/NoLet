@@ -1,9 +1,9 @@
 {
     "ext_desc": {
-        "message": "NoLet Sender 是桌面浏览器扩展，可加密发送网页选中文字或剪贴板内容到已安装 NoLet 的 iOS 设备，并支持自定义推送参数。"
+        "message": "Nolet 是桌面浏览器扩展，可加密发送网页选中文字或剪贴板内容到已安装 NoLet 的 iOS 设备，并支持自定义推送参数。"
     },
     "extension_installed": {
-        "message": "NoLet Sender 已安装"
+        "message": "Nolet 已安装"
     },
     "shortcut_triggered": {
         "message": "收到全局快捷键触发"
@@ -64,7 +64,7 @@
         "message": "解析并发送给 $1"
     },
     "nolet_sender_title": {
-        "message": "NoLet Sender"
+        "message": "Nolet"
     },
     "sent_to_device": {
         "message": "已发送到 $1"

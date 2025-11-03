@@ -13,7 +13,7 @@
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-16.2-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
   </tr>
@@ -53,20 +53,16 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 * Self-hosted servers support multi-platform deployment (Windows, macOS, Linux, etc.)
 * Docker containerized deployment support for easy maintenance and upgrades
 
+
 ## Browser Extensions
 
-### Safari Extension
+| Safari | Chrome | Firefox | Edge |
+|-------|--------|---------|--------|
+| Built-in | [Install Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [Install Extension](https://addons.mozilla.org/firefox/addon/nolet/) | [Install Extension](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
-* Safari extension requires no separate installation and is built into the app
-* After opening the app on your iOS device, go to the settings page and follow the prompts to enable the Safari extension
-* Once enabled, you can directly share content to your device while browsing the web
-
-### Chrome Extension
-
-* [Install Chrome Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk)
-* After installation, click the extension icon and enter your push key for configuration
-* Supports one-click sending of current page, selected text, or images to your device
-* Particularly suitable for directly sending images from websites like Instagram to your phone
+* After installation, click the extension icon and enter your push key to configure
+* Supports one-click sending of the current page, selected text, or images to your device
+* Especially suitable for sending images from sites like Instagram directly to your phone
 
 
 ## Third-Party Libraries Used in the Project

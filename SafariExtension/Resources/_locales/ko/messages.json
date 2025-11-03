@@ -1,9 +1,9 @@
 {
     "ext_desc": {
-        "message": "NoLet Sender는 선택/클립보드 내용을 암호화해 iOS로 빠르게 보내는 확장입니다. 사용자 지정 푸시 지원."
+        "message": "Nolet는 선택/클립보드 내용을 암호화해 iOS로 빠르게 보내는 확장입니다. 사용자 지정 푸시 지원."
     },
     "extension_installed": {
-        "message": "NoLet Sender가 설치되었습니다"
+        "message": "Nolet가 설치되었습니다"
     },
     "shortcut_triggered": {
         "message": "전역 바로가기가 트리거되었습니다"
@@ -54,7 +54,7 @@
         "message": "분석하여 $1로 전송"
     },
     "nolet_sender_title": {
-        "message": "NoLet Sender"
+        "message": "Nolet"
     },
     "sent_to_device": {
         "message": "$1로 전송했습니다"

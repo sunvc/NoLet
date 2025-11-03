@@ -1,9 +1,9 @@
 {
     "ext_desc": {
-        "message": "NoLet Sender sends webpage selection or clipboard content to iOS, with encryption and custom push."
+        "message": "Nolet sends webpage selection or clipboard content to iOS, with encryption and custom push."
     },
     "extension_installed": {
-        "message": "NoLet Sender installed"
+        "message": "Nolet installed"
     },
     "shortcut_triggered": {
         "message": "Global shortcut triggered"
@@ -54,7 +54,7 @@
         "message": "Inspect and send to $1"
     },
     "nolet_sender_title": {
-        "message": "NoLet Sender"
+        "message": "Nolet"
     },
     "sent_to_device": {
         "message": "Sent to $1"

@@ -247,6 +247,7 @@ struct ContentView: View {
                         .onAppear{
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 manager.sheetPage = .none
+                                Haptic.impact()
                             }
                         }
                 }
@@ -262,6 +263,7 @@ struct ContentView: View {
                 EmptyView().onAppear{
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1){
                         manager.sheetPage = .none
+                        Haptic.impact()
                     }
                 }
             }
