@@ -469,7 +469,7 @@ extension AppManager{
         do{
             
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
-            let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken ).toEncodableDictionary() ?? [:]
+            let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken, group: server.group ).toEncodableDictionary() ?? [:]
             
             let response:baseResponse<DeviceInfo> = try await self.fetch(url: server.url,
                                                                          path: "/register",

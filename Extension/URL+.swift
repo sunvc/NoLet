@@ -9,15 +9,16 @@ import SwiftUI
 
 
 extension URL{
+    
     func findNameAndKey() -> (String,String?){
-        guard let scheme = self.scheme, let host = self.host() else { return ("", nil)}
-        
-        let path = self.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        if path.count > 1 {
-            return (scheme + "://" + host, path)
+        guard let scheme = scheme, let host = host() else {
+            return ("", nil)
         }
-        
-        return (scheme + "://" + host, nil)
+        var base = "\(scheme)://\(host)"
+        if let port = port { base += ":\(port)" }
+
+        let key = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        return (base, key.isEmpty ? nil : key)
     }
     
     var hasHttp:Bool{  scheme?.hasHttp ?? false }
