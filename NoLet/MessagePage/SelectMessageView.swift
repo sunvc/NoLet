@@ -173,6 +173,7 @@ struct SelectMessageView:View {
                                     Text(subtitle)
                                         .font(.system(size: baseSubtitleSize * scaleFactor))
                                         .fontWeight(.bold)
+                                        .textSelection(.enabled)
                                     Spacer(minLength: 0)
                                 }
                             }
@@ -198,9 +199,11 @@ struct SelectMessageView:View {
                                             .imageScale(.small)
                                             
                                         MarkdownCustomView.highlightedText(searchText: "", text: url)
-                                            .font(.subheadline)
+                                            .font(.system(size: baseSubtitleSize * scaleFactor))
                                             .fontWeight(.bold)
                                             .frame(maxWidth: .infinity, alignment: .leading)
+                                            .textSelection(.enabled)
+                                            
                                     }
                                     .foregroundStyle(.accent)
                                     .padding(10)

@@ -15,9 +15,11 @@ extension URL{
             return ("", nil)
         }
         var base = "\(scheme)://\(host)"
+        
         if let port = port { base += ":\(port)" }
 
         let key = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        
         return (base, key.isEmpty ? nil : key)
     }
     
