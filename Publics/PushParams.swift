@@ -8,7 +8,7 @@
 import UserNotifications
 
 enum Params: String, CaseIterable{
-    case  id, title, subtitle, body, from, host, group, url, category, level, ttl,
+    case  id, title, subtitle, body, from, host, group, url, category, level, ttl, markdown,
           index, count,
           sound, volume, badge, call,
           callback, autoCopy, copy, widget,

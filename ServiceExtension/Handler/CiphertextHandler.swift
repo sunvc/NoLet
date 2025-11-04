@@ -54,6 +54,12 @@ class CiphertextHandler:NotificationContentHandler{
 				alert[Params.body.name] = body
 			}
             
+            if let markdown:String = map.raw(.markdown){
+                bestAttemptContent.body = markdown
+                alert[Params.body.name] = markdown
+                bestAttemptContent.categoryIdentifier = Params.markdown.name
+            }
+            
             if let group: String = map.raw(.group, nesting: false)   {
 				bestAttemptContent.threadIdentifier = group
 			}
