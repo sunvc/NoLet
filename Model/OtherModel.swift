@@ -346,7 +346,7 @@ enum OutDataType{
     
     case text(String)
     case crypto(String)
-    case server(url: String,key: String?,group: String?,sign: String?)
+    case server(url: String, key: String, group: String?, sign: String?)
     case otherUrl(String)
     case assistant(String)
     case page(page:pageType, title:String?, data:String)

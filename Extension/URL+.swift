@@ -10,9 +10,10 @@ import SwiftUI
 
 extension URL{
     
-    func findNameAndKey() -> (String,String?){
+    func findNameAndKey() -> (String, String){
+        
         guard let scheme = scheme, let host = host() else {
-            return ("", nil)
+            return ("", "")
         }
         var base = "\(scheme)://\(host)"
         
@@ -20,7 +21,7 @@ extension URL{
 
         let key = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         
-        return (base, key.isEmpty ? nil : key)
+        return (base.trimmingCharacters(in: .whitespaces), key.trimmingCharacters(in: .whitespaces))
     }
     
     var hasHttp:Bool{  scheme?.hasHttp ?? false }

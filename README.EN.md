@@ -58,7 +58,7 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 
 | Safari | Chrome | Firefox | Edge |
 |-------|--------|---------|--------|
-| Built-in | [Install Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [Install Extension](https://addons.mozilla.org/firefox/addon/nolet/) | [Install Extension](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
+|  [MacOS](https://apps.apple.com/app/id6740040672)  | [Install Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [Install Extension](https://addons.mozilla.org/firefox/addon/nolet/) | [Install Extension](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
 * After installation, click the extension icon and enter your push key to configure
 * Supports one-click sending of the current page, selected text, or images to your device

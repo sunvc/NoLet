@@ -128,8 +128,7 @@ extension String{
     func normalizedURLString() -> String {
             // 尝试解析
         if let url = URL(string: self),
-           let scheme = url.scheme?.lowercased(),
-           scheme == "http" || scheme == "https" {
+           let scheme = url.scheme?.lowercased(), scheme.hasHttp {
                 // 已经是 http/https
             return self
         }
@@ -143,5 +142,22 @@ extension String{
         }
 
         return "https://" + trimmed
+    }
+    
+    /// 仅保留字母和数字字符
+    /// - Parameter allowUnicode: 是否保留所有语言的字母（默认仅保留英文和数字）
+    /// - Returns: 清理后的字符串
+    func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
+        if allowUnicode {
+            // 使用 Unicode 属性，保留所有语言的字母和数字
+            return self.replacing(/[^\p{L}\p{N}]/, with: "")
+        } else {
+            // 只保留 ASCII 字母和数字
+            return self.replacingOccurrences(
+                of: "[^A-Za-z0-9]",
+                with: "",
+                options: .regularExpression
+            )
+        }
     }
 }

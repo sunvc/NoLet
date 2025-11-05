@@ -58,7 +58,7 @@ NoLet 無字書は強力なiOSプッシュツールで、任意のデバイス�
 
 | Safari | Chrome | Firefox | Edge |
 |-------|--------|-------|--------|
-| システム標準 | [拡張機能をインストール](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [拡張機能をインストール](https://addons.mozilla.org/firefox/addon/nolet/) | [拡張機能をインストール](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
+|  [MacOS](https://apps.apple.com/app/id6740040672)  | [拡張機能をインストール](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [拡張機能をインストール](https://addons.mozilla.org/firefox/addon/nolet/) | [拡張機能をインストール](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
 * インストール後、拡張機能アイコンをクリックし、プッシュキーを入力して設定を行います
 * 現在のページ、選択したテキスト、または画像をワンクリックでデバイスに送信可能

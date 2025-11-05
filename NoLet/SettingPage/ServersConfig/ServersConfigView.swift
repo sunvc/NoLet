@@ -51,16 +51,15 @@ struct ServersConfigView: View {
                             Button{
                                 guard servers.count > 1 else { return }
                                 if item.group != nil{
-                                    servers.removeAll(where:{$0.id == item.id})
                                     cloudServers.removeAll(where:{$0.id == item.id})
-                                }else{
-                                    if let index = servers.firstIndex(where:{$0.id == item.id}){
-                                        servers.remove(at: index)
-                                        Task{
-                                            _ = await manager.register(server: item,
-                                                                       reset: true,
-                                                                       msg: true)
-                                        }
+                                }
+                                
+                                if let index = servers.firstIndex(where:{$0.id == item.id}){
+                                    servers.remove(at: index)
+                                    Task{
+                                        _ = await manager.register(server: item,
+                                                                   reset: true,
+                                                                   msg: true)
                                     }
                                 }
                                 

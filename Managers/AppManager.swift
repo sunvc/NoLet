@@ -133,7 +133,7 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
         case .server(let url, let key,let group, let sign):
             Task.detached(priority: .userInitiated) {
                 let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
-                let server = PushServerModel(url: url,key: key ?? "",group: group, sign: crypto)
+                let server = PushServerModel(url: url,key: key,group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
                 if success{
                     await MainActor.run {
@@ -307,7 +307,7 @@ extension AppManager{
             case .server:
                 if let url = params["text"],let urlResponse = URL(string: url), url.hasHttp {
                     let (result, key) = urlResponse.findNameAndKey()
-                    return .server(url: result, key:key,group: params["group"], sign: params["sign"])
+                    return .server(url: result, key:key, group: params["group"], sign: params["sign"])
                 }
             case .crypto:
                 if let config = params["text"]{

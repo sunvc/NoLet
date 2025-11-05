@@ -57,7 +57,7 @@ NoLet 무자서는 강력한 iOS 푸시 도구로, 어떤 기기에서든 iPhone
 
 | Safari | Chrome | Firefox | Edge |
 |-------|--------|---------|--------|
-| 시스템 기본 제공 | [확장 설치](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [확장 설치](https://addons.mozilla.org/firefox/addon/nolet) | [확장 설치](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
+|  [MacOS](https://apps.apple.com/app/id6740040672)  | [확장 설치](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [확장 설치](https://addons.mozilla.org/firefox/addon/nolet) | [확장 설치](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
 * 설치 후 확장 아이콘을 클릭하고 푸시 키를 입력하여 설정합니다
 * 현재 페이지, 선택한 텍스트 또는 이미지를 기기로 한 번에 전송할 수 있습니다

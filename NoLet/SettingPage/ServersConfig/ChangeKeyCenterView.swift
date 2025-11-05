@@ -171,10 +171,9 @@ struct ChangeKeyCenterView: View {
             if showScan{
                 ScanView{ code in
                     if let data = AppManager.shared.HandlerOpenUrl(url: code),
-                       data.hasHttp, let url = URL(string: data),
-                       let scheme = url.scheme, let host = url.host(){
-                        self.keyHost = scheme + "://" + host
-                        self.keyName = url.path()
+                       data.hasHttp, let url = URL(string: data){
+                        
+                        (self.keyHost, self.keyName) = url.findNameAndKey()
                         
                         self.showScan = false
                     }
@@ -226,7 +225,11 @@ struct ChangeKeyCenterView: View {
     
     @ViewBuilder
     func InputKey()-> some View{
-        TextField("请输入旧的KEY", text: $keyName)
+        TextField("请输入旧的KEY", text: Binding(get: {
+            self.keyName
+        }, set: { value, _ in
+            self.keyName = value.onlyLettersAndNumbers()
+        }))
             .keyboardType(.default)
             .autocapitalization(.none)
             .disableAutocorrection(true)
@@ -256,6 +259,7 @@ struct ChangeKeyCenterView: View {
                 self.isPhoneFocused = true
                 Haptic.impact()
             }
+      
     }
     
     @ViewBuilder
@@ -276,13 +280,16 @@ struct ChangeKeyCenterView: View {
                            ]
             ) { view in
                 
+                
                  DispatchQueue.main.async {
                     self.disabledPage = true
                 }
                 await view.next(.loading(0))
                 
                  DispatchQueue.main.async {
-                    self.keyName = self.keyName.trimmingSpaceAndNewLines
+                    self.keyName = self.keyName
+                         .trimmingSpaceAndNewLines
+                         .onlyLettersAndNumbers()
                     self.keyHost = self.keyHost.trimmingSpaceAndNewLines
                 }
                 

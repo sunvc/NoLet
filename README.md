@@ -57,7 +57,7 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 | Safari | Chrome | Firefox | Edge |
 |-------|--------|-------|--------|
-| 系统自带 | [安装扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [安装扩展](https://addons.mozilla.org/firefox/addon/nolet/) | [安装扩展](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
+| [MacOS](https://apps.apple.com/app/id6740040672) | [安装扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [安装扩展](https://addons.mozilla.org/firefox/addon/nolet/) | [安装扩展](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
 
 * 安装后点击扩展图标，输入你的推送密钥进行配置
 * 支持一键发送当前页面、选中文本或图片到你的设备
