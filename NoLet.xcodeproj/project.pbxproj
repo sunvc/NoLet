@@ -2133,8 +2133,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/OpenAI.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */ = {
