@@ -207,7 +207,13 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
         lhs.url == rhs.url && lhs.key == rhs.key
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+        hasher.combine(key)
+    }
+    
 }
+
 
 
 

@@ -100,17 +100,19 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     
     class func syncLocalToCloud() {
         let locals = Defaults[.servers]
-        var clouds = Defaults[.cloudServers]
+        let clouds = Defaults[.cloudServers]
         
-        let cloudServerSet = Set(clouds.map { $0.server })
+        // 过滤掉有 group 的
+        let filteredLocals = locals.filter { $0.group?.isEmpty ?? true }
+        let filteredClouds = clouds.filter { $0.group?.isEmpty ?? true }
         
-        let newItems = locals.filter { !cloudServerSet.contains($0.server) && $0.group == nil }
+        // 合并并去重（前提是 PushServerModel 遵守 Hashable）
+        let merged = Array(Set(filteredLocals + filteredClouds))
         
-        if !newItems.isEmpty {
-            clouds.append(contentsOf: newItems)
-            Defaults[.cloudServers] = clouds
-        }
+        // 同步回云端
+        Defaults[.cloudServers] = merged
     }
+
     
     func HandlerOpenUrl(url:String) -> String?{
         
@@ -453,7 +455,6 @@ extension AppManager{
             
             await MainActor.run {
                 Defaults[.servers] = results
-                Self.syncLocalToCloud()
             }
             
         }
@@ -496,7 +497,7 @@ extension AppManager{
                 }
                 throw "erroe"
             }
-            
+            Self.syncLocalToCloud()
             return server
         }catch{
             server.status = false
@@ -512,9 +513,12 @@ extension AppManager{
         self.appending = true
         
         var serverCopy = server
-        if reset {  serverCopy.key = "" }
+        if reset {  
+            serverCopy.key = ""
+            serverCopy.id = UUID().uuidString
+        }
         
-        guard !Defaults[.servers].contains(where: {$0.key == server.key && $0.url == server.url})else{
+        guard !Defaults[.servers].contains(where: {$0 == serverCopy})else{
             Toast.error(title: "服务器已存在")
             return false
         }
@@ -529,13 +533,13 @@ extension AppManager{
            
             await MainActor.run {
                 if reset{
-                    Defaults[.servers].removeAll(where: {$0.id == server.id})
+                    Defaults[.servers].removeAll(where: {$0 == server})
                 }
                 Defaults[.servers].insert(serverNew, at: 0)
-                Self.syncLocalToCloud()
             }
             Toast.success(title: "添加成功")
         }
+        Self.syncLocalToCloud()
         self.appending = false
         return serverNew.status
     }
@@ -628,3 +632,4 @@ struct SubscribeUser: Codable, Hashable, Identifiable{
         case none
     }
 }
+

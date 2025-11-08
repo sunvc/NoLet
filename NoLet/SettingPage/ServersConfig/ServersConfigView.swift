@@ -50,7 +50,7 @@ struct ServersConfigView: View {
                             
                             Button{
                                 guard servers.count > 1 else { return }
-                                if item.group != nil{
+                                if  let group = item.group, group.isEmpty{
                                     cloudServers.removeAll(where:{$0.id == item.id})
                                 }
                                 
@@ -93,7 +93,7 @@ struct ServersConfigView: View {
                     
                     ForEach(cloudServers, id: \.id){ item in
                         
-                        if !servers.contains(where: { $0.url == item.url && $0.key == item.key }){
+                        if !servers.contains(where: { $0 == item }){
                             ServerCardView(item: item,isCloud: true){
                                 servers.append(item)
                                 Task{
