@@ -343,43 +343,6 @@
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
-		B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "NoLet" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				alarm.caf,
-				aurora.caf,
-				bottle.aac,
-				call.caf,
-				cbegin.aac,
-				com.caf,
-				craft.caf,
-				frog.caf,
-				glass.caf,
-				gold.caf,
-				health.caf,
-				hello.caf,
-				multiway.caf,
-				popcorn.caf,
-				pttconnect.aac,
-				pttnotifyend.aac,
-				pull.aac,
-				qrcode.aac,
-				refresh.aac,
-				run.caf,
-				shake.caf,
-				share.aac,
-				silence.caf,
-				snap.caf,
-				success.caf,
-				tabSelection.aac,
-				tootSent.aac,
-				trill.caf,
-				tritone.caf,
-				typewriter.caf,
-				xiu.caf,
-			);
-			target = B58357F62DEDD3B10066B32E /* NoLet */;
-		};
 		B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -544,40 +507,6 @@
 			);
 			target = B5835CFD2DEDECA10066B32E /* MarkdownExtension */;
 		};
-		B5A832462DFFFBC600274589 /* Exceptions for "Sounds" folder in "ServiceExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				alarm.caf,
-				aurora.caf,
-				call.caf,
-				com.caf,
-				craft.caf,
-				frog.caf,
-				glass.caf,
-				gold.caf,
-				health.caf,
-				hello.caf,
-				multiway.caf,
-				popcorn.caf,
-				pttconnect.aac,
-				pttnotifyend.aac,
-				pull.aac,
-				refresh.aac,
-				run.caf,
-				shake.caf,
-				share.aac,
-				silence.caf,
-				snap.caf,
-				success.caf,
-				tabSelection.aac,
-				tootSent.aac,
-				trill.caf,
-				tritone.caf,
-				typewriter.caf,
-				xiu.caf,
-			);
-			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
-		};
 		B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -690,10 +619,6 @@
 		};
 		B5835BC12DEDE1020066B32E /* Sounds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B5835BD62DEDE1030066B32E /* Exceptions for "Sounds" folder in "NoLet" target */,
-				B5A832462DFFFBC600274589 /* Exceptions for "Sounds" folder in "ServiceExtension" target */,
-			);
 			path = Sounds;
 			sourceTree = "<group>";
 		};

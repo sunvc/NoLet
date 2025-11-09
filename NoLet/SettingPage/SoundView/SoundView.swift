@@ -5,6 +5,8 @@
 //  Created by uuneo 2024/8/9.
 //
 
+// MARK: - afconvert input.wav output.caf -d ima4 -f caff
+
 import SwiftUI
 import AVFoundation
 import UIKit

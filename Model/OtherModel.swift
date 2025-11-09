@@ -231,6 +231,7 @@ enum BadgeAutoMode:String, CaseIterable {
 
 enum AppIconEnum:String, CaseIterable, Equatable{
     case nolet
+    case nolet0
     case nolet1
     case nolet2
     case nolet3
@@ -240,6 +241,7 @@ enum AppIconEnum:String, CaseIterable, Equatable{
     var logo: String{
         switch self {
         case .nolet: "logo"
+        case .nolet0: "logo0"
         case .nolet1: "logo1"
         case .nolet2: "logo2"
         case .nolet3: "logo3"
