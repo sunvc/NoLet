@@ -49,7 +49,6 @@ enum RouterPage: Hashable{
     case more
     case widget(title:String?, data:String)
     case tts
-    case pushtalk
     case about
     case dataSetting
     case serverInfo(server: PushServerModel)
@@ -68,7 +67,6 @@ extension RouterPage: Equatable {
              (.server, .server),
              (.more, .more),
              (.tts, .tts),
-             (.pushtalk, .pushtalk),
              (.about, .about),
              (.dataSetting, .dataSetting):
             return true

@@ -104,19 +104,6 @@ struct MessagePage: View {
                         }
                     }
 
-                    if servers.filter({ $0.voice }).count > 0 {
-                        Section {
-                            Button {
-                                manager.router = [.pushtalk]
-                                Haptic.impact()
-                            } label: {
-                                Label("语音对讲", systemImage: "person.line.dotted.person")
-                                    .symbolRenderingMode(.palette)
-                                    .customForegroundStyle(.accent, .primary)
-                            }
-                        }
-                    }
-
                 } label: {
                     Label("更多", systemImage: "fuelpump")
                 }

@@ -34,15 +34,16 @@ struct HackerTextView: View {
                 setRandomCharacters()
                 animateText()
             }
-            .customOnChange(value: trigger) { newValue in
+            .onChange(of: trigger){ _ in
                 animateText()
             }
-            .customOnChange(value: text) { newValue in
+            .onChange(of: trigger){ _ in
                 animatedText = text
                 animationID = UUID().uuidString
                 setRandomCharacters()
                 animateText()
             }
+     
     }
     
     private func animateText() {

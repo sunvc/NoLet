@@ -396,7 +396,6 @@ struct SelectMessageView:View {
             }
             .scrollContentBackground(.hidden)
             .background26(.background, radius: 0)
-            .background(BackgroundClearView())
             .animation(.spring(), value: messageShowMode)
             .onAppear{ self.hideKeyboard() }
             .onDisappear{ chatManager.cancellableRequest?.cancelRequest() }

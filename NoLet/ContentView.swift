@@ -310,9 +310,6 @@ extension View{
                     case .tts:
                         SpeakSettingsView()
                         
-                    case .pushtalk:
-                        PushToTalkView()
-                        
                     case .about:
                         AboutNoLetView()
 
