@@ -484,6 +484,44 @@
 			);
 			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
 		};
+		BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				alarm.caf,
+				aurora.caf,
+				bottle.aac,
+				call.caf,
+				cbegin.aac,
+				com.caf,
+				craft.caf,
+				frog.caf,
+				glass.caf,
+				gold.caf,
+				health.caf,
+				hello.caf,
+				multiway.caf,
+				popcorn.caf,
+				pttconnect.aac,
+				pttnotifyend.aac,
+				pull.aac,
+				qrcode.aac,
+				refresh.aac,
+				run.caf,
+				shake.caf,
+				share.aac,
+				silence.caf,
+				snap.caf,
+				success.caf,
+				tabSelection.aac,
+				tootSent.aac,
+				trill.caf,
+				tritone.caf,
+				typewriter.caf,
+				whale.caf,
+				xiu.caf,
+			);
+			target = B58357F62DEDD3B10066B32E /* NoLet */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -581,6 +619,9 @@
 		};
 		B5835BC12DEDE1020066B32E /* Sounds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */,
+			);
 			path = Sounds;
 			sourceTree = "<group>";
 		};
