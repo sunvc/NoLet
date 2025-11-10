@@ -2,7 +2,12 @@
 //  CloudIcon.swift
 //  NoLet
 //
-//  Created by lynn on 2025/3/18.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//  History:
+//    Created by Neo on 2025/3/18.
 //
 
 import SwiftUI
@@ -176,7 +181,7 @@ struct CloudIcon: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: .red))
                                 .scaleEffect(2)
                                 .padding()
-                            Text("加载中...")
+                            Text(verbatim: String(localized: "加载中") + "...")
                                 .font(.headline)
                                 .foregroundColor(.gray)
                                 .frame(width: windowWidth)

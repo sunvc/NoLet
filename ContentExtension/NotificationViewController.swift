@@ -2,7 +2,12 @@
 //  NotificationViewController.swift
 //  NotificationContentExtension
 //
-//  Created by lynn on 2025/4/3.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//  History:
+//   Created by Neo on 2025/4/3.
 //
 
 import UIKit

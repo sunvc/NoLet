@@ -2,7 +2,12 @@
 //  ServerMonitoring.swift
 //  NoLet
 //
-//  Created by lynn on 2025/9/28.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//  History:
+//    Created by Neo on 2025/9/28.
 //
 
 import SwiftUI
@@ -324,7 +329,7 @@ fileprivate struct ConnectionsCard: View {
                 // 中间：横向布局的连接数显示
                 HStack(alignment: .bottom, spacing: 10) {
                     // PID连接数（大字体）
-                    Text("\(pidConns)")
+                    Text(verbatim: "\(pidConns)")
                         .font(.system(size: 60, weight: .bold, design: .monospaced))
                         .foregroundColor(.primary)
 
@@ -333,7 +338,7 @@ fileprivate struct ConnectionsCard: View {
                         .foregroundColor(.gray)
                         .offset(y: -10)
                     // OS连接数（小字体）
-                    Text("\(osConns)")
+                    Text(verbatim: "\(osConns)")
                         .font(.system(size: 20, weight: .medium, design: .monospaced))
                         .foregroundColor(.primary.opacity(0.7))
                         .padding(.bottom, 10)

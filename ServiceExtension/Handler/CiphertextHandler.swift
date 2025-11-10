@@ -2,7 +2,13 @@
 //  CiphertextHandler.swift
 //  NoLet
 //
-//  Created by uuneo 2024/11/23.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo 2024/11/23.
 //
 
 import Foundation

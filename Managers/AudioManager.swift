@@ -1,13 +1,15 @@
 //
 //  File name:     AudioManager.swift
+//  NoLet
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
-//  Blog  :        https://uuneo.com
-//  E-mail:        to@uuneo.com
-
+//  Blog  :        https://wzs.app
+//  E-mail:        to@wzs.app
+//
+//
 //  Description:
-
+//
 //  History:
-//  Created by uuneo on 2024/12/10.
+//    Created by Neo on 2024/12/10.
 
 
 import Foundation

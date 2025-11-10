@@ -2,7 +2,13 @@
 //  OtherModel.swift
 //  NoLet
 //
-//  Created by uuneo 2024/10/26.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo 2024/10/26.
 //
 
 import SwiftUI
@@ -78,12 +84,12 @@ enum Identifiers:String, CaseIterable, Codable {
     }
 
 
-    var name:String{
+    var name: String {
         switch self {
         case .myNotificationCategory:
             return String(localized: "普通内容")
         case .markdown:
-            return String(localized: "Markdown")
+            return "Markdown"
         }
     }
 }

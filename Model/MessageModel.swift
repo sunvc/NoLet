@@ -2,7 +2,13 @@
 //  MessageModel.swift
 //  NoLet
 //
-//  Created by uuneo 2024/10/26.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo 2024/10/26.
 //
 import GRDB
 import Foundation
@@ -149,14 +155,14 @@ extension Message{
             )
 
         if let title = title{
-            text.append(String(localized: "标题:") + title)
+            text.append(String(localized: "标题") + ":" + title)
         }
         if let subtitle = subtitle{
-            text.append(String(localized: "副标题:") + subtitle)
+            text.append(String(localized: "副标题") + ":" + subtitle)
         }
 
         if let body = body{
-            text.append(String(localized: "内容:") + body)
+            text.append(String(localized: "内容") + ":" + body)
         }
 
         if image != nil{

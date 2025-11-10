@@ -2,7 +2,8 @@
 //  ImageHandler.swift
 //  NotificationServiceExtension
 //
-//  Created by uuneo 2024/8/8.
+//  History:
+//    Created by Neo 2024/8/8.
 //
 
 

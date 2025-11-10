@@ -2,7 +2,13 @@
 //  OpenChatHistoryView.swift
 //  NoLet
 //
-//  Created by uuneo on 2025/2/25.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo on 2025/2/25.
 //
 
 import SwiftUI

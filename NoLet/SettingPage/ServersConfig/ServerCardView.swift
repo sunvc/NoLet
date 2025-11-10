@@ -2,7 +2,13 @@
 //  ServerCardView.swift
 //  NoLet
 //
-//  Created by uuneo 2024/10/30.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo 2024/10/30.
 //
 
 import SwiftUI
@@ -20,8 +26,8 @@ struct ServerCardView:View {
     var complete:() -> Void
     
     var accessText: String{
-        item.status ? String(localized: "服务器:") + item.url + String(localized: "状态正常"):
-        String(localized: "服务器:") + item.url + String(localized: "状态异常")
+        item.status ? String(localized: "服务器") + ":" + item.url + String(localized: "状态正常"):
+        String(localized: "服务器") + ":" + item.url + String(localized: "状态异常")
     }
 
 

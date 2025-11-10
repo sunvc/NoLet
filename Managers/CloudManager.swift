@@ -2,7 +2,12 @@
 //  CloudKitManager.swift
 //  NoLet
 //
-//  Created by lynn on 2025/3/15.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//  History:
+//    Created by Neo on 2025/3/15.
 //
 import Foundation
 import CloudKit
@@ -210,7 +215,7 @@ class CloudManager {
             return .success(String(localized: "保存成功"))
         }catch{
             NLog.error(error.localizedDescription)
-            return .saveError(String(localized: "保存失败：\(error.localizedDescription)"))
+            return .saveError(String(localized: "保存失败") + "：\(error.localizedDescription)")
         }
         
     }

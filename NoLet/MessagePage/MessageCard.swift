@@ -2,7 +2,13 @@
 //  MessageCardView.swift
 //  NoLet
 //
-//  Created by uuneo on 2025/2/13.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//
+//  History:
+//    Created by Neo on 2025/2/13.
 //
 
 import SwiftUI
@@ -232,7 +238,7 @@ struct MessageCard: View {
                             }
                             .accessibilityElement(children: .ignore)
                             .accessibilityValue(String("\(PBMarkdown.plain(message.accessibilityValue()))"))
-                            .accessibilityLabel("消息内容`")
+                            .accessibilityLabel("消息内容")
                             .accessibilityHint("双击全屏显示")
                             .accessibilityAction(named: "显示全屏") {
                                 showFull()

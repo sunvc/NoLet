@@ -1,8 +1,13 @@
 //
 //  View+.swift
-//  Meow
+//  NoLet
 //
-//  Created by uuneo 2024/8/9.
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+//
+//  History:
+//    Created by Neo 2024/8/9.
 //
 
 import Foundation

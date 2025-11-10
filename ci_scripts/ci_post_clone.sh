@@ -3,7 +3,7 @@
 #  ci_post_clone.sh
 #  NoLet
 #
-#  Created by lynn on 2025/9/7.
+#  Created by Neo on 2025/9/7.
 #  
 
 git clone https://github.com/"$GITHUB_NAME"/"$GITHUB_PROJECT_SAFE".git
