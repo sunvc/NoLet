@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>FILEHEADER</key>
+    <string>
+//  SWIFT: ___DEFAULTTOOLCHAINSWIFTVERSION___ - MACOS: ___RUNNINGMACOSVERSION___ 
+//  ___PACKAGENAME___ - ___FILENAME___
+//
+//  ___ORGANIZATIONNAME___
+//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
+//  Document:      https://wiki.wzs.app
+//  E-mail:        to@wzs.app
+
+//  Description:
+
+//  History:
+//    Created by ___FULLUSERNAME___ on ___DATE___ ___TIME___.
+    </string>
+</dict>
+</plist>

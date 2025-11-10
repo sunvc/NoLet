@@ -14633,6 +14633,7 @@
       }
     },
     "长度不能超过30秒" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

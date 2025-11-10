@@ -23,6 +23,10 @@
 	<array>
 		<string>photos-redirect</string>
 	</array>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_nolet._tcp</string>
+	</array>
 	<key>NSCameraReactionEffectGesturesEnabledDefault</key>
 	<true/>
 	<key>NSUserActivityTypes</key>
@@ -99,10 +103,6 @@
 				</array>
 			</dict>
 		</dict>
-	</array>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_nolet._tcp</string>
 	</array>
 </dict>
 </plist>

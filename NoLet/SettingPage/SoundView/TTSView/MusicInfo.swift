@@ -48,15 +48,11 @@ struct MusicInfo: View {
             /// Adding Matched Geometry Effect (Hero Animation
             VStack{
                 Spacer()
-                var config: WaveformScrubber.Config{
-                    var data = WaveformScrubber.Config()
-                    data.activeTint = .accent
-                    return data
-                }
+   
 
                 if let player = audioManager.speakPlayer, let audio = player.url{
                     WaveformScrubber(
-                        config: config,
+                        config: .init(activeTint: .accent),
                         url: audio,
                         progress: $progress,
                         info: { info in

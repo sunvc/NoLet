@@ -78,7 +78,6 @@
 		B58359202DEDD65A0066B32E /* MessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358AF2DEDD65A0066B32E /* MessageModel.swift */; };
 		B58359252DEDD65A0066B32E /* TagField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358BE2DEDD65A0066B32E /* TagField.swift */; };
 		B58359272DEDD65A0066B32E /* WaveformScrubber.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358B92DEDD65A0066B32E /* WaveformScrubber.swift */; };
-		B583592E2DEDD65A0066B32E /* Spinner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358BA2DEDD65A0066B32E /* Spinner.swift */; };
 		B58359332DEDD65A0066B32E /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358BB2DEDD65A0066B32E /* AnimatedButton.swift */; };
 		B58359342DEDD65A0066B32E /* OtherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358B02DEDD65A0066B32E /* OtherModel.swift */; };
 		B58359362DEDD65A0066B32E /* zoomable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358B42DEDD65A0066B32E /* zoomable.swift */; };
@@ -224,7 +223,6 @@
 		B58358B02DEDD65A0066B32E /* OtherModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherModel.swift; sourceTree = "<group>"; };
 		B58358B42DEDD65A0066B32E /* zoomable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = zoomable.swift; sourceTree = "<group>"; };
 		B58358B92DEDD65A0066B32E /* WaveformScrubber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveformScrubber.swift; sourceTree = "<group>"; };
-		B58358BA2DEDD65A0066B32E /* Spinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spinner.swift; sourceTree = "<group>"; };
 		B58358BB2DEDD65A0066B32E /* AnimatedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedButton.swift; sourceTree = "<group>"; };
 		B58358BE2DEDD65A0066B32E /* TagField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagField.swift; sourceTree = "<group>"; };
 		B58358BF2DEDD65A0066B32E /* PopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopView.swift; sourceTree = "<group>"; };
@@ -805,7 +803,6 @@
 				B58359B52DEDD9030066B32E /* PassthroughWindow.swift */,
 				B58358B42DEDD65A0066B32E /* zoomable.swift */,
 				B58358B92DEDD65A0066B32E /* WaveformScrubber.swift */,
-				B58358BA2DEDD65A0066B32E /* Spinner.swift */,
 				B58358BB2DEDD65A0066B32E /* AnimatedButton.swift */,
 				B58358BE2DEDD65A0066B32E /* TagField.swift */,
 				B58358BF2DEDD65A0066B32E /* PopView.swift */,
@@ -1183,7 +1180,6 @@
 				B58359272DEDD65A0066B32E /* WaveformScrubber.swift in Sources */,
 				B54057412DF1B6400058DC87 /* Encodable+.swift in Sources */,
 				B54057182DF1B3DB0058DC87 /* String+.swift in Sources */,
-				B583592E2DEDD65A0066B32E /* Spinner.swift in Sources */,
 				B58359332DEDD65A0066B32E /* AnimatedButton.swift in Sources */,
 				B58359342DEDD65A0066B32E /* OtherModel.swift in Sources */,
 				B58359362DEDD65A0066B32E /* zoomable.swift in Sources */,

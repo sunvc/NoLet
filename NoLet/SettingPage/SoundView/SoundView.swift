@@ -13,10 +13,9 @@ import UIKit
 
 struct SoundView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var audioManager = AudioManager.shared
-    @EnvironmentObject private var manager:AppManager
-    @State private var showUpload:Bool = false
+    @StateObject private var tipsManager = AudioManager.shared
     
+    @State private var showUpload:Bool = false
     @State private var uploadLoading:Bool = false
 
 
@@ -63,8 +62,8 @@ struct SoundView: View {
                                 
                                 if file.startAccessingSecurityScopedResource() {
                                     
-                                    if let url = await audioManager.convertAudioToCAF(inputURL: file){
-                                        await audioManager.saveSound(url: url)
+                                    if let url = await tipsManager.convertToCaf(inputURL: file){
+                                        await tipsManager.saveSound(url: url)
                                     }else{
                                         Toast.error(title: "导出失败")
                                     }
@@ -94,18 +93,18 @@ struct SoundView: View {
             }.listRowBackground(Color.clear)
 
 
-            if audioManager.customSounds.count > 0{
+            if tipsManager.customSounds.count > 0{
                 Section{
                     
-                    ForEach(audioManager.customSounds, id: \.self) { url in
-                        SoundItemView(audio: url)
+                    ForEach(tipsManager.customSounds, id: \.self) { url in
+                        SoundItemView(tipsManager: tipsManager, audio: url)
 
                     }.onDelete { indexSet in
                         for index in indexSet{
-                            audioManager.deleteSound(url: audioManager.customSounds[index])
+                            tipsManager.deleteSound(url: tipsManager.customSounds[index])
                         }
                     }
-                    .environmentObject(audioManager)
+                    
                 }header: {
                     Text(  "自定义铃声")
                 }
@@ -113,10 +112,10 @@ struct SoundView: View {
             
             
             Section{
-                ForEach(audioManager.defaultSounds, id: \.self) { url in
-                    SoundItemView(audio: url)
+                ForEach(tipsManager.defaultSounds, id: \.self) { url in
+                    SoundItemView(tipsManager: tipsManager,audio: url)
 
-                } .environmentObject(audioManager)
+                }
             }header: {
                 Text(  "自带铃声")
             }
@@ -131,14 +130,14 @@ struct SoundView: View {
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.tint, .primary)
                     .VButton(onRelease: { _ in
-                        manager.router.append(.tts)
+                        AppManager.shared.router.append(.tts)
                         return true
                     })
                     .accessibilityLabel("语音朗读设置")
             }
         }
         .onDisappear{
-            audioManager.playAudio(url: nil)
+            tipsManager.stop()
         }
     }
     
@@ -152,7 +151,5 @@ struct SoundView: View {
 
 #Preview {
     SoundView()
-        .environmentObject(AppManager.shared)
-    
 }
 

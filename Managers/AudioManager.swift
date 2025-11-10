@@ -18,35 +18,154 @@ import Defaults
 
 
 
-class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
+
+// MARK: - 铃声界面播放铃声 Actor
+final class AudioManager: NSObject,  ObservableObject{
     
     static let shared = AudioManager()
+    
+    @Published var defaultSounds:[URL] =  []
+    @Published var customSounds:[URL] =  []
+   
+    /// Speak Manager
+    @Published var speakPlayer:AVAudioPlayer? = nil
+    @Published var loading:Bool = false
+    @Published var ShareURL: URL?  = nil
+    
+    @Published private(set) var isPlaying: Bool = false
+    @Published private(set) var currentTime: Double = 0
+    @Published private(set) var duration: Double = 0
+    @Published private(set) var currentURL: URL? = nil
+    
     private var manager = FileManager.default
     
-    private var mainQueue = Queue.mainQueue()
+    private var player: AVPlayer?
+    private var timeObserver: Any?
+    private var playerItemStatusObserver: NSKeyValueObservation?
+    
+    private var endObserver: NSObjectProtocol?
     
     private override init() {
         super.init()
         self.setFileList()
-       
+    }
+    
+    /// 播放或暂停音频
+    func togglePlay(url: URL) {
+        if currentURL == url {
+            //  如果是同一个文件，则切换播放状态
+            if isPlaying {
+                pause()
+            } else {
+                play()
+            }
+        } else {
+            //  如果是不同文件，则重新播放
+            playNewURL(url)
+        }
+    }
+    
+    /// 开始播放新音频
+    private func playNewURL(_ url: URL) {
+        cleanup()
+        currentURL = url
+        let playerItem = AVPlayerItem(url: url)
+        player = AVPlayer(playerItem: playerItem)
+        
+        // 监听播放状态
+        playerItemStatusObserver = playerItem.observe(\.status, options: [.new]) { [weak self] item, _ in
+            guard let self else { return }
+            if item.status == .readyToPlay {
+                Task { @MainActor in
+                    self.duration = item.duration.seconds
+                    self.play()
+                }
+            }
+        }
+        
+        // 实时监听播放进度
+        timeObserver = player?.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 0.1, preferredTimescale: 600),
+            queue: .main
+        ) { [weak self] time in
+            guard let self = self else { return }
+            self.currentTime = time.seconds
+            if let dur = self.player?.currentItem?.duration.seconds, dur > 0 {
+                self.duration = dur
+            }
+        }
+        
+        //  监听播放结束
+        endObserver = NotificationCenter.default.addObserver(
+            forName: .AVPlayerItemDidPlayToEndTime,
+            object: playerItem,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            // 停止并清理
+            self.cleanup()
+        }
+    }
+    
+    /// 播放
+    private func play() {
+        player?.play()
+        isPlaying = true
+    }
+    
+    /// 暂停
+    private func pause() {
+        player?.pause()
+        isPlaying = false
+    }
+    
+    /// 跳转到指定时间
+    func seek(to time: Double) {
+        player?.seek(to: CMTime(seconds: time, preferredTimescale: 600))
+    }
+    
+    func stop(){
+        self.cleanup()
+    }
+    
+    /// 清理资源（切歌时）
+    private func cleanup() {
+        if let token = timeObserver {
+            player?.removeTimeObserver(token)
+            timeObserver = nil
+        }
+        playerItemStatusObserver = nil
+        player = nil
+        currentTime = 0
+        duration = 0
+        currentURL = nil
+        isPlaying = false
+    }
+    
+    deinit {
+        cleanup()
+    }
+    
+    // 定义一个异步函数来加载audio的持续时间
+    func loadVideoDuration(fromURL audioURL: URL) async throws -> Double {
+        return try AVAudioPlayer(contentsOf: audioURL).duration
     }
     
     
-    @Published var defaultSounds:[URL] =  []
-    @Published var customSounds:[URL] =  []
+    func formatDuration(_ duration: TimeInterval) -> String {
+        let formatter = NumberFormatter()
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: duration)) ?? ""
+    }
+}
+
+extension AudioManager{
     
-    @Published var soundID: SystemSoundID = 0
-    @Published var playingAudio:URL? = nil
     
-    @Published var speakPlayer:AVAudioPlayer? = nil
-    @Published var loading:Bool = false
-    
-    @Published var ShareURL: URL?  = nil
-    
-   
     
     func allSounds()-> [String] {
-        let (customSounds , defaultSounds) = AudioManager.shared.getFileList()
+        let (customSounds , defaultSounds) = self.getFileList()
         return (customSounds + defaultSounds).map {
             $0.deletingPathExtension().lastPathComponent
         }
@@ -181,79 +300,19 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
         setFileList()
     }
     
-    func playAudio(url: URL? = nil, complete:(()->Void)? = nil) {
-        // 先释放之前的 SystemSoundID（如果有），避免内存泄漏或重复播放
-        AudioServicesDisposeSystemSoundID(self.soundID)
-        
-        // 如果传入的 URL 为空，或者与当前正在播放的是同一个音频，则认为是“停止播放”的操作
-        guard let audio = url, playingAudio != url else {
-            mainQueue.async {
-                self.playingAudio = nil
-                self.soundID = 0
-            }
-            return
-        }
-    
-        
-        // 创建 SystemSoundID，用于播放系统音效（仅支持较小的音频文件，通常小于30秒）
-        mainQueue.async {
-            // 设置当前正在播放的音频
-            self.playingAudio = audio
-            AudioServicesCreateSystemSoundID(audio as CFURL, &self.soundID)
-            // 播放音频，播放完成后执行回调
-            AudioServicesPlaySystemSoundWithCompletion(self.soundID) {
-                // 如果回调时仍是当前音频（防止播放期间被替换）
-                if self.playingAudio == url {
-                    // 释放资源
-                    AudioServicesDisposeSystemSoundID(self.soundID)
-                    self.mainQueue.async {
-                        // 重置播放状态
-                        self.playingAudio = nil
-                        self.soundID = 0
-                        complete?()
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    func convertAudioToCAF(inputURL: URL) async -> URL?  {
+    func convertToCaf(inputURL: URL) async -> URL?  {
         
         do{
             
             let fileName = inputURL.deletingPathExtension().lastPathComponent
             
             let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).caf")
-            // 如果输出文件已存在，则先删除，防止导出失败
-            if FileManager.default.fileExists(atPath: outputURL.path) {
-                try FileManager.default.removeItem(at: outputURL)
-            }
-            
-            // 创建 AVAsset 用于处理输入音频资源
-            let asset = AVAsset(url: inputURL)
-            
-            // 创建导出会话，使用 "Passthrough" 预设保持原始音频格式
-            guard let exportSession = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetPassthrough) else { return nil }
-            // 获取音频时长（异步加载）
-            let assetDurationSeconds = try await asset.load(.duration)
-            
-            // 设置导出时间范围：如果音频大于 30 秒，最多只导出 29.9 秒
-            // AVFoundation 的时间精度有限，设置 29.9 更保险
-            let maxDurationCMTime = CMTime(seconds: 29.9, preferredTimescale: 600)
-            if assetDurationSeconds > maxDurationCMTime {
-                exportSession.timeRange = CMTimeRange(start: .zero, duration: maxDurationCMTime)
-            }
-            
-            // 设置导出文件类型和输出路径
-            exportSession.outputFileType = .caf
-            exportSession.outputURL = outputURL
-            
-            // 开始异步导出
-            await exportSession.export()
-            
-            // 根据导出状态返回结果
-            return exportSession.status == .completed ? outputURL : nil
+            try await AudioTranscoder.convertToAudio(inputURL: inputURL,
+                                                   outputURL: outputURL,
+                                                   fileTyle: .caf,
+                                                   maxDuration: 29.9,
+                                                   sampleRate: 22050.0)
+            return outputURL
             
         }catch{
             return nil
@@ -261,7 +320,10 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
         
         
     }
-    
+}
+
+
+extension AudioManager: AVAudioPlayerDelegate{
     func speak(_ text: String, noCache:Bool = false) async -> AVAudioPlayer? {
 
         do{
@@ -311,7 +373,6 @@ class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate{
             }
         }
     }
-    
 }
 
 
@@ -379,19 +440,131 @@ extension AudioManager{
             complete?()
         }
     }
+    
+    enum TipsSound: String{
+        case pttconnect
+        case pttnotifyend
+        case cbegin
+        case bottle
+        case qrcode
+        case share
+        case toolSent
+        case pull
+        case refresh
+        case tabSelection
+    }
+
 
 }
 
-enum TipsSound: String{
-    case pttconnect
-    case pttnotifyend
-    case cbegin
-    case bottle
-    case qrcode
-    case share
-    case toolSent
-    case pull
-    case refresh
-    case tabSelection
-}
 
+// MARK: - 音频转码器 Actor
+actor AudioTranscoder {
+        private let writer: AVAssetWriter
+        private let writerInput: AVAssetWriterInput
+        private let readerOutput: AVAssetReaderTrackOutput
+        private var started = false
+
+        init(writer: AVAssetWriter, writerInput: AVAssetWriterInput, readerOutput: AVAssetReaderTrackOutput) {
+            self.writer = writer
+            self.writerInput = writerInput
+            self.readerOutput = readerOutput
+        }
+
+        func startProcessing() async {
+            guard !started else { return }
+            started = true
+            await processLoop()
+        }
+
+        private func isReady() -> Bool {
+            writerInput.isReadyForMoreMediaData
+        }
+
+        private func copyNextSampleBuffer() -> CMSampleBuffer? {
+            readerOutput.copyNextSampleBuffer()
+        }
+
+        private func append(_ sampleBuffer: CMSampleBuffer) {
+            writerInput.append(sampleBuffer)
+        }
+
+        private func markFinished() {
+            writerInput.markAsFinished()
+        }
+
+        private func finishWriting() async {
+            let path = self.writer.outputURL.path
+            await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
+                writer.finishWriting {
+                    print("✅ 转换完成：\(path)")
+                    cont.resume()
+                }
+            }
+        }
+
+        private func processLoop() async {
+            while true {
+                if isReady() {
+                    if let sampleBuffer = copyNextSampleBuffer() {
+                        append(sampleBuffer)
+                    } else {
+                        markFinished()
+                        await finishWriting()
+                        break
+                    }
+                } else {
+                    try? await Task.sleep(nanoseconds: 10_000_000) // 10ms 等待 writer 就绪
+                }
+            }
+        }
+
+        static func convertToAudio(inputURL: URL,
+                                 outputURL: URL,
+                                 fileTyle: AVFileType,
+                                 maxDuration: Double = 30,
+                                 sampleRate: Double = 44100.0) async throws {
+            let asset = AVURLAsset(url: inputURL)
+            
+            guard let reader = try? AVAssetReader(asset: asset) else {
+                throw NSError(domain: "AudioConvert", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法读取输入文件"])
+            }
+
+            guard let audioTrack = try await asset.loadTracks(withMediaType: .audio).first else {
+                throw NSError(domain: "AudioConvert", code: -2, userInfo: [NSLocalizedDescriptionKey: "没有音频轨道"])
+            }
+
+            //  计算裁剪时间范围
+            let assetDuration = try await asset.load(.duration)
+            let limitDuration = CMTime(seconds: maxDuration, preferredTimescale: assetDuration.timescale)
+            let finalDuration = min(assetDuration, limitDuration)
+            let timeRange = CMTimeRange(start: .zero, duration: finalDuration)
+
+            // 创建 Reader，并设置时间范围
+            let readerOutput = AVAssetReaderTrackOutput(track: audioTrack, outputSettings: [
+                AVFormatIDKey: kAudioFormatLinearPCM
+            ])
+            reader.add(readerOutput)
+            reader.timeRange = timeRange
+
+            //  创建 Writer
+            let writer = try AVAssetWriter(outputURL: outputURL, fileType: .caf)
+            let audioSettings: [String: Any] = [
+                AVFormatIDKey: kAudioFormatAppleIMA4,
+                AVNumberOfChannelsKey: 1,
+                AVSampleRateKey: sampleRate
+            ]
+            let writerInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
+            writer.add(writerInput)
+
+            // 启动读写
+            writer.startWriting()
+            reader.startReading()
+            writer.startSession(atSourceTime: .zero)
+
+            // 启动转码器
+            let transcoder = AudioTranscoder(writer: writer, writerInput: writerInput, readerOutput: readerOutput)
+            await transcoder.startProcessing()
+        }
+    
+}

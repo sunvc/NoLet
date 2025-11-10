@@ -12,7 +12,8 @@ import Defaults
 
 
 struct SoundItemView: View {
-    @EnvironmentObject private var audioManager:AudioManager
+    
+    @ObservedObject var tipsManager:AudioManager
 	@Default(.sound) var sound
 
 	var audio:URL
@@ -25,14 +26,16 @@ struct SoundItemView: View {
 		audio.deletingPathExtension().lastPathComponent
 	}
     
-    var selectSound:Bool{
+    var defaultSound:Bool{
 		sound == audio.deletingPathExtension().lastPathComponent
     }
     
-    @State private var progress:CGFloat = 0
-	
-    var wavConfig:WaveformScrubber.Config{
-        selectSound ? .init(activeTint: Color.accentColor) : .init(activeTint: .textBlack)
+    
+    var progress: CGFloat{
+        if audio == tipsManager.currentURL{
+            return tipsManager.currentTime / tipsManager.duration
+        }
+        return 0.0
     }
 
     var body: some View{
@@ -42,24 +45,18 @@ struct SoundItemView: View {
                 
                 VStack(alignment: .leading){
                     Text( name)
-                        .foregroundStyle(selectSound ? Color.green :  Color.textBlack)
-                    Text(verbatim: "\(formatDuration(duration))s")
+                        .foregroundStyle(defaultSound ? Color.green :  Color.textBlack)
+                    Text(verbatim: "\(tipsManager.formatDuration(duration))s")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
                 
-                WaveformScrubber(config: wavConfig, url: audio, progress: Binding(get: {progress}, set: {_ in}))
-                    .disabled(true)
+                WaveformScrubber(config: defaultSound ? .init(activeTint: Color.accentColor) : .init(activeTint: .textBlack),
+                                 url: audio,
+                                 progress: Binding(get: {progress}, set: { value in
+                    tipsManager.seek(to: value *  tipsManager.duration)
+                }))
                     .scaleEffect(0.8)
-                    .onChange(of: selectSound) { value  in
-                        progress = selectSound ? 1 : 0
-                    }
-                    .onAppear{
-                        withAnimation {
-                            progress = selectSound ? 1 : 0
-                        }
-                        
-                    }
                 
             }
             .diff{view in
@@ -80,34 +77,21 @@ struct SoundItemView: View {
                 }
 
             }
-
-            
-            
-            
-           
-            
             
             Spacer(minLength: 0)
-            if duration <= 30{
-                Image(systemName: "doc.on.doc")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle( .tint, Color.primary)
-                    .onTapGesture {
-                        Clipboard.set(self.name)
-                        Toast.copy(title: "复制成功")
-                        Haptic.impact()
-                    }
-
-            }else{
-                Text("长度不能超过30秒")
-                    .foregroundStyle(.red)
-            }
             
+            Image(systemName: "doc.on.doc")
+                .symbolRenderingMode(.palette)
+                .foregroundStyle( .tint, Color.primary)
+                .onTapGesture {
+                    Clipboard.set(self.name)
+                    Toast.copy(title: "复制成功")
+                    Haptic.impact()
+                }
         }
         .swipeActions(edge: .leading) {
             Button {
                 sound = audio.deletingPathExtension().lastPathComponent
-                audioManager.playAudio(url: audio)
             } label: {
                 Text("设置")
                     .accessibilityLabel("设置默认铃声")
@@ -115,7 +99,7 @@ struct SoundItemView: View {
         }
         .task {
             do {
-                self.duration =  try await loadVideoDuration(fromURL: self.audio)
+                self.duration =  try await tipsManager.loadVideoDuration(fromURL: self.audio)
             } catch {
 #if DEBUG
                 NLog.error("Error loading aideo duration: \(error.localizedDescription)")
@@ -139,36 +123,10 @@ struct SoundItemView: View {
     }
 
     func playAudio(){
-        self.progress = 0
-        DispatchQueue.main.async{
-            withAnimation(.easeInOut(duration: duration )) {
-                self.progress = 1
-            }
-
-            audioManager.playAudio(url: audio)
-            DispatchQueue.main.asyncAfter(deadline: .now() + duration + 0.1){
-                self.progress = selectSound ? 1 : 0
-            }
-        }
+        tipsManager.togglePlay(url: audio)
     }
 
 	
-}
-
-extension SoundItemView{
-	// 定义一个异步函数来加载audio的持续时间
-	func loadVideoDuration(fromURL audioURL: URL) async throws -> Double {
-		return try AVAudioPlayer(contentsOf: audioURL).duration
-    }
-    
-    
-    func formatDuration(_ duration: TimeInterval) -> String {
-        let formatter = NumberFormatter()
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 2
-        return formatter.string(from: NSNumber(value: duration)) ?? ""
-    }
-    
 }
 
 
