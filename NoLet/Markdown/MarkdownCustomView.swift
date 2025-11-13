@@ -148,6 +148,7 @@ struct WebImageProvider: ImageProvider {
     }
 }
 
+
 struct WebInlineImageProvider: InlineImageProvider {
     func image(with url: URL, label: String) async throws -> Image {
         // 下载图片
@@ -157,7 +158,7 @@ struct WebInlineImageProvider: InlineImageProvider {
         }
 
         // 获取屏幕宽度（逻辑点）
-        let maxWidth = await UIScreen.main.bounds.width
+        let maxWidth = await UIScreen.main.bounds.width - 30
 
         // 按屏幕宽度等比缩放
         let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)

@@ -233,6 +233,22 @@ struct MessageCard: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.bottom, 5)
                             .contentShape(Rectangle())
+                            .contextMenu{
+                                Button{
+                                    Haptic.impact()
+                                    if let image = image {
+                                        Clipboard.set(message.search,[UTType.image.identifier: image])
+                                    }else{
+                                        Clipboard.set(message.search)
+                                    }
+                                    Toast.copy(title: "复制成功")
+                                }label:{
+                                    Label("复制", systemImage: "doc.on.clipboard")
+                                        .symbolEffect(.bounce, delay: 2)
+                                        .customForegroundStyle(.yellow, .white)
+
+                                }.tint(.accent)
+                            }
                             .onTapGesture(count: 2){
                                 showFull()
                             }
@@ -247,6 +263,7 @@ struct MessageCard: View {
                         .frame(maxWidth: .infinity)
                         .scrollDisabled(true)
                         .frame(maxHeight: CGFloat(limitMessageLine) * 30)
+                        
                        
                         
                     }
@@ -281,21 +298,6 @@ struct MessageCard: View {
                     Label("智能助手", systemImage: "atom")
                         .symbolEffect(.rotate, delay: 2)
                 }.tint(.green)
-
-                Button{
-                    Haptic.impact()
-                    if let image = image {
-                        Clipboard.set(message.search,[UTType.image.identifier: image])
-                    }else{
-                        Clipboard.set(message.search)
-                    }
-                    Toast.copy(title: "复制成功")
-                }label:{
-                    Label("复制", systemImage: "doc.on.clipboard")
-                        .symbolEffect(.bounce, delay: 2)
-                        .customForegroundStyle(.yellow, .white)
-
-                }.tint(.accent)
             }
             .swipeActions(edge: .trailing) {
                 Button {

@@ -195,32 +195,19 @@ struct SelectMessageView:View {
                                 }
                             }
                             
-                            if let url =  message.url{
+                            if  message.url != nil || message.image != nil{
                                 Divider().padding(.top, 10)
                                 
                                 DisclosureGroup(String("URL"), isExpanded: $showUrl){
-                                    HStack(spacing: 1){
-                                        Image(systemName: "network")
-                                            .imageScale(.small)
-                                            
-                                        MarkdownCustomView.highlightedText(searchText: "", text: url)
-                                            .font(.system(size: baseSubtitleSize * scaleFactor))
-                                            .fontWeight(.bold)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-                                            .textSelection(.enabled)
-                                            
+                                    if let url = message.url{
+                                        UrlParamsView(url: url)
                                     }
-                                    .foregroundStyle(.accent)
-                                    .padding(10)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .fill( .gray.opacity(0.1))
-                                    )
-                                    Divider()
+                                    
+                                    if let url = message.image{
+                                        UrlParamsView(url: url)
+                                    }
                                     
                                 }
-                                
-                                
                             }
                            
                             
@@ -306,6 +293,8 @@ struct SelectMessageView:View {
                             .foregroundColor(.primary)
                     }
                 }
+                
+               
 
 
 
@@ -338,6 +327,17 @@ struct SelectMessageView:View {
                             .accessibilityLabel("朗读内容")
                     }
 
+                }
+                
+                ToolbarItem(placement: .bottomBar) {
+                    Button{
+                        Clipboard.set(message.search)
+                        Toast.copy(title: "复制成功")
+                        Haptic.impact()
+                    }label: {
+                        Label("复制", systemImage: "doc.on.doc")
+                            .foregroundColor(.primary)
+                    }
                 }
 
                 if #available(iOS 26.0, *) {
@@ -411,6 +411,31 @@ struct SelectMessageView:View {
             }
             .ignoresSafeArea()
 
+    }
+    
+    @ViewBuilder
+    func UrlParamsView(url: String)-> some View{
+        Group{
+            VStack(spacing: 1){
+                Image(systemName: "network")
+                    .imageScale(.small)
+                
+                MarkdownCustomView.highlightedText(searchText: "", text: url)
+                    .font(.system(size: baseSubtitleSize * scaleFactor))
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .textSelection(.enabled)
+            }
+            .foregroundStyle(.accent)
+            .padding(10)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill( .gray.opacity(0.1))
+            )
+            
+            Divider()
+        }
+       
     }
 
 
