@@ -160,17 +160,9 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
                 }
             }
             return nil
-        case .page(page: let page,title: let title, data: let data):
-            switch page{
-            case .widget:
-                Task{@MainActor in
-                    self.page = .setting
-                    self.router = [.more, .widget(title: title, data: data)]
-                }
-            case .icon:
-                self.page = .setting
-                self.sheetPage = .cloudIcon
-            }
+        case .cloudIcon:
+            self.page = .setting
+            self.sheetPage = .cloudIcon
             return nil
         default:
             return url
@@ -327,12 +319,10 @@ extension AppManager{
                 }
                 
             case .openPage:
-                /// pb://openPage?type=widget&page=small
-                if let page = params["page"], let page = OutDataType.pageType(rawValue: page){
-                    return .page(page: page,title: params["title"], data: params["data"] ?? "")
+                /// pb://openPage
+                if let _ = params["page"]{
+                    return .cloudIcon
                 }
-            default:
-                break
             }
             
         }

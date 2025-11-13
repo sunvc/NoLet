@@ -51,6 +51,7 @@ struct MarkdownCustomView:View {
             
             Markdown(content)
                 .markdownImageProvider(WebImageProvider())
+                .markdownInlineImageProvider(WebInlineImageProvider())
                 .environment(\.openURL, OpenURLAction { url in
                     AppManager.openUrl(url: url, .safari)
                     return .handled // 表示链接已经被处理，不再执行默认行为
@@ -147,6 +148,45 @@ struct WebImageProvider: ImageProvider {
     }
 }
 
+struct WebInlineImageProvider: InlineImageProvider {
+    func image(with url: URL, label: String) async throws -> Image {
+        // 下载图片
+        guard let imagePath = await ImageManager.downloadImage(url.absoluteString),
+              let original = UIImage(contentsOfFile: imagePath) else {
+            throw NSError(domain: "WebInlineImageProvider", code: 1, userInfo: [NSLocalizedDescriptionKey: "No Image!"])
+        }
+
+        // 获取屏幕宽度（逻辑点）
+        let maxWidth = await UIScreen.main.bounds.width
+
+        // 按屏幕宽度等比缩放
+        let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)
+
+        return Image(uiImage: resized)
+    }
+
+    // MARK: - Helper：按逻辑点宽度缩放
+    private func resizedImageIfNeeded(original: UIImage, maxWidth: CGFloat) -> UIImage {
+        let originalWidth = original.size.width
+        let originalHeight = original.size.height
+
+        // 如果原图宽度小于屏幕宽度，就不缩放
+        guard originalWidth > maxWidth else {
+            return original
+        }
+
+        let scale = maxWidth / originalWidth
+        let newSize = CGSize(width: originalWidth * scale, height: originalHeight * scale)
+
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        let newImage = renderer.image { _ in
+            original.draw(in: CGRect(origin: .zero, size: newSize))
+        }
+
+        return newImage
+    }
+}
+
 
 enum ImagePhase : Sendable {
     case empty
@@ -171,31 +211,30 @@ struct WebImageView: View {
         case .success(let image):
            
             ResizeToFit(idealSize: image.size) {
-                Menu {
-                    Button {
-                        
-                        image.bat_save(intoAlbum: nil) { success, status in
-                            if status == .authorized || status == .limited{
-                                if success{
-                                    Toast.success(title: "保存成功")
-                                }else{
-                                    Toast.question(title: "保存失败")
-                                }
-                            }else{
-                                Toast.error(title: "没有相册权限")
-                            }
+                Image(uiImage: image)
+                    .resizable()
+                    .contextMenu{
+                        Button {
                             
+                            image.bat_save(intoAlbum: nil) { success, status in
+                                if status == .authorized || status == .limited{
+                                    if success{
+                                        Toast.success(title: "保存成功")
+                                    }else{
+                                        Toast.question(title: "保存失败")
+                                    }
+                                }else{
+                                    Toast.error(title: "没有相册权限")
+                                }
+                                
+                            }
+                            Haptic.impact(.light)
+                        } label: {
+                            Label("保存图片", systemImage: "square.and.arrow.down.on.square")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.accent, .primary)
                         }
-                        Haptic.impact(.light)
-                    } label: {
-                        Label("保存图片", systemImage: "square.and.arrow.down.on.square")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, .primary)
                     }
-                } label: {
-                    Image(uiImage: image)
-                        .resizable()
-                }
             }
             
         case .failure(let error):

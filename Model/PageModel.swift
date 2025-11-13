@@ -52,7 +52,6 @@ enum RouterPage: Hashable{
     case server
     case assistantSetting(AssistantAccount?)
     case more
-    case widget(title:String?, data:String)
     case tts
     case about
     case dataSetting
@@ -78,7 +77,6 @@ extension RouterPage: Equatable {
 
         case (.messageDetail, .messageDetail),
              (.assistantSetting, .assistantSetting),
-             (.widget, .widget),
              (.serverInfo, .serverInfo),
              (.files, .files),
              (.web, .web):
@@ -97,9 +95,4 @@ enum TabPage: String, Sendable, CaseIterable{
     case message
     case setting
     case search
-}
-
-enum outRouterPage: String{
-    case widget
-    case icon
 }

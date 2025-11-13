@@ -203,21 +203,6 @@ struct MoreOperationsView: View {
                 
                 ListButton {
                     Label {
-                        Text("小组件")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "window.shade.closed")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.tint, Color.primary)
-                    }
-                } action:{
-                    manager.router
-                        .append(.widget(title: nil, data: "app"))
-                    return true
-                }
-                
-                ListButton {
-                    Label {
                         Text( "系统设置")
                             .foregroundStyle(.textBlack)
                     } icon: {

@@ -259,6 +259,14 @@ struct MessageCard: View {
             .swipeActions(edge: .leading , allowsFullSwipe: true){
                 Button{
                     Haptic.impact()
+                    showFull()
+                }label:{
+                    Label("全屏查看", systemImage: "arrow.up.backward.and.arrow.down.forward")
+                        .symbolEffect(.rotate, delay: 2)
+                }.tint(.orange)
+                
+                Button{
+                    Haptic.impact()
                     DispatchQueue.main.async{
 
                         AppManager.shared.askMessageId = message.id

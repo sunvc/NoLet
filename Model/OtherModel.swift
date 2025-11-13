@@ -363,12 +363,8 @@ enum OutDataType{
     case server(url: String, key: String, group: String?, sign: String?)
     case otherUrl(String)
     case assistant(String)
-    case page(page:pageType, title:String?, data:String)
-    
-    enum pageType: String {
-        case widget
-        case icon
-    }
+    case cloudIcon
+
 }
 
 
@@ -430,7 +426,6 @@ enum PBScheme: String, CaseIterable{
         case crypto
         case assistant
         case openPage
-        case widget
     }
     
     // pb://openpage?title=string or mw://openpage?title=string

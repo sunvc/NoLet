@@ -171,9 +171,11 @@ struct MarkdownTheme {
                     .markdownMargin(top: 24, bottom: 24)
             }
             .image { config in
+                
                 config.label
                     .zoomable()
                     .zIndex(9999)
+                
             }
             
             

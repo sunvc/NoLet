@@ -309,9 +309,6 @@ extension View{
                     case .more:
                         MoreOperationsView()
                         
-                    case .widget(title: let title, data: let data):
-                        WidgetChartView(data: data)
-                            .navigationTitle(title ?? "小组件")
                     case .tts:
                         SpeakSettingsView()
                         
