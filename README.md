@@ -1,9 +1,9 @@
   
-中文 ｜ **[English](README.EN.md)** | **[日本語](README.JA.md)** | **[한국어](README.KO.md)**
+中文 ｜ **[English](README.EN.md)**
 
 <p align="center">
 
-<img src="/_media/egglogo.png" alt="NoLet" title="NoLet" width="100"/>
+<img src="/docs/_media/egglogo.png" alt="NoLet" title="NoLet" width="100"/>
 
 </p>
 
@@ -31,6 +31,7 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 > [!IMPORTANT]
 >
 >  - 简单易用的API，支持多种请求方式
+>  - 支持大模型配置、翻译、摘要等功能
 >  - Markdown渲染支持，让推送内容更丰富
 >  - 自定义铃声、远程图标、文字图标，Emoji图标和图片
 >  - 多种通知级别，包括时效性和关键通知
@@ -43,8 +44,9 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 |Markdown|Avatar And Image|
 |-------|--------|
-|<img src="/_media/markdown.gif" width="350">|<img src="/_media/avatarAndImage.gif" width="350">|
+|<img src="/docs/_media/markdown.gif" width="350">|<img src="/docs/_media/avatarAndImage.gif" width="350">|
   
+
 
 ### 自建推送服务器
 
@@ -61,7 +63,6 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 * 安装后点击扩展图标，输入你的推送密钥进行配置
 * 支持一键发送当前页面、选中文本或图片到你的设备
-* 特别适合将Instagram等网站的图片直接发送到手机
 
 
 ## 项目中使用的第三方库

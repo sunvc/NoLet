@@ -1,9 +1,9 @@
   
-中文 ｜ **[English](README.EN.md)** | **[日本語](README.JA.md)** | **[한국어](README.KO.md)**
+中文 ｜ **[English](README.EN.md)**
 
 <p align="center">
 
-<img src="/_media/egglogo.png" alt="NoLet" title="NoLet" width="100"/>
+<img src="/docs/_media/egglogo.png" alt="NoLet" title="NoLet" width="100"/>
 
 </p>
 
@@ -31,6 +31,7 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 > [!IMPORTANT]
 >
 >  - Simple and easy-to-use API with support for multiple request methods
+>  - Support for large model configuration, translation, summary ...
 >  - Markdown rendering support for richer push content
 >  - Custom ringtones, remote icons, text icons, emoji icons, and images
 >  - Multiple notification levels including time-sensitive and critical notifications
@@ -43,7 +44,7 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 
 |Markdown|Avatar And Image|
 |-------|--------|
-|<img src="/_media/markdown.gif" width="350">|<img src="/_media/avatarAndImage.gif" width="350">|
+|<img src="/docs/_media/markdown.gif" width="350">|<img src="/docs/_media/avatarAndImage.gif" width="350">|
   
 
 ### Self-Hosted Push Server
@@ -62,7 +63,6 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 
 * After installation, click the extension icon and enter your push key to configure
 * Supports one-click sending of the current page, selected text, or images to your device
-* Especially suitable for sending images from sites like Instagram directly to your phone
 
 
 ## Third-Party Libraries Used in the Project

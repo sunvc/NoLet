@@ -1,5 +1,3 @@
 * Select Language
   - [:cn: 简体中文](/)
   - [:uk: English](/en/)
-  - [:kr: 한국어](/ko/)
-  - [:jp: 日本語](/ja/)

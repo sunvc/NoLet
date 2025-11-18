@@ -114,11 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             await  MessagesManager.shared.updateGroup()
         }
         
-        if notification.request.content.interruptionLevel.rawValue > 1{
-            completionHandler([.banner])
-        }else{
-            completionHandler(.badge)
-        }
+        completionHandler([.banner])
         Haptic.impact(.light)
 
         notificatonHandler(userInfo: notification.request.content.userInfo)

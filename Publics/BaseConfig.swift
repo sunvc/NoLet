@@ -34,7 +34,7 @@ class NCONFIG {
     static let longSoundPrefix = "pb.sounds.30s"
 
 #if DEBUG
-    static let server = "https://dev.uuneo.com"
+    static let server = "https://wzs.app"
 #else
     static let server = "https://wzs.app"
 #endif

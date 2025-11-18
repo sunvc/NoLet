@@ -21,6 +21,12 @@
             "value" : "‼️매개변수는 개별적으로 사용할 수 있습니다  \n* /내용 또는 /제목/내용  \n* group: 그룹 이름, 미입력 시 `기본값`으로 표시됩니다  \n* badge: 사용자 지정 배지, 가능한 값 -1...  \n* ttl: 메시지 보관 시간, 가능한 값 0..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Parametreler ayrı ayrı kullanılabilir\n* /içerik veya /başlık/içerik\n* grup: grup adı, gönderilmezse 'varsayılan' gösterilir\n* rozet: özel köşe işareti, opsiyonel değer -1...\n* ttl: mesaj saklama süresi, opsiyonel değer 0..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -47,6 +53,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(필수)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Zorunlu)"
           }
         },
         "zh-Hans" : {
@@ -77,6 +89,12 @@
             "value" : "[%@] 그룹 음소거 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@] grup sessizleştirme başarılı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -103,6 +121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "* 우측 상단 기능 메뉴, 사용 예시, 그룹  \n* 이미지 탭 / 메시지 두 번 탭하면 전체 화면 보기  \n* 전체 화면 보기, 번역, 요약, 음성 재생  \n* 왼쪽으로 밀어 삭제, 오른쪽으로 밀어 복사 및 스마트 답변."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "* Sağ üst köşedeki işlev menüsü, örnekler, gruplar\n* Resme tıklama/çift tıklama ile tam ekran mesaj görüntüleme\n* Tam ekran görüntüleme, çeviri, özet, sesli okuma\n* Sola kaydırarak silme, sağa kaydırarak kopyalama ve akıllı yanıt."
           }
         },
         "zh-Hans" : {
@@ -133,6 +157,12 @@
             "value" : "키 번호 %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Numaralı Anahtar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -159,6 +189,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$d분 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d dakika önce"
           }
         },
         "zh-Hans" : {
@@ -189,6 +225,12 @@
             "value" : "%1$d시간 %2$d분 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d saat %2$d dakika önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -215,6 +257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$d시간 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d saat önce"
           }
         },
         "zh-Hans" : {
@@ -245,6 +293,12 @@
             "value" : "%d개의 메시지"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d mesaj"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -271,6 +325,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld개월"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ay"
           }
         },
         "zh-Hans" : {
@@ -301,6 +361,12 @@
             "value" : "%lld일"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld gün"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -327,6 +393,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld년"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld yıl"
           }
         },
         "zh-Hans" : {
@@ -357,6 +429,12 @@
             "value" : "❗️대규모 모델 구성 필요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Büyük model yapılandırması gerekiyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -383,6 +461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1주"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hafta"
           }
         },
         "zh-Hans" : {
@@ -413,6 +497,12 @@
             "value" : "1일"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 gün"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -439,6 +529,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1개월"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ocak"
           }
         },
         "zh-Hans" : {
@@ -469,6 +565,12 @@
             "value" : "1개월 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 ay önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -495,6 +597,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2일 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 gün önce"
           }
         },
         "zh-Hans" : {
@@ -525,6 +633,12 @@
             "value" : "3개월 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 ay önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -551,6 +665,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "AI 어시스턴트"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay Zeka Asistanı"
           }
         },
         "zh-Hans" : {
@@ -581,6 +701,12 @@
             "value" : "앱 소스 코드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Açık Kaynak Adresi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -607,6 +733,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "앱 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Yapılandırması"
           }
         },
         "zh-Hans" : {
@@ -637,6 +769,12 @@
             "value" : "인증 실패"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yetkilendirme başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -663,6 +801,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "CPU 사용량"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CPU Kullanım Durumu"
           }
         },
         "zh-Hans" : {
@@ -693,6 +837,12 @@
             "value" : "GET 메서드에는 URIComponent 인코딩이 필요합니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GET yöntemi URIComponent kodlaması gerektirir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -719,6 +869,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 아이콘"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Bulut Simgesi"
           }
         },
         "zh-Hans" : {
@@ -749,6 +905,12 @@
             "value" : "iCloud 서비스가 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud hizmeti geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -775,6 +937,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 접근이 제한되었습니다. 부모 제어 또는 MDM 장치 관리 정책으로 인한 것일 수 있습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud erişimi kısıtlanmış, muhtemelen ebeveyn kontrolü veya MDM cihaz yönetim politikasından kaynaklanıyor"
           }
         },
         "zh-Hans" : {
@@ -805,6 +973,12 @@
             "value" : "iCloud 계정 사용 가능"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Hesabı Kullanılabilir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -831,6 +1005,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 상태 확인"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Durum Kontrolü"
           }
         },
         "zh-Hans" : {
@@ -861,6 +1041,12 @@
             "value" : "iCloud 상태 확인 중..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud durumu denetleniyor..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -887,6 +1073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "IV는 무작위로 생성할 수 있지만, 무작위인 경우 iv 매개변수로 전달해야 합니다."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "IV rastgele oluşturulabilir, ancak rastgele ise iv parametresi içinde iletilmelidir."
           }
         },
         "zh-Hans" : {
@@ -917,6 +1109,12 @@
             "value" : "JSON 데이터"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON verileri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -943,6 +1141,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "잘못된 키"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anahtar doğru değil"
           }
         },
         "zh-Hans" : {
@@ -973,6 +1177,12 @@
             "value" : "키 길이:"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ANAHTAR uzunluğu:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1001,6 +1211,12 @@
             "value" : "Markdown 스타일"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markdown Stili"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1020,13 +1236,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "/ja/"
+            "value" : "/en/"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "/ko/"
+            "value" : "/en/"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HayırDilYerelKodu"
           }
         },
         "zh-Hans" : {
@@ -1052,6 +1274,12 @@
           }
         },
         "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL"
@@ -1085,6 +1313,12 @@
             "value" : "URL 스키마 또는 URL"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Şeması veya Adresi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1111,6 +1345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL 속성은 URLScheme을 열 수 있으며, 알림 메시지를 클릭하면 자동으로 이동하고, 포그라운드에서 메시지를 수신하면 자동으로 이동합니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL özelliği URL şemasını açabilir, bildirim mesajına tıklandığında otomatik olarak atlar, ön uç mesaj alındığında otomatik olarak atlar"
           }
         },
         "zh-Hans" : {
@@ -1141,6 +1381,12 @@
             "value" : "1주 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir hafta önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1167,6 +1413,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1일 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir gün önce"
           }
         },
         "zh-Hans" : {
@@ -1197,6 +1449,12 @@
             "value" : "1시간 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir saat önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1223,6 +1481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "1개월 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir ay önce"
           }
         },
         "zh-Hans" : {
@@ -1253,6 +1517,12 @@
             "value" : "클라우드에 업로드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buluta yükle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1279,6 +1549,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "리링톤 업로드"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zil sesi yükle"
           }
         },
         "zh-Hans" : {
@@ -1309,6 +1585,12 @@
             "value" : "메시지를 아래로 당겨서 이미지 보기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağı kaydırma mesajı resim gösterir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1335,6 +1617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "아래로 당겨서 음성 자동 재생"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağı açılır otomatik oynatma sesi"
           }
         },
         "zh-Hans" : {
@@ -1365,6 +1653,12 @@
             "value" : "클라우드 서버 다운로드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut Sunucusu İndir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1391,6 +1685,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다운로드 프록시"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirme Aracısı"
           }
         },
         "zh-Hans" : {
@@ -1421,6 +1721,12 @@
             "value" : "저장하지 않음"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydetme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1447,6 +1753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2주 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İki hafta önce"
           }
         },
         "zh-Hans" : {
@@ -1477,6 +1789,12 @@
             "value" : "중국어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Türkçe"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1503,6 +1821,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중간 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapılandırma"
           }
         },
         "zh-Hans" : {
@@ -1533,6 +1857,12 @@
             "value" : "네트워크 권한이 왜 필요한가요?"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neden ağ izni gerekiyor?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1559,6 +1889,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "QR 코드"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR Kod"
           }
         },
         "zh-Hans" : {
@@ -1589,6 +1925,12 @@
             "value" : "클라우드 아이콘"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut Etiketi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1615,6 +1957,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오늘"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bugün"
           }
         },
         "zh-Hans" : {
@@ -1645,6 +1993,12 @@
             "value" : "코드 어시스턴트"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod Yardımcısı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1671,6 +2025,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "당신은 명확하고 간결하며 유지보수하기 쉬운 코드를 작성하는 데 능숙한 경험 많은 프로그래머입니다. 다음 원칙에 따라 질문에 답하십시오:\n1. 완전하고 실행 가능한 코드 예제를 제공하십시오.\n2. 주요 구현 세부사항을 간결하게 설명하십시오.\n3. 잠재적인 성능 또는 구조 최적화 포인트를 지적하십시오.\n4. 코드의 확장성, 보안 및 효율성에 중점을 두십시오.\n아래에 내용을 제공합니다, %@ 언어로 직접 답장하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen deneyimli bir yazılımcısın, temiz, anlaşılır ve sürdürülebilir kod yazmada ustasın. Lütfen aşağıdaki ilkelere göre soruları yanıtla:\n1. Tam ve çalıştırılabilir kod örnekleri sağla.\n2. Ana uygulama detaylarını basitçe açıkla.\n3. Potansiyel performans veya yapı iyileştirme noktalarını belirt.\n4. Kodun genişletilebilirliği, güvenliği ve verimliliğine odaklan.\nŞimdi sana içeriği vereceğim, doğrudan %@ dilinde yanıt ver."
           }
         },
         "zh-Hans" : {
@@ -1701,6 +2061,12 @@
             "value" : "당신은 다양한 문체의 글쓰기와 다듬기에 능숙한 전문 작문 어시스턴트입니다. 다음 요구사항에 따라 텍스트를 최적화하십시오:\n1. 기사 구조를 명확히 하고 논리적 일관성을 강화하십시오.\n2. 어휘를 최적화하여 언어를 더 정확하고 유창하게 만드십시오.\n3. 핵심 포인트를 강조하고 핵심 정보를 부각시키십시오.\n4. 스타일을 대상 독자의 읽기 습관에 맞추십시오.\n5. 문법, 구두점 및 형식 오류를 수정하십시오.\n아래에 내용을 제공합니다, %@ 언어로 직접 답장하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen bir profesyonel yazı asistanısın, her türlü metin yazımı ve düzenlemesinde uzmansın. Lütfen aşağıdaki gereksinimlere göre metni iyileştir:\n\n1. Metin yapısını netleştirerek mantıksal akışı güçlendir.\n2. Kelime seçimini optimize ederek dili daha doğru ve akıcı hale getir.\n3. Önemli noktaları vurgulayarak temel bilgileri öne çıkar.\n4. Stili hedef okuyucunun okuma alışkanlıklarına uygun hale getir.\n5. Dilbilgisi, noktalama işaretleri ve biçim hatalarını düzelt.\n\nAşağıda içeriği sana iletiyorum, doğrudan %@ dilinde yanıt ver."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1727,6 +2093,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "당신은 대량의 정보에서 핵심 내용을 추출하는 데 능숙한 전문 요약 어시스턴트입니다. 요약할 때 다음 원칙을 따르십시오:\n1. 핵심 관점을 추출하고 중복 정보를 제거하십시오.\n2. 논리를 명확하게 유지하고 구조를 간결하게 하며, 기사의 중심 주제를 파악하고 저자의 논점과 관점을 이해하십시오.\n3. 기사의 정보와 세부사항을 전달하기 위한 핵심 포인트를 나열하십시오. 요약이 일관성을 유지하고 언어가 간결하고 명확하도록 보장하십시오.\n4. 필요에 따라 단락 형식 또는 글머리 기호 요약을 생성하고, 원문 구조를 따라 읽기 경험을 향상시키십시오.\n5. 간결하고 명확한 언어를 사용하면서 주요 관점과 감정적 측면을 효과적으로 전달하십시오.\n아래에 내용을 제공합니다, %@ 언어로 직접 답장하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen profesyonel bir özet asistanısın, büyük miktarda bilgiden anahtar içerikleri çıkarmada uzmansın. Özetlerken şu ilkelere uy:\n\n1. Çekirdek görüşleri özütle, gereksiz bilgileri ele.\n2. Mantıksal açıklığı koru, yapıyı sıkı tut, metnin merkezi temasını belirle, yazarın argümanlarını ve bakış açılarını anla.\n3. Metnin bilgilerini ve detaylarını iletmek için anahtar noktaları listele. Özetin tutarlılığını sağla, dili basit ve anlaşılır tut.\n4. Gerektiğinde paragraf şeklinde veya madde işaretli özetler oluşturabilir, okuma deneyimini geliştirmek için orijinal yapıyı takip edebilirsin.\n5. Ana görüşleri ve duygusal katmanları etkili bir şilde ilet, aynı zamanda basit ve net dil kullan.\n\nŞimdi sana içerik vereceğim, doğrudan %@ dilinde yanıtla."
           }
         },
         "zh-Hans" : {
@@ -1757,6 +2129,12 @@
             "value" : "당신은 간결하고 정확한 언어로 핵심 정보를 추출하는 데 능숙한 전문 요약 어시스턴트입니다.\n다음 내용을 바탕으로 2-3문장을 추출하여 핵심 관점과 감정적 톤을 명확하게 요약하십시오.\n요약 내용만 출력하고 설명이나 주석을 추가하지 마십시오.\n아래에 내용을 제공합니다, %@ 언어로 직접 답장하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen bir profesyonel özet asistanısın, öz ve doğru dil kullanarak anahtar bilgileri öne çıkarmada uzmansın. Lütfen aşağıdaki içeriğe dayanarak, temel bakış açılarını ve duygusal tonu net bir şekilde özetleyen 2-3 cümle çıkar. Sadece özet içeriğini ver, açıklama veya açıklama ekleme. Şimdi sana içeriği vereceğim, doğrudan %@ dilinde yanıtla."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1783,6 +2161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "당신은 전문 번역가로서 여러 언어에 능통하며, 원문의 의미와 스타일을 정확하게 전달할 수 있습니다. 번역 시 다음 사항을 준수하십시오:\n1. 어조를 일관되게 유지하고 원문의 스타일을 충실히 재현하십시오.\n2. 대상 언어의 습관과 문화에 맞게 적절히 조정하십시오.\n3. 자연스럽고 유창한 표현을 우선적으로 사용하고, 번역만 반환하며 다른 내용을 추가하지 마십시오.\n아래에 내용을 제공합니다. %@ 언어로 직접 번역해 주십시오."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sen profesyonel bir çevirmensin, birden fazla dilde uzmansın ve orijinal metnin anlamını ve tarzını doğru şekilde aktarabilirsin. Çeviri yaparken lütfen şu noktalara dikkat et:\n1. Dil tonunu tutarlı tut, orijinal metnin stilini sadık bir şekilde yansıt.\n2. Hedef dilin alışkanlıklarına ve kültürüne uyacak şekilde makul ayarlamalar yap.\n3. Doğal ve akıcı ifadelere öncelik ver, sadece çeviriyi döndür, başka hiçbir içerik ekleme.\nAşağıda sana içerik vereceğim, doğrudan %@'e göre çevir."
           }
         },
         "zh-Hans" : {
@@ -1813,6 +2197,12 @@
             "value" : "AES 암호화를 사용하여 데이터를 서버에 보냅니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verileri AES ile şifreleyin ve sunucuya gönderin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1839,6 +2229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 사용 중"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanımdaki sunucu"
           }
         },
         "zh-Hans" : {
@@ -1869,6 +2265,12 @@
             "value" : "문서"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belgeleri Kullan"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1895,6 +2297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용 방법"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanım yöntemi"
           }
         },
         "zh-Hans" : {
@@ -1925,6 +2333,12 @@
             "value" : "이 프롬프트를 사용하여 새 프롬프트 만들기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ipucu kelimesini kullanarak yeni bir ipucu kelimesi oluşturun"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1951,6 +2365,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "예제 사용"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanım örneği"
           }
         },
         "zh-Hans" : {
@@ -1981,6 +2401,12 @@
             "value" : "사용자 지정 서버 사용"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel sunucu kullanma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2007,6 +2433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "러시아어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rusça"
           }
         },
         "zh-Hans" : {
@@ -2037,6 +2469,12 @@
             "value" : "저장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2063,6 +2501,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지 저장"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi Kaydet"
           }
         },
         "zh-Hans" : {
@@ -2093,6 +2537,12 @@
             "value" : "이미지 저장 중 오류 발생: %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim kaydedilirken hata oluştu: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2119,6 +2569,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "저장 실패"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydetme başarısız"
           }
         },
         "zh-Hans" : {
@@ -2149,6 +2605,12 @@
             "value" : "저장 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarıyla kaydedildi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2175,6 +2637,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "파일 저장"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosyayı Kaydet"
           }
         },
         "zh-Hans" : {
@@ -2205,6 +2673,12 @@
             "value" : "그룹 이름 수정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup adını değiştir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2231,6 +2705,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "수정 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Değişiklik başarılı"
           }
         },
         "zh-Hans" : {
@@ -2261,6 +2741,12 @@
             "value" : "데이터 수정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilgileri Değiştir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2287,6 +2773,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정 수정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapılandırmayı Değiştir"
           }
         },
         "zh-Hans" : {
@@ -2317,6 +2809,12 @@
             "value" : "앱이 네트워크를 통해 푸시 알림을 수신하도록 허용"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamanın ağ üzerinden push bildirimleri almasına izin ver"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2343,6 +2841,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "전체화면"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Ekran Görüntüle"
           }
         },
         "zh-Hans" : {
@@ -2373,6 +2877,12 @@
             "value" : "NoLet 소개"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kelimesiz Kitap Hakkında"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2399,6 +2909,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "닫기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
           }
         },
         "zh-Hans" : {
@@ -2429,6 +2945,12 @@
             "value" : "기타"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2455,6 +2977,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기타 필드"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer alanlar"
           }
         },
         "zh-Hans" : {
@@ -2485,6 +3013,12 @@
             "value" : "메모리 사용량"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bellek Kullanım Durumu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2511,6 +3045,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내용"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçerik"
           }
         },
         "zh-Hans" : {
@@ -2541,6 +3081,12 @@
             "value" : "내장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerleşik"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2567,6 +3113,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내장 프롬프트"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yerleşik İpucu Kelimeleri"
           }
         },
         "zh-Hans" : {
@@ -2597,6 +3149,12 @@
             "value" : "내부"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İç"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2623,6 +3181,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "최근 사용"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son Kullanılan"
           }
         },
         "zh-Hans" : {
@@ -2653,6 +3217,12 @@
             "value" : "작문 어시스턴트"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazma Asistanı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2679,6 +3249,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "공유"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paylaş"
           }
         },
         "zh-Hans" : {
@@ -2709,6 +3285,12 @@
             "value" : "구성 공유"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paylaşım Yapılandırması"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2735,6 +3317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "그룹 모드"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup Modu"
           }
         },
         "zh-Hans" : {
@@ -2765,6 +3353,12 @@
             "value" : "그룹 메시지"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup Mesajları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2791,6 +3385,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "공식 서버 또는 사용자 지정 서버로 전환"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi sunucu veya özel sunucu kullanımını değiştir"
           }
         },
         "zh-Hans" : {
@@ -2821,6 +3421,12 @@
             "value" : "전환 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarıyla değiştirildi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2847,6 +3453,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "표시 전환"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntüyü Değiştir"
           }
         },
         "zh-Hans" : {
@@ -2877,6 +3489,12 @@
             "value" : "서버 전환"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Değiştir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2903,6 +3521,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목록 모드"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste Modu"
           }
         },
         "zh-Hans" : {
@@ -2933,6 +3557,12 @@
             "value" : "방금"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2959,6 +3589,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "생성 시간"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oluşturulma Zamanı"
           }
         },
         "zh-Hans" : {
@@ -2989,6 +3625,12 @@
             "value" : "앱 초기화"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamayı Başlat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3015,6 +3657,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil"
           }
         },
         "zh-Hans" : {
@@ -3045,6 +3693,12 @@
             "value" : "${date} 이전 메시지 삭제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${date} öncesi mesajları sil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3071,6 +3725,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "클라우드 아이콘 삭제"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bulut etiketini sil"
           }
         },
         "zh-Hans" : {
@@ -3101,6 +3761,12 @@
             "value" : "삭제 후 원래대로 돌릴 수 없습니다!!!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silindikten sonra geri alınamaz!!!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3127,6 +3793,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제 완료"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarıyla silindi"
           }
         },
         "zh-Hans" : {
@@ -3157,6 +3829,12 @@
             "value" : "모든 그룹 삭제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm grupları sil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3183,6 +3861,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메시지 삭제"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesajı Sil"
           }
         },
         "zh-Hans" : {
@@ -3213,6 +3897,12 @@
             "value" : "음소거된 그룹 삭제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz Grup Sil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3239,6 +3929,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "2일 전"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki gün"
           }
         },
         "zh-Hans" : {
@@ -3269,6 +3965,12 @@
             "value" : "부제목"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt Başlık"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3295,6 +3997,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "저장공간이 부족합니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yetersiz depolama alanı"
           }
         },
         "zh-Hans" : {
@@ -3325,6 +4033,12 @@
             "value" : "암호화"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifreleme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3351,6 +4065,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "암호화된 데이터 (Base64 인코딩)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifrelenmiş veri (Base64 kodlamalı)"
           }
         },
         "zh-Hans" : {
@@ -3381,6 +4101,12 @@
             "value" : "Encrypted requests require special character handling"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifrelenmiş isteklerde özel karakterlerin işlenmesine dikkat edilmelidir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3407,6 +4133,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "로딩 중"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yükleniyor"
           }
         },
         "zh-Hans" : {
@@ -3437,6 +4169,12 @@
             "value" : "로딩 실패"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yükleme başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3463,6 +4201,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "파일 로드 중..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya yükleniyor..."
           }
         },
         "zh-Hans" : {
@@ -3493,6 +4237,12 @@
             "value" : "6개월 전"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yarım yıl önce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3519,6 +4269,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "힌디어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hintçe"
           }
         },
         "zh-Hans" : {
@@ -3549,6 +4305,12 @@
             "value" : "인도네시아어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endonezya dili"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3575,6 +4337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "위험한 작업!!! 초기화를 복원합니다."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tehlikeli işlem!!! Fabrika ayarlarına döndür."
           }
         },
         "zh-Hans" : {
@@ -3605,6 +4373,12 @@
             "value" : "곧 만료"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakında süresi dolacak"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3631,6 +4405,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "즉시 알림"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlık Bildirim"
           }
         },
         "zh-Hans" : {
@@ -3661,6 +4441,12 @@
             "value" : "히스토리 서버"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarih Sunucusu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3687,6 +4473,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "히스토리 메시지 수"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarihsel Mesaj Sayısı"
           }
         },
         "zh-Hans" : {
@@ -3717,6 +4509,12 @@
             "value" : "히스토리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarih Kaydı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3743,6 +4541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "평가하기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puan ver"
           }
         },
         "zh-Hans" : {
@@ -3773,6 +4577,12 @@
             "value" : "매개변수가 불완전합니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametreler eksik"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3799,6 +4609,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "매개변수는 비워둘 수 없습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametre boş olamaz"
           }
         },
         "zh-Hans" : {
@@ -3829,6 +4645,12 @@
             "value" : "매개변수 오류"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametre hatası"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3855,6 +4677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "매개변수 길이가 올바르지 않습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametre uzunluğu yanlış"
           }
         },
         "zh-Hans" : {
@@ -3885,6 +4713,12 @@
             "value" : "더블 탭으로 전체 화면"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Ekran Göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3911,6 +4745,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld개의 장치를 발견했습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld cihaz bulundu"
           }
         },
         "zh-Hans" : {
@@ -3941,6 +4781,12 @@
             "value" : "오류가 발생했습니다: %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir hata oluştu %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3967,6 +4813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "장치에 알림 전송"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihaza Bildirim Gönder"
           }
         },
         "zh-Hans" : {
@@ -3997,6 +4849,12 @@
             "value" : "취소"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İptal"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4023,6 +4881,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "푸시 알림에 다른 리링톤을 설정할 수 있습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farklı zil sesleri için bildirim ayarları yapılabilir"
           }
         },
         "zh-Hans" : {
@@ -4053,6 +4917,12 @@
             "value" : "알림에 인터럽트 수준을 설정할 수 있습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim ayarlarında kesinti seviyesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4079,6 +4949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결 가능"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlanabilir"
           }
         },
         "zh-Hans" : {
@@ -4109,6 +4985,12 @@
             "value" : "선택적 매개변수 값:\n- passive: 목록에만 추가되며 화면 알림이 표시되지 않습니다.\n- active: 기본값, 시스템이 즉시 화면에 알림을 표시합니다.\n- timeSensitive: 시간 민감 알림, 집중 모드에서 표시할 수 있습니다.\n- critical: ‼️중요 알림, 무음 또는 집중 모드에서 정상적으로 알림을 표시합니다.\n* 매개변수는 0-10으로 대체할 수 있으며, 자세한 내용은 문서를 참조하십시오."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İsteğe bağlı parametre değerleri:\n- passive: Sadece listeye eklenir, ekran uyarısı göstermez\n- active: Varsayılan değer, sistem hemen ekranda bildirim gösterir\n- timeSensitive: Zamana duyarlı bildirim, odak modunda gösterilebilir\n- critical: ⚠️ Önemli uyarı, sessiz veya odak modunda normal şekilde uyarır\n* Parametreler 0-10 arası değerlerle kullanılabilir, detaylar için belgelere bakın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4135,6 +5017,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "안녕하세요! 저는 당신의 스마트 어시스턴트입니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merhaba! Ben bir yapay zeka asistanıyım."
           }
         },
         "zh-Hans" : {
@@ -4165,6 +5053,12 @@
             "value" : "안녕하세요! 저는 당신의 스마트 어시스턴트입니다. 검색, 질문에 답변하고, 글쓰기를 도와드릴 수 있습니다. 저에게 작업을 맡겨주세요!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merhaba! Ben bir yapay zeka asistanıyım, size arama, soru cevaplama, yazma gibi konularda yardımcı olabilirim. Lütfen görevlerinizi bana verin!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4191,6 +5085,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "남은 아이콘 할당량"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simge Kotası Kalanı"
           }
         },
         "zh-Hans" : {
@@ -4221,6 +5121,12 @@
             "value" : "이미지 키"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim Anahtarı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4247,6 +5153,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지 키가 중복되었습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim anahtarı çakışıyor"
           }
         },
         "zh-Hans" : {
@@ -4277,6 +5189,12 @@
             "value" : "이미지가 성공적으로 삭제되었습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim başarıyla silindi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4303,6 +5221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지 로드에 실패했습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim yüklenemedi"
           }
         },
         "zh-Hans" : {
@@ -4333,6 +5257,12 @@
             "value" : "이미지가 아카이브되었습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim Arşivi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4359,6 +5289,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지가 앨범에 성공적으로 저장되었습니다!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim albüme başarıyla kaydedildi!"
           }
         },
         "zh-Hans" : {
@@ -4389,6 +5325,12 @@
             "value" : "이미지가 로드되지 않았습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim yüklenmedi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4415,6 +5357,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "주소 오류"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adres Hatası"
           }
         },
         "zh-Hans" : {
@@ -4445,6 +5393,12 @@
             "value" : "기본 사용 예시"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temel kullanım örneği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4471,6 +5425,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새 계정 추가"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Hesap Ekle"
           }
         },
         "zh-Hans" : {
@@ -4501,6 +5461,12 @@
             "value" : "새 데이터 추가"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Kaynak Ekle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4527,6 +5493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사운드 피드백"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Geri Bildirimi"
           }
         },
         "zh-Hans" : {
@@ -4557,6 +5529,12 @@
             "value" : "사운드 설정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Ayarları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4583,6 +5561,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "복사"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyala"
           }
         },
         "zh-Hans" : {
@@ -4613,6 +5597,12 @@
             "value" : "키 복사"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anahtarı kopyala"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4639,6 +5629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "키 복사"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KEY'i Kopyala"
           }
         },
         "zh-Hans" : {
@@ -4669,6 +5665,12 @@
             "value" : "Python 예제 복사"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Python Örneğini Kopyala"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4695,6 +5697,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "복사 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopyalama başarılı"
           }
         },
         "zh-Hans" : {
@@ -4725,6 +5733,12 @@
             "value" : "크기: %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boyut: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4751,6 +5765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "저장소 사용"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depolama kullanımı"
           }
         },
         "zh-Hans" : {
@@ -4781,6 +5801,12 @@
             "value" : "완료"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4807,6 +5833,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정 완료"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulumu Tamamla"
           }
         },
         "zh-Hans" : {
@@ -4837,6 +5869,12 @@
             "value" : "가져오기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçe Aktar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4863,6 +5901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "가져오기 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçe aktarma başarılı"
           }
         },
         "zh-Hans" : {
@@ -4893,6 +5937,12 @@
             "value" : "구성 가져오기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapılandırmayı İçe Aktar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4919,6 +5969,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내보내기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dışa Aktar"
           }
         },
         "zh-Hans" : {
@@ -4949,6 +6005,12 @@
             "value" : "내보내기/가져오기(메시지/설정/데이터베이스)"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dışa/İçe Aktar (Mesajlar/Ayarlar/Veritabanı)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4975,6 +6037,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "내보내기 실패"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dışa aktarma başarısız oldu"
           }
         },
         "zh-Hans" : {
@@ -5005,6 +6073,12 @@
             "value" : "${body}을(를) ${address}에 푸시"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${body}'yi ${address}'a gönder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5031,6 +6105,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "모든 데이터가 손실됩니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm verileri kaybet"
           }
         },
         "zh-Hans" : {
@@ -5061,6 +6141,12 @@
             "value" : "암호화된 데이터를 Base64 인코딩으로 변환"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifrelenmiş veriyi Base64 kodlamasına dönüştür"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5087,6 +6173,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "재설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saygı"
           }
         },
         "zh-Hans" : {
@@ -5117,6 +6209,12 @@
             "value" : "사용됨"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıldı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5143,6 +6241,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "모든 데이터가 로드되었습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm veriler yüklendi"
           }
         },
         "zh-Hans" : {
@@ -5175,6 +6279,12 @@
             "value" : "사진 라이브러리 접근 권한이 허용되었습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yetkili Fotoğraf Kitaplığı Erişimi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5201,6 +6311,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "활성화됨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinleştirildi"
           }
         },
         "zh-Hans" : {
@@ -5231,6 +6347,12 @@
             "value" : "만료됨"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süresi dolmuş"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5257,6 +6379,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결됨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlandı"
           }
         },
         "zh-Hans" : {
@@ -5287,6 +6415,12 @@
             "value" : "앱 정보"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Bilgileri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5313,6 +6447,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "개발자 지원 계획"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirici Destek Planı"
           }
         },
         "zh-Hans" : {
@@ -5343,6 +6483,12 @@
             "value" : "음성 활성화"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses açma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5369,6 +6515,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새 채팅 시작"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni sohbet başlat"
           }
         },
         "zh-Hans" : {
@@ -5399,6 +6551,12 @@
             "value" : "장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zhang"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5425,6 +6583,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "스마트 어시스턴트와 대화할 때 대화 내용이 여기에 표시됩니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akıllı asistanla konuştuğunuzda, diyalogunuz burada görüntülenecektir"
           }
         },
         "zh-Hans" : {
@@ -5455,6 +6619,12 @@
             "value" : "푸시 요청 URL에 isArchive 매개변수가 지정되지 않은 경우, 이 설정에 따라 알림 메시지를 저장할지 여부가 결정됩니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Push isteği URL'si isArchive parametresini belirtmediğinde, bildirim mesajının kaydedilip kaydedilmeyeceğine bu ayara göre karar verilir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5481,6 +6651,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "독일어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Almanca"
           }
         },
         "zh-Hans" : {
@@ -5511,6 +6687,12 @@
             "value" : "필수 권한이 선택되지 않음"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerekli izin seçilmedi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5537,6 +6719,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "빠른 알림"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hızlı Bildirim"
           }
         },
         "zh-Hans" : {
@@ -5567,6 +6755,12 @@
             "value" : "빠른 미리보기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hızlı Önizleme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5593,6 +6787,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "총 메모리"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toplam Bellek"
           }
         },
         "zh-Hans" : {
@@ -5623,6 +6823,12 @@
             "value" : "요약"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5649,6 +6855,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "요약 어시스턴트"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özet Yardımcısı"
           }
         },
         "zh-Hans" : {
@@ -5679,6 +6891,12 @@
             "value" : "키 복원"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KEY'i Geri Yükle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5705,6 +6923,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "복원 중..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri yükleniyor..."
           }
         },
         "zh-Hans" : {
@@ -5735,6 +6959,12 @@
             "value" : "복원 실패"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurtarma başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5761,6 +6991,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "복원 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarıyla kurtarıldı"
           }
         },
         "zh-Hans" : {
@@ -5791,6 +7027,12 @@
             "value" : "저는 당신이 검색하고, 질문에 답하고, 글을 쓰는 것을 도와줄 수 있습니다. 저에게 당신의 작업을 맡겨주세요!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama yapma, soru sorma ve yazı yazma konularında size yardımcı olabilirim, lütfen görevlerinizi bana verin!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5817,6 +7059,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "모든 메시지"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm Mesajlar"
           }
         },
         "zh-Hans" : {
@@ -5847,6 +7095,12 @@
             "value" : "모든 벨소리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm Ziller"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5873,6 +7127,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL 열기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adresi aç"
           }
         },
         "zh-Hans" : {
@@ -5903,6 +7163,12 @@
             "value" : "QR 코드 스캔"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR Kod Tara"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5931,6 +7197,12 @@
             "value" : "스캔 영역 제한"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarama alanı sınırlaması"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5957,6 +7229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "스캔 실패"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kod tarama başarısız"
           }
         },
         "zh-Hans" : {
@@ -5989,6 +7267,12 @@
             "value" : "접근이 거부되었습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erişim izni reddedildi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6015,6 +7299,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지를 여기에 드래그"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi buraya sürükleyin"
           }
         },
         "zh-Hans" : {
@@ -6045,6 +7335,12 @@
             "value" : "지속적인 벨소리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürekli bildirim"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6071,6 +7367,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "조건에 따라 메시지 삭제"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koşullara Göre Mesajları Sil"
           }
         },
         "zh-Hans" : {
@@ -6101,6 +7403,12 @@
             "value" : "일반 앱 알림 수신"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel uygulama bildirim hatırlatıcılarını al"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6127,6 +7435,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "높은 우선순위의 중요 알림 수신"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüksek Öncelikli Önemli Bildirim Uyarılarını Al"
           }
         },
         "zh-Hans" : {
@@ -6157,6 +7471,12 @@
             "value" : "푸시 내용"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçerik gönderimi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6183,6 +7503,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "푸시 아이콘"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildge simgesi"
           }
         },
         "zh-Hans" : {
@@ -6213,6 +7539,12 @@
             "value" : "푸시 이미지"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildi gönder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6239,6 +7571,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "푸시 스타일"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim stili"
           }
         },
         "zh-Hans" : {
@@ -6269,6 +7607,12 @@
             "value" : "푸시 벨소리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim Zili"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6295,6 +7639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "팁"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İpucu"
           }
         },
         "zh-Hans" : {
@@ -6325,6 +7675,12 @@
             "value" : "팁 세부정보"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İpucu Kelime Detayları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6351,6 +7707,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "검색"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ara"
           }
         },
         "zh-Hans" : {
@@ -6381,6 +7743,12 @@
             "value" : "팁 검색"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama ipuçları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6407,6 +7775,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "데이터 검색"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama Verileri"
           }
         },
         "zh-Hans" : {
@@ -6437,6 +7811,12 @@
             "value" : "검색 결과"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama Sonuçları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6463,6 +7843,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지를 포함하면 자동으로 다운로드하여 캐시됩니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir image taşıyorsa, otomatik olarak önbelleğe indirilir"
           }
         },
         "zh-Hans" : {
@@ -6493,6 +7879,12 @@
             "value" : "이미지 포함"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim Taşıma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6519,6 +7911,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "요약 어시스턴트"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özet Asistanı"
           }
         },
         "zh-Hans" : {
@@ -6549,6 +7947,12 @@
             "value" : "재생"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6575,6 +7979,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "벨소리 재생"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynatma zili sesi"
           }
         },
         "zh-Hans" : {
@@ -6605,6 +8015,12 @@
             "value" : "데이터가 올바르지 않습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri doğru değil"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6631,6 +8047,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "데이터 그룹화 중..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri gruplandırılıyor..."
           }
         },
         "zh-Hans" : {
@@ -6661,6 +8083,12 @@
             "value" : "데이터 로딩 중..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri yükleniyor..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6687,6 +8115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "데이터베이스 파일"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veritabanı dosyası"
           }
         },
         "zh-Hans" : {
@@ -6717,6 +8151,12 @@
             "value" : "데이터 관리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri Yönetimi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6743,6 +8183,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "파일"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya"
           }
         },
         "zh-Hans" : {
@@ -6773,6 +8219,12 @@
             "value" : "파일 관리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya Yönetimi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6799,6 +8251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정 추가"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Yapılandırma"
           }
         },
         "zh-Hans" : {
@@ -6829,6 +8287,12 @@
             "value" : "새 대화"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni Sohbet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6855,6 +8319,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "새 팁 만들기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni İpucu Oluştur"
           }
         },
         "zh-Hans" : {
@@ -6885,6 +8355,12 @@
             "value" : "없음"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6911,6 +8387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud hesap durumu belirlenemiyor, muhtemelen ağ sorunu var"
           }
         },
         "zh-Hans" : {
@@ -6941,6 +8423,12 @@
             "value" : "채팅이 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boş konuşma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6967,6 +8455,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "날짜"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarih"
           }
         },
         "zh-Hans" : {
@@ -6997,6 +8491,12 @@
             "value" : "일본어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Japonca"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7023,6 +8523,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시간:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaman:"
           }
         },
         "zh-Hans" : {
@@ -7053,6 +8559,12 @@
             "value" : "어제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dün"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7079,6 +8591,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미지를 앨범에 저장하시겠습니까?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resmi galeriye kaydetmek istiyor musunuz?"
           }
         },
         "zh-Hans" : {
@@ -7109,6 +8627,12 @@
             "value" : "메시지 수신 시 이미지 자동 저장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesajlar alındığında resimler otomatik olarak kaydedilsin mi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7135,6 +8659,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "정말로 지우시겠습니까?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Boşaltmayı onaylıyor musunuz?"
           }
         },
         "zh-Hans" : {
@@ -7165,6 +8695,12 @@
             "value" : "전체화면 표시"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam Ekran Göster"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7191,6 +8727,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "아이콘 표시"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simgeyi Göster"
           }
         },
         "zh-Hans" : {
@@ -7221,6 +8763,12 @@
             "value" : "일반 내용"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradan içerik"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7247,6 +8795,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일반 알림 권한"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Genel Bildirim İzni"
           }
         },
         "zh-Hans" : {
@@ -7277,6 +8831,12 @@
             "value" : "일반 알림 권한은 필수입니다. 중요 알림 권한을 활성화하면 모든 권한이 자동으로 활성화됩니다. 앱을 계속 사용하려면 필요한 권한을 선택하십시오."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal bildirim izni zorunlu bir seçenektir. Önemli bildirim izni açılırsa, tüm izinler otomatik olarak açılır. Uygulamayı kullanmaya devam etmek için gerekli izinleri seçin."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7303,6 +8863,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "스마트 어시스턴트"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akıllı Asistan"
           }
         },
         "zh-Hans" : {
@@ -7333,6 +8899,12 @@
             "value" : "스마트 구성"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akıllı Yapılandırma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7359,6 +8931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "일시 정지"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duraklat"
           }
         },
         "zh-Hans" : {
@@ -7389,6 +8967,12 @@
             "value" : "일시적으로 전환할 수 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçiş yapılamıyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7417,6 +9001,12 @@
             "value" : "더보기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7443,6 +9033,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "추가 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha Fazla Ayarlar"
           }
         },
         "zh-Hans" : {
@@ -7475,6 +9071,12 @@
             "value" : "제한된 접근 권한"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sınırlı erişim izinleri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7501,6 +9103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu"
           }
         },
         "zh-Hans" : {
@@ -7531,6 +9139,12 @@
             "value" : "서버 주소가 유효하지 않습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu adresi geçersiz"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7557,6 +9171,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버가 이미 존재합니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu zaten mevcut"
           }
         },
         "zh-Hans" : {
@@ -7587,6 +9207,12 @@
             "value" : "서버 소스 코드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Açık Kaynak Adresi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7613,6 +9239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 모니터링"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu İzleme"
           }
         },
         "zh-Hans" : {
@@ -7643,6 +9275,12 @@
             "value" : "서버 설정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Ayarları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7669,6 +9307,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 연결 실패"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu bağlantısı başarısız"
           }
         },
         "zh-Hans" : {
@@ -7699,6 +9343,12 @@
             "value" : "서버 배포 튜토리얼"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Dağıtımı Öğreticisi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7725,6 +9375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 구성"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Yapılandırması"
           }
         },
         "zh-Hans" : {
@@ -7755,6 +9411,12 @@
             "value" : "내용 읽기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçeriği oku"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7781,6 +9443,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "비활성"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinleştirilmemiş"
           }
         },
         "zh-Hans" : {
@@ -7811,6 +9479,12 @@
             "value" : "iCloud에 로그인하지 않았습니다. iCloud 계정에 로그인하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud'a giriş yapılmadı, lütfen iCloud hesabınıza giriş yapın"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7839,6 +9513,12 @@
             "value" : "알 수 없는 iCloud 상태"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen iCloud Durumu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7865,6 +9545,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알 수 없는 시간"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmeyen zaman"
           }
         },
         "zh-Hans" : {
@@ -7897,6 +9583,12 @@
             "value" : "권한이 선택되지 않았습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İzin seçilmedi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7923,6 +9615,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 앱은 무료로 사용할 수 있으며, 후원해도 새로운 기능이 해금되지 않습니다."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uygulama ücretsizdir, bağışlar yeni özelliklerin kilidini açmaz."
           }
         },
         "zh-Hans" : {
@@ -7953,6 +9651,12 @@
             "value" : "보기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görüntüle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7979,6 +9683,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "아이콘 보기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simgeyi Görüntüle"
           }
         },
         "zh-Hans" : {
@@ -8009,6 +9719,12 @@
             "value" : "문서 보기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belgeleri Görüntüle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8035,6 +9751,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "태그"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiket"
           }
         },
         "zh-Hans" : {
@@ -8065,6 +9787,12 @@
             "value" : "제목"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlık"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8091,6 +9819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제목/부제목/내용?group=기본&badge=1&ttl=1"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlık/Alt Başlık/İçerik?group=varsayılan&rozet=1&ttl=1"
           }
         },
         "zh-Hans" : {
@@ -8121,6 +9855,12 @@
             "value" : "형식 오류"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biçim Hatası"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8147,6 +9887,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud 계정 상태 확인 중 오류 발생: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Hesap Durumu Kontrol Hatası: %@"
           }
         },
         "zh-Hans" : {
@@ -8177,6 +9923,12 @@
             "value" : "매개변수 확인 중..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parametreler kontrol ediliyor..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8203,6 +9955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "모델 이름: (gpt-4o-mini)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Model adı: (gpt-4o-mini)"
           }
         },
         "zh-Hans" : {
@@ -8233,6 +9991,12 @@
             "value" : "모드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mod"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8259,6 +10023,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "환영합니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoş geldiniz"
           }
         },
         "zh-Hans" : {
@@ -8289,6 +10059,12 @@
             "value" : "처리 중..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İşleniyor..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8315,6 +10091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "데이터 처리 중"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veri işleniyor"
           }
         },
         "zh-Hans" : {
@@ -8345,6 +10127,12 @@
             "value" : "정상 알림"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal Bildirim"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8371,6 +10159,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 이름은 역사적 그룹 사용을 찾는 데 사용됩니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ad, geçmiş grupları aramak için kullanılır"
           }
         },
         "zh-Hans" : {
@@ -8401,6 +10195,12 @@
             "value" : "이 작업은 %@ 데이터를 삭제하며 되돌릴 수 없습니다. 계속하시겠습니까?"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu işlem %@ verilerini silecek ve geri alınamaz. Devam etmek istiyor musunuz?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8427,6 +10227,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이 작업은 모든 채팅 기록과 설정 데이터를 삭제하며, 되돌릴 수 없습니다. 계속하시겠습니까?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu işlem tüm sohbet kayıtlarını ve ayar verilerini silecek ve geri alınamaz. Devam etmek istediğinizden emin misiniz?"
           }
         },
         "zh-Hans" : {
@@ -8457,6 +10263,12 @@
             "value" : "이미지가 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim yok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8483,6 +10295,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "푸시 알림이 꺼져 있습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirimler açık değil"
           }
         },
         "zh-Hans" : {
@@ -8513,6 +10331,12 @@
             "value" : "파일을 찾을 수 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya bulunamadı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8539,6 +10363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "관련 프롬프트를 찾을 수 없습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlgili ipuçları bulunamadı"
           }
         },
         "zh-Hans" : {
@@ -8569,6 +10399,12 @@
             "value" : "파일이 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosya yok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8595,6 +10431,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "앨범 권한이 없습니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Albüm izni yok"
           }
         },
         "zh-Hans" : {
@@ -8625,6 +10467,12 @@
             "value" : "카메라 권한이 없습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamera izni yok"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8651,6 +10499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "프랑스어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fransızca"
           }
         },
         "zh-Hans" : {
@@ -8681,6 +10535,12 @@
             "value" : "KEY 등록"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt Anahtarı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8707,6 +10567,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "등록 중..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt olunuyor..."
           }
         },
         "zh-Hans" : {
@@ -8737,6 +10603,12 @@
             "value" : "등록 실패"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8763,6 +10635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "등록 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt başarılı"
           }
         },
         "zh-Hans" : {
@@ -8793,6 +10671,12 @@
             "value" : "태국어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tayca"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8819,6 +10703,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "활성 연결"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkinlik Bağlantısı"
           }
         },
         "zh-Hans" : {
@@ -8849,6 +10739,12 @@
             "value" : "테스트/저장 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test/Kaydetme Başarılı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8875,6 +10771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "테스트 중..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test ediliyor..."
           }
         },
         "zh-Hans" : {
@@ -8905,6 +10807,12 @@
             "value" : "테스트 후 저장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Testten sonra kaydet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8931,6 +10839,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메시지"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj"
           }
         },
         "zh-Hans" : {
@@ -8961,6 +10875,12 @@
             "value" : "메시지 내용"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj İçeriği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8987,6 +10907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메시지 목록"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj Listesi"
           }
         },
         "zh-Hans" : {
@@ -9017,6 +10943,12 @@
             "value" : "메시지 카드가 그룹화되지 않았을 때 로고 표시"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj kartı gruplanmamışken logo gösterilsin mi?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9043,6 +10975,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "메시지 아카이브"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj Arşivi"
           }
         },
         "zh-Hans" : {
@@ -9073,6 +11011,12 @@
             "value" : "메시지 표시 높이"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj yüksekliği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9099,6 +11043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "프롬프트 추가"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt Ekle"
           }
         },
         "zh-Hans" : {
@@ -9129,6 +11079,12 @@
             "value" : "추가 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarıyla eklendi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9155,6 +11111,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 추가"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunucu Ekle"
           }
         },
         "zh-Hans" : {
@@ -9185,6 +11147,12 @@
             "value" : "정리 성공"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizleme Başarılı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9211,6 +11179,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "비우기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temiz hava"
           }
         },
         "zh-Hans" : {
@@ -9241,6 +11215,12 @@
             "value" : "캐시 데이터 삭제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önbellek verilerini temizle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9267,6 +11247,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizle"
           }
         },
         "zh-Hans" : {
@@ -9297,6 +11283,12 @@
             "value" : "모든 데이터 삭제"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm verileri temizle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9323,6 +11315,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "만료된 알림 지우기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süresi Dolmuş Bildirimi Temizle"
           }
         },
         "zh-Hans" : {
@@ -9353,6 +11351,12 @@
             "value" : "슬라이드하여 진행률 조정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydırma sürükleme ilerlemesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9379,6 +11383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시작으로 스크롤"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydırmaya başla"
           }
         },
         "zh-Hans" : {
@@ -9409,6 +11419,12 @@
             "value" : "끝으로 스크롤"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonuna kadar kaydır"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9435,6 +11451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "앱 아이콘 변경하려면 탭하세요"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama simgesini değiştirmek için tıklayın"
           }
         },
         "zh-Hans" : {
@@ -9465,6 +11487,12 @@
             "value" : "오른쪽 상단 버튼을 클릭하면 테스트 URL을 복사하고 푸시 효과를 미리 볼 수 있습니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağ üst köşedeki düğmeye tıklayarak test URL'sini kopyalayabilir, gönderim sonucunu önizleyebilirsiniz."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9491,6 +11519,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "더 보기 클릭"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazlasını gör"
           }
         },
         "zh-Hans" : {
@@ -9521,6 +11555,12 @@
             "value" : "앱으로 이동하려면 클릭"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaya atla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9547,6 +11587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "그룹 목록으로 이동"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruba gitmek için tıklayın"
           }
         },
         "zh-Hans" : {
@@ -9577,6 +11623,12 @@
             "value" : "버전 %@"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9603,6 +11655,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "버전 %@, 더블 탭하여 표시 전환"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm %@, çift tıklayarak görüntüyü değiştir"
           }
         },
         "zh-Hans" : {
@@ -9633,6 +11691,12 @@
             "value" : "상태 비정상"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durum Anormal"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9659,6 +11723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "상태 정상"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durum Normal"
           }
         },
         "zh-Hans" : {
@@ -9689,6 +11759,12 @@
             "value" : "QR 코드 생성"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR Kod Oluştur"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9715,6 +11791,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 계약"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı Sözleşmesi"
           }
         },
         "zh-Hans" : {
@@ -9745,6 +11827,12 @@
             "value" : "의 메시지"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mesaj"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9771,6 +11859,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "확인"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onayla"
           }
         },
         "zh-Hans" : {
@@ -9801,6 +11895,12 @@
             "value" : "\"%@\"을(를) 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\" silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9827,6 +11927,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\"%@\" 프롬프트를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\" istemi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
           }
         },
         "zh-Hans" : {
@@ -9857,6 +11963,12 @@
             "value" : "확인"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onayla"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9883,6 +11995,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "삭제 확인"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sil'i Onayla"
           }
         },
         "zh-Hans" : {
@@ -9913,6 +12031,12 @@
             "value" : "예"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Örnek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9939,6 +12063,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제거"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldır"
           }
         },
         "zh-Hans" : {
@@ -9969,6 +12099,12 @@
             "value" : "앱 아이콘"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Program Simgesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9995,6 +12131,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "종단 간 암호화 푸시"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uçtan Uca Şifreli İtme Bildirimleri"
           }
         },
         "zh-Hans" : {
@@ -10025,6 +12167,12 @@
             "value" : "알고리즘"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algoritma"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10051,6 +12199,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알고리즘 목록"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algoritma Listesi"
           }
         },
         "zh-Hans" : {
@@ -10081,6 +12235,12 @@
             "value" : "알고리즘 구성"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algoritma Yapılandırması"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10107,6 +12267,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "여기에 붙여넣기, 자동 감지"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buraya yapıştırın, otomatik tanıma"
           }
         },
         "zh-Hans" : {
@@ -10139,6 +12305,12 @@
             "value" : "시스템 예약 파일!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem ayırma dosyası!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10165,6 +12337,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시스템 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem Ayarları"
           }
         },
         "zh-Hans" : {
@@ -10195,6 +12373,12 @@
             "value" : "어시스턴트에 전송"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akıllı asistana mesaj gönder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10221,6 +12405,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "계속"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devam et"
           }
         },
         "zh-Hans" : {
@@ -10251,6 +12441,12 @@
             "value" : "편집"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenle"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10277,6 +12473,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "프롬프트 편집"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenleme İpucu"
           }
         },
         "zh-Hans" : {
@@ -10307,6 +12509,12 @@
             "value" : "네트워크 주소"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web adresi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10333,6 +12541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "네트워크 권한"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ağ İzinleri"
           }
         },
         "zh-Hans" : {
@@ -10363,6 +12577,12 @@
             "value" : "네트워크 권한은 앱이 정상적으로 작동하기 위한 기본 요소로, 푸시 알림 수신, 데이터 동기화 및 최신 정보 획득에 사용됩니다. 네트워크 권한이 없으면 앱의 핵심 기능이 제대로 작동하지 않습니다."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ağ izinleri, uygulamanın düzgün çalışması için temel oluşturur; push bildirimleri almak, verileri senkronize etmek ve en son bilgileri elde etmek için kullanılır. Ağ izinleri olmadan, uygulamanın temel işlevleri düzgün çalışamaz."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10389,6 +12609,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "네트워크 권한은 앱이 정상적으로 작동하는 데 필수적입니다. 계속하려면 네트워크 권한을 허용해 주세요."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ağ izinleri, uygulamanın normal çalışması için temeldir, devam etmek için ağ izinlerini verin."
           }
         },
         "zh-Hans" : {
@@ -10419,6 +12645,12 @@
             "value" : "네트워크 알림 권한"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ağ Bildirim İzni"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10445,6 +12677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "그룹"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup"
           }
         },
         "zh-Hans" : {
@@ -10475,6 +12713,12 @@
             "value" : "그룹명"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup adı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10501,6 +12745,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "번역"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri"
           }
         },
         "zh-Hans" : {
@@ -10531,6 +12781,12 @@
             "value" : "번역 도우미"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri Asistanı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10557,6 +12813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "자동"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik"
           }
         },
         "zh-Hans" : {
@@ -10587,6 +12849,12 @@
             "value" : "앨범에 자동 저장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik olarak albüme kaydet"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10613,6 +12881,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "자동 재생"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik Oynatma"
           }
         },
         "zh-Hans" : {
@@ -10644,6 +12918,12 @@
             "value" : "Iv 매개변수를 자동으로 수정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik IV Parametre Düzeltme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10671,6 +12951,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Key 매개변수를 자동으로 수정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik Düzeltme Anahtar Parametresi"
           }
         },
         "zh-Hans" : {
@@ -10701,6 +12987,12 @@
             "value" : "자동 모드는 읽지 않은 수에 따르고, 사용자 정의 모드는 푸시 배지 매개변수에 따릅니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik mod okunmamış sayıya göre, özel badge parametreleri gönder"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10727,6 +13019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 정의"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özelleştir"
           }
         },
         "zh-Hans" : {
@@ -10757,6 +13055,12 @@
             "value" : "사용자 정의 아이콘"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel simge"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10783,6 +13087,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "푸시 표시용 사용자 정의 로고"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel push bildirim logosu"
           }
         },
         "zh-Hans" : {
@@ -10813,6 +13123,12 @@
             "value" : "사용자 정의 프롬프트"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel İpucu Kelimeleri"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10839,6 +13155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 정의 벨소리"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Özel Zil Sesi"
           }
         },
         "zh-Hans" : {
@@ -10869,6 +13191,12 @@
             "value" : "내장 벨소리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi zil sesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10895,6 +13223,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "최소 2자"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En az 2 karakter"
           }
         },
         "zh-Hans" : {
@@ -10925,6 +13259,12 @@
             "value" : "영어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İngilizce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10951,6 +13291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "개발자 지원 받기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirici Desteği Alın"
           }
         },
         "zh-Hans" : {
@@ -10981,6 +13327,12 @@
             "value" : "포르투갈어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portekizce"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11007,6 +13359,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "스페인어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İspanyolca"
           }
         },
         "zh-Hans" : {
@@ -11037,6 +13395,12 @@
             "value" : "배지 모드"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Köşe İşareti Modu"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11065,6 +13429,12 @@
             "value" : "복호화 실패!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifre çözme başarısız!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11091,6 +13461,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "바인딩 해제 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlama başarılı"
           }
         },
         "zh-Hans" : {
@@ -11122,6 +13498,12 @@
             "value" : "디바이스 ID"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihaz Kimliği"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11148,6 +13530,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
           }
         },
         "zh-Hans" : {
@@ -11178,6 +13566,12 @@
             "value" : "각 대화에 포함되는 역사 메시지의 수를 설정합니다. 메시지가 많을수록 문맥이 완전해지지만 토큰 소비가 증가합니다."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her konuşmada yer alacak geçmiş mesaj sayısını ayarlayın. Sayı ne kadar yüksek olursa bağlam o kadar bütünlüklü olur, ancak Token tüketimi artar."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11204,6 +13598,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본 벨소리 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan zil sesini ayarla"
           }
         },
         "zh-Hans" : {
@@ -11234,6 +13634,12 @@
             "value" : "미리듣기"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deneme dinleme"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11260,6 +13666,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "음성 서비스 지역"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses hizmeti bölgesi"
           }
         },
         "zh-Hans" : {
@@ -11290,6 +13702,12 @@
             "value" : "음성 읽기 설정"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesli okuma ayarları"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11316,6 +13734,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "음성 구성"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Yapılandırması"
           }
         },
         "zh-Hans" : {
@@ -11346,6 +13770,12 @@
             "value" : "먼저 네트워크 권한을 허용해 주세요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen önce ağ izinlerini verin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11372,6 +13802,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "먼저 등록해 주세요"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen önce kaydolun"
           }
         },
         "zh-Hans" : {
@@ -11402,6 +13838,12 @@
             "value" : "요청 주소(api.openai.com)"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstek adresi (api.openai.com)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11428,6 +13870,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "요청 키"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anahtar İsteği"
           }
         },
         "zh-Hans" : {
@@ -11458,6 +13906,12 @@
             "value" : "요청 경로: /v1"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstek yolu: /v1"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11484,6 +13938,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL을 입력하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL'yi girin"
           }
         },
         "zh-Hans" : {
@@ -11514,6 +13974,12 @@
             "value" : "프롬프트 제목을 입력하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen istem ipucu başlığını girin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11540,6 +14006,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이전 KEY를 입력하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen eski KEY'i girin"
           }
         },
         "zh-Hans" : {
@@ -11570,6 +14042,12 @@
             "value" : "유효한 서버 URL을 입력하세요. 예: https://example.com"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen geçerli bir sunucu URL adresi girin, örneğin: https://example.com"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11596,6 +14074,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서버 주소를 입력해 주세요"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen sunucu adresini girin"
           }
         },
         "zh-Hans" : {
@@ -11626,6 +14110,12 @@
             "value" : "필요한 다른 권한을 선택해 주세요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen ihtiyacınız olan diğer izinleri seçin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11652,6 +14142,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "계정 목록"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesap Listesi"
           }
         },
         "zh-Hans" : {
@@ -11682,6 +14178,12 @@
             "value" : "베트남어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vietnamca"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11708,6 +14210,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "제3자로 리디렉션"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üçüncü tarafa atla"
           }
         },
         "zh-Hans" : {
@@ -11738,6 +14246,12 @@
             "value" : "이동 링크:"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlantıyı atla:"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11764,6 +14278,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%d자리 키를 입력하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d basamaklı anahtar girin"
           }
         },
         "zh-Hans" : {
@@ -11794,6 +14314,12 @@
             "value" : "그룹 이름을 입력하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup adını girin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11820,6 +14346,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "별명을 입력하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Takma ad girin"
           }
         },
         "zh-Hans" : {
@@ -11850,6 +14382,12 @@
             "value" : "이미지 이름을 입력하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim adını girin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11876,6 +14414,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "복원할 구 키를 입력하십시오"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eski anahtarı gir, geri yükleyebilirsin"
           }
         },
         "zh-Hans" : {
@@ -11906,6 +14450,12 @@
             "value" : "메시지를 입력하세요..."
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mesaj yazıyor..."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11932,6 +14482,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이것은 내장된 프롬프트이며, 이를 기반으로 새로운 사용자 정의 프롬프트를 만들 수 있습니다."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, yerleşik bir ipucudur ve onun temelinde yeni bir özel ipucu oluşturabilirsiniz."
           }
         },
         "zh-Hans" : {
@@ -11962,6 +14518,12 @@
             "value" : "이것은 암호화 예제입니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu bir şifreleme örneğidir"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11988,6 +14550,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이것은 암호화된 메시지의 본문입니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu, şifrelenmiş metin bölümüdür"
           }
         },
         "zh-Hans" : {
@@ -12018,6 +14586,12 @@
             "value" : "연결 실패"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bağlantı başarısız"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12044,6 +14618,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "암호화 알고리즘 선택"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şifreleme Algoritması Seçin"
           }
         },
         "zh-Hans" : {
@@ -12074,6 +14654,12 @@
             "value" : "이미지 선택"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resim Seç"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12100,6 +14686,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "프롬프트 선택"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçim İpucu"
           }
         },
         "zh-Hans" : {
@@ -12130,6 +14722,12 @@
             "value" : "형식 선택"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biçim Seç"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12156,6 +14754,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "서명 선택"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İmza Seç"
           }
         },
         "zh-Hans" : {
@@ -12186,6 +14790,12 @@
             "value" : "번역 언어 선택"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeviri Dilini Seçin"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12212,6 +14822,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "음성 모델 선택"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Modelini Seç"
           }
         },
         "zh-Hans" : {
@@ -12242,6 +14858,12 @@
             "value" : "30초를 초과하는 것은 잘리므로 벨소리를 선택하십시오"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zil sesi seç, 30 saniyeyi aşan kesilecek"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12268,6 +14890,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림 권한 설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim izinleri ayarları"
           }
         },
         "zh-Hans" : {
@@ -12298,6 +14926,12 @@
             "value" : "알림 유형"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim Türü"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12324,6 +14958,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알림 수준"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim Seviyesi"
           }
         },
         "zh-Hans" : {
@@ -12354,6 +14994,12 @@
             "value" : "알림 벨소리는 30초 동안 재생되며, 여러 알림이 순서대로 울립니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim zili 30 saniye boyunca çalacak ve birden fazla zil sırayla çalacak."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12380,6 +15026,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "부분 등록 성공"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt başarılı"
           }
         },
         "zh-Hans" : {
@@ -12412,6 +15064,12 @@
             "value" : "구성이 이미 존재합니다"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapılandırma zaten mevcut"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12438,6 +15096,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정 파일"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapılandırma dosyası"
           }
         },
         "zh-Hans" : {
@@ -12468,6 +15132,12 @@
             "value" : "재시작해야 적용됩니다. 곧 앱이 종료됩니다!"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden başlatıldıktan sonra etkili olacak, programdan çıkılıyor!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12494,6 +15164,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이름 바꾸기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden adlandır"
           }
         },
         "zh-Hans" : {
@@ -12524,6 +15200,12 @@
             "value" : "중복 데이터"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yinelenen Veriler"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12550,6 +15232,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "다시 스캔"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden Tara"
           }
         },
         "zh-Hans" : {
@@ -12580,6 +15268,12 @@
             "value" : "다시 스캔"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden Tara"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12606,6 +15300,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "재설정"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıfırla"
           }
         },
         "zh-Hans" : {
@@ -12636,6 +15336,12 @@
             "value" : "중요 알림, 70% 볼륨"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önemli Hatırlatma Bildirimi, %70 Ses Seviyesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12662,6 +15368,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중요 알림"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önemli Duyuru"
           }
         },
         "zh-Hans" : {
@@ -12692,6 +15404,12 @@
             "value" : "중요 알림 권한"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önemli Bildirim İzni"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12718,6 +15436,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "중요 알림 볼륨"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önemli Bildirim Sesi"
           }
         },
         "zh-Hans" : {
@@ -12748,6 +15472,12 @@
             "value" : "벨소리"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çan Sesi"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12774,6 +15504,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "벨소리 목록"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zil Listesi"
           }
         },
         "zh-Hans" : {
@@ -12804,6 +15540,12 @@
             "value" : "오류"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12830,6 +15572,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "장기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uzun vadeli"
           }
         },
         "zh-Hans" : {
@@ -12860,6 +15608,12 @@
             "value" : "스마트 어시스턴트에게 물어보세요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay Zeka Asistanı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12886,6 +15640,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "아랍어"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arapça"
           }
         },
         "zh-Hans" : {
@@ -12916,6 +15676,12 @@
             "value" : "첨부파일: 이미지 1장"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ek: Bir resim"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12942,6 +15708,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "근처에 기기 없음"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakınlarda şu anda cihaz yok"
           }
         },
         "zh-Hans" : {
@@ -12972,6 +15744,12 @@
             "value" : "근처의 책"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakındaki kitaplar"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12998,6 +15776,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "근처 기기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakındaki Cihazlar"
           }
         },
         "zh-Hans" : {
@@ -13028,6 +15812,12 @@
             "value" : "개인정보 처리방침"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik Politikası"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13054,6 +15844,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "숨기기"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizli"
           }
         },
         "zh-Hans" : {
@@ -13084,6 +15880,12 @@
             "value" : "무작위 키 생성"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rastgele Anahtar Oluştur"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13110,6 +15912,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "필요합니다"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerekli"
           }
         },
         "zh-Hans" : {
@@ -13140,6 +15948,12 @@
             "value" : "네트워크 권한 필요"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ağ izni gerekiyor"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13166,6 +15980,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "대규모 모델 구성 필요"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyük model yapılandırması gerekiyor"
           }
         },
         "zh-Hans" : {
@@ -13196,6 +16016,12 @@
             "value" : "그룹 1시간 음소거"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz Bölüm 1 Saat"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13222,6 +16048,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "무음 알림"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessiz Bildirim"
           }
         },
         "zh-Hans" : {
@@ -13252,6 +16084,12 @@
             "value" : "한국어"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Korece"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13278,6 +16116,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본값"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan"
           }
         },
         "zh-Hans" : {
@@ -13308,6 +16152,12 @@
             "value" : "기본 브라우저"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan tarayıcı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13334,6 +16184,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본 톤"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan ton"
           }
         },
         "zh-Hans" : {
@@ -13364,6 +16220,12 @@
             "value" : "기본 말하기 속도"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan konuşma hızı"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13392,6 +16254,12 @@
             "value" : "기본 음성"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan Ses"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -13418,6 +16286,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본 오디오 형식"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsayılan Ses Biçimi"
           }
         },
         "zh-Hans" : {

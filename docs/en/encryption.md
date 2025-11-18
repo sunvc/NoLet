@@ -48,7 +48,7 @@ encrypted_base64 = base64.b64encode(encrypted_data).decode()
 print("Encrypted data (Base64)", encrypted_base64)
 
 
-res = requests.get("https://dev.uuneo.com/StoUxq6ed2h9RRszEMBkpn/test", params = {"ciphertext": encrypted_base64, "cipherNumber":0})
+res = requests.get("https://wzs.app/StoUxq6ed2h9RRszEMBkpn/test", params = {"ciphertext": encrypted_base64, "cipherNumber":0})
 
 print(res.text)
 
@@ -92,7 +92,7 @@ const encryptedBase64 = encryptedData.toString("base64");
 console.log("Encrypted data (Base64):", encryptedBase64);
 
 // 9. Send request to server
-const url = new URL("https://dev.uuneo.com/UPJJV8AkkHgbDKYwXDfjZN/test");
+const url = new URL("https://wzs.app/UPJJV8AkkHgbDKYwXDfjZN/test");
 url.searchParams.append("ciphertext", encryptedBase64);
 url.searchParams.append("cipherNumber", 0);
 
@@ -179,7 +179,7 @@ func main() {
     }
 
     // 8. Use url.Values for URL encoding (same as Python requests.params)
-    baseURL := "https://dev.uuneo.com/UPJJV8AkkHgbDKYwXDfjZN/test"
+    baseURL := "https://wzs.app/UPJJV8AkkHgbDKYwXDfjZN/test"
     values := url.Values{}
     values.Set("ciphertext", encryptedBase64)
     values.Set("cipherNumber", "0")
@@ -243,7 +243,7 @@ $encryptedBase64 = base64_encode($encryptedData);
 echo "Encrypted data (Base64): " . $encryptedBase64 . "\n";
 
 // 7. Send HTTP GET (URL encoded)
-$baseURL = "https://dev.uuneo.com/UPJJV8AkkHgbDKYwXDfjZN/test";
+$baseURL = "https://wzs.app/UPJJV8AkkHgbDKYwXDfjZN/test";
 $params = http_build_query([
     "ciphertext" => $encryptedBase64,
     "cipherNumber" => 0
@@ -310,7 +310,7 @@ public class AESGCMEncryptSend {
         System.out.println("Encrypted data (Base64): " + encryptedBase64);
 
         // -------------------- 7. Send HTTP GET request --------------------
-        String baseURL = "https://dev.uuneo.com/UPJJV8AkkHgbDKYwXDfjZN/test";
+        String baseURL = "https://wzs.app/UPJJV8AkkHgbDKYwXDfjZN/test";
         String urlStr = baseURL
                 + "?ciphertext=" + URLEncoder.encode(encryptedBase64, "UTF-8")
                 + "&cipherNumber=0";
@@ -410,7 +410,7 @@ int main() {
         char* encoded = curl_easy_escape(curl, encryptedBase64, 0);
 
         snprintf(url, sizeof(url),
-                "https://dev.uuneo.com/UPJJV8AkkHgbDKYwXDfjZN/test?ciphertext=%s&cipherNumber=0",
+                "https://wzs.app/UPJJV8AkkHgbDKYwXDfjZN/test?ciphertext=%s&cipherNumber=0",
                 encoded);
 
         curl_easy_setopt(curl, CURLOPT_URL, url);
