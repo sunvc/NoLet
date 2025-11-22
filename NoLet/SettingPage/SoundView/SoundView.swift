@@ -22,7 +22,7 @@ struct SoundView: View {
     
     @State private var showUpload:Bool = false
     @State private var uploadLoading:Bool = false
-
+    
 
     var body: some View {
         List {
@@ -122,7 +122,7 @@ struct SoundView: View {
 
                 }
             }header: {
-                Text(  "自带铃声")
+                Text(  "内置铃声")
             }
             
             
@@ -130,16 +130,46 @@ struct SoundView: View {
         .navigationTitle("所有铃声")
         .toolbar{
             ToolbarItem(placement: .topBarTrailing) {
-               
-                Image(systemName: "speaker.zzz")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.tint, .primary)
-                    .VButton(onRelease: { _ in
-                        AppManager.shared.router.append(.tts)
-                        return true
-                    })
-                    .accessibilityLabel("语音朗读设置")
+                
+                Menu {
+                    Section{
+                        Button{
+                            Task{
+                                do{
+                                    try await AppManager.shared.downloadSounds()
+                                    Toast.success(title: "下载成功")
+                                }catch{
+                                    debugPrint(error)
+                                    Toast.error(title: "下载失败")
+                                }
+                            }
+                        }label: {
+                            Label("同步所有铃声", systemImage: "arrow.down.doc")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.green, .primary)
+                                .accessibilityLabel("同步所有铃声")
+                        }
+                    }
+                    
+                    Section{
+                        Button{
+                            AppManager.shared.router.append(.tts)
+                        }label: {
+                            Label("语音朗读设置", systemImage: "speaker.zzz")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.tint, .primary)
+                                .accessibilityLabel("语音朗读设置")
+                        }
+                    }
+                    
+                } label: {
+                    Label("更多", systemImage: "menubar.arrow.down.rectangle")
+                }
+
+
+                    
             }
+         
         }
         .onDisappear{
             tipsManager.stop()

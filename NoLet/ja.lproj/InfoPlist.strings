@@ -5,6 +5,6 @@
 */
 
 CFBundleDisplayName = "無字書";
-NSPhotoLibraryAddUsageDescription = "このアプリは写真を保存するためにフォトライブラリへのアクセスを必要とします";
-NSCameraUsageDescription = "QRコードを認識するためにカメラを使用します";
-NSPhotoLibraryUsageDescription = "あなたのフォトアルバムへのアクセスが必要です";
+NSPhotoLibraryAddUsageDescription = "このアプリは写真を保存するためにフォトライブラリへの追加アクセスを必要とします";
+NSCameraUsageDescription = "QRコードをスキャンするためにカメラを使用します";
+NSPhotoLibraryUsageDescription = "あなたの写真ライブラリへのアクセスが必要です";

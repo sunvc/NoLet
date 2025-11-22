@@ -62,6 +62,7 @@ struct SoundItemView: View {
                     tipsManager.seek(to: value *  tipsManager.duration)
                 }))
                     .scaleEffect(0.8)
+                    .disabled(progress == 0.0)
                 
             }
             .diff{view in

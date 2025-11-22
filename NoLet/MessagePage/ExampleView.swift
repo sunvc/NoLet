@@ -104,9 +104,32 @@ struct ExampleView: View {
                 
             }
         }
-        
         .listStyle(GroupedListStyle())
         .navigationTitle( "使用示例")
+        .toolbar{
+            ToolbarItem(placement: .topBarTrailing) {
+                Section{
+                    
+                    Button {
+                        manager.router.append(.web(url:  NCONFIG.pushHelp.url))
+                        Haptic.impact()
+                    } label: {
+                        Label {
+                            Text("使用文档")
+                        } icon: {
+                            Image(systemName: "questionmark.app.dashed")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.blue, Color.primary)
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear{
+            if let server = servers.first, pickerSelection == nil {
+                pickerSelection = server
+            }
+        }
     }
 
 }
@@ -171,6 +194,12 @@ extension ExampleView{
                              params:  "\(String(localized: "推送内容"))?icon=\(NCONFIG.logoImage)",
                              index: 5),
             
+            PushExampleModel(header: Text( "下拉消息会显示图片"),
+                             footer: Text( "携带一个image,会自动下载缓存"),
+                             title:  String(localized: "携带图片"),
+                             params:  "?title=\(String(localized: "标题" ))&body=\(String(localized: "内容" ))&image=\(NCONFIG.logoImage)",
+                             index: 6),
+            
             PushExampleModel(header: Text("可对通知设置中断级别"),
                              footer: Text( """
                              可选参数值:
@@ -182,25 +211,20 @@ extension ExampleView{
                              """),
                              title: String(localized:"通知类型"),
                              params: "\(String(localized:  "重要提醒通知,70%音量"))?level=critical&volume=7",
-                             index: 6),
+                             index: 7),
 
             PushExampleModel(header: Text("URLScheme或者网址"),
                              footer: Text( "点击跳转app"),
                              title: String(localized:"跳转第三方"),
                              params:  "\(String(localized: "推送内容"))?url=weixin://",
-                             index: 7),
+                             index: 8),
 
             PushExampleModel(header: Text( "持续响铃"),
                              footer: Text("通知铃声将持续播放30s，同时收到多个将按顺序依次响铃"),
                              title:  String(localized:"持续响铃"),
                              params: "\(String(localized:  "持续响铃"))?call=1",
-                             index: 8),
-            
-            PushExampleModel(header: Text( "下拉消息会显示图片"),
-                             footer: Text( "携带一个image,会自动下载缓存"),
-                             title:  String(localized: "携带图片"),
-                             params:  "?title=\(String(localized: "标题" ))&body=\(String(localized: "内容" ))&image=\(NCONFIG.logoImage)",
                              index: 9),
+            
 
             PushExampleModel(header:
                                 HStack{

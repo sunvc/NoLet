@@ -17,7 +17,7 @@ import AVFoundation
 import SwiftUI
 import ActivityKit
 import Defaults
-
+import Zip
 
 
 
@@ -49,7 +49,7 @@ final class AudioManager: NSObject,  ObservableObject{
     
     private override init() {
         super.init()
-        self.setFileList()
+        self.updateFileList()
     }
     
     /// 播放或暂停音频
@@ -211,7 +211,7 @@ extension AudioManager{
     }
     
     /// 加载系统默认音效和用户自定义音效文件列表
-    private func setFileList() {
+    func updateFileList() {
         Task.detached(priority: .userInitiated) {
             let (customSounds, defaultSounds) = self.getFileList()
             // 回到主线程，更新界面相关状态（如 SwiftUI 或 UIKit 列表）
@@ -282,7 +282,7 @@ extension AudioManager{
         }
         
         // 刷新铃声文件列表（用于更新 UI 或数据）
-        setFileList()
+         self.updateFileList()
     }
     
     func deleteSound(url: URL) {
@@ -299,7 +299,7 @@ extension AudioManager{
         try? manager.removeItem(at: groupSoundUrl)
         
         // 刷新文件列表（通常是为了更新 UI 或内部数据状态）
-        setFileList()
+        self.updateFileList()
     }
     
     func convertToCaf(inputURL: URL) async -> URL?  {
@@ -444,16 +444,8 @@ extension AudioManager{
     }
     
     enum TipsSound: String{
-        case pttconnect
-        case pttnotifyend
-        case cbegin
-        case bottle
         case qrcode
         case share
-        case toolSent
-        case pull
-        case refresh
-        case tabSelection
     }
 
 

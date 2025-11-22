@@ -50,7 +50,7 @@ async def trans_main(system_message, target_language, json_file=None, is_json=Fa
     tasks = []
     skip_count = 0
     for key in results:
-        result_tem = results.get(key,{}).get("localizations").get(target_language, None)
+        result_tem = results.get(key,{}).get("localizations",{}).get(target_language, None)
 
         if result_tem is None or result_tem.get("stringUnit", {}).get("value", "").strip() == "":
             task = asyncio.create_task(translate_deepseek(key, system_message,semaphore, is_json))
@@ -66,10 +66,12 @@ async def trans_main(system_message, target_language, json_file=None, is_json=Fa
     for count, (key, task) in enumerate(tasks, start=1):
         try:
             text = await task
+            if results[key].get("localizations", None) is None:
+                results[key]["localizations"] = {}
             results[key]["localizations"][target_language] = {'stringUnit': {'state': 'translated', 'value': text}}
             print(f" {count}/{all_count} {key} -> {text}")
         except Exception as e:
-            print(f"Failed to translate{target_language} - {key}: {e}")
+            print(f"\nFailed to translate - {target_language} - {key}: {e}")
 
     data["strings"] = results
 
@@ -99,7 +101,7 @@ async def translate_other(json_files, file_type="InfoPlist.strings"):
             results[key]["translate"] = translate
             print(f" {key} -> {translate}")
         except Exception as e:
-            print(f"Failed to translate {key}: {e}")
+            print(f"\nFailed to translate {key}: {e}")
     for item in results:
         translate_text = results[item]["translate"]
         if translate_text:
@@ -147,8 +149,8 @@ if __name__ == '__main__':
             asyncio.run(trans_main(system_tips, lang_code, json_file=path, is_json=True))
 
     # -------  InfoPlist.strings  ------
-    paths = find_localizable_files(root_dir=root_path, file_name="InfoPlist.strings")
-    asyncio.run(translate_other(paths))
+    # paths = find_localizable_files(root_dir=root_path, file_name="InfoPlist.strings")
+    # asyncio.run(translate_other(paths))
     #
     # # ------- LaunchScreen.strings  ------
     # paths = find_localizable_files(root_dir=root_path, file_name="LaunchScreen.strings")

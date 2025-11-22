@@ -10,12 +10,13 @@
 //
 //  History:
 //    Created by Neo on 2024/12/4.
-	
-import UIKit
-import Foundation
-import CommonCrypto
-import Defaults
+
 import os
+import UIKit
+import Defaults
+import Foundation
+import Compression
+import CommonCrypto
 import UniformTypeIdentifiers
 
 class NetworkManager: NSObject, URLSessionDataDelegate {
@@ -120,8 +121,6 @@ class NetworkManager: NSObject, URLSessionDataDelegate {
             request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
         }
         request.timeoutInterval = timeout
-        
-        // 打印请求信息（用于调试）
         
         request.assumesHTTP3Capable = true
         
@@ -265,5 +264,6 @@ extension NetworkManager {
         // 这里获取响应信息
 #endif
     }
-
+    
+    
 }

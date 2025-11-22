@@ -111,6 +111,7 @@
 		BAB20EA72EC5AC030003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
 		BAB211C32EC6526E0003F7A3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C22EC6526E0003F7A3 /* MarkdownUI */; };
 		BAB211C52EC6526E0003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C42EC6526E0003F7A3 /* Splash */; };
+		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -441,9 +442,7 @@
 			membershipExceptions = (
 				alarm.caf,
 				aurora.caf,
-				bottle.aac,
 				call.caf,
-				cbegin.aac,
 				com.caf,
 				craft.caf,
 				frog.caf,
@@ -453,23 +452,15 @@
 				hello.caf,
 				multiway.caf,
 				popcorn.caf,
-				pttconnect.aac,
-				pttnotifyend.aac,
-				pull.aac,
 				qrcode.aac,
-				refresh.aac,
 				run.caf,
 				shake.caf,
 				share.aac,
 				silence.caf,
-				snap.caf,
 				success.caf,
-				tabSelection.aac,
-				tootSent.aac,
 				trill.caf,
 				tritone.caf,
 				typewriter.caf,
-				whale.caf,
 				xiu.caf,
 			);
 			target = B58357F62DEDD3B10066B32E /* NoLet */;
@@ -595,6 +586,7 @@
 				B5D1B5922E5B3D5800661C28 /* Opus in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB211C52EC6526E0003F7A3 /* Splash in Frameworks */,
+				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
 				BAB20EA52EC5AC030003F7A3 /* MarkdownUI in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
@@ -812,6 +804,7 @@
 				BAB20EA62EC5AC030003F7A3 /* Splash */,
 				BAB211C22EC6526E0003F7A3 /* MarkdownUI */,
 				BAB211C42EC6526E0003F7A3 /* Splash */,
+				BAB479802ED2392C00EE84AC /* Zip */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -999,6 +992,7 @@
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				B5D1B5902E5B3D5800661C28 /* XCRemoteSwiftPackageReference "Opus" */,
 				BAB211C12EC6526E0003F7A3 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1861,6 +1855,14 @@
 				minimumVersion = 3.0.3;
 			};
 		};
+		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1994,6 +1996,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAB211C12EC6526E0003F7A3 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = Splash;
+		};
+		BAB479802ED2392C00EE84AC /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

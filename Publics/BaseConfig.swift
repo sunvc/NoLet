@@ -41,12 +41,11 @@ class NCONFIG {
     
     private static let wikiServer: NURL = "https://wiki.wzs.app"
   
-    static let logoImage: NURL          = wikiServer + "/_media/egglogo.png"
-    static let ogImage: NURL            = wikiServer + "/_media/og.png"
     static let delpoydoc: NURL          = docServer + "deploy"
     static let privacyURL: NURL         = docServer + "policy"
     static let tutorialURL: NURL        = docServer + "tutorial"
     static let encryURL: NURL           = docServer + "encryption"
+    static let pushHelp: NURL           = docServer + "tutorial"
     
     static var docServer: NURL {
         wikiServer + String(localized: "NoletLanguageLocalCode")
@@ -57,6 +56,10 @@ class NCONFIG {
     static let serverSource: NURL    = "https://github.com/sunvc/NoLets"
     static let telegram: NURL        = "https://t.me/PushToMe"
     static let appStore: NURL        = "https://apps.apple.com/app/id6615073345"
+    static let soundsUrl: NURL       = "http://s3.wzs.app/sounds.zip"
+    static let logoImage: NURL       = "https://s3.wzs.app/logo.png"
+    static let ogImage: NURL         = "https://s3.wzs.app/og.png"
+    
     
     static var bundleIdentifier: String {
         Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"

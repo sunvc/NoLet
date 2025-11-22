@@ -78,6 +78,7 @@ struct MessagePage: View {
                                 .customForegroundStyle(Color.accent, Color.primary)
                         }
                     }
+                    
 
                     Section {
                         Button {

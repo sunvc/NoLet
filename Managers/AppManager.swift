@@ -16,6 +16,7 @@ import SwiftUI
 import Defaults
 import Foundation
 import StoreKit
+import Zip
 
 
 
@@ -629,3 +630,94 @@ struct SubscribeUser: Codable, Hashable, Identifiable{
     }
 }
 
+
+extension AppManager{
+    func downloadSounds() async throws {
+        
+        let destinationURL = FileManager.default.temporaryDirectory.appendingPathComponent("sounds.zip")
+        
+        
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        
+        let session = URLSession(configuration: config, delegate: nil, delegateQueue: .main)
+        var request = URLRequest(url: NCONFIG.soundsUrl.url)
+        request.assumesHTTP3Capable = true
+        
+        let (data, response) = try await session.download(for: request)
+        
+        guard let response = response as? HTTPURLResponse else{ throw NetworkManager.APIError.invalidURL}
+        
+        guard 200...299 ~= response.statusCode else{
+            throw NetworkManager.APIError.invalidCode(response.statusCode)
+        }
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+        
+        try FileManager.default.moveItem(at: data, to: destinationURL)
+        
+        let result = try Zip.quickUnzipFile(destinationURL)
+ 
+        if let soundsUrl = NCONFIG.getDir(.sounds){
+            moveAllFiles(from: result, to: soundsUrl, overwrite: true)
+        }
+        
+        AudioManager.shared.updateFileList()
+        
+        try? FileManager.default.removeItem(at: result)
+        try? FileManager.default.removeItem(at: destinationURL)
+    }
+    
+    func moveAllFiles(from sourceDir: URL, to destinationDir: URL, overwrite: Bool = false) {
+        let fileManager = FileManager.default
+
+        // 确保目标目录存在
+        if !fileManager.fileExists(atPath: destinationDir.path) {
+            do {
+                try fileManager.createDirectory(at: destinationDir, withIntermediateDirectories: true)
+            } catch {
+                print("创建目标目录失败: \(error)")
+                return
+            }
+        }
+
+        // 获取源目录下的所有内容
+        guard let enumerator = fileManager.enumerator(at: sourceDir,
+                                                      includingPropertiesForKeys: [.isDirectoryKey],
+                                                      options: [.skipsHiddenFiles]) else {
+            print("无法访问源目录")
+            return
+        }
+
+        for case let fileURL as URL in enumerator {
+            do {
+                let resourceValues = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+                if resourceValues.isDirectory == true {
+                    // 是文件夹，跳过
+                    continue
+                }
+
+                // 构建目标路径
+                let destinationURL = destinationDir.appendingPathComponent(fileURL.lastPathComponent)
+
+                // 如果目标文件已存在
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    if overwrite {
+                        try fileManager.removeItem(at: destinationURL)
+                    } else {
+                        print("跳过已存在文件: \(destinationURL.lastPathComponent)")
+                        continue
+                    }
+                }
+
+                // 移动文件
+                try fileManager.moveItem(at: fileURL, to: destinationURL)
+                print("已移动文件: \(fileURL.lastPathComponent)")
+
+            } catch {
+                print("移动文件出错: \(fileURL.lastPathComponent), 错误: \(error)")
+            }
+        }
+    }
+}

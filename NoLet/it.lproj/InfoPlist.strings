@@ -5,6 +5,6 @@
 */
 
 CFBundleDisplayName = "NoLet";
-NSPhotoLibraryAddUsageDescription = "Questa app richiede l'accesso alla tua libreria foto per salvare le immagini.";
-NSCameraUsageDescription = "È necessario utilizzare la fotocamera per scansionare il codice QR.";
-NSPhotoLibraryUsageDescription = "Abbiamo bisogno di accedere al tuo album fotografico.";
+NSPhotoLibraryAddUsageDescription = "此应用需要访问您的照片库以保存图片。";
+NSCameraUsageDescription = "需要使用相机扫描二维码。";
+NSPhotoLibraryUsageDescription = "我们需要访问您的相册。";

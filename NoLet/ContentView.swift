@@ -162,7 +162,7 @@ struct ContentView: View {
 
     func updateTab(with newTab: TabPage){
         Haptic.impact()
-        AudioManager.tips(.tabSelection)
+        AudioManager.tips(.share)
         manager.page = newTab
     }
 
@@ -199,6 +199,10 @@ struct ContentView: View {
             
             if Defaults[.cryptoConfigs].count == 0{
                 Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
+            }
+            
+            Task.detached( priority: .background) {
+                try? await manager.downloadSounds()
             }
             
         }

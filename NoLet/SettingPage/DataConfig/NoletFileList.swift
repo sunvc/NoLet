@@ -266,6 +266,7 @@ struct FileRowContent: View {
                 }else{
                     Toast.info(title: "系统保留文件!")
                 }
+                AudioManager.shared.updateFileList()
 
             }
         } message: {
