@@ -1,4 +1,4 @@
-/* 
+/*
   InfoPlist.strings
   upush
   Created by Neo 2024/10/11.
@@ -6,5 +6,5 @@
 
 CFBundleDisplayName = "无字书";
 NSPhotoLibraryAddUsageDescription = "此应用需要访问您的照片库以便保存照片";
-NSCameraUsageDescription = "需要使用你的相机识别二维码";
-NSPhotoLibraryUsageDescription = "我们需要访问你的相册";
+NSCameraUsageDescription = "需要使用您的相机识别二维码";
+NSPhotoLibraryUsageDescription = "我们需要访问您的相册";

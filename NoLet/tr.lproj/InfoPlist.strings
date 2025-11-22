@@ -1,12 +1,10 @@
-/* 
+/*
   InfoPlist.strings
   upush
-
   Created by Neo 2024/10/11.
-  
 */
 
 CFBundleDisplayName = "NoLet";
-NSPhotoLibraryAddUsageDescription = "This app requires access to your photo library to save photos.";
-NSCameraUsageDescription = "Need to use your camera to identify the QR code";
-NSPhotoLibraryUsageDescription = "We need access to your photo album";
+NSPhotoLibraryAddUsageDescription = "Bu uygulama fotoğrafları kaydetmek için fotoğraf kütüphanenize erişim gerektirir";
+NSCameraUsageDescription = "QR kodlarını taramak için kameranızı kullanmak istiyor";
+NSPhotoLibraryUsageDescription = "Fotoğraf albümünüze erişmemiz gerekiyor";

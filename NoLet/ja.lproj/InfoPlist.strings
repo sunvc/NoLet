@@ -1,13 +1,10 @@
-/* 
+/*
   InfoPlist.strings
   upush
-
   Created by Neo 2024/10/11.
-  
 */
 
-
-CFBundleDisplayName = "無字の書";
-NSPhotoLibraryAddUsageDescription = "このアプリは写真を保存するためにあなたの写真ライブラリにアクセスする必要があります";
-NSCameraUsageDescription = "QRコードを認識するためにカメラを使用する必要があります";
-NSPhotoLibraryUsageDescription = "あなたのアルバムにアクセスする必要があります";
+CFBundleDisplayName = "無字書";
+NSPhotoLibraryAddUsageDescription = "このアプリは写真を保存するためにフォトライブラリへのアクセスを必要とします";
+NSCameraUsageDescription = "QRコードを認識するためにカメラを使用します";
+NSPhotoLibraryUsageDescription = "あなたのフォトアルバムへのアクセスが必要です";

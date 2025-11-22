@@ -1,0 +1,10 @@
+/*
+  InfoPlist.strings
+  upush
+  Created by Neo 2024/10/11.
+*/
+
+CFBundleDisplayName = "NoLet";
+NSPhotoLibraryAddUsageDescription = "Este aplicativo precisa acessar sua biblioteca de fotos para salvar imagens";
+NSCameraUsageDescription = "Precisa usar sua câmera para escanear códigos QR";
+NSPhotoLibraryUsageDescription = "Precisamos acessar seu álbum de fotos";

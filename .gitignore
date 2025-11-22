@@ -10,3 +10,5 @@ Pods/
 ._.*
 xcuserdata
 DerivedData/
+.venv
+.venv/
