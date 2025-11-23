@@ -12,3 +12,5 @@ xcuserdata
 DerivedData/
 .venv
 .venv/
+.idea/
+**/.idea/
