@@ -201,10 +201,6 @@ struct ContentView: View {
                 Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
             }
             
-            Task.detached( priority: .background) {
-                try? await manager.downloadSounds()
-            }
-            
         }
         .background26(.ultraThinMaterial, radius: 5)
     }

@@ -136,7 +136,7 @@ struct SoundView: View {
                         Button{
                             Task{
                                 do{
-                                    try await AppManager.shared.downloadSounds()
+                                    try await tipsManager.downloadSounds()
                                     Toast.success(title: "下载成功")
                                 }catch{
                                     debugPrint(error)

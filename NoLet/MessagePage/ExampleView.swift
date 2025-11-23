@@ -91,6 +91,7 @@ struct ExampleView: View {
                 }header:{
                     item.header
                         .textCase(.none)
+                        .font(.footnote)
                     
                 }footer:{
                     VStack(alignment: .leading){
@@ -173,7 +174,7 @@ extension ExampleView{
                                 },
                              footer: Text( "可以为推送设置不同的铃声"),
                              title: String(localized:"推送铃声"),
-                             params: "\(String(localized: "推送内容"))?sound=craft",
+                             params: "\(String(localized: "推送内容"))?sound=double",
                              index: 3),
 
             PushExampleModel(header:
@@ -189,7 +190,7 @@ extension ExampleView{
                                     Text( "自定义推送显示的logo")
                                     Spacer()
                                 },
-                             footer: Spacer(),
+                             footer: Text( "支持文字图标、Emoji图标、自定义背景"),
                              title: String(localized:"自定义icon"),
                              params:  "\(String(localized: "推送内容"))?icon=\(NCONFIG.logoImage)",
                              index: 5),

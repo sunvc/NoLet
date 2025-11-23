@@ -4,8 +4,6 @@
 # NoLet
 # Created by Neo on 2025/9/7.
 
-set -e  # Exit immediately on error
-set -u  # Treat undefined variables as errors
 
 echo "=== 🚀 Starting CI Post Clone Script ==="
 

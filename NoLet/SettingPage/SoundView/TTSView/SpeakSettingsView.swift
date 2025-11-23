@@ -53,6 +53,7 @@ struct SpeakSettingsView:View {
                     )
             }header: {
                 Text("语音接口")
+                    .padding(.leading)
             }
             .textCase(.none)
             .listRowInsets(EdgeInsets())

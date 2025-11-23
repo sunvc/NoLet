@@ -36,7 +36,7 @@ struct SoundOptionsProvider: DynamicOptionsProvider {
     }
     
     func defaultResult() async -> String? {
-        return "xiu"
+        return "nolet"
     }
 }
 

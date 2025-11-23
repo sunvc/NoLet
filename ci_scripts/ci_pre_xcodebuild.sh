@@ -3,9 +3,6 @@
 # ci_pre_xcodebuild.sh
 # NoLet
 
-set -e  # Exit immediately on error
-set -u  # Treat undefined variables as errors
-
 echo "=== 🚀 Starting Pre-XcodeBuild Script ==="
 
 #----- 1. Check Conditions ----------------------------------------------------
@@ -58,3 +55,47 @@ echo "Cleaning temporary project folder..."
 rm -rf "${GITHUB_PROJECT_SAFE}"
 
 echo "=== 🎉 Pre-XcodeBuild Script Completed Successfully ==="
+
+echo "---------------Caf Compression Processing----------------------------------"
+
+ROOT_DIR="../"
+FORMAT="aac"
+CAFF_FORMAT="caff"
+
+echo "=== 🎧 Starting Recursive CAF Compression ==="
+echo "Root directory: $ROOT_DIR"
+echo "Compression codec: $FORMAT"
+echo
+
+if ! command -v afconvert >/dev/null 2>&1; then
+    echo "❌ ERROR: 'afconvert' command not found."
+    exit 1
+fi
+
+SUCCESS_COUNT=0
+FAIL_COUNT=0
+
+# Use a for-loop instead of while+pipe to avoid subshell
+for file in $(find "$ROOT_DIR" -type f -name "*.caf"); do
+    echo "Processing: $file"
+
+    TEMP_FILE="${file}.tmp"
+
+    if afconvert "$file" "$TEMP_FILE" -d "$FORMAT" -f "$CAFF_FORMAT"; then
+        mv "$TEMP_FILE" "$file"
+        echo "✅ Compressed: $file"
+        SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+        echo "⚠️ Conversion failed: $file"
+        rm -f "$TEMP_FILE"
+        FAIL_COUNT=$((FAIL_COUNT + 1))
+    fi
+
+    echo
+done
+
+echo "=== ✔️ Compression Completed ==="
+echo "Successful conversions: $SUCCESS_COUNT"
+echo "Failed conversions: $FAIL_COUNT"
+echo
+echo "All done!"

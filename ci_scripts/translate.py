@@ -1,7 +1,12 @@
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Requires Python 3.10+ for async/await syntax
-import time
+#
+# pip3 install openai
+#
+# pip3 install asyncio
+#
+
 
 from openai import AsyncOpenAI
 from asyncio import Semaphore
@@ -148,11 +153,10 @@ if __name__ == '__main__':
         for path in paths:
             asyncio.run(trans_main(system_tips, lang_code, json_file=path, is_json=True))
 
-    # -------  InfoPlist.strings  ------
+    # # -------  InfoPlist.strings  ------
     # paths = find_localizable_files(root_dir=root_path, file_name="InfoPlist.strings")
     # asyncio.run(translate_other(paths))
     #
     # # ------- LaunchScreen.strings  ------
     # paths = find_localizable_files(root_dir=root_path, file_name="LaunchScreen.strings")
     # asyncio.run(translate_other(paths))
-

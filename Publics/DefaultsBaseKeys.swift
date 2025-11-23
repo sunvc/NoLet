@@ -37,7 +37,7 @@ extension Defaults.Keys{
     static let voipDeviceToken = Key<String>(.voipDeviceToken, "")
     static let firstStart = Key<Bool>(.firstStartApp, true)
     static let autoSaveToAlbum = Key<Bool>(.autoSaveImageToPhotoAlbum, false)
-    static let sound = Key<String>(.defaultSound, "xiu")
+    static let sound = Key<String>(.defaultSound, "nolet")
     static let showGroup = Key<Bool>(.showGroupMessage, false)
     static let historyMessageCount = Key<Int>(.historyMessageCount, 10)
     static let freeCloudImageCount = Key<Int>(.freeCloudImageCount, 30)
