@@ -141,9 +141,7 @@ struct SingleMessagesView: View {
                 guard let count = await messageManager.updateRead() else{ return }
                 
                 // 清除徽章
-                if Defaults[.badgeMode] == .auto {
-                    try await UNUserNotificationCenter.current().setBadgeCount(0)
-                }
+                try await UNUserNotificationCenter.current().setBadgeCount(0)
                 
                 NLog.log("更新未读条数: \(count)")
             }

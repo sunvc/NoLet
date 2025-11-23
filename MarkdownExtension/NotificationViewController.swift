@@ -25,7 +25,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     @IBOutlet var web: WKWebView!
     
     private var voiceHeight: CGFloat {
-        Defaults[.voicesViewShow] ? 35 : 0
+         Defaults[.ttsConfig].host.hasHttp ? 35 : 0
     }
     
     var scrollViewHeight:CGFloat = .zero
@@ -72,7 +72,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     func didReceive(_ notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
         
-        if Defaults[.voicesViewShow]{
+        if Defaults[.ttsConfig].host.hasHttp {
             self.musicView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: voiceHeight)
             var music: MusicInfoView{
                 let music = MusicInfoView()

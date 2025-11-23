@@ -56,8 +56,8 @@ class NCONFIG {
     static let serverSource: NURL    = "https://github.com/sunvc/NoLets"
     static let telegram: NURL        = "https://t.me/PushToMe"
     static let appStore: NURL        = "https://apps.apple.com/app/id6615073345"
-    static let soundsUrl: NURL       = "http://s3.wzs.app/sounds.zip"
-    static let logoImage: NURL       = "https://s3.wzs.app/logo.png"
+    static let soundsUrl: NURL       = "http://s3.wzs.app/cafs.zip"
+    static let logoImage: NURL       = "https://s3.wzs.app/avatar.png"
     static let ogImage: NURL         = "https://s3.wzs.app/og.png"
     
     

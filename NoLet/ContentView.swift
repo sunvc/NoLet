@@ -24,7 +24,6 @@ struct ContentView: View {
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
     @Default(.firstStart) private var firstStart
-    @Default(.badgeMode) private var badgeMode
     
     @State private var HomeViewMode:NavigationSplitViewVisibility = .detailOnly
 
@@ -199,10 +198,6 @@ struct ContentView: View {
             
             if Defaults[.cryptoConfigs].count == 0{
                 Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
-            }
-            
-            Task.detached( priority: .background) {
-                try? await manager.downloadSounds()
             }
             
         }

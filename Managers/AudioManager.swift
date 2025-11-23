@@ -562,3 +562,104 @@ actor AudioTranscoder {
         }
     
 }
+
+extension AudioManager{
+    func downloadSounds() async throws {
+        
+        let destinationURL = FileManager.default.temporaryDirectory.appendingPathComponent("sounds.zip")
+        
+        
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        
+        let session = URLSession(configuration: config, delegate: nil, delegateQueue: .main)
+        var request = URLRequest(url: NCONFIG.soundsUrl.url)
+        request.assumesHTTP3Capable = true
+        
+        let (data, response) = try await session.download(for: request)
+        
+        guard let response = response as? HTTPURLResponse else{ throw NetworkManager.APIError.invalidURL}
+        
+        guard 200...299 ~= response.statusCode else{
+            throw NetworkManager.APIError.invalidCode(response.statusCode)
+        }
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            try FileManager.default.removeItem(at: destinationURL)
+        }
+        
+        try FileManager.default.moveItem(at: data, to: destinationURL)
+        
+        let result = try Zip.quickUnzipFile(destinationURL)
+ 
+        if let soundsUrl = NCONFIG.getDir(.sounds){
+            moveFiles(from: result, to: soundsUrl, skip: self.allSounds())
+        }
+        
+        self.updateFileList()
+        
+        try? FileManager.default.removeItem(at: result)
+        try? FileManager.default.removeItem(at: destinationURL)
+    }
+    
+    func moveFiles(
+        from sourceDir: URL,
+        to destinationDir: URL,
+        skip skipFiles: [String]   // 文件名在这个列表里 → 跳过不移动
+    ) {
+        let fileManager = FileManager.default
+
+        // Ensure destination exists
+        if !fileManager.fileExists(atPath: destinationDir.path) {
+            do {
+                try fileManager.createDirectory(at: destinationDir, withIntermediateDirectories: true)
+            } catch {
+                print("Failed to create destination directory: \(error)")
+                return
+            }
+        }
+
+       
+
+        // Enumerate source directory
+        guard let enumerator = fileManager.enumerator(at: sourceDir,
+                                                      includingPropertiesForKeys: [.isDirectoryKey],
+                                                      options: [.skipsHiddenFiles]) else {
+            print("Unable to access source directory.")
+            return
+        }
+
+        for case let fileURL as URL in enumerator {
+            do {
+                let values = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+
+                // Skip folders
+                if values.isDirectory == true { continue }
+
+                let fileName = fileURL.lastPathComponent
+
+                // ❌ If filename is in skip list → skip
+                if skipFiles.contains(fileName) {
+                    print("Skipped (in skip list): \(fileName)")
+                    continue
+                }
+
+                // Destination path
+                let destinationURL = destinationDir.appendingPathComponent(fileName)
+
+                // Skip if destination already has same file
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    print("Skipped (duplicate in destination): \(fileName)")
+                    continue
+                }
+
+                // Move the file
+                try fileManager.moveItem(at: fileURL, to: destinationURL)
+                print("Moved: \(fileName)")
+
+            } catch {
+                print("Error moving file \(fileURL.lastPathComponent): \(error)")
+            }
+        }
+    }
+
+}

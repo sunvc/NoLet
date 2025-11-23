@@ -22,7 +22,7 @@ struct SoundView: View {
     
     @State private var showUpload:Bool = false
     @State private var uploadLoading:Bool = false
-    
+    @State private var downLoading:Bool = false
 
     var body: some View {
         List {
@@ -134,17 +134,21 @@ struct SoundView: View {
                 Menu {
                     Section{
                         Button{
+                            self.downLoading = true
                             Task{
                                 do{
-                                    try await AppManager.shared.downloadSounds()
+                                    try await tipsManager.downloadSounds()
                                     Toast.success(title: "下载成功")
+                                   
                                 }catch{
                                     debugPrint(error)
                                     Toast.error(title: "下载失败")
+                                   
                                 }
+                                self.downLoading = false
                             }
                         }label: {
-                            Label("同步所有铃声", systemImage: "arrow.down.doc")
+                            Label("获取所有铃声", systemImage: "arrow.down.doc")
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.green, .primary)
                                 .accessibilityLabel("同步所有铃声")
@@ -163,7 +167,13 @@ struct SoundView: View {
                     }
                     
                 } label: {
-                    Label("更多", systemImage: "menubar.arrow.down.rectangle")
+                    if downLoading{
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    }else{
+                        Label("更多", systemImage: "menubar.arrow.down.rectangle")
+                    }
+                    
                 }
 
 
@@ -185,6 +195,8 @@ struct SoundView: View {
 }
 
 #Preview {
-    SoundView()
+    NavigationStack {
+        SoundView()
+    }
 }
 

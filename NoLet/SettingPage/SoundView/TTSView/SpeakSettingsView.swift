@@ -16,12 +16,10 @@ struct SpeakSettingsView:View {
     @Default(.ttsConfig) var voiceConfig
   
     @Default(.voiceList) var voiceList
-    
-    @Default(.voicesAutoSpeak) var voicesAutoSpeak
-    @Default(.voicesViewShow) var voicesViewShow
+    @Default(.ttsConfig) var ttsConfig
     @EnvironmentObject private var manager:AppManager
     
-    var groupedVoices: [String: [VoiceManager.MicrosoftVoice]] {
+    var groupedVoices: [String: [VoiceManager.NoletVoice]] {
         if searchText.isEmpty {
             return Dictionary(grouping: voiceList, by: { $0.locale })
         } else {
@@ -47,19 +45,29 @@ struct SpeakSettingsView:View {
     var body: some View {
         Form{
             
+            Section{
+                TextField("请输入URL", text: $ttsConfig.host)
+                    .autocapitalization(.none)
+                    .customField(
+                        icon: "personalhotspot.circle", false
+                    )
+            }header: {
+                Text("语音接口")
+                    .padding(.leading)
+            }
+            .textCase(.none)
+            .listRowInsets(EdgeInsets())
+            .listRowSpacing(0)
+            
+            
             Section {
-                Toggle(isOn: $voicesViewShow) {
-                    Label("开启语音", systemImage: voicesViewShow ? "lock.open.display" : "lock.display")
-                        .symbolEffect(.replace)
-                }
-                Toggle(isOn: $voicesAutoSpeak) {
+                Toggle(isOn: $ttsConfig.autoPlay) {
                     Label("自动播放", systemImage: "memories")
                 }
             }header:{
                 Text("下拉自动播放语音")
             }
             .textCase(.none)
-            
             
             Section {
                 baseRegionField
