@@ -140,12 +140,10 @@ struct MessageDetailPage: View {
                         .filter(Message.Columns.read == false)
                         .updateAll(db, [Message.Columns.read.set(to: true)])
 
-                    if Defaults[.badgeMode] == .auto {
-                        let unRead = try Message
-                            .filter(Message.Columns.read == false)
-                            .fetchCount(db)
-                        UNUserNotificationCenter.current().setBadgeCount(unRead)
-                    }
+                    let unRead = try Message
+                        .filter(Message.Columns.read == false)
+                        .fetchCount(db)
+                    UNUserNotificationCenter.current().setBadgeCount(unRead)
                 }
 
             }

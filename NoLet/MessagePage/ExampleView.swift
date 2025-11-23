@@ -249,3 +249,10 @@ extension ExampleView{
    
 }
 
+
+#Preview {
+    NavigationStack{
+        ExampleView()
+            .environmentObject(AppManager.shared)
+    }
+}

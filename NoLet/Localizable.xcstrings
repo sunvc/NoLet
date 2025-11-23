@@ -12111,6 +12111,76 @@
         }
       }
     },
+    "媒体设置": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Media Settings"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "媒体设置"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メディア設定"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미디어 설정"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medya Ayarları"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paramètres des médias"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Настройки медиа"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni multimediali"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medieneinstellungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configuración de medios"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configurações de Mídia"
+          }
+        }
+      }
+    },
     "存储使用": {
       "localizations": {
         "de": {
@@ -13579,77 +13649,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "开发者支持计划"
-          }
-        }
-      }
-    },
-    "开启语音": {
-      "extractionState": "stale",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sprachausgabe aktivieren"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enable Voice"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activar voz"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activer la voix"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attiva la voce"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "音声を有効にする"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "음성 활성화"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ativar voz"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Включить голос"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sesi Aç"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "开启语音"
           }
         }
       }
@@ -16738,16 +16737,34 @@
     },
     "支持文字图标、Emoji图标、自定义背景": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterstützt Texticons, Emoji-Symbole, benutzerdefinierte Hintergründe"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Supports text icons, Emoji icons, custom backgrounds"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "支持文字图标、Emoji图标、自定义背景"
+            "value": "Soporte para iconos de texto, iconos Emoji, fondos personalizados"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prise en charge des icônes de texte, des icônes Emoji et des arrière-plans personnalisés"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporto per icone di testo, icone Emoji e sfondi personalizzati"
           }
         },
         "ja": {
@@ -16762,16 +16779,10 @@
             "value": "텍스트 아이콘, 이모지 아이콘, 사용자 정의 배경 지원"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Metin simgeleri, Emoji simgeleri, özel arka planlar desteklenir"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prise en charge des icônes de texte, des icônes Emoji et des arrière-plans personnalisés"
+            "value": "Suporte a ícones de texto, ícones Emoji, plano de fundo personalizado"
           }
         },
         "ru": {
@@ -16780,28 +16791,16 @@
             "value": "Поддержка текстовых значков, эмодзи, пользовательского фона"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Supporto per icone di testo, icone Emoji e sfondi personalizzati"
+            "value": "Metin simgeleri, Emoji simgeleri, özel arka planlar desteklenir"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unterstützt Texticons, Emoji-Symbole, benutzerdefinierte Hintergründe"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Soporte para iconos de texto, iconos Emoji, fondos personalizados"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Suporte a ícones de texto, ícones Emoji, plano de fundo personalizado"
+            "value": "支持文字图标、Emoji图标、自定义背景"
           }
         }
       }
@@ -26752,72 +26751,72 @@
         }
       }
     },
-    "自动保存到相册": {
+    "自动保存": {
       "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatisch im Album speichern"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auto save to album"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar automáticamente en el álbum"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrement automatique dans l'album"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salva automaticamente nell'album"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アルバムに自動保存"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앨범에 자동 저장"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvar automaticamente no álbum"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Автоматическое сохранение в альбом"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otomatik olarak albüme kaydet"
+            "value": "Auto Save"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "自动保存到相册"
+            "value": "自动保存"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動保存"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동 저장"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otomatik Kaydet"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauvegarde automatique"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автосохранение"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvataggio automatico"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch speichern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardado automático"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvar automaticamente"
           }
         }
       }
@@ -27030,146 +27029,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "自动更正Key参数"
-          }
-        }
-      }
-    },
-    "自动模式按照未读数，自定义按照推送badge参数": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatischer Modus nach ungelesener Anzahl, benutzerdefinierte Push-Badge-Parameter"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auto mode sorts by unread count, custom mode pushes with badge parameter"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modo automático según el número no leído, modo personalizado según el parámetro badge de notificación push"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mode automatique selon le nombre non lu, paramètre badge de notification personnalisé"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modalità automatica secondo il conteggio non letto, modalità personalizzata secondo il parametro badge di push"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動モードは未読数に従い、カスタムモードはプッシュバッジパラメータに従います"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "자동 모드는 읽지 않은 수에 따르고, 사용자 정의 모드는 푸시 배지 매개변수에 따릅니다"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modo automático segue a contagem não lida, modo personalizado segue o parâmetro badge de push"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Автоматический режим по количеству непрочитанных, пользовательский режим по параметру push badge"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otomatik mod okunmamış sayıya göre, özel itme badge parametresi"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自动模式按照未读数，自定义按照推送badge参数"
-          }
-        }
-      }
-    },
-    "自定义": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Benutzerdefiniert"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Custom"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Personalizado"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Personnalisé"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Personalizzato"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "カスタム"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사용자 정의"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Personalizado"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Пользовательский"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Özelleştir"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自定义"
           }
         }
       }
@@ -27664,6 +27523,76 @@
         }
       }
     },
+    "获取所有铃声": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get all notifications"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取所有铃声"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「すべての通知を取得」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 알림 가져오기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm bildirimleri al"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtenir toutes les notifications"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Получить все уведомления"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottieni tutti gli avvisi"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Benachrichtigungen abrufen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtener todas las notificaciones"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obter todos os sinos"
+          }
+        }
+      }
+    },
     "葡萄牙语": {
       "localizations": {
         "de": {
@@ -27804,76 +27733,6 @@
         }
       }
     },
-    "角标模式": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eckmodus"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Corner Mark Mode"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modo de esquina"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mode coin"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modalità angolo"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "バッジモード"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "배지 모드"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modo de canto"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Режим угловых меток"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Köşe Modu"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "角标模式"
-          }
-        }
-      }
-    },
     "解密失败!": {
       "localizations": {
         "de": {
@@ -28010,6 +27869,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "解绑成功"
+          }
+        }
+      }
+    },
+    "触感与反馈": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch and Feedback"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触感与反馈"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触感とフィードバック"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "터치와 피드백"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokunma ve Geri Bildirim"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tactile et rétroaction"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тактильные ощущения и отклик"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocco e feedback"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berührung und Feedback"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Táctil y retroalimentación"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque e Feedback"
           }
         }
       }
@@ -28367,16 +28296,34 @@
     },
     "语音接口": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprachschnittstelle"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Speech Interface"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "语音接口"
+            "value": "Interfaz de voz"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interface vocale"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interfaccia vocale"
           }
         },
         "ja": {
@@ -28391,16 +28338,10 @@
             "value": "음성 인터페이스"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ses Arayüzü"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interface vocale"
+            "value": "Interface de Voz"
           }
         },
         "ru": {
@@ -28409,28 +28350,16 @@
             "value": "Голосовой интерфейс"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Interfaccia vocale"
+            "value": "Ses Arayüzü"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sprachschnittstelle"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interfaz de voz"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interface de Voz"
+            "value": "语音接口"
           }
         }
       }

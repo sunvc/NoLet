@@ -29,16 +29,11 @@ class ActionHandler: NotificationContentHandler{
         }
 		
 		// MARK: - 处理 badge
-		switch Defaults[.badgeMode] {
-		case .auto:
-			// MARK: 通知角标 .auto
-            bestAttemptContent.badge = NSNumber(value:  MessagesManager.shared.unreadCount())
-			
-        case .custom:
-            // MARK: 通知角标 .custom
-            if let badgeStr:String = bestAttemptContent.userInfo.raw(.badge), let badge = Int(badgeStr) {
-                bestAttemptContent.badge = NSNumber(value: badge)
+        if let badgeStr:String = bestAttemptContent.userInfo.raw(.badge), let badge = Int(badgeStr) {
+            if badge <= 0{
+               await MessagesManager.shared.markAllRead()
             }
+            bestAttemptContent.badge = NSNumber(value: badge)
         }
         
 
