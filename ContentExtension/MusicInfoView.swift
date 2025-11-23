@@ -36,7 +36,7 @@ class MusicInfoView: UIView, AVAudioPlayerDelegate {
                 progressSlider.value = 0
                 playPauseButton.setTitle("0:00", for: .normal)
 
-                if Defaults[.voicesAutoSpeak]{
+                if Defaults[.ttsConfig].autoPlay && Defaults[.ttsConfig].host.hasHttp{
                     startTimer()
                     self.playStatue = !player.isPlaying
                 }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Root directory to process (current directory)
 ROOT_DIR="../"

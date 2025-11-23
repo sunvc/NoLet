@@ -25,7 +25,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     @IBOutlet weak var imageView: UIImageView!
     
     private var voiceHeight: CGFloat {
-        Defaults[.voicesViewShow] ? 35 : 0
+         Defaults[.ttsConfig].host.hasHttp ? 35 : 0
     }
     
     var contentSize: CGSize{
@@ -61,7 +61,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
             }
         }
         
-        if Defaults[.voicesViewShow]{
+        if  Defaults[.ttsConfig].host.hasHttp{
             var music: MusicInfoView{
                 let music = MusicInfoView()
                 music.text = userInfo.voiceText()

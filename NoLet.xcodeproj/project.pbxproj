@@ -233,6 +233,7 @@
 		B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B5AA557F2E6D71D8000F3042 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		BAB47CAE2ED2A5BF00EE84AC /* caf.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = caf.sh; sourceTree = "<group>"; };
 		BAC5A8162ED1B0DD00BCC38B /* translate.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = translate.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -753,6 +754,7 @@
 		B5AA55772E6D5DA7000F3042 /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
+				BAB47CAE2ED2A5BF00EE84AC /* caf.sh */,
 				BAC5A8162ED1B0DD00BCC38B /* translate.py */,
 				B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */,
 				B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */,

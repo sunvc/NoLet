@@ -47,8 +47,6 @@ extension Defaults.Keys{
     static let showMessageAvatar = Key<Bool>(.showMessageAvatar, false)
     static let id = Key<String>(.UserDeviceUniqueId, "")
     static let lang = Key<String>(.LocalePreferredLanguagesFirst,"")
-    static let voicesAutoSpeak = Key<Bool>(.voicesAutoSpeak, false)
-    static let voicesViewShow = Key<Bool>(.voicesViewShow, true)
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
     static let widgetURL = Key<String>(.widgetURL, "")
     
@@ -73,8 +71,6 @@ enum NoletKey:String, CaseIterable{
     case showMessageAvatar
     case UserDeviceUniqueId
     case LocalePreferredLanguagesFirst
-    case voicesAutoSpeak
-    case voicesViewShow
     case allMessagecount
     case widgetURL
     case serverArrayStroage
