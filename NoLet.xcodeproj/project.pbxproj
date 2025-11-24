@@ -318,7 +318,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
-				MusicInfoView.swift,
 			);
 			target = B5835CFD2DEDECA10066B32E /* MarkdownExtension */;
 		};

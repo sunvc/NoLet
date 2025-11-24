@@ -15,6 +15,7 @@ import UserNotifications
 import UserNotificationsUI
 import Defaults
 import AVFoundation
+import WebKit
 
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
@@ -79,8 +80,12 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         completion(.doNotDismiss)
     }
 
+}
 
-
+extension NotificationViewController{
+    
+    
+    
     func ImageHandler(imageUrl: String) {
         Task.detached(priority: .high) {
             if let localPath = await ImageManager.downloadImage(imageUrl, expiration: .days(Defaults[.imageSaveDays].rawValue)),
@@ -125,9 +130,6 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         preferredContentSize = contentSize
         
     }
-}
-
-extension NotificationViewController{
     
 
     func mediaHandler(userInfo:[AnyHashable:Any], name:String) -> [String]{
@@ -192,3 +194,9 @@ extension NotificationViewController{
 
 
 
+
+extension UIFont {
+    class func preferredFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
+        return UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: size, weight: weight))
+    }
+}
