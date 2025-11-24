@@ -68,6 +68,18 @@
             "state": "translated",
             "value": "%1$d minutos atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 分鐘前"
+          }
         }
       }
     },
@@ -137,6 +149,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$d horas %2$d minutos atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
           }
         }
       }
@@ -208,6 +232,18 @@
             "state": "translated",
             "value": "%1$d horas atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 小時前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 小時前"
+          }
         }
       }
     },
@@ -278,6 +314,18 @@
             "state": "translated",
             "value": "agora mesmo"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剛剛"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剛剛"
+          }
         }
       }
     },
@@ -347,6 +395,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo Desconhecido"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
           }
         }
       }

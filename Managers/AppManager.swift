@@ -49,8 +49,6 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
     
     /// 问智能助手
     @Published var askMessageId:String? = nil
-    /// 开始播放语音
-    @Published var speaking:Bool = false
     
     @Published var customServerURL:String = ""
     @Published var VipInfo: SubscribeUser? = nil

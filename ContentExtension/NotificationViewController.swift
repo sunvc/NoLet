@@ -19,17 +19,12 @@ import AVFoundation
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
-    
-    @IBOutlet weak var musicView: UIView!
     @IBOutlet weak var tipsView: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     
-    private var voiceHeight: CGFloat {
-         Defaults[.ttsConfig].host.hasHttp ? 35 : 0
-    }
     
     var contentSize: CGSize{
-        let height = imageView.bounds.height + musicView.bounds.height + tipsView.bounds.height
+        let height = imageView.bounds.height + tipsView.bounds.height
         return  CGSize(width: view.bounds.width, height: height)
     }
 
@@ -37,7 +32,6 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         super.viewDidLoad()
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
-        musicView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: voiceHeight)
         imageView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
         tipsView.text = ""
         tipsView.adjustsFontForContentSizeCategory = true
@@ -60,19 +54,6 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 UIPasteboard.general.string = notification.request.content.body
             }
         }
-        
-        if  Defaults[.ttsConfig].host.hasHttp{
-            var music: MusicInfoView{
-                let music = MusicInfoView()
-                music.text = userInfo.voiceText()
-                music.frame = musicView.frame
-                return music
-            }
-            self.musicView.addSubview(music)
-        }
-        
-        
-        self.preferredContentSize = CGSize(width: self.view.bounds.width, height: voiceHeight)
         
         let imageList = mediaHandler(userInfo: userInfo, name: Params.image.name)
         if let imageUrl = imageList.first { ImageHandler(imageUrl: imageUrl) }
@@ -111,16 +92,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                     guard let self = self else { return }
                    
                     self.imageView.image = image
-                    self.imageView.frame = CGRect(x: 0, y: voiceHeight, width: size.width, height: size.height)
+                    self.imageView.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
                     let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressOnImage(_:)))
                     self.imageView.addGestureRecognizer(longPressGesture)
                     
-                    self.preferredContentSize = .init(width: size.width, height: size.height + voiceHeight)
-                }
-            } else {
-                await MainActor.run { [weak self] in
-                    guard let self = self else { return }
-                    self.preferredContentSize = CGSize(width: self.view.bounds.width, height: voiceHeight)
+                    self.preferredContentSize = .init(width: size.width, height: size.height)
                 }
             }
         }
@@ -138,12 +114,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     func showTips(text: String) {
         Haptic.impact()
         tipsView.text = text
-        tipsView.frame = CGRect(x: 0, y: voiceHeight,
+        tipsView.frame = CGRect(x: 0, y: 0,
                                      width: view.bounds.width,
                                      height: 35)
         view.addSubview(tipsView)
-        imageView.frame = CGRect(x: 0,
-                                      y: voiceHeight + 35,
+        imageView.frame = CGRect(x: 0, y: 35,
                                       width: imageView.bounds.width,
                                       height: imageView.bounds.height)
         

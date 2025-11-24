@@ -68,6 +68,18 @@
             "state": "translated",
             "value": "%1$d minutos atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 分鐘前"
+          }
         }
       }
     },
@@ -137,6 +149,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$d horas %2$d minutos atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
           }
         }
       }
@@ -208,6 +232,18 @@
             "state": "translated",
             "value": "%1$d horas atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時前"
+          }
         }
       }
     },
@@ -277,6 +313,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 semana"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1週"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1週"
           }
         }
       }
@@ -348,6 +396,18 @@
             "state": "translated",
             "value": "1 dia"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
+          }
         }
       }
     },
@@ -417,6 +477,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Janeiro"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
           }
         }
       }
@@ -488,6 +560,18 @@
             "state": "translated",
             "value": "iCloud ícone da nuvem"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 雲端圖示"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 雲端圖示"
+          }
         }
       }
     },
@@ -557,6 +641,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud está temporariamente indisponível. Tente novamente mais tarde."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服務暫時無法使用，請稍後再試"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服務暫時不可用，請稍後再試"
           }
         }
       }
@@ -628,6 +724,18 @@
             "state": "translated",
             "value": "Acesso ao iCloud restrito, possivelmente devido ao controle parental ou políticas de gerenciamento de dispositivos móveis (MDM)."
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
+          }
         }
       }
     },
@@ -697,6 +805,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Conta iCloud disponível"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 帳戶可用"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 帳戶可用"
           }
         }
       }
@@ -768,6 +888,18 @@
             "state": "translated",
             "value": "Verificar status do iCloud"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud狀態檢查"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud狀態檢查"
+          }
         }
       }
     },
@@ -837,6 +969,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verificando o status do iCloud..."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud狀態檢查中..."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud狀態檢查中..."
           }
         }
       }
@@ -908,6 +1052,18 @@
             "state": "translated",
             "value": "CódigoLocalIdiomaNoLet"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nolet語言本地代碼"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nolet語言本地代碼"
+          }
         }
       }
     },
@@ -977,6 +1133,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uma semana atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一週前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一週前"
           }
         }
       }
@@ -1048,6 +1216,18 @@
             "state": "translated",
             "value": "Um dia atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一天前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一天前"
+          }
         }
       }
     },
@@ -1117,6 +1297,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uma hora atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一小時前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一小時前"
           }
         }
       }
@@ -1188,6 +1380,18 @@
             "state": "translated",
             "value": "Um mês atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個月前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個月前"
+          }
         }
       }
     },
@@ -1257,6 +1461,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Upload para a nuvem"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳到雲端"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳到雲端"
           }
         }
       }
@@ -1328,6 +1544,18 @@
             "state": "translated",
             "value": "Não salvar"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不儲存"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不保存"
+          }
         }
       }
     },
@@ -1397,6 +1625,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Falha ao salvar"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失敗"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失敗"
           }
         }
       }
@@ -1468,6 +1708,18 @@
             "state": "translated",
             "value": "Salvo com sucesso"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
         }
       }
     },
@@ -1537,6 +1789,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Interno"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部"
           }
         }
       }
@@ -1608,6 +1872,18 @@
             "state": "translated",
             "value": "Agora mesmo"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剛剛"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剛剛"
+          }
         }
       }
     },
@@ -1677,6 +1953,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Espaço insuficiente"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩餘空間不足"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩餘空間不足"
           }
         }
       }
@@ -1748,6 +2036,18 @@
             "state": "translated",
             "value": "Parâmetros incompletos"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "參數不全"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "參數不全"
+          }
         }
       }
     },
@@ -1817,6 +2117,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancelar"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
           }
         }
       }
@@ -1888,6 +2200,18 @@
             "state": "translated",
             "value": "Limite de ícones restante"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖標額度剩餘"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖標額度剩餘"
+          }
         }
       }
     },
@@ -1957,6 +2281,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Chave da Imagem"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖片Key"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖片Key"
           }
         }
       }
@@ -2028,6 +2364,18 @@
             "state": "translated",
             "value": "Chave de imagem duplicada"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖片key重複"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "圖片key重複"
+          }
         }
       }
     },
@@ -2097,6 +2445,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiar"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
           }
         }
       }
@@ -2168,6 +2528,18 @@
             "state": "translated",
             "value": "Zhang"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "張"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "張"
+          }
         }
       }
     },
@@ -2237,6 +2609,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todas as mensagens"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有訊息"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有訊息"
           }
         }
       }
@@ -2308,6 +2692,18 @@
             "state": "translated",
             "value": "Escanear código QR"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "掃描二維碼"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "掃描二維碼"
+          }
         }
       }
     },
@@ -2377,6 +2773,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prompt"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示"
           }
         }
       }
@@ -2448,6 +2856,18 @@
             "state": "translated",
             "value": "Sem"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
         }
       }
     },
@@ -2517,6 +2937,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Não foi possível determinar o estado da conta iCloud, possivelmente devido a problemas de rede."
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法確定 iCloud 帳戶狀態，可能是網絡問題"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法確定 iCloud 帳戶狀態，可能是網路問題"
           }
         }
       }
@@ -2588,6 +3020,18 @@
             "state": "translated",
             "value": "Conteúdo comum"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通內容"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通內容"
+          }
         }
       }
     },
@@ -2657,6 +3101,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Assistente Inteligente"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能助手"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能助手"
           }
         }
       }
@@ -2728,6 +3184,18 @@
             "state": "translated",
             "value": "iCloud não conectado, faça login na conta iCloud"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登入 iCloud，請登入 iCloud 帳戶"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登錄 iCloud，請登錄 iCloud 帳戶"
+          }
         }
       }
     },
@@ -2797,6 +3265,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Status do iCloud Desconhecido"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 狀態"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 狀態"
           }
         }
       }
@@ -2868,6 +3348,18 @@
             "state": "translated",
             "value": "Tempo Desconhecido"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
+          }
         }
       }
     },
@@ -2937,6 +3429,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Erro ao verificar o status da conta iCloud: %@"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查 iCloud 帳戶狀態出錯: %@"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "檢查 iCloud 帳戶狀態出錯: %@"
           }
         }
       }
@@ -3008,6 +3512,18 @@
             "state": "translated",
             "value": "Processando..."
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在處理中..."
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在處理中..."
+          }
         }
       }
     },
@@ -3077,6 +3593,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sem imagem"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有圖片"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有圖片"
           }
         }
       }
@@ -3148,6 +3676,18 @@
             "state": "translated",
             "value": "Sem arquivos"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有文件"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沒有文件"
+          }
         }
       }
     },
@@ -3217,6 +3757,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "mensagem"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "的訊息"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "消息"
           }
         }
       }
@@ -3288,6 +3840,18 @@
             "state": "translated",
             "value": "Automático"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
+          }
         }
       }
     },
@@ -3357,6 +3921,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Insira o nome da imagem"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入圖片名稱"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸入圖片名稱"
           }
         }
       }
@@ -3428,6 +4004,18 @@
             "state": "translated",
             "value": "Isto é um exemplo criptografado"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是一個加密示例"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是一個加密示例"
+          }
         }
       }
     },
@@ -3497,6 +4085,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esta é a parte principal criptografada"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是加密的正文部分"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是加密的正文部分"
           }
         }
       }
@@ -3568,6 +4168,18 @@
             "state": "translated",
             "value": "Longo prazo"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長期"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長期"
+          }
         }
       }
     },
@@ -3638,6 +4250,18 @@
             "state": "translated",
             "value": "Assistente Inteligente"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「問智能助手」"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "問智能助手"
+          }
         }
       }
     },
@@ -3707,6 +4331,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Silenciar por 1 hora"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音分組1小時"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音分組1小時"
           }
         }
       }

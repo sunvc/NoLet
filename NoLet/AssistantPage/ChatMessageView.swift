@@ -25,7 +25,6 @@ struct ChatMessageView: View {
     }
     
     
-    
     var body: some View {
         
         VStack{
@@ -127,19 +126,6 @@ extension View{
                 Toast.success(title: "复制成功")
             }
             .contextMenu{
-                
-                Section {
-                    Button {
-                        Task(priority: .high) {
-                            guard let player = await AudioManager.shared.speak(PBMarkdown.plain(text)) else { return }
-                            player.play()
-                        }
-                    }label: {
-                        Label("朗读内容",  systemImage: "waveform")
-                            .symbolEffect(.variableColor)
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                }
                 
                 Section{
                     Button(action: {

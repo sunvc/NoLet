@@ -68,6 +68,18 @@
             "state": "translated",
             "value": "[%@] Silenciamento do grupo bem-sucedido"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@] 分組靜音成功"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@] 分組靜音成功"
+          }
         }
       }
     },
@@ -137,6 +149,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$d minutos atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d分鐘前"
           }
         }
       }
@@ -208,6 +232,18 @@
             "state": "translated",
             "value": "%1$d horas %2$d minutos atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時%2$d分鐘前"
+          }
         }
       }
     },
@@ -277,6 +313,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$d horas atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小時前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d 小時前"
           }
         }
       }
@@ -348,6 +396,18 @@
             "state": "translated",
             "value": "1 semana"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1週"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1週"
+          }
         }
       }
     },
@@ -417,6 +477,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 dia"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
           }
         }
       }
@@ -488,6 +560,18 @@
             "state": "translated",
             "value": "janeiro"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
+          }
         }
       }
     },
@@ -557,6 +641,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "CódigoLocalIdiomaNoLet"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nolet語言本地代碼"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletLanguageLocalCode"
           }
         }
       }
@@ -628,6 +724,18 @@
             "state": "translated",
             "value": "Uma semana atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一週前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一週前"
+          }
         }
       }
     },
@@ -697,6 +805,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Um dia atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一天前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一天前"
           }
         }
       }
@@ -768,6 +888,18 @@
             "state": "translated",
             "value": "Uma hora atrás"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一小時前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一小時前"
+          }
         }
       }
     },
@@ -837,6 +969,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Um mês atrás"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個月前"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一個月前"
           }
         }
       }
@@ -908,6 +1052,18 @@
             "state": "translated",
             "value": "Não salvar"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不保存"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不保存"
+          }
         }
       }
     },
@@ -977,6 +1133,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Interno"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "內部"
           }
         }
       }
@@ -1048,6 +1216,18 @@
             "state": "translated",
             "value": "Agora mesmo"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "啱啱"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剛剛"
+          }
         }
       }
     },
@@ -1117,6 +1297,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancelar"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
           }
         }
       }
@@ -1188,6 +1380,18 @@
             "state": "translated",
             "value": "Copiar"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製"
+          }
         }
       }
     },
@@ -1257,6 +1461,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiado com sucesso"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製成功"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "複製成功"
           }
         }
       }
@@ -1328,6 +1544,18 @@
             "state": "translated",
             "value": "Todas as mensagens"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有訊息"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有訊息"
+          }
         }
       }
     },
@@ -1397,6 +1625,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Escanear código QR"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "掃描二維碼"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "掃描二維碼"
           }
         }
       }
@@ -1468,6 +1708,18 @@
             "state": "translated",
             "value": "Sem"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
         }
       }
     },
@@ -1537,6 +1789,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Conteúdo Comum"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通內容"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通內容"
           }
         }
       }
@@ -1608,6 +1872,18 @@
             "state": "translated",
             "value": "Assistente Inteligente"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能助手"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能助手"
+          }
         }
       }
     },
@@ -1677,6 +1953,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tempo Desconhecido"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知時間"
           }
         }
       }
@@ -1748,6 +2036,18 @@
             "state": "translated",
             "value": "da mensagem"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "的訊息"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "的消息"
+          }
         }
       }
     },
@@ -1817,6 +2117,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Automático"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
           }
         }
       }
@@ -1888,6 +2200,18 @@
             "state": "translated",
             "value": "Isto é um exemplo criptografado"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是一個加密示例"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是一個加密示例"
+          }
         }
       }
     },
@@ -1957,6 +2281,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esta é a parte principal criptografada"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是加密的正文部分"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "這是加密的正文部分"
           }
         }
       }
@@ -2028,6 +2364,18 @@
             "state": "translated",
             "value": "Longo prazo"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長期"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長期"
+          }
         }
       }
     },
@@ -2098,6 +2446,18 @@
             "state": "translated",
             "value": "Assistente Inteligente"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「問智能助手」"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "問智能助手"
+          }
         }
       }
     },
@@ -2167,6 +2527,18 @@
           "stringUnit": {
             "state": "translated",
             "value": "Silêncio por 1 hora"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音分組1小時"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "靜音分區1小時"
           }
         }
       }

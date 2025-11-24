@@ -103,6 +103,9 @@
 		B5835D7C2DEE14C10066B32E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		B583A8082E5DEE3300F4FC3F /* PTTMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B583A7982E5DEE3300F4FC3F /* PTTMessageModel.swift */; };
 		B583A8CC2E6040ED00F4FC3F /* PTTMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B583A7982E5DEE3300F4FC3F /* PTTMessageModel.swift */; };
+		BA3953D12ED45FFE00E524E3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */; };
+		BA3953D22ED45FFE00E524E3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA12EC5A9F10003F7A3 /* Splash */; };
+		BA3953D32ED45FFE00E524E3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA42EC5AC030003F7A3 /* MarkdownUI */; };
 		BA475A5C2E95301F0054E502 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B540570E2DF1B3800058DC87 /* Date+.swift */; };
 		BAB20EA72EC5AC030003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
 		BAB211C32EC6526E0003F7A3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C22EC6526E0003F7A3 /* MarkdownUI */; };
@@ -269,7 +272,6 @@
 				openChatManager.swift,
 				PushManager.swift,
 				Queue.swift,
-				VoiceManager.swift,
 			);
 			target = B58357F62DEDD3B10066B32E /* NoLet */;
 		};
@@ -351,7 +353,6 @@
 				cryptoManager.swift,
 				ImageManager.swift,
 				NetworkManager.swift,
-				VoiceManager.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
@@ -364,7 +365,6 @@
 				ImageManager.swift,
 				MessagesManager.swift,
 				NetworkManager.swift,
-				VoiceManager.swift,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
@@ -381,13 +381,6 @@
 				ToolsBox.swift,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
-		};
-		B5835D5E2DEDFCB30066B32E /* Exceptions for "Managers" folder in "MarkdownExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				VoiceManager.swift,
-			);
-			target = B5835CFD2DEDECA10066B32E /* MarkdownExtension */;
 		};
 		B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -498,22 +491,11 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		B58A9A122E2BB1DC00422C2D /* Exceptions for "NoLet" folder in "Embed Foundation Extensions" phase from "NoLet" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = B58359CB2DEDDF180066B32E /* Embed Foundation Extensions */;
-			membershipExceptions = (
-				"Digital-7 Mono.ttf",
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B58357F92DEDD3B10066B32E /* NoLet */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */,
-				B58A9A122E2BB1DC00422C2D /* Exceptions for "NoLet" folder in "Embed Foundation Extensions" phase from "NoLet" target */,
 				B5835C532DEDE3450066B32E /* Exceptions for "NoLet" folder in "ShareExtension" target */,
 			);
 			path = NoLet;
@@ -550,7 +532,6 @@
 				B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */,
 				B5835D422DEDF94F0066B32E /* Exceptions for "Managers" folder in "ServiceExtension" target */,
 				B5835D2B2DEDF0E50066B32E /* Exceptions for "Managers" folder in "ContentExtension" target */,
-				B5835D5E2DEDFCB30066B32E /* Exceptions for "Managers" folder in "MarkdownExtension" target */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -608,6 +589,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA3953D32ED45FFE00E524E3 /* MarkdownUI in Frameworks */,
+				BA3953D22ED45FFE00E524E3 /* Splash in Frameworks */,
+				BA3953D12ED45FFE00E524E3 /* MarkdownUI in Frameworks */,
 				BAB20EA72EC5AC030003F7A3 /* Splash in Frameworks */,
 				BAB211C32EC6526E0003F7A3 /* MarkdownUI in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
@@ -1003,6 +987,7 @@
 				de,
 				es,
 				"pt-BR",
+				"zh-HK",
 			);
 			mainGroup = B58357EE2DEDD3B10066B32E;
 			minimizedProjectReferenceProxies = 1;

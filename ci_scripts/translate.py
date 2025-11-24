@@ -72,7 +72,11 @@ class Translate:
 
         tasks = []
         skip_count = 0
+        delete_keys = []
         for key in results:
+            if results.get(key,{}).get("extractionState") == "stale":
+                delete_keys.append(key)
+                continue
             result_tem = results.get(key, {}).get("localizations", {}).get(target_language, None)
 
             if result_tem is None or result_tem.get("stringUnit", {}).get("value", "").strip() == "":
@@ -85,8 +89,6 @@ class Translate:
                     f"\r Skip:{target_language} - {skip_count}/{all_count} - {key.split("\n")[0]} -> {result_value.split("\n")[0]}",
                     end="", flush=True)
 
-        if len(tasks) <= 0: return
-
         for count, (key, task) in enumerate(tasks, start=1):
             try:
                 text = await task
@@ -96,6 +98,10 @@ class Translate:
                 print(f" {count}/{all_count} {key} -> {text}")
             except Exception as e:
                 print(f"\nFailed to translate - {target_language} - {key}: {e}")
+
+        for key in delete_keys:
+            del results[key]
+            print(f" {key} deleted")
 
         data["strings"] = results
 

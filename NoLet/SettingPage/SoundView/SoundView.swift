@@ -155,17 +155,6 @@ struct SoundView: View {
                         }
                     }
                     
-                    Section{
-                        Button{
-                            AppManager.shared.router.append(.tts)
-                        }label: {
-                            Label("语音朗读设置", systemImage: "speaker.zzz")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.tint, .primary)
-                                .accessibilityLabel("语音朗读设置")
-                        }
-                    }
-                    
                 } label: {
                     if downLoading{
                         ProgressView()

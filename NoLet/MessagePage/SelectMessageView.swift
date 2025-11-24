@@ -27,7 +27,7 @@ struct SelectMessageView:View {
     @StateObject private var chatManager = openChatManager.shared
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.translateLang) var translateLang
-    @Default(.ttsConfig) var ttsConfig
+
     
     @State private var scaleFactor: CGFloat = 1.0
     @State private var lastScaleValue: CGFloat = 1.0
@@ -295,40 +295,6 @@ struct SelectMessageView:View {
                     }
                 }
             
-                if ttsConfig.host.hasHttp{
-                    ToolbarItem(placement: .bottomBar) {
-
-                        Button{
-
-                            Task(priority: .userInitiated) {
-
-                                var text:String = ""
-                                switch messageShowMode {
-                                case .translate:
-                                    text = PBMarkdown.plain(translateResult)
-                                case .abstract:
-                                    text = abstractResult
-                                case .raw:
-                                    text = message.voiceText
-                                }
-                                guard !text.isEmpty else { return }
-                                guard let player = await AudioManager.shared.speak(text) else {
-                                    return
-                                }
-                                AudioManager.setCategory(true, .playback, mode: .default)
-                                player.play()
-                            }
-                        }label:{
-                            Image(systemName: "speaker.wave.2.circle.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .accessibilityLabel("朗读内容")
-                        }
-
-                    }
-                }
-
-                
                 ToolbarItem(placement: .bottomBar) {
                     Button{
                         Clipboard.set(message.search)

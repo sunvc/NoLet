@@ -308,9 +308,6 @@ extension View{
                     case .more:
                         MoreOperationsView()
                         
-                    case .tts:
-                        SpeakSettingsView()
-                        
                     case .about:
                         AboutNoLetView()
 

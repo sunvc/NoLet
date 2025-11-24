@@ -29,8 +29,6 @@ final class AudioManager: NSObject,  ObservableObject{
     @Published var defaultSounds:[URL] =  []
     @Published var customSounds:[URL] =  []
    
-    /// Speak Manager
-    @Published var speakPlayer:AVAudioPlayer? = nil
     @Published var loading:Bool = false
     @Published var ShareURL: URL?  = nil
     
@@ -321,59 +319,6 @@ extension AudioManager{
         }
         
         
-    }
-}
-
-
-extension AudioManager: AVAudioPlayerDelegate{
-    func speak(_ text: String, noCache:Bool = false) async -> AVAudioPlayer? {
-
-        do{
-            self.speakPlayer = nil
-            let start = DispatchTime.now()
-            await MainActor.run {
-                withAnimation(.default) {
-                    self.loading = true
-                    AppManager.shared.speaking = true
-                }
-                
-            }
-            
-            let client = try VoiceManager()
-            let audio = try await client.createVoice(text: text,noCache: noCache)
-            await MainActor.run{
-                self.ShareURL = audio
-            }
-            
-            
-            let player = try AVAudioPlayer(contentsOf: audio)
-            await MainActor.run {
-                self.speakPlayer = player
-                self.speakPlayer?.delegate = self
-                self.loading = false
-            }
-            
-            let end = DispatchTime.now()
-            let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
-            NLog.log("运行时间：",Double(nanoTime) / 1_000_000_000)
-            return self.speakPlayer
-        }catch{
-            await MainActor.run {
-                self.speakPlayer = nil
-                self.loading = false
-            }
-            NLog.error(error.localizedDescription)
-            return nil
-        }
-    }
-    
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        Task{@MainActor in
-            withAnimation(.default) {
-                AppManager.shared.speaking = false
-                self.speakPlayer = nil
-            }
-        }
     }
 }
 

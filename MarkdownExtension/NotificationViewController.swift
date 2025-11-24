@@ -20,13 +20,8 @@ import Defaults
 
 class NotificationViewController: UIViewController, UNNotificationContentExtension {
 
-    @IBOutlet weak var musicView: UIView!
     @IBOutlet weak var tipsView: UILabel!
     @IBOutlet var web: WKWebView!
-    
-    private var voiceHeight: CGFloat {
-         Defaults[.ttsConfig].host.hasHttp ? 35 : 0
-    }
     
     var scrollViewHeight:CGFloat = .zero
     
@@ -56,7 +51,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         if keyPath == "contentSize", let scrollView = object as? UIScrollView {
             
             if scrollView.contentSize.height > self.preferredContentSize.height{
-                self.preferredContentSize = CGSize(width: self.view.bounds.width, height: max(10, scrollView.contentSize.height + musicView.bounds.height + tipsView.bounds.height))
+                self.preferredContentSize = CGSize(width: self.view.bounds.width, height: max(10, scrollView.contentSize.height +  tipsView.bounds.height))
                 
                 scrollViewHeight = scrollView.contentSize.height
             }
@@ -71,21 +66,7 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     
     func didReceive(_ notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
-        
-        if Defaults[.ttsConfig].host.hasHttp {
-            self.musicView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: voiceHeight)
-            var music: MusicInfoView{
-                let music = MusicInfoView()
-                music.text = userInfo.voiceText()
-                music.frame = musicView.frame
-                return music
-            }
-            
-            self.musicView.addSubview(music)
-        }
-        
-       
-        self.preferredContentSize = CGSize(width: self.view.bounds.width, height: voiceHeight)
+    
         
         if let body:String = userInfo.raw(Params.body),
            let htmlContent = convertMarkdownToHTML(body),
@@ -96,8 +77,8 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         } else {
             web.loadHTMLString("<h1>Error loading content</h1>", baseURL: nil)
         }
-        web.frame = .init(x: 0, y: voiceHeight, width: self.view.bounds.width, height: web.frame.height)
-        self.preferredContentSize = CGSize(width: self.view.bounds.width, height: voiceHeight + tipsView.bounds.height + web.bounds.height)
+        web.frame = .init(x: 0, y: 0, width: self.view.bounds.width, height: web.frame.height)
+        self.preferredContentSize = CGSize(width: self.view.bounds.width, height: tipsView.bounds.height + web.bounds.height)
     }
     
     func didReceive(_ response: UNNotificationResponse, completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption) -> Void) {
@@ -123,14 +104,14 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
     func showTips(text: String) {
         Haptic.impact()
         tipsView.text = text
-        tipsView.frame = CGRect(x: 0, y: musicView.bounds.height,
+        tipsView.frame = CGRect(x: 0, y: 0,
                                      width: view.bounds.width,
                                      height: 35)
         view.addSubview(tipsView)
         
-        web.frame = CGRect(x: 0, y: musicView.bounds.height + tipsView.bounds.height, width: view.bounds.width, height: scrollViewHeight)
+        web.frame = CGRect(x: 0, y:  tipsView.bounds.height, width: view.bounds.width, height: scrollViewHeight)
         
-        preferredContentSize = CGSize(width: view.bounds.width, height: musicView.bounds.height + tipsView.bounds.height + scrollViewHeight)
+        preferredContentSize = CGSize(width: view.bounds.width, height:  tipsView.bounds.height + scrollViewHeight)
         
     }
 

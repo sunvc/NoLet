@@ -134,34 +134,6 @@ struct ToastGroup: View {
             }
             .padding(.bottom, safeArea.top == .zero ? 15 : 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-            .safeAreaInset(edge: .top) {
-                if manager.speaking{
-                    MusicInfo()
-                        .frame(height: 60)
-                        .diff{ view in
-                            Group{
-                                if #available(iOS 26.0, *){
-                                    view
-                                        .glassEffect(
-                                            .regular.interactive(),
-                                            in: .rect(cornerRadius: 5)
-                                        )
-
-                                }else{
-                                    view
-                                        .background(.ultraThinMaterial)
-
-                                }
-                            }
-                        }
-                        .transition(
-                            .move(edge: .top)
-                            .combined(with: .opacity)
-                            .animation(.easeInOut)
-                        )
-
-                }
-            }
         }
     }
     

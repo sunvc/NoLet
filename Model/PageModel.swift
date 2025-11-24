@@ -52,7 +52,6 @@ enum RouterPage: Hashable{
     case server
     case assistantSetting(AssistantAccount?)
     case more
-    case tts
     case about
     case dataSetting
     case serverInfo(server: PushServerModel)
@@ -70,7 +69,6 @@ extension RouterPage: Equatable {
              (.crypto, .crypto),
              (.server, .server),
              (.more, .more),
-             (.tts, .tts),
              (.about, .about),
              (.dataSetting, .dataSetting):
             return true
