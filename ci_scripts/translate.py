@@ -21,7 +21,7 @@ class Translate:
     deepseek_key: str = ""
     host: str = ""
     model: str = ""
-    root_dir: str = ""
+    root_dir: str = "../"
     local_file:str = "Localizable.xcstrings"
     info_file: str = "InfoPlist.strings"
     lang_file: str = "project.pbxproj"

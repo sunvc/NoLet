@@ -103,11 +103,7 @@
 		B5835D7C2DEE14C10066B32E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		B583A8082E5DEE3300F4FC3F /* PTTMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B583A7982E5DEE3300F4FC3F /* PTTMessageModel.swift */; };
 		B583A8CC2E6040ED00F4FC3F /* PTTMessageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B583A7982E5DEE3300F4FC3F /* PTTMessageModel.swift */; };
-		B5D1B5922E5B3D5800661C28 /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = B5D1B5912E5B3D5800661C28 /* Opus */; };
 		BA475A5C2E95301F0054E502 /* Date+.swift in Sources */ = {isa = PBXBuildFile; fileRef = B540570E2DF1B3800058DC87 /* Date+.swift */; };
-		BAB20EA02EC5A9F10003F7A3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */; };
-		BAB20EA22EC5A9F10003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA12EC5A9F10003F7A3 /* Splash */; };
-		BAB20EA52EC5AC030003F7A3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA42EC5AC030003F7A3 /* MarkdownUI */; };
 		BAB20EA72EC5AC030003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
 		BAB211C32EC6526E0003F7A3 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C22EC6526E0003F7A3 /* MarkdownUI */; };
 		BAB211C52EC6526E0003F7A3 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C42EC6526E0003F7A3 /* Splash */; };
@@ -304,7 +300,6 @@
 		B5835C532DEDE3450066B32E /* Exceptions for "NoLet" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Localizable.xcstrings,
 				OtherViews/ColoredBorder.swift,
 				OtherViews/UploadIclondIcon.swift,
 			);
@@ -394,34 +389,6 @@
 			);
 			target = B5835CFD2DEDECA10066B32E /* MarkdownExtension */;
 		};
-		B5835E742DEE8F440066B32E /* Exceptions for "NoLet" folder in "SafariExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Localizable.xcstrings,
-			);
-			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
-		};
-		B5835E762DEE8F4C0066B32E /* Exceptions for "NoLet" folder in "ServiceExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Localizable.xcstrings,
-			);
-			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
-		};
-		B5835E782DEE8F550066B32E /* Exceptions for "NoLet" folder in "ContentExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Localizable.xcstrings,
-			);
-			target = B5835B202DEDE0930066B32E /* ContentExtension */;
-		};
-		B5835E7C2DEE8F640066B32E /* Exceptions for "NoLet" folder in "MarkdownExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Localizable.xcstrings,
-			);
-			target = B5835CFD2DEDECA10066B32E /* MarkdownExtension */;
-		};
 		B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -436,6 +403,52 @@
 				ToolsBox.swift,
 			);
 			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
+		};
+		BA394DFC2ED3F29A00E524E3 /* Exceptions for "Sounds" folder in "ServiceExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				birdsong.caf,
+				bubble.caf,
+				call.caf,
+				calypso.caf,
+				charging.caf,
+				com.caf,
+				craft.caf,
+				ddd.caf,
+				dong.caf,
+				double.caf,
+				fanfare.caf,
+				fault.caf,
+				fist.caf,
+				frog.caf,
+				game.caf,
+				glass.caf,
+				gold.caf,
+				health.caf,
+				hello.caf,
+				horn.caf,
+				kiss.caf,
+				kong.caf,
+				laser.caf,
+				multiway.caf,
+				nolet.caf,
+				popcorn.caf,
+				qrcode.aac,
+				readygo.caf,
+				repeat.caf,
+				run.caf,
+				runb.caf,
+				share.aac,
+				shooting.caf,
+				silence.caf,
+				success.caf,
+				tiptoes.caf,
+				trill.caf,
+				typewriter.caf,
+				water.caf,
+				xiu.caf,
+			);
+			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
 		BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -502,10 +515,6 @@
 				B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */,
 				B58A9A122E2BB1DC00422C2D /* Exceptions for "NoLet" folder in "Embed Foundation Extensions" phase from "NoLet" target */,
 				B5835C532DEDE3450066B32E /* Exceptions for "NoLet" folder in "ShareExtension" target */,
-				B5835E742DEE8F440066B32E /* Exceptions for "NoLet" folder in "SafariExtension" target */,
-				B5835E762DEE8F4C0066B32E /* Exceptions for "NoLet" folder in "ServiceExtension" target */,
-				B5835E782DEE8F550066B32E /* Exceptions for "NoLet" folder in "ContentExtension" target */,
-				B5835E7C2DEE8F640066B32E /* Exceptions for "NoLet" folder in "MarkdownExtension" target */,
 			);
 			path = NoLet;
 			sourceTree = "<group>";
@@ -579,6 +588,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */,
+				BA394DFC2ED3F29A00E524E3 /* Exceptions for "Sounds" folder in "ServiceExtension" target */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -601,19 +611,15 @@
 				BAB20EA72EC5AC030003F7A3 /* Splash in Frameworks */,
 				BAB211C32EC6526E0003F7A3 /* MarkdownUI in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
-				B5D1B5922E5B3D5800661C28 /* Opus in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB211C52EC6526E0003F7A3 /* Splash in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
-				BAB20EA52EC5AC030003F7A3 /* MarkdownUI in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
-				BAB20EA02EC5A9F10003F7A3 /* MarkdownUI in Frameworks */,
-				BAB20EA22EC5A9F10003F7A3 /* Splash in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,7 +821,6 @@
 				B583589D2DEDD5B80066B32E /* QRScanner */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
-				B5D1B5912E5B3D5800661C28 /* Opus */,
 				BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */,
 				BAB20EA12EC5A9F10003F7A3 /* Splash */,
 				BAB20EA42EC5AC030003F7A3 /* MarkdownUI */,
@@ -1008,7 +1013,6 @@
 				B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */,
 				B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
-				B5D1B5902E5B3D5800661C28 /* XCRemoteSwiftPackageReference "Opus" */,
 				BAB211C12EC6526E0003F7A3 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
 			);
@@ -1373,6 +1377,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1434,6 +1439,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1857,14 +1863,6 @@
 				minimumVersion = 0.6.0;
 			};
 		};
-		B5D1B5902E5B3D5800661C28 /* XCRemoteSwiftPackageReference "Opus" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/Opus.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
-			};
-		};
 		BAB211C12EC6526E0003F7A3 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
@@ -1983,11 +1981,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */;
 			productName = "cmark-gfm-extensions";
-		};
-		B5D1B5912E5B3D5800661C28 /* Opus */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B5D1B5902E5B3D5800661C28 /* XCRemoteSwiftPackageReference "Opus" */;
-			productName = Opus;
 		};
 		BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;

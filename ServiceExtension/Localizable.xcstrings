@@ -1,0 +1,4976 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Top right corner function menu, usage examples, grouping\n* Single click image/double click message full screen view\n* Full screen view, translation, summary, read aloud\n* Left swipe delete, right swipe copy and intelligent answer."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* 右上角功能菜单、使用示例、分组\n* 单击图片/双击消息全屏查看\n* 全屏查看、翻译、总结、朗读\n* 左滑删除、右滑复制和智能解答。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* 오른쪽 상단 기능 메뉴, 사용 예시, 그룹화\n* 사진 클릭/메시지 더블 클릭 전체 화면 보기\n* 전체 화면 보기, 번역, 요약, 낭독\n* 왼쪽으로 밀어 삭제, 오른쪽으로 밀어 복사 및 지능형 응답."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Sağ üst köşe işlev menüsü, örnek kullanım, gruplama\n* Resme tek tıkla/tam ekran mesaj görüntüleme\n* Tam ekran görüntüleme, çeviri, özet, sesli okuma\n* Sola kaydırarak silme, sağa kaydırarak kopyalama ve akıllı yanıt."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Menu en haut à droite, exemples d'utilisation, regroupement\n* Clic simple sur l'image/double clic sur le message pour affichage plein écran\n* Affichage plein écran, traduction, résumé, lecture à haute voix\n* Glissement vers la gauche pour supprimer, vers la droite pour copier et réponse intelligente."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Функциональное меню в правом верхнем углу, примеры использования, группировка\n* Одиночное нажатие на изображение/двойное нажатие для просмотра сообщения на весь экран\n* Просмотр на весь экран, перевод, сводка, чтение вслух\n* Свайп влево для удаления, свайп вправо для копирования и интеллектуального ответа."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Menu funzioni in alto a destra, esempi di utilizzo, raggruppamento\n* Tocca singolo per immagine / doppio tocco per visualizzazione a schermo intero del messaggio\n* Visualizzazione a schermo intero, traduzione, riepilogo, lettura ad alta voce\n* Scorri a sinistra per eliminare, scorri a destra per copiare e risposta intelligente."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Funktionsmenü oben rechts, Beispiele verwenden, Gruppieren\n* Einfachklick auf Bild/Doppelklick auf Nachricht für Vollbildansicht\n* Vollbildansicht, Übersetzung, Zusammenfassung, Vorlesen\n* Links wischen zum Löschen, rechts wischen zum Kopieren und intelligenten Antworten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Menú de funciones en la esquina superior derecha, ejemplos de uso, agrupación\n* Ver a pantalla completa con un clic en la imagen/doble clic en el mensaje\n* Visualización completa, traducción, resumen, lectura en voz alta\n* Deslizar a la izquierda para eliminar, deslizar a la derecha para copiar y respuesta inteligente."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "* Menu de funções no canto superior direito, exemplo de uso, agrupamento\n* Clique único na imagem/duplo clique na mensagem para visualização em tela cheia\n* Visualização em tela cheia, tradução, resumo, leitura em voz alta\n* Deslize para a esquerda para excluir, deslize para a direita para copiar e resposta inteligente."
+          }
+        }
+      }
+    },
+    "%1$d分钟前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d minutes ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d分钟前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d分前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d분 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d dakika önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a %1$d minutes"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d минут назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d minuti fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d Minuten vor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d minutos atrás"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d minutos atrás"
+          }
+        }
+      }
+    },
+    "%1$d小时%2$d分钟前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d hours %2$d minutes ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小时%2$d分钟前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d時間%2$d分前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d시간%2$d분 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d saat %2$d dakika önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a %1$d heures et %2$d minutes"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d часов %2$d минут назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d ore %2$d minuti fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d Stunden %2$d Minuten zuvor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d horas %2$d minutos atrás"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d horas e %2$d minutos atrás"
+          }
+        }
+      }
+    },
+    "%1$d小时前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d hours ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d小时前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d時間前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d시간 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d saat önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a %1$d heure"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d час назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d ore fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d Stunden zuvor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d horas atrás"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d horas atrás"
+          }
+        }
+      }
+    },
+    "%lld个月": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld months"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld个月"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lldヶ月"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld개월"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ay"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mois"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld месяцев"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld mesi"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Monate"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld meses"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld meses"
+          }
+        }
+      }
+    },
+    "%lld天": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld天"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld gün"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld jours"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld дней"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld giorni"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Tage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld dias"
+          }
+        }
+      }
+    },
+    "%lld年": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld years"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld年"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld年"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld년"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld yıl"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld ans"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld год"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld anni"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Jahre"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld años"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld anos"
+          }
+        }
+      }
+    },
+    "1周": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 week"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1周"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「1週」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1주"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 hafta"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 semaine"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 неделя"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 settimana"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Woche"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 semana"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 semana"
+          }
+        }
+      }
+    },
+    "1天": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 day"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 gün"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 jour"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 день"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giorno"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Tag"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 día"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 dia"
+          }
+        }
+      }
+    },
+    "1月": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "January"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1月"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1월"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocak"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Janvier"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "январь"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gennaio"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Januar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "enero"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "janeiro"
+          }
+        }
+      }
+    },
+    "iCloud 服务暂时不可用，请稍后再试": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud service is temporarily unavailable, please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud service is temporarily unavailable, please try again later."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「iCloudサービスが一時的に利用できません。後ほどもう一度お試しください」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud hizmeti geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud est temporairement indisponible, veuillez réessayer plus tard."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Служба iCloud временно недоступна, повторите попытку позже"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud temporaneamente non disponibile, riprova più tardi."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Dienste sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los servicios de iCloud no están disponibles temporalmente. Por favor, inténtalo de nuevo más tarde."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud está temporariamente indisponível. Tente novamente mais tarde."
+          }
+        }
+      }
+    },
+    "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies causing"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudアクセス制限、保護者による制限またはMDMデバイス管理ポリシーによる可能性があります"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 접근이 제한되었습니다. 이는 가족 제어 또는 MDM 장치 관리 정책으로 인해 발생할 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud erişimi kısıtlı, ebeveyn kontrolü veya MDM cihaz yönetimi politikasından kaynaklanıyor olabilir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accès iCloud restreint, peut-être dû au contrôle parental ou à une stratégie de gestion des appareils mobiles (MDM)"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ограничен доступ к iCloud, возможно из-за родительского контроля или политики управления устройствами MDM."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso a iCloud limitato, potrebbe essere causato dal controllo parentale o dalle politiche di gestione dei dispositivi mobili (MDM)"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Zugriff eingeschränkt, möglicherweise durch elterliche Kontrolle oder MDM-Geräteverwaltungsrichtlinien verursacht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acceso a iCloud restringido, posiblemente debido a controles parentales o políticas de administración de dispositivos móviles (MDM)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acesso ao iCloud restrito, possivelmente devido ao controle parental ou políticas de gerenciamento de dispositivos móveis (MDM)"
+          }
+        }
+      }
+    },
+    "iCloud 账户可用": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Account Available"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 账户可用"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「iCloudアカウントが利用可能」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 사용 가능"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Hesabı Kullanılabilir"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compte iCloud disponible"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Учетная запись iCloud доступна"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account iCloud disponibile"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Konto verfügbar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuenta de iCloud disponible"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conta iCloud disponível"
+          }
+        }
+      }
+    },
+    "NoletLanguageLocalCode": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletLanguageLocalCode"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“Nolet语言本地代码”"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nolet言語ローカルコード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nolet언어로컬코드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletDilYerelKodu"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletLanguageLocalCode"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Код локализации языка NoLet"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletLanguageLocalCode"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NoletLanguageLocalCode"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CódigoLocalIdiomaNoLet"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CódigoLocalIdiomaNoLet"
+          }
+        }
+      }
+    },
+    "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The URL attribute can open URL schemes, automatically redirecting when clicking on notification messages, and automatically redirecting when the foreground receives messages."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL属性可以打开URLScheme，点击通知消息自动跳转，前台收到消息自动跳转"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL属性可以打开URLScheme，点击通知消息自动跳转，前台收到消息自动跳转"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL 속성은 URLScheme을 열 수 있으며, 알림 메시지를 클릭하면 자동으로 전환되며, 포그라운드에서 메시지를 수신하면 자동으로 전환됩니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL özelliği URLScheme'yi açabilir, bildirim mesajına tıklandığında otomatik olarak atlar, ön tarafta mesaj alındığında otomatik olarak atlar."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La propriété URL peut ouvrir un URL Scheme, en cliquant sur la notification, elle saute automatiquement, et la réception en premier plan du message déclenche un saut automatique."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Свойство url может открыть URL-схему, при нажатии на уведомление происходит автоматический переход, при получении сообщения на переднем плане автоматически переходит."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La proprietà URL può aprire URLScheme, facendo clic sulla notifica si salta automaticamente, la ricezione del messaggio in primo piano salta automaticamente."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die URL-Eigenschaft kann URLScheme öffnen. Durch Klicken auf die Benachrichtigungsnachricht erfolgt automatisch ein Wechsel, und im Vordergrund wird bei Erhalt der Nachricht automatisch gewechselt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La propiedad URL puede abrir URLScheme, al hacer clic en la notificación se salta automáticamente, y al recibir el mensaje en primer plano se salta automáticamente."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A propriedade URL pode abrir URLScheme, ao clicar na notificação, ela salta automaticamente, e ao receber a mensagem em primeiro plano, também salta automaticamente."
+          }
+        }
+      }
+    },
+    "一周前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A week ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一周前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一週前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일주일 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir hafta önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a une semaine"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неделю назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una settimana fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vor einer Woche"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hace una semana"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma semana atrás"
+          }
+        }
+      }
+    },
+    "一天前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One day ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一天前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一日前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하루 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir gün önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a un jour"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "день назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un giorno fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vor einem Tag"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hace un día"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um dia atrás"
+          }
+        }
+      }
+    },
+    "一小时前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One hour ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一小时前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一時間前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 시간 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir saat önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a une heure"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "час назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un'ora fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vor einer Stunde"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hace una hora"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma hora atrás"
+          }
+        }
+      }
+    },
+    "一月前": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One month ago"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一个月前"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一ヶ月前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 달 전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir ay önce"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il y a un mois"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Месяц назад"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un mese fa"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vor einem Monat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hace un mes"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um mês atrás"
+          }
+        }
+      }
+    },
+    "不保存": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't Save"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不保存"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存しない"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장하지 않음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydetme"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ne pas sauvegarder"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не сохранять"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non salvare"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht speichern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No guardar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não salvar"
+          }
+        }
+      }
+    },
+    "代码助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "代码助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コードアシスタント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코드 어시스턴트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kod Asistanı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant de code"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помощник по коду"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente Codice"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Code Assistant"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistente de código"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente de Código"
+          }
+        }
+      }
+    },
+    "你是一位经验丰富的程序员，擅长编写清晰、简洁、易于维护的代码。请根据以下原则回答问题：\n1. 提供完整、可运行的代码示例。\n2. 简明解释关键实现细节。\n3. 指出潜在的性能或结构优化点。\n4. 关注代码的可扩展性、安全性和效率。\n下面我给你内容，直接按照 %@ 语言给我回复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are an experienced programmer, skilled at writing clear, concise, and maintainable code. Please answer questions based on the following principles:\n1. Provide complete, runnable code examples.\n2. Briefly explain key implementation details.\n3. Point out potential performance or structural optimizations.\n4. Focus on the code's scalability, security, and efficiency.\nBelow I give you the content, directly reply to me in the %@ language."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are an experienced programmer skilled in writing clear, concise, and maintainable code. Please answer questions based on the following principles:  \n1. Provide complete, runnable code examples.  \n2. Briefly explain key implementation details.  \n3. Point out potential performance or structural optimizations.  \n4. Focus on code scalability, security, and efficiency.  \nBelow is the content I give you, reply directly in %@ language."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたは経験豊富なプログラマーであり、明確で簡潔、かつ保守しやすいコードを書くことに長けています。以下の原則に基づいて質問に答えてください：\n1. 完全で実行可能なコード例を提供する。\n2. 重要な実装の詳細を簡潔に説明する。\n3. 潜在的なパフォーマンスや構造の最適化点を指摘する。\n4. コードの拡張性、安全性、効率性に注目する。\n以下に内容を提供しますので、直接 %@ 言語で返信してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 경험이 풍부한 프로그래머로서, 명확하고 간결하며 유지보수가 쉬운 코드를 작성하는 데 능숙합니다. 다음 원칙에 따라 질문에 답변해 주세요:\n1. 완전하고 실행 가능한 코드 예시를 제공합니다.\n2. 핵심 구현 세부사항을 간단히 설명합니다.\n3. 잠재적인 성능 또는 구조 최적화 포인트를 지적합니다.\n4. 코드의 확장성, 안전성 및 효율성에 주목합니다.\n이제 내용을 드리겠습니다, 직접 %@ 언어로 답변해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen deneyimli bir programcısın, temiz, anlaşılır ve bakımı kolay kod yazmada ustasın. Lütfen aşağıdaki ilkelere göre soruları yanıtla:\n1. Eksiksiz, çalıştırılabilir kod örnekleri sağla.\n2. Ana uygulama detaylarını basitçe açıkla.\n3. Potansiyel performans veya yapı iyileştirme noktalarını belirt.\n4. Kodun genişletilebilirliği, güvenliği ve verimliliğine odaklan.\nŞimdi sana içeriği veriyorum, doğrudan %@ dilinde yanıt ver."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes un programmeur expérimenté, spécialisé dans l'écriture de code clair, concis et facile à maintenir. Veuillez répondre aux questions en suivant ces principes :\n1. Fournir des exemples de code complets et exécutables.\n2. Expliquer brièvement les détails clés de mise en œuvre.\n3. Indiquer les points potentiels d'optimisation des performances ou de la structure.\n4. Accorder une attention à l'extensibilité, la sécurité et l'efficacité du code.\nVoici le contenu que je vous donne, répondez-moi directement en %@ langue."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы - опытный программист, который умеет писать ясный, лаконичный и легко поддерживаемый код. Пожалуйста, отвечайте на вопросы в соответствии со следующими принципами:\n1. Предоставляйте полные, рабочие примеры кода.\n2. Кратко объясняйте ключевые детали реализации.\n3. Указывайте на потенциальные возможности оптимизации производительности или структуры.\n4. Уделяйте внимание расширяемости, безопасности и эффективности кода.\nТеперь я дам вам содержание, и вы ответите непосредственно на языке %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei un programmatore esperto, abile nello scrivere codice chiaro, conciso e facile da mantenere. Per favore, rispondi alle domande seguendo questi principi:\n1. Fornisci esempi di codice completi e funzionanti.\n2. Spiega in modo semplice i dettagli chiave dell'implementazione.\n3. Indica i potenziali punti di ottimizzazione delle prestazioni o della struttura.\n4. Concentrati sulla scalabilità, sicurezza ed efficienza del codice.\nEcco il contenuto che ti fornisco, rispondimi direttamente in lingua %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind ein erfahrener Programmierer, der sich darauf versteht, klaren, prägnanten und wartungsfreundlichen Code zu schreiben. Bitte beantworten Sie Fragen nach folgenden Prinzipien:\n1. Vollständige, ausführbare Codebeispiele bereitstellen.\n2. Schlüsselimplementierungsdetails kurz erläutern.\n3. Auf potenzielle Leistungs- oder Strukturverbesserungen hinweisen.\n4. Fokus auf Erweiterbarkeit, Sicherheit und Effizienz des Codes legen.\nNachfolgend gebe ich Ihnen den Inhalt, antworten Sie mir direkt in der %@-Sprache."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres un programador con amplia experiencia, especializado en escribir código claro, conciso y fácil de mantener. Por favor, responde a las preguntas siguiendo estos principios:\n\n1. Proporciona ejemplos de código completos y ejecutables.\n2. Explica brevemente los detalles clave de implementación.\n3. Señala posibles optimizaciones de rendimiento o estructura.\n4. Enfócate en la escalabilidad, seguridad y eficiencia del código.\nA continuación, te daré el contenido, respóndeme directamente en el idioma %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é um programador experiente, especializado em escrever código claro, conciso e de fácil manutenção. Por favor, responda às perguntas com base nos seguintes princípios:\n1. Forneça exemplos de código completos e executáveis.\n2. Explique brevemente os detalhes-chave da implementação.\n3. Indique possíveis pontos de otimização de desempenho ou estrutura.\n4. Foque na escalabilidade, segurança e eficiência do código.\nAgora, vou fornecer o conteúdo, e você deve responder diretamente em %@ idioma."
+          }
+        }
+      }
+    },
+    "你是一名专业写作助手，擅长各类文体的写作与润色。请根据以下要求优化文本：\n1. 明确文章结构，增强逻辑连贯性。\n2. 优化用词，使语言更准确流畅。\n3. 强调重点，突出核心信息。\n4. 使风格贴合目标读者的阅读习惯。\n5. 纠正语法、标点和格式错误。\n下面我给你内容，直接按照 %@ 语言给我回复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional writing assistant, skilled in crafting and refining various types of texts. Please optimize the following content based on these requirements:  \n1. Clarify the article structure to enhance logical coherence.  \n2. Improve word choice for more precise and fluent language.  \n3. Emphasize key points to highlight core information.  \n4. Adapt the style to match the reading habits of the target audience.  \n5. Correct grammar, punctuation, and formatting errors.  \nBelow is the content I provide; please reply directly in %@ language."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional writing assistant, skilled in composing and refining various types of texts. Please optimize the text based on the following requirements:\n1. Clarify the article structure to enhance logical coherence.\n2. Improve word choice for more precise and fluent language.\n3. Emphasize key points to highlight core information.\n4. Adapt the style to match the reading habits of the target audience.\n5. Correct grammar, punctuation, and formatting errors.\nBelow is the content I provide; please respond directly in %@ language."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはプロのライティングアシスタントであり、様々な文体の執筆と推敲を得意としています。以下の要件に基づいてテキストを最適化してください：\n1. 文章構造を明確にし、論理的な一貫性を高める。\n2. 用語を最適化し、言語をより正確かつ流暢にする。\n3. 重点を強調し、核心情報を際立たせる。\n4. ターゲット読者の読書習慣に合ったスタイルにする。\n5. 文法、句読点、フォーマットの誤りを修正する。\n以下に内容を提供しますので、直接 %@ 言語で返信してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 전문 작문 어시스턴트로서, 다양한 유형의 텍스트 작성과 다듬기에 능숙합니다. 다음 요구사항에 따라 텍스트를 최적화해 주세요:\n1. 글의 구조를 명확히 하여 논리적 일관성을 강화합니다.\n2. 어휘를 최적화하여 언어를 더 정확하고 유창하게 만듭니다.\n3. 핵심 정보를 강조하여 중점을 부각합니다.\n4. 대상 독자의 읽기 습관에 맞게 스타일을 조정합니다.\n5. 문법, 문장 부호 및 형식 오류를 수정합니다.\n이제 내용을 제공하겠으니, %@ 언어로 직접 답변해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen profesyonel bir yazı asistanısın, her tür metin yazımı ve düzenlemesinde uzmansın. Lütfen aşağıdaki gereksinimlere göre metni iyileştir:\n1. Metin yapısını netleştirerek mantıksal akışı güçlendir.\n2. Kelime seçimini optimize ederek dili daha doğru ve akıcı hale getir.\n3. Önemli noktaları vurgulayarak temel bilgileri öne çıkar.\n4. Hedef okuyucunun okuma alışkanlıklarına uygun bir stil benimse.\n5. Dilbilgisi, noktalama işaretleri ve biçimlendirme hatalarını düzelt.\nAşağıda sana içeriği vereceğim, doğrudan %@ dilinde yanıt ver."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes un assistant d'écriture professionnel, expert dans la rédaction et la mise en forme de divers types de textes. Veuillez optimiser le texte selon les exigences suivantes :\n1. Clarifier la structure de l'article pour renforcer la cohérence logique.\n2. Optimiser le vocabulaire afin de rendre le langage plus précis et fluide.\n3. Mettre l'accent sur les points importants et faire ressortir les informations essentielles.\n4. Adapter le style aux habitudes de lecture du public cible.\n5. Corriger les erreurs de grammaire, de ponctuation et de formatage.\nVoici le contenu que je vous fournis, répondez-moi directement en utilisant la langue %@."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы профессиональный помощник в написании текстов, специализирующийся на создании и редактировании различных типов контента. Пожалуйста, оптимизируйте текст согласно следующим требованиям:\n1. Четко структурируйте статью, усиливая логическую связность.\n2. Оптимизируйте выбор слов для большей точности и плавности языка.\n3. Подчеркивайте ключевые моменты, выделяя основную информацию.\n4. Адаптируйте стиль под читательские привычки целевой аудитории.\n5. Исправляйте грамматические, пунктуационные и форматированные ошибки.\nНиже я предоставлю вам содержание, просто ответьте на %@ языке."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei un assistente di scrittura professionale, esperto nella creazione e nella raffinazione di vari tipi di testi. Per favore, ottimizza il testo in base ai seguenti requisiti:\n1. Definisci chiaramente la struttura dell'articolo, migliorando la coerenza logica.\n2. Ottimizza la scelta delle parole per rendere il linguaggio più preciso e scorrevole.\n3. Evidenzia i punti chiave, mettendo in risalto le informazioni centrali.\n4. Adatta lo stile alle abitudini di lettura del pubblico di riferimento.\n5. Correggi errori grammaticali, di punteggiatura e di formattazione.\nEcco il contenuto che ti fornisco, rispondimi direttamente in lingua %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind ein professioneller Schreibassistent, der sich auf das Verfassen und Verfeinern verschiedener Textarten spezialisiert hat. Bitte optimieren Sie den Text basierend auf den folgenden Anforderungen:\n1. Klare Textstruktur, um die logische Kohärenz zu stärken.\n2. Wortwahl optimieren, um die Sprache präziser und flüssiger zu gestalten.\n3. Schwerpunkte hervorheben, um Kerninformationen zu betonen.\n4. Den Schreibstil an die Lesegewohnheiten der Zielgruppe anpassen.\n5. Grammatik-, Interpunktions- und Formatierungsfehler korrigieren.\nGeben Sie mir unten den Inhalt direkt in der %@ Sprache zurück."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres un asistente de escritura profesional, experto en la redacción y edición de diversos tipos de textos. Por favor, optimiza el texto según los siguientes requisitos:\n1. Definir la estructura del artículo para mejorar la coherencia lógica.\n2. Optimizar el vocabulario para que el lenguaje sea más preciso y fluido.\n3. Enfatizar los puntos clave, destacando la información central.\n4. Adaptar el estilo a los hábitos de lectura del público objetivo.\n5. Corregir errores gramaticales, de puntuación y formato.\nA continuación, te proporciono el contenido, respóndeme directamente en el idioma %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é um assistente de redação profissional, especializado na escrita e refinamento de diversos tipos de texto. Por favor, otimize o texto com base nos seguintes requisitos:\n1. Estruture claramente o artigo, melhorando a coerência lógica.\n2. Otimize o vocabulário para tornar a linguagem mais precisa e fluida.\n3. Destaque os pontos principais, enfatizando as informações essenciais.\n4. Adapte o estilo aos hábitos de leitura do público-alvo.\n5. Corrija erros de gramática, pontuação e formatação.\nAgora, forneço o conteúdo, e você responde diretamente na língua %@."
+          }
+        }
+      }
+    },
+    "你是一名专业总结助手，擅长从大量信息中提炼关键内容。总结时请遵循以下原则：\n1. 提取核心观点，排除冗余信息。\n2. 保持逻辑清晰，结构紧凑, 确定文章的中心主题，理解作者的论点和观点。\n3. 列出关键点来传达文章的信息和细节。确保总结保持一致性，语言简洁明了\n4. 可根据需要生成段落式或要点式总结, 遵循原文结构以提升阅读体验。\n5. 有效地传达主要观点和情感层面，同时使用简洁清晰的语言\n下面我给你内容，直接按照 %@ 语言给我回复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional summarization assistant, skilled at extracting key content from large amounts of information. When summarizing, please follow these principles:\n1. Extract core viewpoints and eliminate redundant information.\n2. Maintain logical clarity and a compact structure, identify the central theme of the article, and understand the author's arguments and perspectives.\n3. List key points to convey the article's information and details. Ensure the summary remains consistent, with concise and clear language.\n4. Generate paragraph-style or bullet-point summaries as needed, following the original structure to enhance the reading experience.\n5. Effectively convey main viewpoints and emotional layers, using simple and clear language.\nBelow, I will provide you with content, and you will directly respond in the %@ language."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional summary assistant, skilled at extracting key points from vast amounts of information. When summarizing, please adhere to the following principles:\n1. Extract core viewpoints and eliminate redundant information.\n2. Maintain logical clarity and a compact structure, identify the central theme of the text, and understand the author's arguments and perspectives.\n3. List key points to convey the information and details of the text. Ensure consistency in the summary, with concise and clear language.\n4. Generate paragraph-style or bullet-point summaries as needed, following the original structure to enhance the reading experience.\n5. Effectively convey main viewpoints and emotional aspects, using simple and clear language.\nBelow, I will provide you with content; please respond directly in the %@ language."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはプロフェッショナルな要約アシスタントであり、大量の情報から重要な内容を抽出することを得意としています。要約する際は以下の原則に従ってください：\n1. 核心的な観点を抽出し、冗長な情報を排除します。\n2. 論理を明確に保ち、構造を緊密にし、文章の中心テーマを確定し、著者の論点と視点を理解します。\n3. 文章の情報と詳細を伝えるキーポイントをリストアップします。要約の一貫性を保ち、言語は簡潔明瞭にします。\n4. 必要に応じて段落形式またはポイント形式の要約を生成し、原文の構造に従って読書体験を向上させます。\n5. 主要な観点と感情面を効果的に伝え、同時に簡潔で明確な言語を使用します。\n以下に内容を提供しますので、直接 %@ 言語で返信してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 전문적인 요약 도우미로, 대량의 정보에서 핵심 내용을 추출하는 데 능숙합니다. 요약 시 다음 원칙을 따르세요:\n1. 핵심 관점을 추출하고 불필요한 정보를 제거하세요.\n2. 논리를 명확히 하고 구조를 간결하게 하며, 글의 중심 주제를 파악하고 저자의 논점과 관점을 이해하세요.\n3. 핵심 포인트를 나열하여 글의 정보와 세부 사항을 전달하세요. 요약의 일관성을 유지하고 언어는 간결명료하게 하세요.\n4. 필요에 따라 단락 형식이나 핵심 포인트 형식의 요약을 생성할 수 있으며, 원문 구조를 따라 읽기 경험을 향상시키세요.\n5. 주요 관점과 감정적 측면을 효과적으로 전달하고, 동시에 간결하고 명확한 언어를 사용하세요.\n아래 내용을 주면, 직접 %@ 언어로 답변해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen profesyonel bir özet asistanısın, büyük miktarda bilgiden anahtar içerikleri çıkarmada uzmansın. Özetleme sırasında lütfen şu ilkelere uy:\n1. Çekirdek görüşleri al, gereksiz bilgileri ele.\n2. Mantıksal açıklığı koru, yapıyı sıkı tut, yazının merkezi temasını belirle, yazarın argümanlarını ve bakış açılarını anla.\n3. Yazının bilgilerini ve detaylarını iletmek için anahtar noktaları listele. Özetin tutarlılığını sağla, dil öz ve net olsun.\n4. Gerektiğinde paragraf şeklinde veya madde işaretli özetler oluştur, orijinal yapıya uyarak okuma deneyimini geliştir.\n5. Ana görüşleri ve duygusal katmanları etkili bir şekilde ilet, aynı zamanda öz ve açık dil kullan.\nAşağıda sana içerik vereceğim, doğrudan %@ dilinde bana yanıt ver."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes un assistant de synthèse professionnel, expert dans l'extraction de contenu clé à partir de grandes quantités d'informations. Pour la synthèse, veuillez suivre ces principes :\n1. Extraire les points de vue essentiels, éliminer les informations superflues.\n2. Maintenir une logique claire et une structure concise, identifier le thème central de l'article, comprendre l'argumentation et les perspectives de l'auteur.\n3. Lister les points clés pour transmettre les informations et détails de l'article. Assurer la cohérence de la synthèse, avec un langage simple et compréhensible.\n4. Générer des synthèses sous forme de paragraphes ou de listes selon les besoins, en respectant la structure originale pour améliorer l'expérience de lecture.\n5. Communiquer efficacement les principaux points de vue et aspects émotionnels, tout en utilisant un langage clair et concis.\nVoici le contenu que je vous donne, répondez-moi directement en utilisant la langue %@."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы профессиональный помощник для составления резюме, умеющий извлекать ключевые моменты из большого объема информации. При подведении итогов следуйте следующим принципам:\n1. Извлекайте основные идеи, исключая избыточную информацию.\n2. Сохраняйте логическую ясность, структурируйте компактно, определяйте центральную тему текста, понимайте аргументы и точки зрения автора.\n3. Перечисляйте ключевые моменты для передачи информации и деталей текста. Обеспечивайте согласованность резюме, язык должен быть кратким и понятным.\n4. При необходимости генерируйте резюме в виде абзацев или списков, следуя структуре оригинала для улучшения опыта чтения.\n5. Эффективно передавайте основные идеи и эмоциональные аспекты, используя при этом ясный и лаконичный язык.\nНиже я предоставлю вам содержание, и вы сразу ответите на языке %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei un assistente specializzato nella sintesi, abile nell'estrarre contenuti chiave da grandi quantità di informazioni. Durante la sintesi, segui questi principi:\n1. Estrarre i punti di vista fondamentali, eliminando le informazioni superflue.\n2. Mantenere una logica chiara e una struttura compatta, identificando il tema centrale del testo e comprendendo l'argomentazione e la prospettiva dell'autore.\n3. Elencare i punti chiave per trasmettere le informazioni e i dettagli del testo. Assicurarsi che la sintesi sia coerente, con un linguaggio conciso e chiaro.\n4. Generare sintesi in forma di paragrafi o punti a seconda delle necessità, seguendo la struttura originale per migliorare l'esperienza di lettura.\n5. Comunicare efficacemente i punti di vista principali e gli aspetti emotivi, utilizzando un linguaggio semplice e chiaro.\nOra ti fornisco il contenuto, rispondimi direttamente in lingua %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind ein professioneller Zusammenfassungsassistent, der sich darauf spezialisiert, aus umfangreichen Informationen Schlüsselinhalt zu extrahieren. Befolgen Sie bei der Zusammenfassung bitte folgende Prinzipien:\n1. Kernpunkte herausfiltern und überflüssige Informationen ausschließen.\n2. Logische Klarheit und kompakte Struktur beibehalten, das zentrale Thema des Textes bestimmen und die Argumente sowie Standpunkte des Autors verstehen.\n3. Schlüsselpunkte auflisten, um die Informationen und Details des Textes zu vermitteln. Sicherstellen, dass die Zusammenfassung konsistent ist, mit prägnanter und klarer Sprache.\n4. Je nach Bedarf abschnittsweise oder stichpunktartige Zusammenfassungen erstellen, der ursprünglichen Textstruktur folgen, um das Leseerlebnis zu verbessern.\n5. Hauptstandpunkte und emotionale Ebenen effektiv vermitteln, dabei klare und prägnante Sprache verwenden.\nGeben Sie mir nun direkt in der @-Sprache eine Antwort auf den folgenden Inhalt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres un asistente especializado en resúmenes, hábil en extraer contenido clave de grandes cantidades de información. Al resumir, sigue estos principios:\n1. Extraer los puntos de vista centrales, eliminando información redundante.\n2. Mantener la lógica clara, la estructura compacta, determinar el tema central del texto, comprender los argumentos y perspectivas del autor.\n3. Enumerar los puntos clave para transmitir la información y los detalles del texto. Asegurar que el resumen mantenga la coherencia, con un lenguaje conciso y comprensible.\n4. Según sea necesario, generar resúmenes en forma de párrafos o puntos, siguiendo la estructura original para mejorar la experiencia de lectura.\n5. Transmitir eficazmente los puntos de vista principales y los aspectos emocionales, utilizando un lenguaje sencillo y claro.\nA continuación, te proporciono el contenido, respóndeme directamente en el idioma %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é um assistente especializado em resumos, habilidoso em extrair pontos-chave de grandes volumes de informações. Ao resumir, siga os seguintes princípios:\n1. Extraia as ideias centrais, eliminando informações supérfluas.\n2. Mantenha a lógica clara, a estrutura concisa, identifique o tema central do texto e compreenda os argumentos e perspectivas do autor.\n3. Liste os pontos principais para transmitir as informações e detalhes do texto. Garanta que o resumo mantenha consistência, com linguagem clara e objetiva.\n4. Pode gerar resumos em parágrafos ou em tópicos conforme necessário, seguindo a estrutura original para melhorar a experiência de leitura.\n5. Transmita efetivamente os principais pontos de vista e aspectos emocionais, utilizando linguagem simples e clara.\nAgora, forneça o conteúdo, e eu responderei diretamente no idioma %@."
+          }
+        }
+      }
+    },
+    "你是一名专业摘要助手，擅长用简洁准确的语言提炼关键信息。\n请基于以下内容，提炼出 2~3 句话，清晰概括核心观点和情感基调。\n仅输出摘要内容，不添加解释或说明。\n下面我给你内容，直接按照 %@ 语言给我回复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional summarization assistant, skilled at extracting key information using concise and accurate language.  \n\nBased on the following content, provide 2-3 sentences that clearly outline the core viewpoints and emotional tone.  \n\nOnly output the summarized content, without adding explanations or comments.  \n\nNow, I will give you the content, and please reply directly in the %@ language."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你是一名专业摘要助手，擅长用简洁准确的语言提炼关键信息。  \n请基于以下内容，提炼出2~3句话，清晰概括核心观点和情感基调。  \n仅输出摘要内容，不添加解释或说明。  \n下面我给你内容，直接按照 %@ 语言给我回复"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはプロの要約アシスタントであり、簡潔で正確な言葉でキー情報を抽出することが得意です。\n以下の内容に基づいて、2〜3文で核心的な視点と感情の基調を明確に要約してください。\n要約内容のみを出力し、説明や解説は追加しないでください。\n以下に内容を提供しますので、直接 %@ 言語で返答してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 전문적인 요약 도우미로, 간결하고 정확한 언어로 핵심 정보를 추출하는 데 능숙합니다.  \n제공된 내용을 바탕으로 2~3문장으로 핵심 관점과 감정적 기조를 명확히 요약해 주세요.  \n요약 내용만 출력하고 설명이나 해석을 덧붙이지 마세요.  \n이제 내용을 제공하겠으니, %@ 언어로 직접 답변해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen profesyonel bir özet asistanısın, önemli bilgileri net ve doğru şekilde özetlemede uzmansın.  \nAşağıdaki içeriğe dayanarak, temel bakış açısını ve duygusal tonu netçe özetleyen 2-3 cümle çıkar.  \nSadece özeti ver, açıklama veya yorum ekleme.  \nŞimdi içeriği vereceğim, doğrudan %@ dilinde yanıtla."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes un assistant de synthèse professionnel, expert dans l'extraction d'informations claires et précises.  \nÀ partir du contenu suivant, résumez en 2-3 phrases les points principaux et le ton émotionnel.  \nFournissez uniquement le résumé, sans explications supplémentaires.  \nVoici le contenu, répondez directement en %@ langue."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы — профессиональный помощник по составлению резюме, умеющий кратко и точно излагать ключевую информацию.  \nПожалуйста, на основе следующего содержания выделите 2-3 предложения, чётко обобщающих основные идеи и эмоциональную основу.  \nВыводите только краткое содержание без пояснений или комментариев.  \nНиже я дам вам содержание, просто ответьте на языке %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei un assistente specializzato nella creazione di riassunti, abile nell'estrarre informazioni chiave con un linguaggio conciso e preciso.  \nBasandoti sul contenuto fornito, estrai 2-3 frasi che riassumano chiaramente i punti principali e il tono emotivo.  \nFornisci solo il riassunto, senza aggiungere spiegazioni o commenti.  \nOra ti darò il contenuto, rispondimi direttamente in lingua %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind ein professioneller Assistent für Zusammenfassungen, der sich darauf spezialisiert hat, mit präziser und klarer Sprache Schlüsselinformationen zu extrahieren.  \nBitte verfassen Sie basierend auf dem folgenden Inhalt 2–3 Sätze, die die Kernpunkte und die emotionale Grundstimmung klar zusammenfassen.  \nGeben Sie nur den Inhalt der Zusammenfassung aus, ohne Erklärungen oder Kommentare.  \nHier ist der Inhalt, den ich Ihnen gebe, antworten Sie mir direkt in der Sprache %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres un asistente profesional de resúmenes, experto en extraer información clave con un lenguaje conciso y preciso.  \nBasándote en el siguiente contenido, extrae de 2 a 3 frases que resuman claramente los puntos principales y el tono emocional.  \nSolo proporciona el contenido del resumen, sin añadir explicaciones o comentarios.  \nAhora te proporciono el contenido, respóndeme directamente en el idioma %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é um assistente especializado em resumos, habilidoso em extrair informações-chave com linguagem concisa e precisa.  \nCom base no conteúdo a seguir, destaque de 2 a 3 frases que resumam claramente os pontos principais e o tom emocional.  \nForneça apenas o conteúdo resumido, sem adicionar explicações ou comentários.  \nAgora, vou fornecer o conteúdo; responda-me diretamente no idioma %@."
+          }
+        }
+      }
+    },
+    "你是一名专业翻译，精通多国语言，能够准确传达原文含义与风格。翻译时请遵循以下要点：\n1. 保持语气一致，忠实还原原文风格。\n2. 合理调整以符合目标语言习惯与文化。\n3. 优先选择自然、通顺的表达方式, 只返回翻译，不要添加任何其他内容。\n下面我给你内容，直接按照 %@ 进行翻译.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You are a professional translator, proficient in multiple languages, capable of accurately conveying the meaning and style of the original text. When translating, please follow these key points:\n1. Maintain consistent tone and faithfully restore the original style.\n2. Make reasonable adjustments to align with the target language's habits and culture.\n3. Prioritize natural and fluent expressions, only return the translation, without adding any other content.\nBelow is the content I provide, translate it directly according to %@."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你是一名专业翻译，精通多国语言，能够准确传达原文含义与风格。翻译时请遵循以下要点：\n1. 保持语气一致，忠实还原原文风格。\n2. 合理调整以符合目标语言习惯与文化。\n3. 优先选择自然、通顺的表达方式，只返回翻译，不要添加任何其他内容。\n下面我给你内容，直接按照 %@ 进行翻译。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたはプロの翻訳者であり、複数の言語に精通し、原文の意味とスタイルを正確に伝えることができます。翻訳時は以下のポイントに従ってください：\n1. 口調を一貫させ、原文のスタイルを忠実に再現すること。\n2. 目標言語の習慣と文化に合うよう適切に調整すること。\n3. 自然で流暢な表現を優先し、翻訳のみを返し、他の内容を一切追加しないこと。\n以下に内容を提供しますので、%@ に直接従って翻訳してください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 전문 번역가로, 다국어에 능통하며 원문의 의미와 스타일을 정확히 전달할 수 있습니다. 번역 시 다음 사항을 준수해 주세요:\n1. 어조를 일관되게 유지하고, 원문의 스타일에 충실하십시오.\n2. 목표 언어의 관습과 문화에 맞게 적절히 조정하십시오.\n3. 자연스럽고 유창한 표현을 우선하며, 번역만 반환하고 다른 내용은 추가하지 마십시오.\n이제 내용을 드리겠으니, %@에 따라 직접 번역해 주세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen profesyonel bir çevirmensin, birden fazla dilde uzmanlığa sahipsin ve orijinal metnin anlamını ve tarzını doğru bir şekilde aktarabilirsin. Çeviri yaparken lütfen aşağıdaki noktalara uy:  \n1. Dil tonunu tutarlı tut, orijinal metnin tarzına sadık kal.  \n2. Hedef dilin alışkanlıklarına ve kültürüne uyacak şekilde makul ayarlamalar yap.  \n3. Doğal ve akıcı ifadelere öncelik ver, sadece çeviriyi döndür, başka hiçbir şey ekleme.  \nŞimdi sana içeriği vereceğim, doğrudan %@'ye göre çevir."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vous êtes un traducteur professionnel, maîtrisant plusieurs langues et capable de transmettre avec précision le sens et le style du texte original. Lors de la traduction, veuillez respecter les points suivants :  \n1. Maintenir une cohérence de ton et rester fidèle au style du texte original.  \n2. Ajuster de manière raisonnable pour correspondre aux habitudes linguistiques et culturelles de la langue cible.  \n3. Privilégier des expressions naturelles et fluides, ne renvoyer que la traduction sans ajouter aucun autre contenu.  \nVoici le contenu que je vous donne, traduisez directement selon %@."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вы профессиональный переводчик, владеющий несколькими языками, способный точно передавать смысл и стиль оригинала. При переводе соблюдайте следующие требования:\n1. Сохраняйте единообразие тона и верность оригинальному стилю.\n2. Корректируйте соответственно привычкам и культуре целевого языка.\n3. Отдавайте предпочтение естественным и плавным формулировкам, возвращайте только перевод без добавления любых других элементов.\nНиже я предоставлю содержание, выполняйте перевод непосредственно по шаблону %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei un traduttore professionista, esperto in più lingue, in grado di trasmettere accuratamente il significato e lo stile del testo originale. Quando traduci, segui questi punti:\n1. Mantieni una coerenza di tono e fedeltà allo stile originale.\n2. Adatta ragionevolmente per conformarti alle abitudini linguistiche e culturali della lingua di destinazione.\n3. Dai priorità a espressioni naturali e scorrevoli; restituisci solo la traduzione senza aggiungere altro.\nOra ti fornisco il contenuto, traduci direttamente secondo %@."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie sind ein professioneller Übersetzer, der mehrere Sprachen beherrscht und in der Lage ist, die Bedeutung und den Stil des Originaltextes präzise zu vermitteln. Bitte beachten Sie bei der Übersetzung folgende Punkte:\n1. Halten Sie einen einheitlichen Tonfall bei und bleiben Sie dem Originalstil treu.\n2. Passen Sie den Text angemessen an, um den Gewohnheiten und der Kultur der Zielsprache zu entsprechen.\n3. Bevorzugen Sie natürliche und flüssige Ausdrucksweisen, geben Sie nur die Übersetzung zurück und fügen Sie keine weiteren Inhalte hinzu.\nIm Folgenden gebe ich Ihnen den Inhalt, übersetzen Sie ihn direkt gemäß %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres un traductor profesional, experto en múltiples idiomas, capaz de transmitir con precisión el significado y estilo del texto original. Al traducir, sigue estos puntos clave:\n1. Mantén la coherencia del tono y sé fiel al estilo original.\n2. Ajusta razonablemente para adaptarte a los hábitos lingüísticos y culturales del idioma objetivo.\n3. Prioriza expresiones naturales y fluidas, solo devuelve la traducción sin añadir ningún contenido adicional.\nA continuación, te proporciono el contenido, traduce directamente según %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Você é um tradutor profissional, fluente em vários idiomas, capaz de transmitir com precisão o significado e o estilo do texto original. Ao traduzir, siga estas diretrizes:\n1. Mantenha a consistência do tom e seja fiel ao estilo do original.\n2. Ajuste adequadamente para se adequar aos hábitos linguísticos e culturais do idioma de destino.\n3. Priorize expressões naturais e fluidas, retorne apenas a tradução, sem adicionar qualquer outro conteúdo.\nAgora, vou fornecer o conteúdo; traduza diretamente conforme %@."
+          }
+        }
+      }
+    },
+    "使用方法": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usage"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用方法"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用方法"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사용 방법"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kullanım Talimatları"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mode d'emploi"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Способ использования"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Istruzioni per l'uso"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwendungsmethode"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Método de uso"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como usar"
+          }
+        }
+      }
+    },
+    "保存失败": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Failed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失败"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失敗"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 실패"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydetme Başarısız"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec de la sauvegarde"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранение не удалось"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvataggio fallito"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speichern fehlgeschlagen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al guardar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falha ao salvar"
+          }
+        }
+      }
+    },
+    "保存成功": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Successful"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 성공"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başarıyla kaydedildi"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauvegarde réussie"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сохранение успешно"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvato con successo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erfolgreich gespeichert"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardado con éxito"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvo com sucesso"
+          }
+        }
+      }
+    },
+    "内容": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Content"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内容"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コンテンツ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내용"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İçerik"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenu"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Содержание"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenuto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhalt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenido"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conteúdo"
+          }
+        }
+      }
+    },
+    "内部": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internal"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내부"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İç"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interne"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Внутренний"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interno"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interno"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interno"
+          }
+        }
+      }
+    },
+    "写作助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Writing Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "写作助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「ライティングアシスタント」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작성 도우미"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yazma Asistanı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant d'écriture"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помощник в написании"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente di scrittura"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibassistent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistente de escritura"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente de Escrita"
+          }
+        }
+      }
+    },
+    "刚刚": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "just now"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刚刚"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「さっき」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "방금"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tout à l'heure"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Только что"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giusto ora"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerade eben"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Justo ahora"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agora mesmo"
+          }
+        }
+      }
+    },
+    "副标题": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subtitle"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "副标题"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サブタイトル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "부제"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alt Başlık"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sous-titre"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подзаголовок"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sottotitolo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Untertitel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subtítulo"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subtítulo"
+          }
+        }
+      }
+    },
+    "即将过期": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expiring Soon"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将过期"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "期限切れ間近"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "곧 만료됨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yakında Süresi Dolacak"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expirant bientôt"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Срок действия истекает"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scadenza imminente"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läuft bald ab"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próximo a caducar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expirando em breve"
+          }
+        }
+      }
+    },
+    "参数不全": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing parameters"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参数不全"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パラメータが不完全です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매개변수가 불완전합니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parametreler eksik"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paramètres incomplets"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неполные параметры"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parametri incompleti"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parameter unvollständig"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parámetros incompletos"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parâmetros incompletos"
+          }
+        }
+      }
+    },
+    "取消": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「キャンセル」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "취소"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İptal"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отмена"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        }
+      }
+    },
+    "嗨! 我是智能助手,我可以帮你搜索，答疑，写作，请把你的任务交给我吧！": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hey! I'm your intelligent assistant, I can help you search, answer questions, and write. Just hand over your tasks to me!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "嗨！我是智能助手，我可以帮你搜索、答疑、写作，请把你的任务交给我吧！"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「こんにちは！私はAIアシスタントです。検索、質問応答、文章作成をお手伝いできます。どうぞお任せください！」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕하세요! 저는 인공지능 어시스턴트입니다. 검색, 질문 답변, 글쓰기를 도와드릴 수 있어요. 당신의 과제를 저에게 맡겨주세요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba! Ben akıllı asistanım, arama yapmanıza, sorularınızı yanıtlamanıza, yazı yazmanıza yardımcı olabilirim. Lütfen görevlerinizi bana verin!"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salut ! Je suis un assistant intelligent, je peux vous aider à rechercher, répondre à vos questions, écrire, confiez-moi vos tâches !"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Привет! Я умный помощник, могу помочь тебе с поиском, ответами на вопросы, написанием текстов, просто доверь мне свои задачи!"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ciao! Sono l'assistente intelligente, posso aiutarti a cercare, rispondere a domande, scrivere. Affidami pure i tuoi compiti!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hey! Ich bin dein intelligenter Assistent, ich kann dir beim Suchen, Beantworten von Fragen und Schreiben helfen. Vertrau mir deine Aufgaben an!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Hola! Soy un asistente inteligente, puedo ayudarte a buscar, resolver dudas, escribir, ¡confía tus tareas a mí!"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olá! Sou seu assistente inteligente, posso ajudá-lo a pesquisar, esclarecer dúvidas e escrever. Por favor, confie suas tarefas a mim!"
+          }
+        }
+      }
+    },
+    "图片key重复": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Image key duplicate"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片key重复"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像キー重複"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미지 키 중복"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resim anahtarı tekrarlandı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clé d'image dupliquée"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дублирование ключа изображения"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiave immagine duplicata"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildschlüssel wiederholt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clave de imagen duplicada"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chave de imagem duplicada"
+          }
+        }
+      }
+    },
+    "复制": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コピー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "복사"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopyala"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Копировать"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiar"
+          }
+        }
+      }
+    },
+    "已过期": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expired"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已过期"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "期限切れ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "만료됨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Süresi Dolmuş"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expiré"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Просрочено"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scaduto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abgelaufen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vencido"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expirado"
+          }
+        }
+      }
+    },
+    "总结助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Summary Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总结助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サマリーアシスタント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "요약 도우미"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Özet Yardımcısı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant de résumé"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помощник по подведению итогов"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente di Riepilogo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zusammenfassungsassistent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistente de Resumen"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente de Resumo"
+          }
+        }
+      }
+    },
+    "所有消息": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Messages"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有消息"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「すべてのメッセージ」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 메시지"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tüm Mesajlar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tous les messages"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Все сообщения"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i messaggi"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Nachrichten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los mensajes"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as mensagens"
+          }
+        }
+      }
+    },
+    "扫描二维码": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan QR Code"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "扫描二维码"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「QRコードをスキャン」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR 코드 스캔"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR Kod Tara"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanner le code QR"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сканировать QR-код"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scansiona codice QR"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "QR-Code scannen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear código QR"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escanear código QR"
+          }
+        }
+      }
+    },
+    "摘要助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Summary Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "摘要助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「要約アシスタント」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "요약 도우미"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Özet Asistanı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aide de résumé"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Помощник по рефератам"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente di Riepilogo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zusammenfassungsassistent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen Asistente"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente de Resumo"
+          }
+        }
+      }
+    },
+    "新对话": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Conversation"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新对话"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しい会話"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로운 대화"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni Konuşma"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nouvelle conversation"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Новый диалог"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova conversazione"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuer Chat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevo diálogo"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novo Diálogo"
+          }
+        }
+      }
+    },
+    "无": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yok"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sans"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nessuno"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem"
+          }
+        }
+      }
+    },
+    "无法确定 iCloud 账户状态，可能是网络问题": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to determine iCloud account status, possibly due to network issues"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法确定 iCloud 账户状态，可能是网络问题"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「iCloudアカウントの状態が確認できません。ネットワークの問題の可能性があります」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud hesap durumu belirlenemiyor, muhtemelen ağ sorunu"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de déterminer l'état du compte iCloud, peut-être un problème de réseau"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не удается определить статус учетной записи iCloud, возможно, проблема с сетью"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile determinare lo stato dell'account iCloud, potrebbe essere un problema di rete."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Kontostatus kann nicht bestimmt werden, möglicherweise ein Netzwerkproblem"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se puede determinar el estado de la cuenta de iCloud, posiblemente debido a un problema de red."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não foi possível determinar o estado da conta iCloud, pode ser um problema de rede"
+          }
+        }
+      }
+    },
+    "时间:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间:"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "時間:"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시간:"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zaman:"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps :"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Время:"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo:"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeit:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo:"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo:"
+          }
+        }
+      }
+    },
+    "普通内容": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordinary Content"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通内容"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「通常の内容」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일반 콘텐츠"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıradan İçerik"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenu ordinaire"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Обычный контент"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenuto normale"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allgemeiner Inhalt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenido ordinario"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conteúdo comum"
+          }
+        }
+      }
+    },
+    "智能助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smart Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智能助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「スマートアシスタント」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스마트 어시스턴트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akıllı Asistan"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant intelligent"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Интеллектуальный помощник"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente Intelligente"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intelligenter Assistent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistente Inteligente"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente Inteligente"
+          }
+        }
+      }
+    },
+    "未登录 iCloud，请登录 iCloud 账户": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not logged into iCloud, please log in to your iCloud account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登录 iCloud，请登录 iCloud 账户"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「iCloudにログインしていません。iCloudアカウントにログインしてください」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud'e giriş yapılmadı, lütfen iCloud hesabınıza giriş yapın"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non connecté à iCloud, veuillez vous connecter au compte iCloud"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Не вошли в iCloud, войдите в учетную запись iCloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud non connesso, accedi al tuo account iCloud"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud nicht angemeldet, bitte melden Sie sich bei Ihrem iCloud-Konto an"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud no iniciado sesión, por favor inicia sesión en tu cuenta de iCloud"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud não conectado, faça login na sua conta iCloud"
+          }
+        }
+      }
+    },
+    "未知 iCloud 状态": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown iCloud Status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 状态"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「不明な iCloud ステータス」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알 수 없는 iCloud 상태"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilinmeyen iCloud Durumu"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "État iCloud inconnu"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неизвестное состояние iCloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stato iCloud sconosciuto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unbekannter iCloud-Status"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado de iCloud desconocido"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estado do iCloud desconhecido"
+          }
+        }
+      }
+    },
+    "未知时间": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown time"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知时间"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「未知時間」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알 수 없는 시간"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilinmeyen Zaman"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temps inconnu"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Неизвестное время"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo sconosciuto"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unbekannte Zeit"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo desconocido"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo Desconhecido"
+          }
+        }
+      }
+    },
+    "标题": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标题"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タイトル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제목"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlık"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titre"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заголовок"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titolo"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Título"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Título"
+          }
+        }
+      }
+    },
+    "检查 iCloud 账户状态出错: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check iCloud account status error: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查 iCloud 账户状态出错: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudアカウントステータスのチェックエラー: %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 상태 확인 오류: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Hesap Durumu Kontrol Hatası: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erreur de vérification de l'état du compte iCloud : %@"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ошибка проверки состояния учетной записи iCloud: %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore nel controllo dello stato dell'account iCloud: %@"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehler beim Überprüfen des iCloud-Kontostatus: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error al verificar el estado de la cuenta de iCloud: %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erro ao verificar o status da conta iCloud: %@"
+          }
+        }
+      }
+    },
+    "没有文件": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No files"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有文件"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「ファイルがありません」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosya yok"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun fichier"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нет файлов"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun file"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Dateien"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin archivos"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sem arquivos"
+          }
+        }
+      }
+    },
+    "点击跳转app": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click to jump to app"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点击跳转app"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「アプリにジャンプ」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱으로 바로가기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uygulamaya atla"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cliquez pour passer à l'application"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Нажмите, чтобы перейти в приложение"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clicca per saltare all'app"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zum App springen klicken"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulsa para saltar a la aplicación"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clique para pular para o app"
+          }
+        }
+      }
+    },
+    "的消息": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "的消息"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メッセージ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "의 메시지"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mesaj"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Message"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сообщение"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messaggio"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nachricht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el mensaje"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a mensagem"
+          }
+        }
+      }
+    },
+    "示例": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Example"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "示例"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「例」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예시"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Örnek"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exemple"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Пример"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esempio"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beispiel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ejemplo"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exemplo"
+          }
+        }
+      }
+    },
+    "翻译助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Translation Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻译助手"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻訳アシスタント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "번역 도우미"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çeviri Asistanı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant de traduction"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переводчик"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente di traduzione"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersetzungsassistent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asistente de traducción"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente de Tradução"
+          }
+        }
+      }
+    },
+    "自动": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otomatik"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatique"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Автоматически"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatico"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automático"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automático"
+          }
+        }
+      }
+    },
+    "解密失败!": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decryption failed!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解密失败！"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「復号化に失敗しました！」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "해독 실패!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şifre Çözme Başarısız!"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Décryptage échoué !"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расшифровка не удалась!"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decrittazione fallita!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entschlüsselung fehlgeschlagen!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Descifrado fallido!"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falha na descriptografia!"
+          }
+        }
+      }
+    },
+    "跳转链接:": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jump link:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳转链接："
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ジャンプリンク："
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "점프 링크:"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bağlantıya atla:"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lien de saut :"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Переход по ссылке:"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link di salto:"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Springe zu Link:"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enlace de salto:"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Link de redirecionamento:"
+          }
+        }
+      }
+    },
+    "这是一个加密示例": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is an encryption example"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这是一个加密示例"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これは暗号化の例です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이것은 암호화 예시입니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bir şifreli örnek"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceci est un exemple chiffré"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это пример шифрования"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo è un esempio crittografato"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dies ist ein verschlüsseltes Beispiel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este es un ejemplo cifrado"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este é um exemplo criptografado"
+          }
+        }
+      }
+    },
+    "这是加密的正文部分": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is the encrypted body part"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这是加密的正文部分"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これは暗号化された本文部分です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이것은 암호화된 본문 부분입니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu şifrelenmiş metin bölümü"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceci est la partie principale cryptée"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Это зашифрованная часть текста"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa è la parte del testo principale crittografata."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dies ist der verschlüsselte Textteil."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta es la parte cifrada del texto"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta é a parte criptografada do texto"
+          }
+        }
+      }
+    },
+    "长期": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long-term"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "长期"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "長期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "장기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uzun Vadeli"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long terme"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Долгосрочный"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lungo termine"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langfristig"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Largo plazo"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Longo prazo"
+          }
+        }
+      }
+    },
+    "问智能助手": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ask Smart Assistant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "“问智能助手”"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「スマートアシスタント」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지능형 어시스턴트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yapay Zeka Asistanı"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant IA"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Умный помощник"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente Intelligente"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frag den intelligenten Assistenten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregunta al asistente inteligente"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistente Inteligente"
+          }
+        }
+      }
+    },
+    "附件: 一张图片": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attachment: An image"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "附件: 一张图片"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添付ファイル: 画像1枚"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "첨부: 사진 한 장"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ek: Bir resim"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pièce jointe : une image"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вложение: изображение"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allegato: un'immagine"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anhang: Ein Bild"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivo adjunto: una imagen"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anexo: uma imagem"
+          }
+        }
+      }
+    },
+    "静音分组1小时": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silence group for 1 hour"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静音分组1小时"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「サイレントグループ1時間」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1시간 동안 음소거"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessizlik Bölümü 1 Saat"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silence en groupe pendant 1 heure"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тихая группа 1 час"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silenzio per 1 ora"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stille Gruppe 1 Stunde"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silencio durante 1 hora"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silêncio por 1 hora"
+          }
+        }
+      }
+    },
+    "默认": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デフォルト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기본"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Varsayılan"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Par défaut"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "По умолчанию"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predefinito"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predeterminado"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Padrão"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.1"
+}
