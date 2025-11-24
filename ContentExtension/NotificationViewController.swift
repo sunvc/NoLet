@@ -13,40 +13,54 @@
 import UIKit
 import UserNotifications
 import UserNotificationsUI
-import Defaults
-import AVFoundation
 import WebKit
+import Defaults
 
-
-class NotificationViewController: UIViewController, UNNotificationContentExtension {
+class NotificationViewController: UIViewController, UNNotificationContentExtension, WKNavigationDelegate {
 
     @IBOutlet weak var tipsView: UILabel!
-    @IBOutlet weak var imageView: UIImageView!
-    
-    
-    var contentSize: CGSize{
-        let height = imageView.bounds.height + tipsView.bounds.height
-        return  CGSize(width: view.bounds.width, height: height)
-    }
+    @IBOutlet weak var imageView: UIImageView!      // ←← 新增
+    @IBOutlet var web: WKWebView!
+
+    private var markdownHeight: CGFloat = 0
+    private var imageHeight: CGFloat = 0            // ←← 新增
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.contentMode = .scaleAspectFit
-        imageView.isUserInteractionEnabled = true
-        imageView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+
+        // Tips View
         tipsView.text = ""
-        tipsView.adjustsFontForContentSizeCategory = true
         tipsView.textAlignment = .center
+        tipsView.adjustsFontForContentSizeCategory = true
         tipsView.font = UIFont.preferredFont(ofSize: 16)
         tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
+        
+        // Image View
+        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        imageView.backgroundColor = .clear
+        imageView.clipsToBounds = true
+        imageView.isHidden = true
+        imageView.frame = .init(x: 0, y: 0, width: view.bounds.width, height: 0)
+
+        // Web
+        web.navigationDelegate = self
+        web.isOpaque = false
+        web.backgroundColor = .clear
+        web.scrollView.backgroundColor = .clear
+        web.scrollView.isScrollEnabled = false
+        web.scrollView.contentInsetAdjustmentBehavior = .never
+        web.scrollView.contentInset = .zero
+        web.scrollView.scrollIndicatorInsets = .zero
+
+        preferredContentSize = CGSize(width: view.bounds.width, height: 1)
     }
-    
-    
 
-
+    // MARK: - Notification
     func didReceive(_ notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
-
+        
         // 兼容bark
         if let autoCopy:Bool = userInfo.raw(.autoCopy), autoCopy {
             if let copy: String = userInfo.raw(.copy) {
@@ -57,12 +71,73 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
         }
         
         let imageList = mediaHandler(userInfo: userInfo, name: Params.image.name)
-        if let imageUrl = imageList.first { ImageHandler(imageUrl: imageUrl) }
+        if let imageUrl = imageList.first {
+            ImageHandler(imageUrl: imageUrl)
+        }else{
+            // 无图 → 隐藏
+            imageView.isHidden = true
+            imageView.frame.size.height = 0
+        }
+
+        // MARK: - Markdown 渲染判断
+        if notification.request.content.categoryIdentifier == "markdown",
+           let body:String = userInfo.raw(Params.body),
+           let html = convertMarkdownToHTML(body),
+           let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css") {
+            
+            let baseURL = URL(fileURLWithPath: cssPath).deletingLastPathComponent()
+            web.isHidden = false
+            web.loadHTMLString(html, baseURL: baseURL)
+            
+        } else {
+            // 非 markdown 分类 → WebView 高度为 0
+            web.isHidden = true
+            markdownHeight = 0
+            web.frame = CGRect(x: 0, y: imageView.frame.maxY, width: view.bounds.width, height: 0)
+            updateLayout(webHeight: 0)
+        }
     }
 
-    func didReceive(_ response: UNNotificationResponse, completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption) -> Void) {
+    // MARK: - WebView Height
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+            webView.evaluateJavaScript("document.body.scrollHeight") { [weak self] result, error in
+                guard let self = self, let height = result as? CGFloat else { return }
+                self.updateLayout(webHeight: height)
+            }
+        }
+    }
+
+    private func updateLayout(webHeight: CGFloat) {
+        self.markdownHeight = webHeight
+
+        let tipsHeight = tipsView.bounds.height
+        
+        imageView.frame = CGRect(x: 0, y: tipsHeight,
+                                 width: view.bounds.width,
+                                 height: imageHeight)
+        
+        web.frame = CGRect( x: 0,  y: tipsHeight + imageHeight,
+            width: view.bounds.width,
+            height: webHeight
+        )
+
+        preferredContentSize = CGSize(
+            width: view.bounds.width,
+            height: tipsHeight + imageHeight + webHeight
+        )
+    }
+
+    // MARK: - Actions
+
+    func didReceive(_ response: UNNotificationResponse,
+                    completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption) -> Void) {
+
         let userInfo = response.notification.request.content.userInfo
-        if let action = Identifiers.Action(rawValue: response.actionIdentifier){
+
+        if let action = Identifiers.Action(rawValue: response.actionIdentifier) {
+
             switch action {
             case .copyAction:
                 if let copy = userInfo[Params.copy.name] as? String {
@@ -70,21 +145,50 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
                 } else {
                     UIPasteboard.general.string = response.notification.request.content.body
                 }
-                showTips(text:String(localized: "复制成功"))
+                showTips(text: String(localized: "复制成功"))
+
             case .muteAction:
                 let group = response.notification.request.content.threadIdentifier
-                Defaults[.muteSetting][group] = Date().addingTimeInterval(60 * 60)
-                showTips(text:  String(localized: "[\(group)]分组静音成功"))
+                Defaults[.muteSetting][group] = Date().addingTimeInterval(3600)
+                showTips(text: String(localized: "[\(group)]分组静音成功"))
             }
         }
         completion(.doNotDismiss)
     }
 
+    func showTips(text: String) {
+        Haptic.impact()
+        tipsView.text = text
+
+        tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 35)
+        
+        updateLayout(webHeight: markdownHeight)
+    }
+
+    // MARK: - Markdown → HTML
+    private func convertMarkdownToHTML(_ markdown: String) -> String? {
+
+        guard let htmlBody = PBMarkdown.markdownToHTML(markdown) else { return nil }
+
+        return """
+        <html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+            <link rel="stylesheet" type="text/css" href="markdown.css">
+        </head>
+
+        <body>
+            <article class="markdown-body">
+                \(htmlBody)
+            </article>
+        </body>
+        </html>
+        """
+    }
 }
 
+
 extension NotificationViewController{
-    
-    
     
     func ImageHandler(imageUrl: String) {
         Task.detached(priority: .high) {
@@ -95,19 +199,38 @@ extension NotificationViewController{
 
                 await MainActor.run { [weak self] in
                     guard let self = self else { return }
-                   
+
+                    self.imageView.isHidden = false
                     self.imageView.image = image
-                    self.imageView.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
-                    let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressOnImage(_:)))
+                    self.imageView.frame = CGRect(x: 0, y: self.tipsView.frame.maxY,
+                                                  width: size.width, height: size.height)
+
+                    // ✅ 赋值 imageHeight
+                    self.imageHeight = size.height
+
+                    let longPressGesture = UILongPressGestureRecognizer(
+                        target: self,
+                        action: #selector(self.handleLongPressOnImage(_:))
+                    )
                     self.imageView.addGestureRecognizer(longPressGesture)
-                    
-                    self.preferredContentSize = .init(width: size.width, height: size.height)
+
+                    self.updateLayout(webHeight: self.markdownHeight)
+                }
+            } else {
+                // 无图片 → 高度置 0
+                await MainActor.run { [weak self] in
+                    guard let self = self else { return }
+                    self.imageView.isHidden = true
+                    self.imageHeight = 0
+                    self.imageView.frame = CGRect(x: 0, y: self.tipsView.frame.maxY,
+                                                  width: self.view.bounds.width, height: 0)
+                    self.updateLayout(webHeight: self.markdownHeight)
                 }
             }
         }
     }
-    
 
+    
     func sizecalculation(size: CGSize) -> CGSize {
         let viewWidth = view.bounds.size.width
         let aspectRatio = size.width / size.height
@@ -115,32 +238,7 @@ extension NotificationViewController{
         self.preferredContentSize = CGSize(width: viewWidth, height: viewHeight)
         return self.preferredContentSize
     }
-  
-    func showTips(text: String) {
-        Haptic.impact()
-        tipsView.text = text
-        tipsView.frame = CGRect(x: 0, y: 0,
-                                     width: view.bounds.width,
-                                     height: 35)
-        view.addSubview(tipsView)
-        imageView.frame = CGRect(x: 0, y: 35,
-                                      width: imageView.bounds.width,
-                                      height: imageView.bounds.height)
-        
-        preferredContentSize = contentSize
-        
-    }
-    
 
-    func mediaHandler(userInfo:[AnyHashable:Any], name:String) -> [String]{
-
-        if let media = userInfo[name] as? String{
-            return [media]
-        }else if let medias = userInfo[name] as? [String]{
-            return medias
-        }
-        return []
-    }
     
     // 长按手势回调方法
       @objc func handleLongPressOnImage(_ gesture: UILongPressGestureRecognizer) {
@@ -189,14 +287,16 @@ extension NotificationViewController{
           }
       }
 
+    
+    
+    func mediaHandler(userInfo:[AnyHashable:Any], name:String) -> [String]{
 
-}
-
-
-
-
-extension UIFont {
-    class func preferredFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
-        return UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: size, weight: weight))
+        if let media = userInfo[name] as? String{
+            return [media]
+        }else if let medias = userInfo[name] as? [String]{
+            return medias
+        }
+        return []
     }
+
 }

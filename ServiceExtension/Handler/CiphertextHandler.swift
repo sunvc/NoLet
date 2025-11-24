@@ -112,7 +112,7 @@ class CiphertextHandler:NotificationContentHandler{
 
 		guard let json = CryptoManager(cryptoConfig).decrypt(base64: ciphertext),
 			  let data = json.data(using: .utf8),
-			  let map = JSON(data).dictionaryObject else { throw "JSON parsing failed"  }
+              let map = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { throw "JSON parsing failed"  }
 
 		return map.reduce(into: [AnyHashable: Any]()) { $0[$1.key.lowercased()] = $1.value }
 	}

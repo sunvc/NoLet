@@ -48,7 +48,6 @@ extension Defaults.Keys{
     static let id = Key<String>(.UserDeviceUniqueId, "")
     static let lang = Key<String>(.LocalePreferredLanguagesFirst,"")
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
-    static let widgetURL = Key<String>(.widgetURL, "")
     
     static let feedbackSound = Key<Bool>(.feedbackSound, false)
     static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
@@ -72,7 +71,6 @@ enum NoletKey:String, CaseIterable{
     case UserDeviceUniqueId
     case LocalePreferredLanguagesFirst
     case allMessagecount
-    case widgetURL
     case serverArrayStroage
     case serverArrayCloudStroage
     case Meowbadgemode
@@ -83,11 +81,6 @@ enum NoletKey:String, CaseIterable{
     case AssistantAccount
     case moreMessageCache
     case CryptoSettingFieldsList
-    case SpeakTTSConfig
-    case SpeakVoiceList
-    case SpeakEndpoint
-    case SpeakEndpointExpiry
-    case SpeakVoicesCacheExpiry
     case feedbackSound
     case limitScanningArea
     case limitMessageLine

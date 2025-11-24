@@ -6,5 +6,5 @@
 
 CFBundleDisplayName = "NoLet";
 NSPhotoLibraryAddUsageDescription = "이 앱은 사진을 저장하기 위해 사진 라이브러리에 접근해야 합니다";
-NSCameraUsageDescription = "QR 코드를 인식하기 위해 카메라를 사용해야 합니다";
-NSPhotoLibraryUsageDescription = "당신의 앨범에 접근해야 합니다";
+NSCameraUsageDescription = "QR 코드를 스캔하기 위해 카메라에 접근해야 합니다";
+NSPhotoLibraryUsageDescription = "사진 라이브러리에 접근해야 합니다";

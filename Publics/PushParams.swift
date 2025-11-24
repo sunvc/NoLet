@@ -16,7 +16,7 @@ enum Params: String, CaseIterable{
     case  id, title, subtitle, body, from, host, group, url, category, level, ttl, markdown,
           index, count,
           sound, volume, badge, call,
-          callback, autoCopy, copy, widget,
+          callback, autoCopy, copy,
           icon, image, saveAlbum,
           cipherText, cipherNumber, iv,
           aps, alert, caf
@@ -110,24 +110,6 @@ extension Dictionary where Key == AnyHashable, Value == Any{
             guard let keyStr = key as? String else { return true }
             return !Params.allCases.contains { $0.name == keyStr }
         }
-    }
-    
-    func voiceText() -> String{
-        var text:[String] = []
-        
-        if let title:String = self.raw(Params.title){
-            text.append(title)
-        }
-        
-        if let subtitle:String = self.raw(Params.subtitle){
-            text.append(subtitle)
-        }
-        
-        if let body:String = self.raw(Params.body){
-            text.append(PBMarkdown.plain(body))
-        }
-        
-        return text.joined(separator: ",")
     }
 }
 

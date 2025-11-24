@@ -110,7 +110,6 @@ class NCONFIG {
 
     
     enum FolderType: String, CaseIterable{
-        case voice
         case ptt
         case image
         case tem
@@ -142,18 +141,18 @@ class NCONFIG {
             return FileManager.default.temporaryDirectory
         }
         
-        let voicesDirectory = CONTAINER.appendingPathComponent(name.rawValue)
+        let dir = CONTAINER.appendingPathComponent(name.rawValue)
         
         // If the directory doesn't exist, create it
-        if !FileManager.default.fileExists(atPath: voicesDirectory.path) {
+        if !FileManager.default.fileExists(atPath: dir.path) {
             do {
-                try FileManager.default.createDirectory(at: voicesDirectory, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 NLog.error("Failed to create images directory: \(error.localizedDescription)")
                 return nil
             }
         }
-        return voicesDirectory
+        return dir
     }
     
     class func files(in folder: URL) -> [URL] {

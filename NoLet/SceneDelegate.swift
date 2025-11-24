@@ -12,7 +12,6 @@
 
 import UIKit
 import SwiftUI
-import WidgetKit
 import GRDB
 import Defaults
 
@@ -97,7 +96,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         UIApplication.shared.shortcutItems = QuickAction.allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        WidgetCenter.shared.reloadAllTimelines()
     }
 
     

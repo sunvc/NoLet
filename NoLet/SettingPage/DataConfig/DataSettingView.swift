@@ -410,11 +410,9 @@ struct DataSettingView: View {
                         self.showDriveCheckLoading = true
                         if let cache = ImageManager.defaultCache(),
                            let fileUrl = NCONFIG.getDir(.sounds),
-                           let voiceUrl = NCONFIG.getDir(.voice),
                            let cacheUrl = NCONFIG.getDir(.tem) {
                             cache.clearDiskCache()
                             manager.clearContentsOfDirectory(at: fileUrl)
-                            manager.clearContentsOfDirectory(at: voiceUrl)
                             manager.clearContentsOfDirectory(at: cacheUrl)
                             Defaults[.imageSaves] = []
                         }
@@ -487,16 +485,14 @@ struct DataSettingView: View {
         if
            let soundsUrl = NCONFIG.getDir(.sounds),
            let imageUrl = NCONFIG.getDir(.image),
-           let voiceUrl = NCONFIG.getDir(.voice),
            let cacheFileUrl = NCONFIG.getDir(.tem){
             
-           
+            
             self.totalSize = manager.calculateDirectorySize(at: CONTAINER)
-
+            
             self.cacheSize =  manager.calculateDirectorySize(at: soundsUrl) +  manager.calculateDirectorySize(at: imageUrl) +
-            manager.calculateDirectorySize(at: voiceUrl) +
             manager.calculateDirectorySize(at: cacheFileUrl)
-
+            
         }
     }
 

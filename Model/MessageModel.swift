@@ -126,24 +126,6 @@ extension Message{
         return String(localized:"即将过期")
     }
     
-    var voiceText: String{
-        var text:[String] = []
-        
-        if let title{
-            text.append(title)
-        }
-        
-        if let subtitle{
-            text.append(subtitle)
-        }
-        
-        if let body{
-            text.append(PBMarkdown.plain(body))
-        }
-        
-        return text.joined(separator: ",")
-    }
-
 
     func accessibilityValue() -> String{
         var text:[String] = []

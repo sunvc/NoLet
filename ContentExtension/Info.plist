@@ -7,7 +7,10 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>UNNotificationExtensionCategory</key>
-			<string>myNotificationCategory</string>
+			<array>
+				<string>markdown</string>
+				<string>myNotificationCategory</string>
+			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>0.01</real>
 			<key>UNNotificationExtensionUserInteractionEnabled</key>

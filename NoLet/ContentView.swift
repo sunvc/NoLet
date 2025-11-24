@@ -13,7 +13,6 @@
 import SwiftUI
 import GRDB
 import UniformTypeIdentifiers
-import WidgetKit
 import Defaults
 import StoreKit
 

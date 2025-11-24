@@ -60,10 +60,6 @@ class ActionHandler: NotificationContentHandler{
         }
         
         
-        if let widget:String = bestAttemptContent.userInfo.raw(.widget), let _ = URL(string: widget){
-            Defaults[.widgetURL] = widget
-        }
-        
         let mores = Defaults[.moreMessageCache]
         if mores.count > 0{
             let oneHourAgo = Date().addingTimeInterval(-3600)

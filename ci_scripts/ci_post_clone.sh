@@ -23,16 +23,12 @@ echo "✅ Repository cloned successfully"
 #----- 2. Prepare Paths -------------------------------------------------------
 
 APP_FILE_PATH="${CI_PRIMARY_REPOSITORY_PATH}/Publics/${SAFE_FILE_NAME}"
-VOICE_FILE_PATH="${CI_PRIMARY_REPOSITORY_PATH}/Managers/${VOICE_FILE_NAME}"
-
 SRC_APP_FILE="${GITHUB_PROJECT_SAFE}/${SAFE_FILE_NAME}"
-SRC_VOICE_FILE="${GITHUB_PROJECT_SAFE}/${VOICE_FILE_NAME}"
-
 
 #----- 3. Remove Old Files ----------------------------------------------------
 
 echo "Removing old target files..."
-rm -f "$APP_FILE_PATH" "$VOICE_FILE_PATH"
+rm -f "$APP_FILE_PATH"
 
 
 #----- 4. Move Files ----------------------------------------------------------
@@ -57,7 +53,6 @@ move_file() {
 }
 
 move_file "$SRC_APP_FILE"   "$APP_FILE_PATH"
-move_file "$SRC_VOICE_FILE" "$VOICE_FILE_PATH"
 
 
 #----- 5. Done ----------------------------------------------------------------

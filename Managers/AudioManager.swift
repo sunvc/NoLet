@@ -244,11 +244,7 @@ extension AudioManager{
     }
     
     /// 通用文件保存方法
-    func saveSound(
-        url sourceUrl: URL,
-        name lastPath: String? = nil,
-        maxNameLength:Int = 13
-     ) {
+    func saveSound(  url sourceUrl: URL, name lastPath: String? = nil,  maxNameLength:Int = 13 ) {
         // 获取 App Group 的共享铃声目录路径
         guard let groupDirectoryUrl = NCONFIG.getDir(.sounds) else { return }
 
@@ -307,12 +303,9 @@ extension AudioManager{
             let fileName = inputURL.deletingPathExtension().lastPathComponent
             
             let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).caf")
-            try await AudioTranscoder.convertToAudio(inputURL: inputURL,
-                                                   outputURL: outputURL,
-                                                   fileTyle: .caf,
-                                                   maxDuration: 29.9,
-                                                   sampleRate: 22050.0)
-            return outputURL
+     
+            
+            return try await AudioConversion.toCAFShort(inputURL: inputURL, outputURL: outputURL,  maxSeconds: 29.9)
             
         }catch{
             return nil
@@ -397,117 +390,6 @@ extension AudioManager{
 }
 
 
-// MARK: - 音频转码器 Actor
-actor AudioTranscoder {
-        private let writer: AVAssetWriter
-        private let writerInput: AVAssetWriterInput
-        private let readerOutput: AVAssetReaderTrackOutput
-        private var started = false
-
-        init(writer: AVAssetWriter, writerInput: AVAssetWriterInput, readerOutput: AVAssetReaderTrackOutput) {
-            self.writer = writer
-            self.writerInput = writerInput
-            self.readerOutput = readerOutput
-        }
-
-        func startProcessing() async {
-            guard !started else { return }
-            started = true
-            await processLoop()
-        }
-
-        private func isReady() -> Bool {
-            writerInput.isReadyForMoreMediaData
-        }
-
-        private func copyNextSampleBuffer() -> CMSampleBuffer? {
-            readerOutput.copyNextSampleBuffer()
-        }
-
-        private func append(_ sampleBuffer: CMSampleBuffer) {
-            writerInput.append(sampleBuffer)
-        }
-
-        private func markFinished() {
-            writerInput.markAsFinished()
-        }
-
-        private func finishWriting() async {
-            let path = self.writer.outputURL.path
-            await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
-                writer.finishWriting {
-                    print("✅ 转换完成：\(path)")
-                    cont.resume()
-                }
-            }
-        }
-
-        private func processLoop() async {
-            while true {
-                if isReady() {
-                    if let sampleBuffer = copyNextSampleBuffer() {
-                        append(sampleBuffer)
-                    } else {
-                        markFinished()
-                        await finishWriting()
-                        break
-                    }
-                } else {
-                    try? await Task.sleep(nanoseconds: 10_000_000) // 10ms 等待 writer 就绪
-                }
-            }
-        }
-
-        static func convertToAudio(inputURL: URL,
-                                 outputURL: URL,
-                                 fileTyle: AVFileType,
-                                 maxDuration: Double = 30,
-                                 sampleRate: Double = 44100.0) async throws {
-            let asset = AVURLAsset(url: inputURL)
-            
-            guard let reader = try? AVAssetReader(asset: asset) else {
-                throw NSError(domain: "AudioConvert", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法读取输入文件"])
-            }
-
-            guard let audioTrack = try await asset.loadTracks(withMediaType: .audio).first else {
-                throw NSError(domain: "AudioConvert", code: -2, userInfo: [NSLocalizedDescriptionKey: "没有音频轨道"])
-            }
-
-            //  计算裁剪时间范围
-            let assetDuration = try await asset.load(.duration)
-            let limitDuration = CMTime(seconds: maxDuration, preferredTimescale: assetDuration.timescale)
-            let finalDuration = min(assetDuration, limitDuration)
-            let timeRange = CMTimeRange(start: .zero, duration: finalDuration)
-
-            // 创建 Reader，并设置时间范围
-            let readerOutput = AVAssetReaderTrackOutput(track: audioTrack, outputSettings: [
-                AVFormatIDKey: kAudioFormatLinearPCM
-            ])
-            reader.add(readerOutput)
-            reader.timeRange = timeRange
-
-            //  创建 Writer
-            let writer = try AVAssetWriter(outputURL: outputURL, fileType: .caf)
-            let audioSettings: [String: Any] = [
-                AVFormatIDKey: kAudioFormatAppleIMA4,
-                AVNumberOfChannelsKey: 1,
-                AVSampleRateKey: sampleRate
-            ]
-            let writerInput = AVAssetWriterInput(mediaType: .audio, outputSettings: audioSettings)
-            writer.add(writerInput)
-
-            // 启动读写
-            writer.startWriting()
-            reader.startReading()
-            writer.startSession(atSourceTime: .zero)
-
-            // 启动转码器
-            let transcoder = AudioTranscoder(writer: writer, writerInput: writerInput, readerOutput: readerOutput)
-            await transcoder.startProcessing()
-        }
-    
-}
-
 extension AudioManager{
     func downloadSounds() async throws {
         
@@ -546,11 +428,8 @@ extension AudioManager{
         try? FileManager.default.removeItem(at: destinationURL)
     }
     
-    func moveFiles(
-        from sourceDir: URL,
-        to destinationDir: URL,
-        skip skipFiles: [String]   // 文件名在这个列表里 → 跳过不移动
-    ) {
+    func moveFiles( from sourceDir: URL,  to destinationDir: URL, skip skipFiles: [String] ) {
+        
         let fileManager = FileManager.default
 
         // Ensure destination exists

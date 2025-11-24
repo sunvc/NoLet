@@ -5,8 +5,7 @@
 //
 
 import Foundation
-import AVFAudio
-import AudioToolbox
+import AVFoundation
 import UserNotifications
 import CallKit
 import LiveCommunicationKit
@@ -37,7 +36,7 @@ class CallHandler: NotificationContentHandler {
         }()
         
         // 尝试获取延长铃声 URL
-        guard let longSoundUrl = getLongSound(soundName: soundName, soundType: soundType) else {
+        guard let longSoundUrl = await getLongSound(soundName: soundName, soundType: soundType) else {
             return bestAttemptContent
         }
         // Fallback on earlier versions
@@ -56,7 +55,7 @@ class CallHandler: NotificationContentHandler {
 
 extension CallHandler{
 
-    func getLongSound(soundName: String, soundType: String) -> URL? {
+    func getLongSound(soundName: String, soundType: String) async -> URL? {
         guard let soundsDirectoryUrl else { return nil }
         
         // 已经存在处理过的长铃声，则直接返回
@@ -72,7 +71,7 @@ extension CallHandler{
         guard !path.isEmpty else {  return nil }
         
         // 将原始铃声处理成30s的长铃声，并缓存起来
-        return mergeCAFFilesToDuration(inputFile: URL(fileURLWithPath: path))
+        return await mergeCAFFilesToDuration(inputFile: URL(fileURLWithPath: path))
     }
 
     /// - Description:将输入的音频文件重复为指定时长的音频文件
@@ -80,63 +79,29 @@ extension CallHandler{
     ///   - inputFile: 原始铃声文件路径
     ///   - targetDuration: 重复的时长
     /// - Returns: 长铃声文件路径
-    func mergeCAFFilesToDuration(inputFile: URL, targetDuration: TimeInterval = 30) -> URL? {
+    func mergeCAFFilesToDuration(inputFile: URL, targetDuration: TimeInterval = 30) async -> URL {
         guard let soundsDirectoryUrl else {
-            return nil
+            return inputFile
         }
-        let longSoundName = "\(NCONFIG.longSoundPrefix).\(inputFile.lastPathComponent)"
-        let longSoundPath = soundsDirectoryUrl.appendingPathComponent(longSoundName)
+        
+        let longSoundPath = soundsDirectoryUrl.appendingPathComponent(
+            "\(NCONFIG.longSoundPrefix).\(inputFile.lastPathComponent)"
+        )
         
         do {
-            // 打开输入文件并获取音频格式
-            let audioFile = try AVAudioFile(forReading: inputFile)
-            let audioFormat = audioFile.processingFormat
-            let sampleRate = audioFormat.sampleRate
-
-            // 计算目标帧数
-            let targetFrames = AVAudioFramePosition(targetDuration * sampleRate)
-            var currentFrames: AVAudioFramePosition = 0
-            // 创建输出音频文件
-            let outputAudioFile = try AVAudioFile(forWriting: longSoundPath, settings: audioFormat.settings)
             
-            // 循环读取文件数据，拼接到目标时长
-            while currentFrames < targetFrames {
-                // 每次读取整个文件的音频数据
-                guard let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: AVAudioFrameCount(audioFile.length)) else {
-                    // 出错了就终止，避免死循环
-                    return nil
-                }
-                
-                try audioFile.read(into: buffer)
-
-                // 计算剩余所需帧数
-                let remainingFrames = targetFrames - currentFrames
-                if AVAudioFramePosition(buffer.frameLength) > remainingFrames {
-                    // 如果当前缓冲区帧数超出所需，截取剩余部分
-                    let truncatedBuffer = AVAudioPCMBuffer(pcmFormat: buffer.format, frameCapacity: AVAudioFrameCount(remainingFrames))!
-                    let channelCount = Int(buffer.format.channelCount)
-                    for channel in 0..<channelCount {
-                        let sourcePointer = buffer.floatChannelData![channel]
-                        let destinationPointer = truncatedBuffer.floatChannelData![channel]
-                        memcpy(destinationPointer, sourcePointer, Int(remainingFrames) * MemoryLayout<Float>.size)
-                    }
-                    truncatedBuffer.frameLength = AVAudioFrameCount(remainingFrames)
-                    try outputAudioFile.write(from: truncatedBuffer)
-                    break
-                } else {
-                    // 否则写入整个缓冲区
-                    try outputAudioFile.write(from: buffer)
-                    currentFrames += AVAudioFramePosition(buffer.frameLength)
-                }
-                
-                // 重置输入文件读取位置
-                audioFile.framePosition = 0
-            }
-            return longSoundPath
+            return try await AudioConversion.toCAFLong(inputURL: inputFile,
+                                                         outputURL: longSoundPath,
+                                                         bitrate: 128_000,
+                                                         sampleRate: 44_100,
+                                                         channels: 2,
+                                                         targetSeconds: targetDuration)
         } catch {
             NLog.error("Error processing CAF file: \(error)")
-            return nil
+            return inputFile
         }
     }
+    
+   
 }
 
