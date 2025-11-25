@@ -648,7 +648,12 @@ extension AppManager{
         if let sign = sign{
             let config: CryptoModelConfig = CryptoModelConfig(inputText: sign) ?? .data
             result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
+        }else{
+            result["X-Signature"] = CryptoManager(.data)
+                .encrypt(data)?.safeBase64
         }
+        
+        
         
         return result
     }
