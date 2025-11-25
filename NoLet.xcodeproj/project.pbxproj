@@ -91,6 +91,10 @@
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 		BAE61E492ED55B55009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
 		BAE61E4A2ED55B55009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C22EC6526E0003F7A3 /* MarkdownUI */; };
+		BAE6200C2ED5B42D009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */; };
+		BAE6200D2ED5B42D009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA12EC5A9F10003F7A3 /* Splash */; };
+		BAE6200E2ED5B42D009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA42EC5AC030003F7A3 /* MarkdownUI */; };
+		BAE6200F2ED5B42D009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C42EC6526E0003F7A3 /* Splash */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -514,6 +518,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAE6200F2ED5B42D009DABA1 /* Splash in Frameworks */,
+				BAE6200E2ED5B42D009DABA1 /* MarkdownUI in Frameworks */,
+				BAE6200D2ED5B42D009DABA1 /* Splash in Frameworks */,
+				BAE6200C2ED5B42D009DABA1 /* MarkdownUI in Frameworks */,
 				BAE61E4A2ED55B55009DABA1 /* MarkdownUI in Frameworks */,
 				BAE61E492ED55B55009DABA1 /* Splash in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
