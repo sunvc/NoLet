@@ -1,1482 +1,482 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "iCloud 服务暂时不可用，请稍后再试": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud-Dienste sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
+  "sourceLanguage" : "en",
+  "strings" : {
+    "iCloud 服务暂时不可用，请稍后再试" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud service is temporarily unavailable, please try again later."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud service is temporarily unavailable, please try again later."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「iCloudサービスが一時的に利用できません。後ほどもう一度お試しください」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Los servicios de iCloud no están disponibles temporalmente. Por favor, inténtalo de nuevo más tarde."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud est temporairement indisponible, veuillez réessayer plus tard."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud temporaneamente non disponibile, riprova più tardi."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「iCloudサービスが一時的に利用できません。後ほどもう一度お試しください」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud está temporariamente indisponível. Tente novamente mais tarde."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Служба iCloud временно недоступна, повторите попытку позже"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud hizmeti geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud service is temporarily unavailable, please try again later."
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 服務暫時不可用，請稍後再試"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 服務暫時無法使用，請稍後再試"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud service is temporarily unavailable, please try again later."
           }
         }
       }
     },
-    "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud-Zugriff eingeschränkt, möglicherweise durch elterliche Kontrolle oder MDM-Geräteverwaltungsrichtlinien verursacht"
+    "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud access restricted, possibly due to parental controls or MDM device management policies."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies."
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudアクセス制限、保護者による制限またはMDMデバイス管理ポリシーによる可能性があります"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acceso a iCloud restringido, posiblemente debido a controles parentales o políticas de administración de dispositivos móviles (MDM)."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 접근이 제한되었습니다. 이는 가족 제어 또는 MDM 장치 관리 정책으로 인해 발생할 수 있습니다."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accès iCloud restreint, peut-être dû au contrôle parental ou à une stratégie de gestion des appareils mobiles (MDM)"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesso a iCloud limitato, potrebbe essere causato dal controllo parentale o dalle politiche di gestione dei dispositivi mobili (MDM)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloudアクセス制限、保護者による制限またはMDMデバイス管理ポリシーによる可能性があります"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 접근이 제한되었습니다. 이는 가족 제어 또는 MDM 장치 관리 정책으로 인해 발생할 수 있습니다."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acesso ao iCloud restrito, possivelmente devido ao controle parental ou políticas de gerenciamento de dispositivos móveis (MDM)"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ограничен доступ к iCloud, возможно из-за родительского контроля или политики управления устройствами MDM."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud erişimi kısıtlı, ebeveyn kontrolü veya MDM cihaz yönetimi politikasından kaynaklanıyor olabilir"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies causing"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud access restricted, possibly due to parental controls or MDM device management policies causing"
           }
         }
       }
     },
-    "iCloud 账户可用": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud-Konto verfügbar"
+    "iCloud 账户可用" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud Account Available"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Account Available"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「iCloudアカウントが利用可能」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuenta de iCloud disponible"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 계정 사용 가능"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compte iCloud disponible"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account iCloud disponibile"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「iCloudアカウントが利用可能」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 계정 사용 가능"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conta iCloud disponível"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Учетная запись iCloud доступна"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Hesabı Kullanılabilir"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 账户可用"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 帳戶可用"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 帳戶可用"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 账户可用"
           }
         }
       }
     },
-    "保存失败": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Speichern fehlgeschlagen"
+    "保存失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Failed"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save Failed"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失敗"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al guardar"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장 실패"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Échec de la sauvegarde"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvataggio fallito"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失敗"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 실패"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falha ao salvar"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сохранение не удалось"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaydetme Başarısız"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失败"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失敗"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失敗"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失败"
           }
         }
       }
     },
-    "保存成功": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erfolgreich gespeichert"
+    "保存成功" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Successful"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save Successful"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存成功"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardado con éxito"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장 성공"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sauvegarde réussie"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvato con successo"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 성공"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvo com sucesso"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сохранение успешно"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Başarıyla kaydedildi"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存成功"
           }
         }
       }
     },
-    "参数不全": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parameter unvollständig"
+    "参数不全" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing parameters"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Missing parameters"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パラメータが不完全です"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parámetros incompletos"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매개변수가 불완전합니다"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paramètres incomplets"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parametri incompleti"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "パラメータが不完全です"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "매개변수가 불완전합니다"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parâmetros incompletos"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Неполные параметры"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parametreler eksik"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "参数不全"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "參數不全"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "參數不全"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "参数不全"
           }
         }
       }
     },
-    "图片key重复": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bildschlüssel wiederholt"
+    "图片key重复" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image key duplicate"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image key duplicate"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像キー重複"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clave de imagen duplicada"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 키 중복"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clé d'image dupliquée"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiave immagine duplicata"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像キー重複"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이미지 키 중복"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chave de imagem duplicada"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дублирование ключа изображения"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resim anahtarı tekrarlandı"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图片key重复"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "圖片key重複"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "圖片key重複"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片key重复"
           }
         }
       }
     },
-    "复制": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kopieren"
+    "复制" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copy"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiar"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copier"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copia"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コピー"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "복사"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiar"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Копировать"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kopyala"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "複製"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "複製"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
           }
         }
       }
     },
-    "无": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kein"
+    "无" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "없음"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "sans"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "nessuno"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "없음"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yok"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无"
           }
         }
       }
     },
-    "无法确定 iCloud 账户状态，可能是网络问题": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud-Kontostatus kann nicht bestimmt werden, möglicherweise ein Netzwerkproblem"
+    "无法确定 iCloud 账户状态，可能是网络问题" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to determine iCloud account status, possibly due to network issues"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unable to determine iCloud account status, possibly due to network issues"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「iCloudアカウントの状態が確認できません。ネットワークの問題の可能性があります」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se puede determinar el estado de la cuenta de iCloud, posiblemente debido a un problema de red."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossible de déterminer l'état du compte iCloud, peut-être un problème de réseau"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile determinare lo stato dell'account iCloud, potrebbe essere un problema di rete."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「iCloudアカウントの状態が確認できません。ネットワークの問題の可能性があります」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Não foi possível determinar o estado da conta iCloud, pode ser um problema de rede"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не удается определить статус учетной записи iCloud, возможно, проблема с сетью"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud hesap durumu belirlenemiyor, muhtemelen ağ sorunu"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无法确定 iCloud 账户状态，可能是网络问题"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無法確定 iCloud 帳戶狀態，可能是網路問題"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無法確定 iCloud 帳戶狀態，可能是網絡問題"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法确定 iCloud 账户状态，可能是网络问题"
           }
         }
       }
     },
-    "普通内容": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allgemeiner Inhalt"
+    "未登录 iCloud，请登录 iCloud 账户" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not logged into iCloud, please log in to your iCloud account"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ordinary Content"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「iCloudにログインしていません。iCloudアカウントにログインしてください」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenido ordinario"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인하세요."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenu ordinaire"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenuto normale"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「通常の内容」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "일반 콘텐츠"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conteúdo comum"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Обычный контент"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sıradan İçerik"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "普通内容"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "普通內容"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "普通內容"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未登录 iCloud，请登录 iCloud 账户"
           }
         }
       }
     },
-    "未登录 iCloud，请登录 iCloud 账户": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud nicht angemeldet, bitte melden Sie sich bei Ihrem iCloud-Konto an"
+    "未知 iCloud 状态" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown iCloud Status"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not logged into iCloud, please log in to your iCloud account"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「不明な iCloud ステータス」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud no iniciado sesión, por favor inicia sesión en tu cuenta de iCloud"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 iCloud 상태"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non connecté à iCloud, veuillez vous connecter au compte iCloud"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud non connesso, accedi al tuo account iCloud"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「iCloudにログインしていません。iCloudアカウントにログインしてください」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인하세요."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud não conectado, faça login na sua conta iCloud"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не вошли в iCloud, войдите в учетную запись iCloud"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud'e giriş yapılmadı, lütfen iCloud hesabınıza giriş yapın"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未登录 iCloud，请登录 iCloud 账户"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未登錄 iCloud，請登錄 iCloud 帳戶"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未登入 iCloud，請登入 iCloud 帳戶"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知 iCloud 状态"
           }
         }
       }
     },
-    "未知 iCloud 状态": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unbekannter iCloud-Status"
+    "检查 iCloud 账户状态出错: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check iCloud account status error: %@"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown iCloud Status"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloudアカウントステータスのチェックエラー: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estado de iCloud desconocido"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud 계정 상태 확인 오류: %@"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "État iCloud inconnu"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stato iCloud sconosciuto"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「不明な iCloud ステータス」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "알 수 없는 iCloud 상태"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estado do iCloud desconhecido"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Неизвестное состояние iCloud"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bilinmeyen iCloud Durumu"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 状态"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 狀態"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 狀態"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查 iCloud 账户状态出错: %@"
           }
         }
       }
     },
-    "检查 iCloud 账户状态出错: %@": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fehler beim Überprüfen des iCloud-Kontostatus: %@"
+    "没有文件" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No files"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Check iCloud account status error: %@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「ファイルがありません」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al verificar el estado de la cuenta de iCloud: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 없음"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erreur de vérification de l'état du compte iCloud : %@"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Errore nel controllo dello stato dell'account iCloud: %@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloudアカウントステータスのチェックエラー: %@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 계정 상태 확인 오류: %@"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erro ao verificar o status da conta iCloud: %@"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ошибка проверки состояния учетной записи iCloud: %@"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud Hesap Durumu Kontrol Hatası: %@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "检查 iCloud 账户状态出错: %@"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "檢查 iCloud 帳戶狀態出錯: %@"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "檢查 iCloud 帳戶狀態出錯: %@"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有文件"
           }
         }
       }
     },
-    "没有文件": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keine Dateien"
+    "解密失败!" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Decryption failed!"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No files"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「復号化に失敗しました！」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin archivos"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "해독 실패!"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun fichier"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun file"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「ファイルがありません」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "파일 없음"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem arquivos"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нет файлов"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dosya yok"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "没有文件"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "沒有文件"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "沒有文件"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "解密失败！"
           }
         }
       }
     },
-    "解密失败!": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entschlüsselung fehlgeschlagen!"
+    "静音分组1小时" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silence group for 1 hour"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Decryption failed!"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「サイレントグループ1時間」"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¡Descifrado fallido!"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1시간 동안 음소거"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Décryptage échoué !"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Decrittazione fallita!"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「復号化に失敗しました！」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "해독 실패!"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falha na descriptografia!"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Расшифровка не удалась!"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Şifre Çözme Başarısız!"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "解密失败！"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "解密失敗！"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "解密失敗！"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "静音分组1小时"
           }
         }
       }
     },
-    "静音分组1小时": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stille Gruppe 1 Stunde"
+    "默认" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silence group for 1 hour"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silencio durante 1 hora"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silence en groupe pendant 1 heure"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silenzio per 1 ora"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「サイレントグループ1時間」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1시간 동안 음소거"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silêncio por 1 hora"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Тихая группа 1 час"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sessizlik Bölümü 1 Saat"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "静音分组1小时"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "靜音分組1小時"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "靜音分組1小時"
-          }
-        }
-      }
-    },
-    "默认": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Standard"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Default"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Predeterminado"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Par défaut"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Predefinito"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "デフォルト"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "기본"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Padrão"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "По умолчанию"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Varsayılan"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默认"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默認"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "默認"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认"
           }
         }
       }
     }
   },
-  "version": "1.1"
+  "version" : "1.1"
 }

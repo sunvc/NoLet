@@ -43,5 +43,3 @@ public enum Domap{
     
    
 }
-
-

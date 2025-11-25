@@ -82,18 +82,7 @@ enum Identifiers:String, CaseIterable, Codable {
 
         UNUserNotificationCenter.current().setNotificationCategories(Set(categories))
     }
-
-
-    var name: String {
-        switch self {
-        case .myNotificationCategory:
-            return String(localized: "普通内容")
-        case .markdown:
-            return "Markdown"
-        }
-    }
 }
-
 
 
 // MARK: - MessageAction model

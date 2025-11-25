@@ -78,6 +78,18 @@ struct CategoryParamsProvider: DynamicOptionsProvider{
     
 }
 
+extension Identifiers{
+        var name: String {
+            switch self {
+            case .myNotificationCategory:
+                return String(localized: "普通内容")
+            case .markdown:
+                return "Markdown"
+            }
+        }
+}
+
+
 
 struct APIPushToDeviceResponse: Codable {
     let code: Int

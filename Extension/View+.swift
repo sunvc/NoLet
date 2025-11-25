@@ -195,32 +195,6 @@ struct TextFieldModifier: ViewModifier {
 	}
 }
 
-// MARK: - LoadingPress
-struct LoadingPress: ViewModifier{
-	
-	var show:Bool = false
-	var title:String = ""
-	
-	func body(content: Content) -> some View {
-		content
-			.blur(radius: show ? 10 : 0)
-			.disabled(show)
-			.overlay {
-				if show{
-					VStack{
-						
-						ProgressView()
-							.scaleEffect(3)
-							.padding()
-						
-						Text(title)
-							.font(.title3)
-					}
-					.toolbar(.hidden, for: .tabBar)
-				}
-			}
-	}
-}
 
 struct ViewExtractHelper: UIViewRepresentable {
     var result:(UIView) -> ()
@@ -345,9 +319,6 @@ extension View {
         self.modifier(TextFieldModifier( icon: icon,background: background, complete: complete))
     }
     
-	func loading(_ show:Bool, _ title:String = "")-> some View{
-		modifier(LoadingPress(show: show, title: title))
-	}
     @ViewBuilder
     func viewExtractor(result: @escaping (UIView)-> ()) -> some View{
         self

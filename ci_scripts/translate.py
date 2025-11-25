@@ -26,7 +26,7 @@ class Translate:
     info_file: str = "InfoPlist.strings"
     lang_file: str = "project.pbxproj"
     screen_file: str = "LaunchScreen.strings"
-
+    lang_keys:list[str] = []
     client: AsyncOpenAI = {}
 
     def __init__(self, host="https://api.deepseek.com", mode="deepseek-chat", key=None, root_dir: str = "../",
@@ -73,6 +73,7 @@ class Translate:
         tasks = []
         skip_count = 0
         delete_keys = []
+
         for key in results:
             if results.get(key,{}).get("extractionState") == "stale":
                 delete_keys.append(key)
@@ -102,6 +103,12 @@ class Translate:
         for key in delete_keys:
             del results[key]
             print(f" {key} deleted")
+
+
+        for key in results:
+            localizations = results[key].get("localizations", {})
+            localizations = {k: v for k, v in localizations.items() if k in self.lang_keys}
+            results[key]["localizations"] = localizations
 
         data["strings"] = results
 
@@ -159,6 +166,7 @@ class Translate:
             regions_raw = match.group(1)
             regions = [r.strip().strip('"') for r in regions_raw.split(",") if
                        r.strip() and r.strip().strip('"') != "Base"]
+            self.lang_keys = regions
             return regions
         return []
 

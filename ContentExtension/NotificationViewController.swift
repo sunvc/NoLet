@@ -300,3 +300,11 @@ extension NotificationViewController{
     }
 
 }
+
+// MARK: - Dynamic Font Extension
+extension UIFont {
+    class func preferredFont(ofSize size: CGFloat, weight: Weight = .regular) -> UIFont {
+        UIFontMetrics.default.scaledFont(for: UIFont.systemFont(ofSize: size, weight: weight))
+    }
+}
+

@@ -643,9 +643,9 @@ extension AppManager{
             "Authorization": Defaults[.id]
         ]
         
-        let data = "\(Date().timeIntervalSince1970)"
+        let data = "\(Int(Date().timeIntervalSince1970))"
         
-        if let sign = sign{
+        if let sign = sign , sign.count > 10{
             let config: CryptoModelConfig = CryptoModelConfig(inputText: sign) ?? .data
             result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
         }else{
