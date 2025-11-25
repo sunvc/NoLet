@@ -148,6 +148,7 @@ struct PayWallHighView: View {
                     }
             }
             .frame(maxHeight: .infinity)
+            .scaleEffect(1.2)
             .offset(x: 20)
             /// Progress Blur Mask
             .mask {
@@ -156,29 +157,32 @@ struct PayWallHighView: View {
                     .white.opacity(0.9),
                     .white.opacity(0.7),
                     .white.opacity(0.4),
+                    .white.opacity(0.2),
                     .clear
                 ], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()
-                .padding(.bottom, -100)
+                .padding(.bottom, )
 
             }
 
             /// Replace with your App Information
             VStack(spacing: 6) {
 
-                Text(NCONFIG.AppName)
+                Text("开发者支持")
                     .font(.largeTitle.bold())
-                
-                
-                Text(String(localized: "本App免费使用,赞助不会开启任何新功能") )
-                .font(.callout)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top)
+                    .foregroundStyle(.orange)
+    
+                VStack(spacing: 15){
+                    Text("本App免费使用,赞助不会开启任何新功能,让你自由地使用一个好工具")
+                    Text("你看到的，就是你得到的!")
+                }
+                .font(.title3)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 30)
             }
             .foregroundStyle(.white)
-            .shadow(color: .black, radius: 10, x: 0, y: 10)
-            .padding(.horizontal, 15)
+            .shadow(color: .black, radius: 10, x: 0, y: 0)
+            .padding( 15)
         }
     }
     

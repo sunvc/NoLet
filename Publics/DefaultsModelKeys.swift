@@ -33,7 +33,6 @@ extension DefaultBrowserModel:Defaults.Serializable {}
 extension AssistantAccount: Defaults.Serializable{}
 extension Identifiers: Defaults.Serializable{}
 extension AppIconEnum: Defaults.Serializable{}
-extension BadgeAutoMode: Defaults.Serializable{}
 extension PushServerModel: Defaults.Serializable{}
 extension MoreMessage: Defaults.Serializable{}
 extension PushToTalkGroup: Defaults.Serializable{}

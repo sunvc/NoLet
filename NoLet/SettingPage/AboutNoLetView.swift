@@ -302,6 +302,21 @@ struct AboutNoLetView: View {
     
 }
 
+extension NCONFIG{
+    
+    private static let wikiServer: NURL = "https://wiki.wzs.app"
+  
+    static let delpoydoc: NURL          = docServer + "deploy"
+    static let privacyURL: NURL         = docServer + "policy"
+    static let tutorialURL: NURL        = docServer + "tutorial"
+    static let encryURL: NURL           = docServer + "encryption"
+    static let pushHelp: NURL           = docServer + "tutorial"
+    
+    static var docServer: NURL {
+        wikiServer + String(localized: "NoletLanguageLocalCode")
+    }
+}
+
 #Preview{
     ContentView()
 }

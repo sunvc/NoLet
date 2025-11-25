@@ -314,13 +314,10 @@ struct ChangeKeyCenterView: View {
                 
                 await view.next(.loading(1))
                 
-                if keyHost.contains(NCONFIG.server){
-                    self.selectCrypto = nil
-                }
                 
                 let success = await manager.restore(address: keyHost,
                                                     deviceKey: self.keyName,
-                                                    sign: selectCrypto?.obfuscator())
+                                                    sign: servers.first(where: {$0.url == keyHost})?.sign)
                 
                 if success{
                     try? await Task.sleep(for: .seconds(1))

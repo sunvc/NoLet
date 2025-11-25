@@ -93,28 +93,7 @@ class MessagesManager: ObservableObject{
 }
 
 extension MessagesManager{
-    static func examples() ->[Message]{
-        [
-            Message(id: UUID().uuidString, group: "Markdown", createDate: .now,
-                    title: String(localized: "示例"),
-                    body: "# NoLet \n## NoLet \n### NoLet", level: 1, ttl: 1, read: false),
-            
-            Message(id: UUID().uuidString, group: String(localized: "示例"), createDate: .now + 10,
-                    title: String(localized: "使用方法"),
-                    body: String(localized:  """
-                        * 右上角功能菜单，使用示例，分组
-                        * 单击图片/双击消息全屏查看
-                        * 全屏查看，翻译，总结，朗读
-                        * 左滑删除，右滑复制和智能解答。
-                        """),
-                    level: 1, ttl: 1, read: false),
-            
-            Message(id: UUID().uuidString, group: "App", createDate: .now ,
-                    title: String(localized: "点击跳转app"),
-                    body: String(localized:  "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转"),
-                    url: "weixin://", level: 1, ttl: 1, read: false)
-        ]
-    }
+ 
     
     func all() async throws -> [Message] {
         try await self.DB.dbQueue.read({ db in

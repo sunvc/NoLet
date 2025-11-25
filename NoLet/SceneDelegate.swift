@@ -109,7 +109,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         try ChatPrompt.filter(ChatPrompt.Columns.inside == true).deleteAll(db)
                         
                         // 添加默认 prompts
-                        for prompt in ChatPrompt.prompts {
+                        for prompt in ChatPromptMode.prompts {
                             try prompt.insert(db)
                         }
                         
@@ -130,3 +130,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 
 
+
+extension QuickAction{
+    static func allShortcutItems(showAssistant:Bool) -> [UIApplicationShortcutItem] {
+        
+        var items = [UIApplicationShortcutItem(
+            type: Self.scan.rawValue,
+            localizedTitle: String(localized:  "扫描二维码"),
+            localizedSubtitle: "",
+            icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder"),
+            userInfo: ["name": assistant.rawValue as NSSecureCoding]
+        )]
+        
+        if showAssistant{
+            items.insert(UIApplicationShortcutItem(
+                type: Self.assistant.rawValue,
+                localizedTitle: String(localized:  "问智能助手"),
+                localizedSubtitle: "",
+                icon: UIApplicationShortcutIcon(systemImageName: "message.and.waveform"),
+                userInfo: ["name": scan.rawValue as NSSecureCoding]
+            ), at: 0)
+        }
+        return items
+        
+    }
+    
+}

@@ -39,26 +39,16 @@ class NCONFIG {
     static let server = "https://wzs.app"
 #endif
     
-    private static let wikiServer: NURL = "https://wiki.wzs.app"
-  
-    static let delpoydoc: NURL          = docServer + "deploy"
-    static let privacyURL: NURL         = docServer + "policy"
-    static let tutorialURL: NURL        = docServer + "tutorial"
-    static let encryURL: NURL           = docServer + "encryption"
-    static let pushHelp: NURL           = docServer + "tutorial"
+
     
-    static var docServer: NURL {
-        wikiServer + String(localized: "NoletLanguageLocalCode")
-    }
-    
-    static let userAgreement: NURL   = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
-    static let appSource: NURL       = "https://github.com/sunvc/NoLet"
-    static let serverSource: NURL    = "https://github.com/sunvc/NoLets"
-    static let telegram: NURL        = "https://t.me/PushToMe"
-    static let appStore: NURL        = "https://apps.apple.com/app/id6615073345"
-    static let soundsUrl: NURL       = "http://s3.wzs.app/cafs.zip"
-    static let logoImage: NURL       = "https://s3.wzs.app/avatar.png"
-    static let ogImage: NURL         = "https://s3.wzs.app/og.png"
+    static let userAgreement: NURL         = "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+    static let appSource: NURL             = "https://github.com/sunvc/NoLet"
+    static let serverSource: NURL          = "https://github.com/sunvc/NoLets"
+    static let telegram: NURL              = "https://t.me/PushToMe"
+    static let appStore: NURL              = "https://apps.apple.com/app/id6615073345"
+    static let soundsRemoteUrl: NURL       = "http://s3.wzs.app/cafs.zip"
+    static let logoImage: NURL             = "https://s3.wzs.app/avatar.png"
+    static let ogImage: NURL               = "https://s3.wzs.app/og.png"
     
     
     static var bundleIdentifier: String {
@@ -78,10 +68,6 @@ class NCONFIG {
 
     static var databasePath: URL{
         CONTAINER.appendingPathComponent(NCONFIG.databaseName)
-    }
-
-    static var testData:String{
-        "{\"title\": \"\(String(localized: "这是一个加密示例"))\",\"body\": \"\(String(localized: "这是加密的正文部分"))\", \"sound\": \"typewriter\"}"
     }
     
     static var customUserAgent: String {

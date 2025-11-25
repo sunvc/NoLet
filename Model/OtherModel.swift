@@ -98,6 +98,7 @@ enum Identifiers:String, CaseIterable, Codable {
 
 // MARK: - MessageAction model
 
+
 enum MessageAction: String, CaseIterable, Equatable{
 	case lastHour
 	case lastDay
@@ -105,28 +106,6 @@ enum MessageAction: String, CaseIterable, Equatable{
 	case lastMonth
 	case allTime
 	case cancel
-	
-	var title:String{
-		switch self {
-		case .lastHour: String(localized: "一小时前")+String(localized: "的消息")
-		case .lastDay: String(localized: "一天前")+String(localized: "的消息")
-		case .lastWeek: String(localized: "一周前")+String(localized: "的消息")
-		case .lastMonth: String(localized: "一月前")+String(localized: "的消息")
-		case .allTime: String(localized: "所有消息")
-		case .cancel: String(localized: "取消")
-		}
-	}
-	
-	var date:Date{
-		switch self {
-		case .lastHour: Date().someHourBefore(1)
-		case .lastDay: Date().someDayBefore(0)
-		case .lastWeek: Date().someDayBefore(7)
-		case .lastMonth: Date().someDayBefore(30)
-		case .allTime: Date()
-		default: Date().s1970
-		}
-	}
 	
 }
 
@@ -139,29 +118,6 @@ enum QuickAction: String, CaseIterable{
     
     case assistant
     case scan
-    
-    static func allShortcutItems(showAssistant:Bool) -> [UIApplicationShortcutItem] {
-        
-        var items = [UIApplicationShortcutItem(
-            type: Self.scan.rawValue,
-            localizedTitle: String(localized:  "扫描二维码"),
-            localizedSubtitle: "",
-            icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder"),
-            userInfo: ["name": assistant.rawValue as NSSecureCoding]
-        )]
-        
-        if showAssistant{
-            items.insert(UIApplicationShortcutItem(
-                type: Self.assistant.rawValue,
-                localizedTitle: String(localized:  "问智能助手"),
-                localizedSubtitle: "",
-                icon: UIApplicationShortcutIcon(systemImageName: "message.and.waveform"),
-                userInfo: ["name": scan.rawValue as NSSecureCoding]
-            ), at: 0)
-        }
-        return items
-        
-    }
     
 }
 
@@ -221,18 +177,6 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable{
 }
 
 
-
-
-// MARK: - BadgeAutoMode
-
-enum BadgeAutoMode:String, CaseIterable {
-	case auto = "Auto"
-	case custom = "Custom"
-}
-
-
-
-
 // MARK: - AppIconMode
 
 enum AppIconEnum:String, CaseIterable, Equatable{
@@ -289,26 +233,15 @@ enum DefaultBrowserModel: String, CaseIterable {
     case auto
 	case safari
 	case app
-
-	var title:String{
-        switch self {
-        case .auto:
-            String(localized: "自动")
-        case .safari:
-            "Safari"
-        case .app:
-            String(localized: "内部")
-        }
-	}
-
 }
+
 
 
 struct AssistantAccount: Codable, Identifiable, Equatable, Hashable{
     var id:String = UUID().uuidString
     var current:Bool = false
     var timestamp:Date = .now
-    var name:String = String(localized: "智能助手")
+    var name:String
     var host:String
     var basePath:String
     var key:String
@@ -319,7 +252,7 @@ struct AssistantAccount: Codable, Identifiable, Equatable, Hashable{
         return data.base64EncodedString()
     }
     
-    init( current: Bool = false, name: String = String(localized: "智能助手"), host: String, basePath: String, key: String, model: String) {
+    init( current: Bool = false, name: String, host: String, basePath: String, key: String, model: String) {
         self.current = current
         self.name = name
         self.host = host
@@ -368,6 +301,8 @@ enum OutDataType{
 }
 
 
+
+
 enum ExpirationTime: Int, CaseIterable, Equatable{
     case forever = 999999
     case month = 30
@@ -376,18 +311,6 @@ enum ExpirationTime: Int, CaseIterable, Equatable{
     case no = 0
 
     var days: Int{ self.rawValue }
-    
-    var title:String{
-        switch self {
-        case .no: String(localized: "不保存")
-        case .oneDay: String(localized:"1天")
-        case .weekDay: String(localized:"1周")
-        case .month: String(localized:"1月")
-        case .forever: String(localized: "长期")
-        }
-    }
-    
-    
 }
 
 

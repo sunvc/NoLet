@@ -217,18 +217,19 @@ struct MoreOperationsView: View {
         
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+}
+
+extension  DefaultBrowserModel{
+    var title:String{
+        switch self {
+        case .auto:
+            String(localized: "自动")
+        case .safari:
+            "Safari"
+        case .app:
+            String(localized: "内部")
+        }
+    }
 }
 
 #Preview {

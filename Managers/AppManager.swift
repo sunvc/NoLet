@@ -390,6 +390,7 @@ extension AppManager{
         return true
     }
     
+    
 }
 
 extension AppManager{
@@ -397,9 +398,12 @@ extension AppManager{
     func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
         do{
             let response:baseResponse<String> =
-            try await self.fetch(url: address, path: "/register/\(deviceKey)")
-            
-            
+            try await self.fetch(
+                url: address,
+                path: "/register/\(deviceKey)",
+                headers: self.signature(sign: sign)
+            )
+  
             guard 200...299 ~= response.code else{
                 Toast.shared.present(title: response.message, symbol: .error)
                 return false
@@ -416,8 +420,7 @@ extension AppManager{
         }catch{
             Toast.error(title: "数据不正确")
             return false
-        }
-        
+        }        
     }
     
     func registers(){
@@ -467,10 +470,12 @@ extension AppManager{
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
             let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken, group: server.group ).toEncodableDictionary() ?? [:]
             
+            
             let response:baseResponse<DeviceInfo> = try await self.fetch(url: server.url,
                                                                          path: "/register",
                                                                          method: .POST,
-                                                                         params: params)
+                                                                         params: params,
+                                                                         headers: self.signature(sign: server.key))
             
             guard 200...299 ~= response.code else{
                 Toast.shared.present(title: response.message, symbol: .error)
@@ -501,6 +506,8 @@ extension AppManager{
             return server
         }
     }
+    
+    
     
     func appendServer(server:PushServerModel, reset: Bool = false) async -> Bool{
         
@@ -626,4 +633,24 @@ struct SubscribeUser: Codable, Hashable, Identifiable{
         case onece
         case none
     }
+}
+
+extension AppManager{
+    
+    func signature(sign: String?) ->[String: String] {
+        
+        var result:[String:String] = [
+            "Authorization": Defaults[.id]
+        ]
+        
+        let data = "\(Date().timeIntervalSince1970)"
+        
+        if let sign = sign{
+            let config: CryptoModelConfig = CryptoModelConfig(inputText: sign) ?? .data
+            result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
+        }
+        
+        return result
+    }
+
 }

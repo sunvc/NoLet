@@ -205,7 +205,8 @@ final class CryptoManager {
 			return nil
 		}
 	}
-
+    
+    
 }
 
 
@@ -217,3 +218,4 @@ extension String{
             .replacingOccurrences(of: "=", with: "")
     }
 }
+

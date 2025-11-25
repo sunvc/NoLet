@@ -43,7 +43,11 @@ struct AssistantSettingsView: View {
                 Section{
                     
                     Button{
-                        self.selectAccount =  AssistantAccount(host: "api.openai.com", basePath: "/v1", key: "", model: "gpt-4o-mini")
+                        self.selectAccount =  AssistantAccount( name:String(localized: "智能助手"),
+                                                                host: "api.openai.com",
+                                                                basePath: "/v1",
+                                                                key: "",
+                                                                model: "gpt-4o-mini")
                     }label: {
                         HStack{
                             Label("增加新账户", systemImage: "person.badge.plus")

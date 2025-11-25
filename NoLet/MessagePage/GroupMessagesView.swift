@@ -251,6 +251,52 @@ struct MessageRow: View {
     }
 }
 
+
+extension Date{
+    func agoFormatString() -> String {
+        let calendar = Calendar(identifier: .gregorian)
+        guard let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: self, to: Date()) as DateComponents? else {
+            return String(localized: "未知时间")
+        }
+        
+        let year = components.year ?? 0
+        let month = components.month ?? 0
+        let day = components.day ?? 0
+        let hour = components.hour ?? 0
+        let minute = components.minute ?? 0
+        
+        // Check if the date is within the current year
+        let isCurrentYear = calendar.isDate(self, equalTo: Date(), toGranularity: .year)
+        
+        if year > 0 || month > 0 || day > 0 || hour > 12 {
+            // Display full date if it's more than 12 hours ago
+            if isCurrentYear {
+                return formatString(format: "MM-dd HH:mm") // Exclude year if within the current year
+            } else {
+                return formatString(format: "yyyy-MM-dd HH:mm") // Include year if not the current year
+            }
+        }
+        
+        if hour > 1 {
+            // Display in hours and minutes if it's more than 1 hour ago
+            return formatString(format: "HH:mm")
+        }
+        if hour > 0 {
+            // Display in hours and optionally minutes
+            if minute > 0 {
+                return String(format: String(localized: "%1$d小时%2$d分钟前"), hour, minute)
+            }
+            return String(format: String(localized: "%1$d小时前"), hour)
+        }
+        if minute > 1 {
+            // Display in minutes if it's more than 1 minute ago
+            return String(format: String(localized: "%1$d分钟前"), minute)
+        }
+        // Display "just now" for time differences of less than 1 minute
+        return String(localized: "刚刚")
+    }
+}
+
 #Preview {
     GroupMessagesView()
 }

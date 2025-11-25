@@ -249,6 +249,12 @@ extension ExampleView{
    
 }
 
+extension NCONFIG{
+    static var testData:String{
+        "{\"title\": \"\(String(localized: "这是一个加密示例"))\",\"body\": \"\(String(localized: "这是加密的正文部分"))\", \"sound\": \"typewriter\"}"
+    }
+}
+
 
 #Preview {
     NavigationStack{

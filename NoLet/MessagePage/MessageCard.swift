@@ -428,6 +428,33 @@ struct MessageCard: View {
     
 }
 
+extension MessagesManager{
+    
+    static func examples() ->[Message]{
+        [
+            Message(id: UUID().uuidString, group: "Markdown", createDate: .now,
+                    title: String(localized: "示例"),
+                    body: "# NoLet \n## NoLet \n### NoLet", level: 1, ttl: 1, read: false),
+            
+            Message(id: UUID().uuidString, group: String(localized: "示例"), createDate: .now + 10,
+                    title: String(localized: "使用方法"),
+                    body: String(localized:  """
+                        * 右上角功能菜单，使用示例，分组
+                        * 单击图片/双击消息全屏查看
+                        * 全屏查看，翻译，总结，朗读
+                        * 左滑删除，右滑复制和智能解答。
+                        """),
+                    level: 1, ttl: 1, read: false),
+            
+            Message(id: UUID().uuidString, group: "App", createDate: .now ,
+                    title: String(localized: "点击跳转app"),
+                    body: String(localized:  "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转"),
+                    url: "weixin://", level: 1, ttl: 1, read: false)
+        ]
+    }
+    
+}
+
 
 struct Line: Shape{
     func path(in rect: CGRect) -> Path {
@@ -465,7 +492,65 @@ extension View{
     }
 }
 
-#Preview {
-    ContentView()
-        .environmentObject(AppManager.shared)
+
+fileprivate extension Message{
+    
+    func accessibilityValue() -> String{
+        var text:[String] = []
+
+        text
+            .append(
+                String(localized: "时间:") + createDate
+                    .formatted(date: .long, time: .standard)
+            )
+
+        if let title = title{
+            text.append(String(localized: "标题") + ":" + title)
+        }
+        if let subtitle = subtitle{
+            text.append(String(localized: "副标题") + ":" + subtitle)
+        }
+
+        if let body = body{
+            text.append(String(localized: "内容") + ":" + body)
+        }
+
+        if image != nil{
+            text.append(String(localized: "附件: 一张图片"))
+        }
+
+        if let url = url{
+            text.append(String(localized: "跳转链接:") + url)
+        }
+
+        return text.joined(separator: "\n")
+    }
+    
+    func expiredTime() -> String {
+
+        if self.ttl == ExpirationTime.forever.rawValue{
+            return "∞ ∞ ∞"
+        }
+
+        let days = self.createDate.daysRemaining(afterSubtractingFrom: self.ttl)
+        if days <= 0 {
+            return String(localized: "已过期")
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let targetDate = calendar.date(byAdding: .day, value: days, to: now)!
+
+        let components = calendar.dateComponents([.year, .month, .day], from: now, to: targetDate)
+
+        if let years = components.year, years > 0 {
+            return String(localized: "\(years)年")
+        } else if let months = components.month, months > 0 {
+            return String(localized: "\(months)个月")
+        } else if let days = components.day {
+            return String(localized: "\(days)天")
+        }
+
+        return String(localized:"即将过期")
+    }
 }

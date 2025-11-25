@@ -552,6 +552,43 @@ extension UInt64{
     }
 }
 
+extension MessageAction{
+    var title:String{
+        switch self {
+        case .lastHour: String(localized: "一小时前")+String(localized: "的消息")
+        case .lastDay: String(localized: "一天前")+String(localized: "的消息")
+        case .lastWeek: String(localized: "一周前")+String(localized: "的消息")
+        case .lastMonth: String(localized: "一月前")+String(localized: "的消息")
+        case .allTime: String(localized: "所有消息")
+        case .cancel: String(localized: "取消")
+        }
+    }
+    
+    var date:Date{
+        switch self {
+        case .lastHour: Date().someHourBefore(1)
+        case .lastDay: Date().someDayBefore(0)
+        case .lastWeek: Date().someDayBefore(7)
+        case .lastMonth: Date().someDayBefore(30)
+        case .allTime: Date()
+        default: Date().s1970
+        }
+    }
+    
+}
+
+extension  ExpirationTime{
+    var title:String{
+        switch self {
+        case .no: String(localized: "不保存")
+        case .oneDay: String(localized:"1天")
+        case .weekDay: String(localized:"1周")
+        case .month: String(localized:"1月")
+        case .forever: String(localized: "长期")
+        }
+    }
+}
+
 
 #Preview {
     DataSettingView()

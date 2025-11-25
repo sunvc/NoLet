@@ -15,6 +15,7 @@
 import SwiftUI
 import AVFoundation
 import UIKit
+import Zip
 
 struct SoundView: View {
     @Environment(\.dismiss) var dismiss
@@ -67,11 +68,7 @@ struct SoundView: View {
                                 
                                 if file.startAccessingSecurityScopedResource() {
                                     
-                                    if let url = await tipsManager.convertToCaf(inputURL: file){
-                                        await tipsManager.saveSound(url: url)
-                                    }else{
-                                        Toast.error(title: "导出失败")
-                                    }
+                                    await self.saveSound(url: file)
                                     try? await Task.sleep(for: .seconds(0.5))
                                     await MainActor.run{
                                         self.uploadLoading = false
@@ -106,7 +103,7 @@ struct SoundView: View {
 
                     }.onDelete { indexSet in
                         for index in indexSet{
-                            tipsManager.deleteSound(url: tipsManager.customSounds[index])
+                            self.deleteSound(url: tipsManager.customSounds[index])
                         }
                     }
                     
@@ -137,7 +134,7 @@ struct SoundView: View {
                             self.downLoading = true
                             Task{
                                 do{
-                                    try await tipsManager.downloadSounds()
+                                    try await self.downloadSounds()
                                     Toast.success(title: "下载成功")
                                    
                                 }catch{
@@ -177,8 +174,104 @@ struct SoundView: View {
     
     
     
+    func downloadSounds() async throws {
+        
+        
+        let destinationURL = try await tipsManager.download(from: NCONFIG.soundsRemoteUrl.url)
+        
+        let result = try Zip.quickUnzipFile(destinationURL)
+        
+        guard let soundsUrl = NCONFIG.getDir(.sounds) else{  throw "Not Dir" }
+        
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: soundsUrl.path) {
+            try fileManager.createDirectory(at: soundsUrl, withIntermediateDirectories: true)
+        }
+        guard let enumerator = fileManager.enumerator(at: result, includingPropertiesForKeys: [.isDirectoryKey],
+                                                      options: [.skipsHiddenFiles]) else {
+            return
+        }
+        
+        let skipFiles = tipsManager.allSounds()
+        while let any = enumerator.nextObject() {
+            guard let fileURL = any as? URL else { continue }
+            let values = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+            if values.isDirectory == true { continue }
+            let baseName = fileURL.deletingPathExtension().lastPathComponent
+            if skipFiles.contains(baseName) { continue }
+            let destinationURL = destinationURL.appendingPathComponent("\(baseName).caf")
+            if fileManager.fileExists(atPath: destinationURL.path) { continue }
+            if (try? await AudioCAFManager.toCAFShort(inputURL: fileURL, outputURL: destinationURL)) != nil {
+                continue
+            }
+            if fileURL.pathExtension.lowercased() == "caf" {
+                try fileManager.moveItem(at: fileURL, to: destinationURL)
+            }
+        }
+        
+        tipsManager.updateFileList()
+        
+        try? FileManager.default.removeItem(at: result)
+        try? FileManager.default.removeItem(at: destinationURL)
+    }
     
     
+    /// 通用文件保存方法
+    func saveSound(url sourceUrl: URL, name lastPath: String? = nil, maxNameLength: Int = 13) async  {
+        // 获取 App Group 的共享铃声目录路径
+        guard let groupDirectoryUrl = NCONFIG.getDir(.sounds) else { return }
+        
+        var fileName: String {
+            String((lastPath ?? sourceUrl.lastPathComponent).suffix(maxNameLength))
+        }
+        
+        // 构造目标路径：使用传入的自定义文件名（lastPath），否则使用源文件名
+        let groupDestinationUrl = groupDirectoryUrl.appendingPathComponent(fileName)
+        
+        // 如果目标文件已存在，先删除旧文件
+        if FileManager.default.fileExists(atPath: groupDestinationUrl.path) {
+            try? FileManager.default.removeItem(at: groupDestinationUrl)
+        }
+        
+        do {
+            _ = try await AudioCAFManager.toCAFShort(
+                    inputURL: sourceUrl,
+                    outputURL: groupDestinationUrl,
+                    maxSeconds: 29.9
+                )
+            // 拷贝文件到共享目录（实现“保存”操作）
+            try FileManager.default.removeItem(at: sourceUrl)
+            
+            // 弹出成功提示（使用 Toast）
+            Toast.success(title: "保存成功")
+            
+            // 刷新铃声文件列表（用于更新 UI 或数据）
+            tipsManager.updateFileList()
+        } catch {
+            // 如果保存失败，弹出错误提示
+            Toast.shared.present(title: error.localizedDescription, symbol: .error)
+        }
+       
+    }
+    
+    
+    func deleteSound(url: URL) {
+        // 获取 App Group 中的共享铃声目录
+        guard let soundsDirectoryUrl = NCONFIG.getDir(.sounds) else { return }
+        
+        // 删除本地 sounds 目录下的铃声文件
+        try? FileManager.default.removeItem(at: url)
+        
+        // 构造共享目录下对应的长铃声文件路径（带有前缀）
+        let groupSoundUrl = soundsDirectoryUrl.appendingPathComponent(
+            "\(NCONFIG.longSoundPrefix).\(url.lastPathComponent)")
+        
+        // 删除共享目录中的铃声文件（如果存在）
+        try? FileManager.default.removeItem(at: groupSoundUrl)
+        
+        // 刷新文件列表（通常是为了更新 UI 或内部数据状态）
+        tipsManager.updateFileList()
+    }
     
     
 }

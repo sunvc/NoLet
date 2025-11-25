@@ -1,510 +1,36 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%1$d分钟前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d minutes ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d分钟前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d分前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d분 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d dakika önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a %1$d minutes"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d минут назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d minuti fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d Minuten vor"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d minutos atrás"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d minutos atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d分鐘前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d 分鐘前"
-          }
-        }
-      }
-    },
-    "%1$d小时%2$d分钟前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d hours %2$d minutes ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小时%2$d分钟前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d時間%2$d分前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d시간 %2$d분 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d saat %2$d dakika önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a %1$d heures et %2$d minutes"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d часов %2$d минут назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d ore %2$d minuti fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d Stunden %2$d Minuten her"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d horas %2$d minutos atrás"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d horas %2$d minutos atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小時%2$d分鐘前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小時%2$d分鐘前"
-          }
-        }
-      }
-    },
-    "%1$d小时前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d hours ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小时前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d時間前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d시간 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d saat önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a %1$d heure"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d час назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d ore fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d Stunden zuvor"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "hace %1$d horas"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d horas atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小時前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小時前"
-          }
-        }
-      }
-    },
-    "1周": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 week"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1周"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「1週間」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1주"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 hafta"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 semaine"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 неделя"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 settimana"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 Woche"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 semana"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 semana"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1週"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1週"
-          }
-        }
-      }
-    },
-    "1天": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 day"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1天"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1日"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1일"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 gün"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 jour"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 день"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 giorno"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 Tag"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 día"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 dia"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1天"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1天"
-          }
-        }
-      }
-    },
-    "1月": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "January"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1月"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1月"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1월"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ocak"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Janvier"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Январь"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gennaio"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Januar"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "enero"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Janeiro"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1月"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1月"
-          }
-        }
-      }
-    },
     "iCloud 云图标": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Cloud-Symbol"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud cloud icon"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud 云图标"
+            "value": "iCloud ícono de nube"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud icône cloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud icona cloud"
           }
         },
         "ja": {
@@ -519,16 +45,10 @@
             "value": "iCloud 클라우드 아이콘"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Bulut Simgesi"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud icône cloud"
+            "value": "iCloud ícone da nuvem"
           }
         },
         "ru": {
@@ -537,37 +57,25 @@
             "value": "iCloud значок облака"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud icona cloud"
+            "value": "iCloud Bulut Simgesi"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Cloud-Symbol"
+            "value": "iCloud 云图标"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud ícono de nube"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud ícone da nuvem"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 雲端圖示"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 雲端圖示"
@@ -577,16 +85,34 @@
     },
     "iCloud 服务暂时不可用，请稍后再试": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Dienste sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud services are temporarily unavailable, please try again later."
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud service is temporarily unavailable, please try again later."
+            "value": "iCloud no está disponible temporalmente, por favor inténtalo más tarde."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud est temporairement indisponible, veuillez réessayer plus tard."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud temporaneamente non disponibile, riprova più tardi"
           }
         },
         "ja": {
@@ -601,16 +127,10 @@
             "value": "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud hizmeti geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud est temporairement indisponible, veuillez réessayer plus tard."
+            "value": "iCloud está temporariamente indisponível. Tente novamente mais tarde."
           }
         },
         "ru": {
@@ -619,34 +139,16 @@
             "value": "Служба iCloud временно недоступна, повторите попытку позже"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud temporaneamente non disponibile, riprova più tardi"
+            "value": "iCloud hizmeti geçici olarak kullanılamıyor, lütfen daha sonra tekrar deneyin"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Dienste sind vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud no está disponible temporalmente, por favor inténtalo más tarde."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud está temporariamente indisponível. Tente novamente mais tarde."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 服務暫時無法使用，請稍後再試"
+            "value": "iCloud service is temporarily unavailable, please try again later."
           }
         },
         "zh-Hant": {
@@ -654,21 +156,45 @@
             "state": "translated",
             "value": "iCloud 服務暫時不可用，請稍後再試"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服務暫時無法使用，請稍後再試"
+          }
         }
       }
     },
     "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Zugriff eingeschränkt, möglicherweise durch elterliche Kontrolle oder MDM-Geräteverwaltungsrichtlinien verursacht"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies."
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies causing it."
+            "value": "Acceso a iCloud restringido, posiblemente debido al control parental o políticas de administración de dispositivos móviles (MDM)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accès iCloud restreint, peut-être dû au contrôle parental ou à une stratégie de gestion des appareils mobiles (MDM)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso a iCloud limitato, potrebbe essere causato dal controllo parentale o dalle politiche di gestione dei dispositivi mobili (MDM)."
           }
         },
         "ja": {
@@ -683,16 +209,10 @@
             "value": "iCloud 접근이 제한되었습니다. 이는 가족 제어 또는 MDM 장치 관리 정책으로 인해 발생할 수 있습니다."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud erişimi kısıtlı, ebeveyn kontrolü veya MDM cihaz yönetim stratejisinden kaynaklanıyor olabilir"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accès iCloud restreint, peut-être dû au contrôle parental ou à une stratégie de gestion des appareils mobiles (MDM)"
+            "value": "Acesso ao iCloud restrito, possivelmente devido ao controle parental ou políticas de gerenciamento de dispositivos móveis (MDM)."
           }
         },
         "ru": {
@@ -701,37 +221,25 @@
             "value": "Доступ к iCloud ограничен, возможно из-за родительского контроля или политики управления устройствами MDM."
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Accesso a iCloud limitato, potrebbe essere causato dal controllo parentale o dalle politiche di gestione dei dispositivi mobili (MDM)."
+            "value": "iCloud erişimi kısıtlı, ebeveyn kontrolü veya MDM cihaz yönetim stratejisinden kaynaklanıyor olabilir"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Zugriff eingeschränkt, möglicherweise durch elterliche Kontrolle oder MDM-Geräteverwaltungsrichtlinien verursacht"
+            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies causing it."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acceso a iCloud restringido, posiblemente debido al control parental o políticas de administración de dispositivos móviles (MDM)."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acesso ao iCloud restrito, possivelmente devido ao controle parental ou políticas de gerenciamento de dispositivos móveis (MDM)."
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 訪問受限，可能由家長控制或 MDM 設備管理策略導致"
@@ -741,16 +249,34 @@
     },
     "iCloud 账户可用": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Konto verfügbar"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud Account Available"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud 账户可用"
+            "value": "Cuenta de iCloud disponible"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compte iCloud disponible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account iCloud disponibile"
           }
         },
         "ja": {
@@ -765,16 +291,10 @@
             "value": "iCloud 계정 사용 가능"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Hesabı Kullanılabilir"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Compte iCloud disponible"
+            "value": "Conta iCloud disponível"
           }
         },
         "ru": {
@@ -783,37 +303,25 @@
             "value": "Учетная запись iCloud доступна"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Account iCloud disponibile"
+            "value": "iCloud Hesabı Kullanılabilir"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Konto verfügbar"
+            "value": "iCloud 账户可用"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuenta de iCloud disponible"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conta iCloud disponível"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 帳戶可用"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 帳戶可用"
@@ -823,16 +331,34 @@
     },
     "iCloud状态检查": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Statusprüfung"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud Status Check"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud状态检查"
+            "value": "Comprobación del estado de iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérification de l'état iCloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controllo stato iCloud"
           }
         },
         "ja": {
@@ -847,16 +373,10 @@
             "value": "iCloud 상태 확인"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Durum Kontrolü"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vérification de l'état iCloud"
+            "value": "Verificar status do iCloud"
           }
         },
         "ru": {
@@ -865,37 +385,25 @@
             "value": "Проверка состояния iCloud"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controllo stato iCloud"
+            "value": "iCloud Durum Kontrolü"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Statusprüfung"
+            "value": "iCloud状态检查"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comprobación del estado de iCloud"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verificar status do iCloud"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud狀態檢查"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud狀態檢查"
@@ -905,16 +413,34 @@
     },
     "iCloud状态检查中...": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Status wird überprüft..."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Checking iCloud status..."
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在检查iCloud状态..."
+            "value": "Comprobando el estado de iCloud..."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vérification de l'état iCloud..."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controllo stato iCloud..."
           }
         },
         "ja": {
@@ -929,16 +455,10 @@
             "value": "iCloud 상태 확인 중..."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud durumu kontrol ediliyor..."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vérification de l'état iCloud..."
+            "value": "Verificando o status do iCloud..."
           }
         },
         "ru": {
@@ -947,34 +467,16 @@
             "value": "Проверка состояния iCloud..."
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controllo stato iCloud..."
+            "value": "iCloud durumu kontrol ediliyor..."
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Status wird überprüft..."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Comprobando el estado de iCloud..."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verificando o status do iCloud..."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud狀態檢查中..."
+            "value": "正在检查iCloud状态..."
           }
         },
         "zh-Hant": {
@@ -982,431 +484,45 @@
             "state": "translated",
             "value": "iCloud狀態檢查中..."
           }
-        }
-      }
-    },
-    "NoletLanguageLocalCode": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "NoletLanguageLocalCode"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "“Nolet语言本地代码”"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「Nolet言語ローカルコード」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nolet언어로컬코드"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "NoletDilYerelKodu"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "NoletLanguageLocalCode"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Код локализации языка NoLet"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "NoletLanguageLocalCode"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "NoletLanguageLocalCode"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CódigoLocalIdiomaNoLet"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CódigoLocalIdiomaNoLet"
-          }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nolet語言本地代碼"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nolet語言本地代碼"
-          }
-        }
-      }
-    },
-    "一周前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A week ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一周前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一週前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "일주일 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir hafta önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a une semaine"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Неделю назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Una settimana fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vor einer Woche"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hace una semana"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uma semana atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一週前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一週前"
-          }
-        }
-      }
-    },
-    "一天前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One day ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一天前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一日前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "하루 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir gün önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a un jour"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Один день назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un giorno fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vor einem Tag"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un día antes"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Um dia atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一天前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一天前"
-          }
-        }
-      }
-    },
-    "一小时前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One hour ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一小时前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1時間前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "한 시간 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir saat önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a une heure"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "час назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un'ora fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vor einer Stunde"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hace una hora"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uma hora atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一小時前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一小時前"
-          }
-        }
-      }
-    },
-    "一月前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "One month ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一个月前"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一ヶ月前"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "한 달 전"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir ay önce"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il y a un mois"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Месяц назад"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un mese fa"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "vor einem Monat"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hace un mes"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Um mês atrás"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一個月前"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "一個月前"
+            "value": "iCloud狀態檢查中..."
           }
         }
       }
     },
     "上传到云端": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload in die Cloud"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Upload to Cloud"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "上传到云端"
+            "value": "Subir a la nube"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Télécharger vers le cloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica sul cloud"
           }
         },
         "ja": {
@@ -1421,16 +537,10 @@
             "value": "클라우드에 업로드"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Buluta yükle"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Télécharger vers le cloud"
+            "value": "Upload para a nuvem"
           }
         },
         "ru": {
@@ -1439,138 +549,62 @@
             "value": "Загрузить в облако"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Carica sul cloud"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Upload in die Cloud"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Subir a la nube"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Upload para a nuvem"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "上傳到雲端"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "上傳到雲端"
-          }
-        }
-      }
-    },
-    "不保存": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Don't Save"
+            "value": "Buluta yükle"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "不保存"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存しない"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장하지 않음"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaydetme"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ne pas sauvegarder"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не сохранять"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non salvare"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nicht speichern"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No guardar"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Não salvar"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "不儲存"
+            "value": "上传到云端"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "不保存"
+            "value": "上傳到雲端"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上傳到雲端"
           }
         }
       }
     },
     "保存失败": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speichern fehlgeschlagen"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Save Failed"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "保存失败"
+            "value": "Error al guardar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Échec de la sauvegarde"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvataggio non riuscito"
           }
         },
         "ja": {
@@ -1585,16 +619,10 @@
             "value": "저장 실패"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kaydetme Başarısız"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Échec de la sauvegarde"
+            "value": "Falha ao salvar"
           }
         },
         "ru": {
@@ -1603,37 +631,25 @@
             "value": "Сбой сохранения"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salvataggio non riuscito"
+            "value": "Kaydetme Başarısız"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Speichern fehlgeschlagen"
+            "value": "保存失败"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al guardar"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falha ao salvar"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "保存失敗"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "保存失敗"
@@ -1643,16 +659,34 @@
     },
     "保存成功": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erfolgreich gespeichert"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Save Successful"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "保存成功"
+            "value": "Guardado con éxito"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrement réussi"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvataggio riuscito"
           }
         },
         "ja": {
@@ -1667,16 +701,10 @@
             "value": "저장 성공"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Başarıyla Kaydedildi"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enregistrement réussi"
+            "value": "Salvo com sucesso"
           }
         },
         "ru": {
@@ -1685,31 +713,13 @@
             "value": "Сохранение успешно"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salvataggio riuscito"
+            "value": "Başarıyla Kaydedildi"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erfolgreich gespeichert"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardado con éxito"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salvo com sucesso"
-          }
-        },
-        "zh-HK": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "保存成功"
@@ -1720,185 +730,45 @@
             "state": "translated",
             "value": "保存成功"
           }
-        }
-      }
-    },
-    "内部": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Internal"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "内部"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "内部"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "내부"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İç"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interne"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Внутренний"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interno"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intern"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interno"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interno"
-          }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "內部"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "內部"
-          }
-        }
-      }
-    },
-    "刚刚": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Just now"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刚刚"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「さっき」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "방금"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yeni"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tout à l'heure"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Только что"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Appena"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gerade eben"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Justo ahora"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Agora mesmo"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "剛剛"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "剛剛"
+            "value": "保存成功"
           }
         }
       }
     },
     "剩余空间不足": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unzureichender Speicherplatz"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Insufficient storage space"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "剩余空间不足"
+            "value": "Espacio insuficiente restante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espace restant insuffisant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spazio insufficiente rimanente"
           }
         },
         "ja": {
@@ -1913,16 +783,10 @@
             "value": "남은 공간이 부족합니다"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yetersiz depolama alanı"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espace restant insuffisant"
+            "value": "Espaço insuficiente"
           }
         },
         "ru": {
@@ -1931,37 +795,25 @@
             "value": "Недостаточно свободного места"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spazio insufficiente rimanente"
+            "value": "Yetersiz depolama alanı"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unzureichender Speicherplatz"
+            "value": "剩余空间不足"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espacio insuficiente restante"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Espaço insuficiente"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "剩餘空間不足"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "剩餘空間不足"
@@ -1971,16 +823,34 @@
     },
     "参数不全": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parameter unvollständig"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Missing parameters"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "参数不全"
+            "value": "Parámetros incompletos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paramètres incomplets"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parametri incompleti"
           }
         },
         "ja": {
@@ -1995,16 +865,10 @@
             "value": "매개변수가 불완전합니다"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Parametreler eksik"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paramètres incomplets"
+            "value": "Parâmetros incompletos"
           }
         },
         "ru": {
@@ -2013,37 +877,25 @@
             "value": "Неполные параметры"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Parametri incompleti"
+            "value": "Parametreler eksik"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Parameter unvollständig"
+            "value": "参数不全"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parámetros incompletos"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Parâmetros incompletos"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "參數不全"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "參數不全"
@@ -2053,16 +905,34 @@
     },
     "取消": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbrechen"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "取消"
+            "value": "Cancelar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuler"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
           }
         },
         "ja": {
@@ -2077,16 +947,10 @@
             "value": "취소"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "İptal"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annuler"
+            "value": "Cancelar"
           }
         },
         "ru": {
@@ -2095,31 +959,13 @@
             "value": "Отмена"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Annulla"
+            "value": "İptal"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abbrechen"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
-          }
-        },
-        "zh-HK": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "取消"
@@ -2130,21 +976,45 @@
             "state": "translated",
             "value": "取消"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
         }
       }
     },
     "图标额度剩余": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verbleibende Symbolquote"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Icon quota remaining"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "图标额度剩余"
+            "value": "Cuota de iconos restante"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icône crédit restant"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Icona quota rimanente"
           }
         },
         "ja": {
@@ -2159,16 +1029,10 @@
             "value": "아이콘 배지 잔여"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kota Simge Kalanı"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Icône crédit restant"
+            "value": "Limite de ícones restante"
           }
         },
         "ru": {
@@ -2177,37 +1041,25 @@
             "value": "Остаток иконки"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Icona quota rimanente"
+            "value": "Kota Simge Kalanı"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verbleibende Symbolquote"
+            "value": "图标额度剩余"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cuota de iconos restante"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Limite de ícones restante"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "圖標額度剩餘"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "圖標額度剩餘"
@@ -2217,16 +1069,34 @@
     },
     "图片Key": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildschlüssel"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Image Key"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "图片Key"
+            "value": "Clave de imagen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ImageKey"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiave immagine"
           }
         },
         "ja": {
@@ -2241,16 +1111,10 @@
             "value": "이미지 키"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resim Anahtarı"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ImageKey"
+            "value": "Chave da Imagem"
           }
         },
         "ru": {
@@ -2259,37 +1123,25 @@
             "value": "ИзображениеKey"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiave immagine"
+            "value": "Resim Anahtarı"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bildschlüssel"
+            "value": "图片Key"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clave de imagen"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chave da Imagem"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "圖片Key"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "圖片Key"
@@ -2299,16 +1151,34 @@
     },
     "图片key重复": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildschlüssel wiederholt"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Image key duplicate"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "图片key重复"
+            "value": "Clave de imagen duplicada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clé d'image dupliquée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiave immagine duplicata"
           }
         },
         "ja": {
@@ -2323,16 +1193,10 @@
             "value": "이미지 키 중복"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resim anahtarı tekrarlandı"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clé d'image dupliquée"
+            "value": "Chave de imagem duplicada"
           }
         },
         "ru": {
@@ -2341,37 +1205,25 @@
             "value": "Дублирование ключа изображения"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chiave immagine duplicata"
+            "value": "Resim anahtarı tekrarlandı"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bildschlüssel wiederholt"
+            "value": "图片key重复"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Clave de imagen duplicada"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chave de imagem duplicada"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "圖片key重複"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "圖片key重複"
@@ -2381,16 +1233,34 @@
     },
     "复制": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopieren"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "复制"
+            "value": "Copiar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia"
           }
         },
         "ja": {
@@ -2405,16 +1275,10 @@
             "value": "복사"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kopyala"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copier"
+            "value": "Copiar"
           }
         },
         "ru": {
@@ -2423,37 +1287,25 @@
             "value": "Копировать"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copia"
+            "value": "Kopyala"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kopieren"
+            "value": "复制"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiar"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copiar"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "複製"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "複製"
@@ -2463,16 +1315,34 @@
     },
     "张": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zhang"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Zhang"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "张"
+            "value": "Zhang"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zhang"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zhang"
           }
         },
         "ja": {
@@ -2487,13 +1357,7 @@
             "value": "장"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zhang"
-          }
-        },
-        "fr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
             "value": "Zhang"
@@ -2505,34 +1369,16 @@
             "value": "Чжан"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
             "value": "Zhang"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zhang"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zhang"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zhang"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "張"
+            "value": "张"
           }
         },
         "zh-Hant": {
@@ -2540,185 +1386,45 @@
             "state": "translated",
             "value": "張"
           }
-        }
-      }
-    },
-    "所有消息": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All Messages"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "所有消息"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「すべてのメッセージ」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "모든 메시지"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tüm Mesajlar"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tous les messages"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Все сообщения"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutti i messaggi"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alle Nachrichten"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todos los mensajes"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todas as mensagens"
-          }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "所有訊息"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "所有訊息"
-          }
-        }
-      }
-    },
-    "扫描二维码": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan QR Code"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "扫描二维码"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「QRコードをスキャン」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "QR 코드 스캔"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "QR Kod Tara"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanner le code QR"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сканировать QR-код"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scansiona il codice QR"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "QR-Code scannen"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escanear código QR"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escanear código QR"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "掃描二維碼"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "掃描二維碼"
+            "value": "張"
           }
         }
       }
     },
     "提示": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinweis"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Prompt"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "提示"
+            "value": "Prompt"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indice"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prompt"
           }
         },
         "ja": {
@@ -2733,16 +1439,10 @@
             "value": "프롬프트"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "İpucu"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indice"
+            "value": "Prompt"
           }
         },
         "ru": {
@@ -2751,31 +1451,13 @@
             "value": "Подсказка"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prompt"
+            "value": "İpucu"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hinweis"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prompt"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prompt"
-          }
-        },
-        "zh-HK": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "提示"
@@ -2786,21 +1468,45 @@
             "state": "translated",
             "value": "提示"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示"
+          }
         }
       }
     },
     "无": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Nothing"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "无"
+            "value": "Sin"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rien"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nessuno"
           }
         },
         "ja": {
@@ -2815,16 +1521,10 @@
             "value": "없음"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yok"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rien"
+            "value": "Sem"
           }
         },
         "ru": {
@@ -2833,37 +1533,25 @@
             "value": "Нет"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "nessuno"
+            "value": "Yok"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kein"
+            "value": "无"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "無"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "無"
@@ -2873,16 +1561,34 @@
     },
     "无法确定 iCloud 账户状态，可能是网络问题": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud-Kontostatus kann nicht bestimmt werden, möglicherweise ein Netzwerkproblem"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Unable to determine iCloud account status, possibly due to network issues."
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "无法确定 iCloud 账户状态，可能是网络问题"
+            "value": "No se puede determinar el estado de la cuenta de iCloud, posiblemente debido a problemas de red."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de déterminer l'état du compte iCloud, peut-être un problème de réseau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile determinare lo stato dell'account iCloud, potrebbe essere un problema di rete"
           }
         },
         "ja": {
@@ -2897,16 +1603,10 @@
             "value": "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud hesap durumu belirlenemiyor, muhtemelen ağ sorunu"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossible de déterminer l'état du compte iCloud, peut-être un problème de réseau"
+            "value": "Não foi possível determinar o estado da conta iCloud, possivelmente devido a problemas de rede."
           }
         },
         "ru": {
@@ -2915,34 +1615,16 @@
             "value": "Не удалось определить состояние учетной записи iCloud, возможно, проблема с сетью"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Impossibile determinare lo stato dell'account iCloud, potrebbe essere un problema di rete"
+            "value": "iCloud hesap durumu belirlenemiyor, muhtemelen ağ sorunu"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud-Kontostatus kann nicht bestimmt werden, möglicherweise ein Netzwerkproblem"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se puede determinar el estado de la cuenta de iCloud, posiblemente debido a problemas de red."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Não foi possível determinar o estado da conta iCloud, possivelmente devido a problemas de rede."
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無法確定 iCloud 帳戶狀態，可能是網絡問題"
+            "value": "无法确定 iCloud 账户状态，可能是网络问题"
           }
         },
         "zh-Hant": {
@@ -2950,21 +1632,45 @@
             "state": "translated",
             "value": "無法確定 iCloud 帳戶狀態，可能是網路問題"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無法確定 iCloud 帳戶狀態，可能是網絡問題"
+          }
         }
       }
     },
     "普通内容": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gewöhnlicher Inhalt"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Regular Content"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "普通内容"
+            "value": "Contenido ordinario"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenu ordinaire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contenuto ordinario"
           }
         },
         "ja": {
@@ -2979,16 +1685,10 @@
             "value": "일반 콘텐츠"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sıradan İçerik"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenu ordinaire"
+            "value": "Conteúdo comum"
           }
         },
         "ru": {
@@ -2997,138 +1697,62 @@
             "value": "Обычный контент"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Contenuto ordinario"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gewöhnlicher Inhalt"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenido ordinario"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conteúdo comum"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "普通內容"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "普通內容"
-          }
-        }
-      }
-    },
-    "智能助手": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Smart Assistant"
+            "value": "Sıradan İçerik"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "智能助手"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "スマートアシスタント"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "스마트 어시스턴트"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akıllı Asistan"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistant intelligent"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Интеллектуальный помощник"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistente Intelligente"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intelligenter Assistent"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Asistente Inteligente"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistente Inteligente"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "智能助手"
+            "value": "普通内容"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "智能助手"
+            "value": "普通內容"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通內容"
           }
         }
       }
     },
     "未登录 iCloud，请登录 iCloud 账户": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud nicht angemeldet, bitte melden Sie sich mit Ihrem iCloud-Konto an"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Not logged into iCloud, please log in to your iCloud account"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "未登录 iCloud，请登录 iCloud 账户"
+            "value": "No has iniciado sesión en iCloud, por favor inicia sesión en tu cuenta de iCloud"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non connecté à iCloud, veuillez vous connecter à votre compte iCloud"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non hai effettuato l'accesso a iCloud, accedi al tuo account iCloud"
           }
         },
         "ja": {
@@ -3143,16 +1767,10 @@
             "value": "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인하세요."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud'e giriş yapılmadı, lütfen iCloud hesabınıza giriş yapın"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Non connecté à iCloud, veuillez vous connecter à votre compte iCloud"
+            "value": "iCloud não conectado, faça login na conta iCloud"
           }
         },
         "ru": {
@@ -3161,34 +1779,16 @@
             "value": "Не вошли в iCloud, войдите в учетную запись iCloud"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Non hai effettuato l'accesso a iCloud, accedi al tuo account iCloud"
+            "value": "iCloud'e giriş yapılmadı, lütfen iCloud hesabınıza giriş yapın"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud nicht angemeldet, bitte melden Sie sich mit Ihrem iCloud-Konto an"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No has iniciado sesión en iCloud, por favor inicia sesión en tu cuenta de iCloud"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud não conectado, faça login na conta iCloud"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未登入 iCloud，請登入 iCloud 帳戶"
+            "value": "未登录 iCloud，请登录 iCloud 账户"
           }
         },
         "zh-Hant": {
@@ -3196,21 +1796,45 @@
             "state": "translated",
             "value": "未登錄 iCloud，請登錄 iCloud 帳戶"
           }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登入 iCloud，請登入 iCloud 帳戶"
+          }
         }
       }
     },
     "未知 iCloud 状态": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unbekannter iCloud-Status"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Unknown iCloud Status"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "未知 iCloud 状态"
+            "value": "Estado de iCloud desconocido"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statut iCloud inconnu"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stato iCloud sconosciuto"
           }
         },
         "ja": {
@@ -3225,16 +1849,10 @@
             "value": "알 수 없는 iCloud 상태"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bilinmeyen iCloud Durumu"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Statut iCloud inconnu"
+            "value": "Status do iCloud Desconhecido"
           }
         },
         "ru": {
@@ -3243,138 +1861,62 @@
             "value": "Неизвестное состояние iCloud"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stato iCloud sconosciuto"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unbekannter iCloud-Status"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estado de iCloud desconocido"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Status do iCloud Desconhecido"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 狀態"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 狀態"
-          }
-        }
-      }
-    },
-    "未知时间": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown Time"
+            "value": "Bilinmeyen iCloud Durumu"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "未知时间"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「未知時間」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "알 수 없는 시간"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bilinmeyen Zaman"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Temps inconnu"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Неизвестное время"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tempo sconosciuto"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unbekannte Zeit"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tiempo desconocido"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tempo Desconhecido"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知時間"
+            "value": "未知 iCloud 状态"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "未知時間"
+            "value": "未知 iCloud 狀態"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 狀態"
           }
         }
       }
     },
     "检查 iCloud 账户状态出错: %@": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fehler beim Überprüfen des iCloud-Kontostatus: %@"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Check iCloud account status error: %@"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "检查 iCloud 账户状态出错: %@"
+            "value": "Error al verificar el estado de la cuenta de iCloud: %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erreur de vérification de l'état du compte iCloud : %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore nel controllo dello stato dell'account iCloud: %@"
           }
         },
         "ja": {
@@ -3389,16 +1931,10 @@
             "value": "iCloud 계정 상태 확인 오류: %@"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Hesap Durumu Kontrolü Hatası: %@"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erreur de vérification de l'état du compte iCloud : %@"
+            "value": "Erro ao verificar o status da conta iCloud: %@"
           }
         },
         "ru": {
@@ -3407,37 +1943,25 @@
             "value": "Ошибка проверки состояния учетной записи iCloud: %@"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Errore nel controllo dello stato dell'account iCloud: %@"
+            "value": "iCloud Hesap Durumu Kontrolü Hatası: %@"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fehler beim Überprüfen des iCloud-Kontostatus: %@"
+            "value": "检查 iCloud 账户状态出错: %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error al verificar el estado de la cuenta de iCloud: %@"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Erro ao verificar o status da conta iCloud: %@"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "檢查 iCloud 帳戶狀態出錯: %@"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "檢查 iCloud 帳戶狀態出錯: %@"
@@ -3447,16 +1971,34 @@
     },
     "正在处理中...": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird verarbeitet..."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Processing..."
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "正在处理中..."
+            "value": "Procesando..."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En cours de traitement..."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elaborazione in corso..."
           }
         },
         "ja": {
@@ -3471,16 +2013,10 @@
             "value": "처리 중..."
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "İşleniyor..."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En cours de traitement..."
+            "value": "Processando..."
           }
         },
         "ru": {
@@ -3489,37 +2025,25 @@
             "value": "Обрабатывается..."
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elaborazione in corso..."
+            "value": "İşleniyor..."
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wird verarbeitet..."
+            "value": "正在处理中..."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Procesando..."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Processando..."
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "正在處理中..."
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "正在處理中..."
@@ -3529,16 +2053,34 @@
     },
     "没有图片": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Bild"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "No image"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有图片"
+            "value": "Sin imagen"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune image"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna immagine"
           }
         },
         "ja": {
@@ -3553,16 +2095,10 @@
             "value": "이미지 없음"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resim yok"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucune image"
+            "value": "Sem imagem"
           }
         },
         "ru": {
@@ -3571,37 +2107,25 @@
             "value": "Нет изображения"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessuna immagine"
+            "value": "Resim yok"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kein Bild"
+            "value": "没有图片"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin imagen"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem imagem"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "沒有圖片"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "沒有圖片"
@@ -3611,16 +2135,34 @@
     },
     "没有文件": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Dateien"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "No files"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有文件"
+            "value": "Sin archivos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun fichier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun file"
           }
         },
         "ja": {
@@ -3635,16 +2177,10 @@
             "value": "파일 없음"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dosya yok"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aucun fichier"
+            "value": "Sem arquivos"
           }
         },
         "ru": {
@@ -3653,34 +2189,16 @@
             "value": "Нет файлов"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessun file"
+            "value": "Dosya yok"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keine Dateien"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin archivos"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sem arquivos"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "沒有文件"
+            "value": "没有文件"
           }
         },
         "zh-Hant": {
@@ -3688,185 +2206,45 @@
             "state": "translated",
             "value": "沒有文件"
           }
-        }
-      }
-    },
-    "的消息": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Message"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "的消息"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "のメッセージ"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메시지"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mesaj"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Message"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сообщение"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Messaggio"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nachricht"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "el mensaje"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "mensagem"
-          }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "的訊息"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "消息"
-          }
-        }
-      }
-    },
-    "自动": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auto"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自动"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "자동"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Otomatik"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatique"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Авто"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatico"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automatisch"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automático"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Automático"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自動"
+            "value": "沒有文件"
           }
         }
       }
     },
     "输入图片名称": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildname eingeben"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Enter image name"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "输入图片名称"
+            "value": "Nombre de la imagen de entrada"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nom de l'image d'entrée"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserisci il nome dell'immagine"
           }
         },
         "ja": {
@@ -3881,16 +2259,10 @@
             "value": "이미지 이름 입력"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Görsel adını girin"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nom de l'image d'entrée"
+            "value": "Insira o nome da imagem"
           }
         },
         "ru": {
@@ -3899,34 +2271,16 @@
             "value": "Введите название изображения"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inserisci il nome dell'immagine"
+            "value": "Görsel adını girin"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bildname eingeben"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre de la imagen de entrada"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Insira o nome da imagem"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "輸入圖片名稱"
+            "value": "输入图片名称"
           }
         },
         "zh-Hant": {
@@ -3934,349 +2288,45 @@
             "state": "translated",
             "value": "輸入圖片名稱"
           }
-        }
-      }
-    },
-    "这是一个加密示例": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is an encryption example"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "这是一个加密示例"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "これは暗号化の例です"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이것은 암호화 예시입니다"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu bir şifreleme örneği"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ceci est un exemple de cryptage"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это пример шифрования"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo è un esempio di crittografia"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dies ist ein verschlüsseltes Beispiel"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este es un ejemplo de cifrado"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Isto é um exemplo criptografado"
-          }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "這是一個加密示例"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "這是一個加密示例"
-          }
-        }
-      }
-    },
-    "这是加密的正文部分": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This is the encrypted body part"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "这是加密的正文部分"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "これは暗号化された本文部分です"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이것은 암호화된 본문 부분입니다"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu şifrelenmiş metin bölümüdür"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ceci est la partie principale chiffrée"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Это зашифрованная часть текста"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questa è la parte principale crittografata"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dies ist der verschlüsselte Haupttextteil."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esta es la parte cifrada del texto"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esta é a parte principal criptografada"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "這是加密的正文部分"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "這是加密的正文部分"
-          }
-        }
-      }
-    },
-    "长期": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Long-term"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "长期"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "長期"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "장기"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Uzun vadeli"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Long terme"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Длительный"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lungo termine"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Langfristig"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Largo plazo"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Longo prazo"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "長期"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "長期"
-          }
-        }
-      }
-    },
-    "问智能助手": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ask Smart Assistant"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "“问智能助手”"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「スマートアシスタント」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "지능형 어시스턴트"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yapay Zeka Asistanı"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistant IA"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Умный помощник"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistente Intelligente"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Frag den intelligenten Assistenten"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Asistente Inteligente"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assistente Inteligente"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「問智能助手」"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "問智能助手"
+            "value": "輸入圖片名稱"
           }
         }
       }
     },
     "静音分组1小时": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stille Gruppe 1 Stunde"
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Silence group for 1 hour"
           }
         },
-        "zh-Hans": {
+        "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "静音分组1小时"
+            "value": "Silencio durante 1 hora"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silence de groupe pendant 1 heure"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silenzio per 1 ora"
           }
         },
         "ja": {
@@ -4291,16 +2341,10 @@
             "value": "1시간 동안 조용히 하기"
           }
         },
-        "tr": {
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sessizlik Bölümü 1 Saat"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silence de groupe pendant 1 heure"
+            "value": "Silenciar por 1 hora"
           }
         },
         "ru": {
@@ -4309,37 +2353,25 @@
             "value": "Тихая группа на 1 час"
           }
         },
-        "it": {
+        "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silenzio per 1 ora"
+            "value": "Sessizlik Bölümü 1 Saat"
           }
         },
-        "de": {
+        "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stille Gruppe 1 Stunde"
+            "value": "静音分组1小时"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silencio durante 1 hora"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silenciar por 1 hora"
-          }
-        },
-        "zh-HK": {
+        "zh-Hant": {
           "stringUnit": {
             "state": "translated",
             "value": "靜音分組1小時"
           }
         },
-        "zh-Hant": {
+        "zh-HK": {
           "stringUnit": {
             "state": "translated",
             "value": "靜音分組1小時"

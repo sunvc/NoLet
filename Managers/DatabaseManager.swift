@@ -31,7 +31,6 @@ public class DatabaseManager {
         try ChatGroup.createInit(dbQueue: dbQueue)
         try ChatMessage.createInit(dbQueue: dbQueue)
         try ChatPrompt.createInit(dbQueue: dbQueue)
-        try PttMessageModel.createInit(dbQueue: dbQueue)
         
     }
     
