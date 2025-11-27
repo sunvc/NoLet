@@ -20,27 +20,22 @@ struct MessagePage: View {
     @Default(.servers) private var servers
     @StateObject private var messageManager = MessagesManager.shared
     @State private var showDeleteAction: Bool = false
-    @State private var searchText:String = ""
-    
+    @State private var searchText: String = ""
+
     var body: some View {
         ZStack {
-            
-            if showGroup{
+            if showGroup {
                 GroupMessagesView()
-                    
-            }else{
+
+            } else {
                 SingleMessagesView()
             }
-            
-            if #unavailable(iOS 26.0){
-                if !manager.searchText.isEmpty{
+
+            if #unavailable(iOS 26.0) {
+                if !manager.searchText.isEmpty {
                     SearchMessageView()
-                        
                 }
             }
-            
-            
-            
         }
         .navigationTitle("消息")
         .animation(.easeInOut, value: showGroup)
@@ -51,12 +46,12 @@ struct MessagePage: View {
                 } else {
                     view
                         .searchable(text: $searchText)
-                        .onChange(of: searchText){ value in
-                            if value.isEmpty{
+                        .onChange(of: searchText) { value in
+                            if value.isEmpty {
                                 manager.searchText = ""
                             }
                         }
-                        .onSubmit(of: .search){
+                        .onSubmit(of: .search) {
                             manager.searchText = searchText
                         }
                 }
@@ -65,7 +60,6 @@ struct MessagePage: View {
 
         .environmentObject(messageManager)
         .toolbar {
-
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Section {
@@ -78,20 +72,22 @@ struct MessagePage: View {
                                 .customForegroundStyle(Color.accent, Color.primary)
                         }
                     }
-                    
 
                     Section {
                         Button {
                             self.showGroup.toggle()
                             manager.selectGroup = nil
-                            manager.selectId = nil
+                            manager.selectID = nil
                             Haptic.impact()
                         } label: {
-                            Label(showGroup ? "列表模式" : "分组模式", systemImage: showGroup ? "rectangle.3.group.bubble.left" : "checklist")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                                .animation(.easeInOut, value: showGroup)
-                                .symbolEffect(delay: 0)
+                            Label(
+                                showGroup ? "列表模式" : "分组模式",
+                                systemImage: showGroup ? "rectangle.3.group.bubble.left" : "checklist"
+                            )
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, .primary)
+                            .animation(.easeInOut, value: showGroup)
+                            .symbolEffect(delay: 0)
                         }
                     }
                     Section {
@@ -116,18 +112,15 @@ struct MessagePage: View {
                 }
             }
         }
-        .fullScreenCover(item: $manager.selectMessage){ message in
-            NavigationStack{
+        .fullScreenCover(item: $manager.selectMessage) { message in
+            NavigationStack {
                 SelectMessageView(message: message) {
                     withAnimation {
                         manager.selectMessage = nil
                     }
                 }
-
             }
         }
-
-        
     }
 }
 

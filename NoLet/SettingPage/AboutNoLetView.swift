@@ -5,16 +5,14 @@
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
 //  E-mail:        to@wzs.app
-// 
+//
 //  History:
 //    Created by Neo on 2025/4/13.
 //
 
-import SwiftUI
 import Defaults
 import StoreKit
-
-
+import SwiftUI
 
 struct AboutNoLetView: View {
     @EnvironmentObject private var manager: AppManager
@@ -22,8 +20,8 @@ struct AboutNoLetView: View {
     @Default(.deviceToken) private var deviceToken
     @Default(.id) private var id
     @Default(.nearbyShow) private var nearbyShow
-    
-    @State private var showNearbySetting:Bool = false
+
+    @State private var showNearbySetting: Bool = false
     @State private var buildDetail: Bool = false
     @State private var product: Product?
     @State private var purchaseResult: Product.PurchaseResult?
@@ -33,17 +31,16 @@ struct AboutNoLetView: View {
         // build号
         var buildNumber: String {
             if let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
-               let versionNumber = Int(version) {
+               let versionNumber = Int(version)
+            {
                 return String(versionNumber, radix: 16).uppercased()
             }
             return ""
         }
-        
+
         return buildDetail ? "\(appVersion)(\(buildNumber))" : appVersion
     }
-    
-    
-    
+
     var body: some View {
         List {
             // Logo 部分
@@ -51,7 +48,6 @@ struct AboutNoLetView: View {
                 HStack {
                     Spacer()
                     VStack(spacing: 16) {
-                        
                         Image(setting_active_app_icon.logo)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -63,19 +59,18 @@ struct AboutNoLetView: View {
                                 Haptic.impact()
                             }
                             .onLongPressGesture {
-                                if nearbyShow{
+                                if nearbyShow {
                                     manager.fullPage = .nearby
-                                }else{
+                                } else {
                                     self.showNearbySetting.toggle()
                                 }
                                 Haptic.impact()
                             }
-                        
-                        
+
                         Text(NCONFIG.AppName)
                             .font(.title2)
                             .fontWeight(.bold)
-                        
+
                         Text("版本 \(buildVersion)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
@@ -91,75 +86,68 @@ struct AboutNoLetView: View {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
-            
-            
-            
+
             // 应用信息部分
             Section {
-                
-                
-                
                 ListButton(leading: {
                     Label {
-                        Text( verbatim: "TOKEN")
+                        Text(verbatim: "TOKEN")
                             .lineLimit(1)
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "captions.bubble")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.primary, .accent)
-                        
                     }
                 }, trailing: {
                     HackerTextView(text: maskString(deviceToken), trigger: false)
                         .foregroundStyle(.gray)
-                    
+
                     Image(systemName: "doc.on.doc")
                         .symbolRenderingMode(.palette)
-                        .customForegroundStyle( .accent, Color.primary)
-                    
-                    
+                        .customForegroundStyle(.accent, Color.primary)
+
                 }, showRight: false) {
-                    if deviceToken != ""{
+                    if deviceToken != "" {
                         Clipboard.set(deviceToken)
                         Toast.copy(title: "复制成功")
-                        
-                    }else{
+
+                    } else {
                         Toast.question(title: "请先注册")
                     }
                     return true
                 }
-                
+
                 ListButton(leading: {
                     Label {
-                        Text( verbatim: "ID")
+                        Text(verbatim: "ID")
                             .lineLimit(1)
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "person.badge.key")
-                        
+
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(Color.primary, .accent)
                     }
                 }, trailing: {
                     HackerTextView(text: maskString(id), trigger: false)
                         .foregroundStyle(.gray)
-                    
+
                     Image(systemName: "doc.on.doc")
                         .symbolRenderingMode(.palette)
-                        .customForegroundStyle( .accent, Color.primary)
-                    
+                        .customForegroundStyle(.accent, Color.primary)
+
                 }, showRight: false) {
                     Clipboard.set(id)
-                    Toast.copy(title:  "复制成功")
+                    Toast.copy(title: "复制成功")
                     return true
                 }
-                if showNearbySetting || nearbyShow{
+                if showNearbySetting || nearbyShow {
                     Toggle(isOn: $nearbyShow) {
                         Label("附近的书", systemImage: "location.viewfinder")
                     }
                 }
-                
+
                 // App开源地址
                 ListButton {
                     Label {
@@ -170,10 +158,10 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.blue, Color.primary)
                     }
                 } action: {
-                    manager.router.append(.web(url:  NCONFIG.docServer.url))
+                    manager.router.append(.web(url: NCONFIG.docServer.url))
                     return true
                 }
-                
+
                 // App开源地址
                 ListButton {
                     Label {
@@ -185,10 +173,10 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.blue, Color.primary)
                     }
                 } action: {
-                    manager.router.append(.web(url:  NCONFIG.appSource.url))
+                    manager.router.append(.web(url: NCONFIG.appSource.url))
                     return true
                 }
-                
+
                 // 服务器开源地址
                 ListButton {
                     Label {
@@ -200,46 +188,43 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.green, Color.primary)
                     }
                 } action: {
-                    manager.router.append(.web(url:  NCONFIG.serverSource.url))
+                    manager.router.append(.web(url: NCONFIG.serverSource.url))
                     return true
                 }
-                
+
             } header: {
                 Text("应用信息")
                     .textCase(.none)
             }
-            
-            Section{
-                
-                
-                VStack{
-                    
-                    HStack(spacing: 10){
+
+            Section {
+                VStack {
+                    HStack(spacing: 10) {
                         Spacer()
-                        
-                        Button{
+
+                        Button {
                             manager.router.append(.web(url: NCONFIG.privacyURL.url))
                             Haptic.impact()
-                           
-                        }label: {
+
+                        } label: {
                             Text("隐私政策")
                         }.buttonStyle(.borderless)
                         Circle()
-                            .frame(width: 3,height: 3)
-                        
-                        Button{
+                            .frame(width: 3, height: 3)
+
+                        Button {
                             manager.router.append(.web(url: NCONFIG.userAgreement.url))
                             Haptic.impact()
-                            
-                        }label: {
+
+                        } label: {
                             Text("用户协议")
                         }.buttonStyle(.borderless)
-                        
+
                         Spacer()
                     }
                     .font(.caption)
-                    
-                    HStack{
+
+                    HStack {
                         Spacer()
                         Text(verbatim: "© 2024 WZS All rights reserved.")
                             .font(.caption2)
@@ -249,22 +234,19 @@ struct AboutNoLetView: View {
                     }.padding(.top)
                 }
             }.listRowBackground(Color.clear)
-           
-            
-            
         }
-        .toolbar{
-            if #available(iOS 26.0, *){
+        .toolbar {
+            if #available(iOS 26.0, *) {
                 ToolbarItem(placement: .largeTitle) {
                     Text(verbatim: "")
                 }
             }
-            
+
             ToolbarItem(placement: .topBarTrailing) {
-                Button{
+                Button {
                     requestReview()
                     Haptic.impact()
-                }label:{
+                } label: {
                     Label("去评分", systemImage: "star.bubble")
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.yellow, Color.primary)
@@ -275,9 +257,8 @@ struct AboutNoLetView: View {
         .task {
             await loadProduct()
         }
-        
     }
-    
+
     func loadProduct() async {
         do {
             let products = try await Product.products(for: ["one_time_support_2_99"])
@@ -286,37 +267,35 @@ struct AboutNoLetView: View {
             print("Failed to load products: \(error)")
         }
     }
-    
+
     func requestReview() {
         if let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
-    
+
     fileprivate func maskString(_ str: String) -> String {
-        guard str.count > 9 else { return String(repeating: "*", count: 3) +  str }
+        guard str.count > 9 else { return String(repeating: "*", count: 3) + str }
         return str.prefix(3) + String(repeating: "*", count: 5) + str.suffix(4)
     }
-    
-    
 }
 
-extension NCONFIG{
-    
+extension NCONFIG {
     private static let wikiServer: NURL = "https://wiki.wzs.app"
-  
-    static let delpoydoc: NURL          = docServer + "deploy"
-    static let privacyURL: NURL         = docServer + "policy"
-    static let tutorialURL: NURL        = docServer + "tutorial"
-    static let encryURL: NURL           = docServer + "encryption"
-    static let pushHelp: NURL           = docServer + "tutorial"
-    
+
+    static let delpoydoc: NURL = docServer + "deploy"
+    static let privacyURL: NURL = docServer + "policy"
+    static let tutorialURL: NURL = docServer + "tutorial"
+    static let encryURL: NURL = docServer + "encryption"
+    static let pushHelp: NURL = docServer + "tutorial"
+
     static var docServer: NURL {
         wikiServer + String(localized: "NoletLanguageLocalCode")
     }
 }
 
-#Preview{
+#Preview {
     ContentView()
 }

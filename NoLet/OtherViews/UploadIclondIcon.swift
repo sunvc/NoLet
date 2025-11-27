@@ -10,63 +10,60 @@
 //    Created by Neo on 2025/5/2.
 //
 
-
 import SwiftUI
 
-
-struct UploadIclondIcon:View {
-    
+struct UploadIclondIcon: View {
     var dismiss: (PushIcon) -> Void
     var endEditing: () -> Void
-    
-    @State private var isChecking:Bool = false
-    
+
+    @State private var isChecking: Bool = false
+
     @State private var tags: [TagModel] = []
-    
-    var tsgsTem:[String]{
-        tags.compactMap({$0.value}).filter { !$0.trimmingSpaceAndNewLines.isEmpty }
+
+    var tsgsTem: [String] {
+        tags.compactMap { $0.value }.filter { !$0.trimmingSpaceAndNewLines.isEmpty }
     }
-    
+
     @FocusState private var nameFocus
-    
-    @State private var pictureLoading:Bool = false
-    
-    @State private var pushIcon:PushIcon
-    @State private var tips:String? = nil
-    @State private var saveOk:Bool = false
-    @State private var status:Bool = false
-    @State private var freeCount:Int = 0
-    
-    init(pushIcon: PushIcon, dismiss:@escaping  (PushIcon) -> Void, endEditing: @escaping () -> Void) {
+
+    @State private var pictureLoading: Bool = false
+
+    @State private var pushIcon: PushIcon
+    @State private var tips: String? = nil
+    @State private var saveOk: Bool = false
+    @State private var status: Bool = false
+    @State private var freeCount: Int = 0
+
+    init(
+        pushIcon: PushIcon,
+        dismiss: @escaping (PushIcon) -> Void,
+        endEditing: @escaping () -> Void
+    ) {
         self.dismiss = dismiss
         self.endEditing = endEditing
         self.pushIcon = pushIcon
     }
-    
-    var btnTitle:String{
-        status ? String(localized: "上传到云端") :  String(localized: "iCloud状态检查")
+
+    var btnTitle: String {
+        status ? String(localized: "上传到云端") : String(localized: "iCloud状态检查")
     }
-    
-    var loadingTitle:String{
-        if pictureLoading{
-            return status ?  String(localized: "正在处理中...") :  String(localized: "iCloud状态检查中...")
-        }else {
+
+    var loadingTitle: String {
+        if pictureLoading {
+            return status ? String(localized: "正在处理中...") : String(localized: "iCloud状态检查中...")
+        } else {
             return ""
         }
-        
     }
+
     var body: some View {
-        ScrollView{
-            
-            
-            HStack(alignment: .bottom){
-                
-                if let previewImage = pushIcon.previewImage{
-                    
+        ScrollView {
+            HStack(alignment: .bottom) {
+                if let previewImage = pushIcon.previewImage {
                     Image(uiImage: previewImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(width: 100,height: 100)
+                        .frame(width: 100, height: 100)
                         .blur(radius: pictureLoading ? 5 : 0)
                         .overlay {
                             ProgressView()
@@ -75,128 +72,123 @@ struct UploadIclondIcon:View {
                                 .scaleEffect(2.0)
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay(  // 再添加圆角边框
-                            ColoredBorder(cornerRadius: 10,padding: 0)
+                        .overlay( // 再添加圆角边框
+                            ColoredBorder(cornerRadius: 10, padding: 0)
                         )
                 }
-                VStack{
-                    HStack{
+                VStack {
+                    HStack {
                         Spacer()
-                        
+
                         Text("图标额度剩余")
                             .foregroundStyle(.gray)
                             .font(.footnote)
-                        
-                       
-                        
+
                         Text(verbatim: "\(freeCount)")
                             .foregroundStyle(freeCount < 5 ? .red : .green)
                             .font(.headline)
                             .fontWeight(.bold)
-                        
-                        
+
                         Text("张")
                             .foregroundStyle(.gray)
                             .font(.footnote)
                     }
                     .padding(.bottom, 10)
                     Spacer()
-                    TextField(text: $pushIcon.name, prompt: Text("输入图片名称"),label: {Text("图片Key")})
-                        .focused($nameFocus)
-                        .customField(icon: isChecking ? "checkmark.circle.fill" : "checkmark.circle")
-                        .padding(.horizontal, 10)
+                    TextField(
+                        text: $pushIcon.name,
+                        prompt: Text("输入图片名称"),
+                        label: { Text("图片Key") }
+                    )
+                    .focused($nameFocus)
+                    .customField(icon: isChecking ? "checkmark.circle.fill" :
+                        "checkmark.circle")
+                    .padding(.horizontal, 10)
                 }
-                
-                
-                
             }
             .padding()
-            
+
             TagField(tags: $tags)
                 .padding()
-                .onChange(of: tags) { newValue in
+                .onChange(of: tags) { _ in
                     self.pushIcon.description = self.tsgsTem
                 }
 
-
-            Button{
-                if pushIcon.previewImage == nil{
-                    self.tips =  String(localized: "没有图片")
-                }else {
-                    if self.freeCount == 0{
+            Button {
+                if pushIcon.previewImage == nil {
+                    self.tips = String(localized: "没有图片")
+                } else {
+                    if self.freeCount == 0 {
                         self.tips = String(localized: "剩余空间不足")
                         return
                     }
-                    Task{
+                    Task {
                         await saveItems()
                     }
                 }
-            }label: {
-                HStack{
+            } label: {
+                HStack {
                     Spacer()
                     Label(
                         loadingTitle.isEmpty ? btnTitle : loadingTitle,
                         systemImage: "externaldrive.badge.icloud"
                     )
-                        .foregroundStyle(.white, Color.primary)
-                        .fontWeight(.bold)
-                        .padding(.vertical, 5)
+                    .foregroundStyle(.white, Color.primary)
+                    .fontWeight(.bold)
+                    .padding(.vertical, 5)
 
                     Spacer()
                 }
-
             }
-            .diff{view in
-                Group{
+            .diff { view in
+                Group {
                     if #available(iOS 26.0, *) {
                         view
                             .buttonStyle(.glassProminent)
-                    }else{
+                    } else {
                         view
                             .buttonStyle(BorderedProminentButtonStyle())
                     }
                 }
 
             }.disabled(pictureLoading || !status)
-                .padding(.horizontal)
+            .padding(.horizontal)
 
-            
         }.simultaneousGesture(
             DragGesture()
-                .onEnded{ transform in
-                    if transform.translation.height > 50{
+                .onEnded { transform in
+                    if transform.translation.height > 50 {
                         endEditing()
                     }
-                    
                 }
         ).alert(isPresented: Binding(get: {
             tips != nil
         }, set: { value in
-            if !value{
+            if !value {
                 tips = nil
             }
-        })){
-            Alert(title: Text("提示"), message: Text(tips ?? ""), dismissButton: .default(Text(verbatim: "ok")){
-                if saveOk{
-                    self.dismiss(pushIcon)
+        })) {
+            Alert(
+                title: Text("提示"),
+                message: Text(tips ?? ""),
+                dismissButton: .default(Text(verbatim: "ok")) {
+                    if saveOk {
+                        self.dismiss(pushIcon)
+                    }
                 }
-                
-            })
+            )
         }
         .disabled(!status || freeCount == 0)
         .onAppear(perform: {
-            
             pictureLoading = true
-            Task{
-                
+            Task {
                 let (success, message) = await CloudManager.shared.checkAccount()
-                
+
                 let records = await CloudManager.shared.queryIconsForMe()
-                
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1){
-                    self.freeCount = Defaults[.freeCloudImageCount]  - records.count
-                    if !success{
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.freeCount = Defaults[.freeCloudImageCount] - records.count
+                    if !success {
                         self.tips = message
                     }
                     self.status = success && self.freeCount > 0
@@ -205,26 +197,25 @@ struct UploadIclondIcon:View {
             }
         })
     }
-    
+
     /// Saving Items to SwiftData
-    func saveItems() async  {
-         DispatchQueue.main.async {
+    func saveItems() async {
+        DispatchQueue.main.async {
             self.pictureLoading = true
         }
-        let err = await CloudManager.shared.savePushIconModel(self.pushIcon)
+        let err = await CloudManager.shared.savePushIconModel(pushIcon)
         NLog.log(err.tips)
-        
+
         switch err {
-        case .success(_):
-            self.saveOk = true
+        case .success:
+            saveOk = true
         default:
             break
         }
-        
-         DispatchQueue.main.async {
+
+        DispatchQueue.main.async {
             self.tips = err.tips
             self.pictureLoading = false
         }
-        
     }
 }

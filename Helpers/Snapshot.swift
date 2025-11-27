@@ -1,5 +1,5 @@
 //
-// 
+//
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -15,35 +15,35 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func snapshot(trigger: Bool, onComplete: @escaping (UIImage) -> ()) -> some View {
-        self.modifier(SnaphotModifier(trigger: trigger, onComplete: onComplete))
+    func snapshot(trigger: Bool, onComplete: @escaping (UIImage) -> Void) -> some View {
+        modifier(SnaphotModifier(trigger: trigger, onComplete: onComplete))
     }
 }
 
-fileprivate struct SnaphotModifier: ViewModifier {
+private struct SnaphotModifier: ViewModifier {
     var trigger: Bool
-    var onComplete: (UIImage) -> ()
+    var onComplete: (UIImage) -> Void
     /// Local View Modifier Properties
     @State private var view: UIView = .init(frame: .zero)
-    
+
     func body(content: Content) -> some View {
         if #available(iOS 17, *) {
             content
                 .background(ViewExtractor(view: view))
                 .compositingGroup()
-                .onChange(of: trigger) { oldValue, newValue in
+                .onChange(of: trigger) { _, _ in
                     generateSnapshot()
                 }
         } else {
             content
                 .background(ViewExtractor(view: view))
                 .compositingGroup()
-                .onChange(of: trigger) { newValue in
+                .onChange(of: trigger) { _ in
                     generateSnapshot()
                 }
         }
     }
-    
+
     private func generateSnapshot() {
         if let superView = view.superview?.superview {
             let renderer = UIGraphicsImageRenderer(size: superView.bounds.size)
@@ -55,14 +55,14 @@ fileprivate struct SnaphotModifier: ViewModifier {
     }
 }
 
-fileprivate struct ViewExtractor: UIViewRepresentable {
+private struct ViewExtractor: UIViewRepresentable {
     var view: UIView
-    func makeUIView(context: Context) -> UIView {
+    func makeUIView(context _: Context) -> UIView {
         view.backgroundColor = .clear
         return view
     }
-    
-    func updateUIView(_ uiView: UIView, context: Context) { }
+
+    func updateUIView(_: UIView, context _: Context) {}
 }
 
 #Preview {

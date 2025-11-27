@@ -11,42 +11,42 @@
 //  History:
 //    Created by Neo on 2024/12/10.
 
-import AVFoundation
 import ActivityKit
+import AVFoundation
 import Defaults
 import Foundation
 import SwiftUI
 import Zip
 
 // MARK: - 铃声界面播放铃声 Actor
+
 final class AudioManager: NetworkManager, ObservableObject {
-    
     static let shared = AudioManager()
-    
+
     @Published var defaultSounds: [URL] = []
     @Published var customSounds: [URL] = []
-    
+
     @Published var loading: Bool = false
     @Published var ShareURL: URL? = nil
-    
+
     @Published private(set) var isPlaying: Bool = false
     @Published private(set) var currentTime: Double = 0
     @Published private(set) var duration: Double = 0
     @Published private(set) var currentURL: URL? = nil
-    
+
     private var manager = FileManager.default
-    
+
     private var player: AVPlayer?
     private var timeObserver: Any?
     private var playerItemStatusObserver: NSKeyValueObservation?
-    
+
     private var endObserver: NSObjectProtocol?
-    
+
     private override init() {
         super.init()
-        self.updateFileList()
+        updateFileList()
     }
-    
+
     /// 播放或暂停音频
     func togglePlay(url: URL) {
         if currentURL == url {
@@ -61,14 +61,14 @@ final class AudioManager: NetworkManager, ObservableObject {
             playNewURL(url)
         }
     }
-    
+
     /// 开始播放新音频
     private func playNewURL(_ url: URL) {
         cleanup()
         currentURL = url
         let playerItem = AVPlayerItem(url: url)
         player = AVPlayer(playerItem: playerItem)
-        
+
         // 监听播放状态
         playerItemStatusObserver = playerItem.observe(\.status, options: [.new]) {
             [weak self] item, _ in
@@ -80,7 +80,7 @@ final class AudioManager: NetworkManager, ObservableObject {
                 }
             }
         }
-        
+
         // 实时监听播放进度
         timeObserver = player?.addPeriodicTimeObserver(
             forInterval: CMTime(seconds: 0.1, preferredTimescale: 600),
@@ -92,7 +92,7 @@ final class AudioManager: NetworkManager, ObservableObject {
                 self.duration = dur
             }
         }
-        
+
         //  监听播放结束
         endObserver = NotificationCenter.default.addObserver(
             forName: .AVPlayerItemDidPlayToEndTime,
@@ -104,28 +104,28 @@ final class AudioManager: NetworkManager, ObservableObject {
             self.cleanup()
         }
     }
-    
+
     /// 播放
     private func play() {
         player?.play()
         isPlaying = true
     }
-    
+
     /// 暂停
     private func pause() {
         player?.pause()
         isPlaying = false
     }
-    
+
     /// 跳转到指定时间
     func seek(to time: Double) {
         player?.seek(to: CMTime(seconds: time, preferredTimescale: 600))
     }
-    
+
     func stop() {
-        self.cleanup()
+        cleanup()
     }
-    
+
     /// 清理资源（切歌时）
     private func cleanup() {
         if let token = timeObserver {
@@ -139,16 +139,16 @@ final class AudioManager: NetworkManager, ObservableObject {
         currentURL = nil
         isPlaying = false
     }
-    
+
     deinit {
         cleanup()
     }
-    
+
     // 定义一个异步函数来加载audio的持续时间
     func loadVideoDuration(fromURL audioURL: URL) async throws -> Double {
         return try AVAudioPlayer(contentsOf: audioURL).duration
     }
-    
+
     func formatDuration(_ duration: TimeInterval) -> String {
         let formatter = NumberFormatter()
         formatter.minimumFractionDigits = 0
@@ -158,53 +158,52 @@ final class AudioManager: NetworkManager, ObservableObject {
 }
 
 extension AudioManager {
-    
     func allSounds() -> [String] {
-        let (customSounds, defaultSounds) = self.getFileList()
+        let (customSounds, defaultSounds) = getFileList()
         return (customSounds + defaultSounds).map {
             $0.deletingPathExtension().lastPathComponent
         }
     }
-    
+
     // MARK: - Get audio folder data
-    
+
     func getFileList() -> ([URL], [URL]) {
         // 加载 Bundle 中的默认 caf 音频资源
         let defaultSounds: [URL] = {
             // 从 App Bundle 获取所有 caf 文件
             var temurl = Bundle.main.urls(forResourcesWithExtension: "caf", subdirectory: nil) ?? []
-            
+
             // 按文件名自然排序（考虑数字顺序、人类习惯排序）
             temurl.sort { u1, u2 -> Bool in
                 u1.lastPathComponent.localizedStandardCompare(u2.lastPathComponent)
-                == .orderedAscending
+                    == .orderedAscending
             }
-            
+
             return temurl
         }()
-        
+
         // 加载 App Group 共享目录中的自定义 caf 音频资源
         let customSounds: [URL] = {
             // 获取共享目录路径
-            guard let soundsDirectoryUrl = NCONFIG.getDir(.sounds) else { return [] }
-            
+            guard let soundsDirectoryURL = NCONFIG.getDir(.sounds) else { return [] }
+
             // 获取指定后缀（caf），排除长音前缀的文件
             var urlemp = self.getFilesInDirectory(
-                directory: soundsDirectoryUrl.path(), suffix: "caf")
-            
+                directory: soundsDirectoryURL.path(), suffix: "caf"
+            )
+
             // 同样进行自然排序
             urlemp.sort { u1, u2 -> Bool in
                 u1.lastPathComponent.localizedStandardCompare(u2.lastPathComponent)
-                == .orderedAscending
+                    == .orderedAscending
             }
-            
+
             return urlemp
         }()
-        
+
         return (customSounds, defaultSounds)
-        
     }
-    
+
     /// 加载系统默认音效和用户自定义音效文件列表
     func updateFileList() {
         Task.detached(priority: .userInitiated) {
@@ -215,15 +214,14 @@ extension AudioManager {
                 self.defaultSounds = defaultSounds
             }
         }
-        
     }
-    
+
     /// 返回指定文件夹中，指定后缀且不含长音前缀的文件列表
     func getFilesInDirectory(directory: String, suffix: String) -> [URL] {
         do {
             // 获取目录下所有文件名（字符串）
             let files = try manager.contentsOfDirectory(atPath: directory)
-            
+
             // 过滤符合条件的文件，并转换为完整的 URL
             return files.compactMap { file -> URL? in
                 // 仅保留指定后缀，且排除带有“长音前缀”的文件
@@ -240,23 +238,28 @@ extension AudioManager {
             return []
         }
     }
-
 }
 
 extension AudioManager {
-  
-    
     // MARK: - OTHER
-    static func tips(  _ sound: TipsSound,fileExtension: String = "aac",  complete: (() -> Void)? = nil ) {
-        self.tips(sound.rawValue, fileExtension: fileExtension, complete: complete)
+
+    static func tips(
+        _ sound: TipsSound,
+        fileExtension: String = "aac",
+        complete: (() -> Void)? = nil
+    ) {
+        tips(sound.rawValue, fileExtension: fileExtension, complete: complete)
     }
-    
-    static func tips(_ sound: String, fileExtension: String = "aac", complete: (() -> Void)? = nil){
-        
+
+    static func tips(
+        _ sound: String,
+        fileExtension: String = "aac",
+        complete: (() -> Void)? = nil
+    ) {
         guard Defaults[.feedbackSound] else { return }
-        
+
         var soundID: SystemSoundID = 0
-        
+
         if let number = Int(sound) {
             soundID = SystemSoundID(number)
         } else if let url = Bundle.main.url(forResource: sound, withExtension: fileExtension) {
@@ -271,11 +274,9 @@ extension AudioManager {
             complete?()
         }
     }
-    
+
     enum TipsSound: String {
         case qrcode
         case share
     }
-    
 }
-

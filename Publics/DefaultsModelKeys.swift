@@ -1,5 +1,5 @@
 //
-//  LocalKeys.swift
+//  DefaultsModelKeys.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -14,7 +14,6 @@
 import Defaults
 import Foundation
 
-
 extension Defaults.Keys {
     static let servers = Key<[PushServerModel]>(.serverArrayStroage, [])
     static let cloudServers = Key<[PushServerModel]>(.serverArrayCloudStroage, [], iCloud: true)
@@ -22,21 +21,16 @@ extension Defaults.Keys {
     static let messageExpiration = Key<ExpirationTime>(.messageExpirtionTime, .forever)
     static let defaultBrowser = Key<DefaultBrowserModel>(.defaultBrowserOpen, .auto)
     static let imageSaveDays = Key<ExpirationTime>(.imageSaveDays, .forever)
-    static let assistantAccouns = Key<[AssistantAccount]>(.AssistantAccount,[], iCloud: true)
+    static let assistantAccouns = Key<[AssistantAccount]>(.AssistantAccount, [], iCloud: true)
     static let moreMessageCache = Key<[MoreMessage]>(.moreMessageCache, [])
     static let proxyServer = Key<PushServerModel>(.proxyDownloadServer, PushServerModel.space)
 }
 
-
-extension ExpirationTime: Defaults.Serializable{ }
-extension DefaultBrowserModel:Defaults.Serializable {}
-extension AssistantAccount: Defaults.Serializable{}
-extension Identifiers: Defaults.Serializable{}
-extension AppIconEnum: Defaults.Serializable{}
-extension PushServerModel: Defaults.Serializable{}
-extension MoreMessage: Defaults.Serializable{}
-extension PushToTalkGroup: Defaults.Serializable{}
-
-
-
-
+extension ExpirationTime: Defaults.Serializable {}
+extension DefaultBrowserModel: Defaults.Serializable {}
+extension AssistantAccount: Defaults.Serializable {}
+extension Identifiers: Defaults.Serializable {}
+extension AppIconEnum: Defaults.Serializable {}
+extension PushServerModel: Defaults.Serializable {}
+extension MoreMessage: Defaults.Serializable {}
+extension PushToTalkGroup: Defaults.Serializable {}

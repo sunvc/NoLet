@@ -20,17 +20,16 @@ struct TagModel: Identifiable, Hashable {
     var isFocused: Bool = false
 }
 
-
 struct TagLayout: Layout {
     /// Layout Properties
     var alignment: Alignment = .center
     /// Both Horizontal & Vertical
     var spacing: CGFloat = 10
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache _: inout ()) -> CGSize {
         let maxWidth = proposal.width ?? 0
         var height: CGFloat = 0
         let rows = generateRows(maxWidth, proposal, subviews)
-        
+
         for (index, row) in rows.enumerated() {
             /// Finding max Height in each row and adding it to the View's Total Height
             if index == (rows.count - 1) {
@@ -40,23 +39,28 @@ struct TagLayout: Layout {
                 height += row.maxHeight(proposal) + spacing
             }
         }
-        
+
         return .init(width: maxWidth, height: height)
     }
-    
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+
+    func placeSubviews(
+        in bounds: CGRect,
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache _: inout ()
+    ) {
         /// Placing Views
         var origin = bounds.origin
         let maxWidth = bounds.width
-        
+
         let rows = generateRows(maxWidth, proposal, subviews)
-        
+
         for row in rows {
             /// Chaning Origin X based on Alignments
             let leading: CGFloat = bounds.maxX - maxWidth
             let trailing = bounds.maxX - (row.reduce(CGFloat.zero) { partialResult, view in
                 let width = view.sizeThatFits(proposal).width
-                
+
                 if view == row.last {
                     /// No Spacing
                     return partialResult + width
@@ -65,33 +69,38 @@ struct TagLayout: Layout {
                 return partialResult + width + spacing
             })
             let center = (trailing + leading) / 2
-            
+
             /// Resetting Origin X to Zero for Each Row
-            origin.x = (alignment == .leading ? leading : alignment == .trailing ? trailing : center)
-            
+            origin
+                .x = (alignment == .leading ? leading : alignment == .trailing ? trailing : center)
+
             for view in row {
                 let viewSize = view.sizeThatFits(proposal)
                 view.place(at: origin, proposal: proposal)
                 /// Updaing Origin X
                 origin.x += (viewSize.width + spacing)
             }
-            
+
             /// Updating Origin Y
             origin.y += (row.maxHeight(proposal) + spacing)
         }
     }
-    
+
     /// Generating Rows based on Available Size
-    func generateRows(_ maxWidth: CGFloat, _ proposal: ProposedViewSize, _ subviews: Subviews) -> [[LayoutSubviews.Element]] {
+    func generateRows(
+        _ maxWidth: CGFloat,
+        _ proposal: ProposedViewSize,
+        _ subviews: Subviews
+    ) -> [[LayoutSubviews.Element]] {
         var row: [LayoutSubviews.Element] = []
         var rows: [[LayoutSubviews.Element]] = []
-        
+
         /// Origin
         var origin = CGRect.zero.origin
-        
+
         for view in subviews {
             let viewSize = view.sizeThatFits(proposal)
-            
+
             /// Pushing to New Row
             if (origin.x + viewSize.width + spacing) > maxWidth {
                 rows.append(row)
@@ -108,13 +117,13 @@ struct TagLayout: Layout {
                 origin.x += (viewSize.width + spacing)
             }
         }
-        
+
         /// Checking for any exhaust row
         if !row.isEmpty {
             rows.append(row)
             row.removeAll()
         }
-        
+
         return rows
     }
 }
@@ -122,12 +131,11 @@ struct TagLayout: Layout {
 /// Returns Maximum Height From the Row
 extension [LayoutSubviews.Element] {
     func maxHeight(_ proposal: ProposedViewSize) -> CGFloat {
-        return self.compactMap { view in
-            return view.sizeThatFits(proposal).height
+        return compactMap { view in
+            view.sizeThatFits(proposal).height
         }.max() ?? 0
     }
 }
-
 
 struct TagField: View {
     @Binding var tags: [TagModel]
@@ -158,17 +166,20 @@ struct TagField: View {
                 tags.append(.init(value: "", isInitial: true))
             }
         })
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification), perform: { _ in
-            if let lastTag = tags.last, !lastTag.value.isEmpty {
-                /// Inserting empty tag at last
-                tags.append(.init(value: "", isInitial: true))
+        .onReceive(
+            NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification),
+            perform: { _ in
+                if let lastTag = tags.last, !lastTag.value.isEmpty {
+                    /// Inserting empty tag at last
+                    tags.append(.init(value: "", isInitial: true))
+                }
             }
-        })
+        )
     }
 }
 
 /// Tag View
-fileprivate struct TagView: View {
+private struct TagView: View {
     @Binding var tag: TagModel
     @Binding var allTags: [TagModel]
     @FocusState private var isFocused: Bool
@@ -189,9 +200,13 @@ fileprivate struct TagView: View {
         .focused($isFocused)
         .padding(.horizontal, isFocused || tag.value.isEmpty ? 0 : 10)
         .padding(.vertical, 10)
-        .background((colorScheme == .dark ? Color.black : Color.white).opacity(isFocused || tag.value.isEmpty ? 0 : 1), in: .rect(cornerRadius: 5))
+        .background(
+            (colorScheme == .dark ? Color.black : Color.white)
+                .opacity(isFocused || tag.value.isEmpty ? 0 : 1),
+            in: .rect(cornerRadius: 5)
+        )
         .disabled(tag.isInitial)
-        .onChange(of: allTags) {  newValue in
+        .onChange(of: allTags) { newValue in
             if newValue.last?.id == tag.id && !(newValue.last?.isInitial ?? false) && !isFocused {
                 isFocused = true
             }
@@ -218,15 +233,15 @@ fileprivate struct TagView: View {
     }
 }
 
-fileprivate struct BackSpaceListnerTextField: UIViewRepresentable {
+private struct BackSpaceListnerTextField: UIViewRepresentable {
     var hint: String = "Tag"
     @Binding var text: String
-    var onBackPressed: () -> ()
-    
+    var onBackPressed: () -> Void
+
     func makeCoordinator() -> Coordinator {
         return Coordinator(text: $text)
     }
-    
+
     func makeUIView(context: Context) -> CustomTextField {
         let textField = CustomTextField()
         textField.delegate = context.coordinator
@@ -237,30 +252,34 @@ fileprivate struct BackSpaceListnerTextField: UIViewRepresentable {
         textField.autocapitalizationType = .words
         textField.backgroundColor = .clear
         textField.returnKeyType = .next
-        textField.addTarget(context.coordinator, action: #selector(Coordinator.textChange(textField:)), for: .editingChanged)
+        textField.addTarget(
+            context.coordinator,
+            action: #selector(Coordinator.textChange(textField:)),
+            for: .editingChanged
+        )
         return textField
     }
-    
-    func updateUIView(_ uiView: CustomTextField, context: Context) {
+
+    func updateUIView(_ uiView: CustomTextField, context _: Context) {
         uiView.text = text
     }
-    
-    func sizeThatFits(_ proposal: ProposedViewSize, uiView: CustomTextField, context: Context) -> CGSize? {
+
+    func sizeThatFits(_: ProposedViewSize, uiView: CustomTextField, context _: Context) -> CGSize? {
         return uiView.intrinsicContentSize
     }
-    
+
     class Coordinator: NSObject, UITextFieldDelegate {
         @Binding var text: String
         init(text: Binding<String>) {
-            self._text = text
+            _text = text
         }
-        
+
         /// Text Change
         @objc
         func textChange(textField: UITextField) {
             text = textField.text ?? ""
         }
-        
+
         /// Closing on Pressing Return Button
         func textFieldShouldReturn(_ textField: UITextField) -> Bool {
             textField.resignFirstResponder()
@@ -268,24 +287,25 @@ fileprivate struct BackSpaceListnerTextField: UIViewRepresentable {
     }
 }
 
-fileprivate class CustomTextField: UITextField {
-    open var onBackPressed: (() -> ())?
-    
+private class CustomTextField: UITextField {
+    open var onBackPressed: (() -> Void)?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
-    required init?(coder: NSCoder) {
+
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func deleteBackward() {
         /// This will be called when ever keyboard back button is pressed
         onBackPressed?()
         super.deleteBackward()
     }
-    
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+
+    override func canPerformAction(_: Selector, withSender _: Any?) -> Bool {
         return false
     }
 }

@@ -10,11 +10,10 @@
 //  History:
 //    Created by Neo 2024/10/26.
 //
-import GRDB
 import Foundation
+import GRDB
 
 struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
-
     var id: String
     var group: String
     var createDate: Date
@@ -29,9 +28,9 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     var level: Int
     var ttl: Int
     var read: Bool
-    var other:String?
-    
-    enum Columns{
+    var other: String?
+
+    enum Columns {
         static let id = Column(CodingKeys.id.lows)
         static let group = Column(CodingKeys.group.lows)
         static let createDate = Column(CodingKeys.createDate.lows)
@@ -50,17 +49,12 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     }
 }
 
-
-
-extension Message{
-
+extension Message {
     static func createInit(dbQueue: DatabaseQueue) throws {
-        
         try dbQueue.write { db in
             try db.create(table: "message", ifNotExists: true) { t in
-                
                 t.primaryKey(CodingKeys.id.lows, .text)
-                t.column(CodingKeys.group.lows , .text).notNull()
+                t.column(CodingKeys.group.lows, .text).notNull()
                 t.column(CodingKeys.createDate.lows, .datetime).notNull()
                 t.column(CodingKeys.title.lows, .text)
                 t.column(CodingKeys.subtitle.lows, .text)
@@ -75,38 +69,38 @@ extension Message{
                 t.column(CodingKeys.read.lows, .boolean).notNull()
                 t.column(CodingKeys.other.lows, .text)
             }
-            
-            try db.execute(sql: """
-                CREATE INDEX IF NOT EXISTS idx_message_createdate
-                ON message(createdate DESC)
-            """)
 
             try db.execute(sql: """
-                CREATE INDEX IF NOT EXISTS idx_message_group_createdate
-                ON message("group", createdate DESC)
-            """)
+                    CREATE INDEX IF NOT EXISTS idx_message_createdate
+                    ON message(createdate DESC)
+                """)
+
+            try db.execute(sql: """
+                    CREATE INDEX IF NOT EXISTS idx_message_group_createdate
+                    ON message("group", createdate DESC)
+                """)
         }
-        
-        
     }
-    
-    var search:String{  [ group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: ";") + ";" }  
-    
+
+    var search: String {
+        [group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }
+            .joined(separator: ";") + ";"
+    }
 }
 
 struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable, Equatable {
-     var id: String = UUID().uuidString
-     var timestamp: Date
-     var name: String
-     var host: String
-    
-    enum Columns{
+    var id: String = UUID().uuidString
+    var timestamp: Date
+    var name: String
+    var host: String
+
+    enum Columns {
         static let id = Column(CodingKeys.id)
         static let timestamp = Column(CodingKeys.timestamp)
         static let name = Column(CodingKeys.name)
         static let host = Column(CodingKeys.host)
     }
-    
+
     static func createInit(dbQueue: DatabaseQueue) throws {
         try dbQueue.write { db in
             try db.create(table: "chatGroup", ifNotExists: true) { t in
@@ -122,12 +116,12 @@ struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Has
 struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var timestamp: Date
-    var chat:String
-    var request:String
+    var chat: String
+    var request: String
     var content: String
-    var message:String?
-    
-    enum Columns{
+    var message: String?
+
+    enum Columns {
         static let id = Column(CodingKeys.id)
         static let timestamp = Column(CodingKeys.timestamp)
         static let chat = Column(CodingKeys.chat)
@@ -135,7 +129,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let content = Column(CodingKeys.content)
         static let message = Column(CodingKeys.message)
     }
-    
+
     static func createInit(dbQueue: DatabaseQueue) throws {
         try dbQueue.write { db in
             try db.create(table: "chatMessage", ifNotExists: true) { t in
@@ -150,23 +144,21 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
     }
 }
 
-
 struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var timestamp: Date = .now
     var title: String
     var content: String
     var inside: Bool
-    
-    
-    enum Columns{
+
+    enum Columns {
         static let id = Column(CodingKeys.id)
         static let timestamp = Column(CodingKeys.timestamp)
         static let title = Column(CodingKeys.title)
         static let content = Column(CodingKeys.content)
         static let inside = Column(CodingKeys.inside)
     }
-    
+
     static func createInit(dbQueue: DatabaseQueue) throws {
         try dbQueue.write { db in
             try db.create(table: "chatPrompt", ifNotExists: true) { t in
@@ -178,10 +170,9 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
             }
         }
     }
-
 }
 
-enum ChatPromptMode: Equatable{
+enum ChatPromptMode: Equatable {
     case summary(String?)
     case translate(String?)
     case writing(String?)
@@ -189,9 +180,8 @@ enum ChatPromptMode: Equatable{
     case abstract(String?)
 }
 
-
-fileprivate extension CodingKey{
-    var lows:String{
-        self.stringValue.lowercased()
+extension CodingKey {
+    fileprivate var lows: String {
+        stringValue.lowercased()
     }
 }

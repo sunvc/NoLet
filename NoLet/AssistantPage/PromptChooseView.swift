@@ -10,30 +10,31 @@
 //    Created by Neo on 2025/5/28.
 //
 
-import SwiftUI
 import Foundation
 import GRDB
+import SwiftUI
 
 // MARK: - Views
+
 /// 提示词选择视图
 struct PromptChooseView: View {
     // MARK: - Properties
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject private var chatManager:openChatManager
-    
-    @State private var prompts:[ChatPrompt] = []
-    
+    @EnvironmentObject private var chatManager: openChatManager
+
+    @State private var prompts: [ChatPrompt] = []
+
     @State private var isAddingPrompt = false
     @State private var searchText = ""
     @State private var selectedPrompt: ChatPrompt? = nil
 
-
-    private var filteredBuiltInPrompts: [ChatPrompt] {  prompts.filter({$0.inside}) }
+    private var filteredBuiltInPrompts: [ChatPrompt] { prompts.filter { $0.inside } }
 
     private var filteredCustomPrompts: [ChatPrompt] {
-        guard !searchText.isEmpty else { return prompts.filter({!$0.inside}) }
-        return prompts.filter({!$0.inside}).filter {
+        guard !searchText.isEmpty else { return prompts.filter { !$0.inside } }
+        return prompts.filter { !$0.inside }.filter {
             $0.title.localizedCaseInsensitiveContains(searchText)
         }
     }
@@ -43,6 +44,7 @@ struct PromptChooseView: View {
     }
 
     // MARK: - Body
+
     var body: some View {
         NavigationStack {
             promptListView
@@ -63,33 +65,34 @@ struct PromptChooseView: View {
                 .onChange(of: chatManager.promptCount) { _ in
                     loadData()
                 }
-                
         }
     }
-    private func loadData(){
+
+    private func loadData() {
         Task.detached(priority: .background) {
-            do{
-                let results =  try await  DatabaseManager.shared.dbQueue.read{db in
+            do {
+                let results = try await DatabaseManager.shared.dbQueue.read { db in
                     try ChatPrompt.fetchAll(db)
                 }
-                await MainActor.run{
+                await MainActor.run {
                     self.prompts = results
                 }
-            }catch{
+            } catch {
                 NLog.error(error.localizedDescription)
             }
         }
     }
 
     // MARK: - View Components
+
     private var promptListView: some View {
         List {
             if hasSearchResults {
-                if #available(iOS 17.0, *){
+                if #available(iOS 17.0, *) {
                     ContentUnavailableView("没有找到相关提示词", systemImage: "magnifyingglass")
-                }else{
-                    VStack{
-                        HStack{
+                } else {
+                    VStack {
+                        HStack {
                             Spacer()
                             Image("magnifyingglass")
                                 .resizable()
@@ -99,7 +102,7 @@ struct PromptChooseView: View {
                             Spacer()
                         }
                         Spacer()
-                        HStack{
+                        HStack {
                             Spacer()
                             Text("没有找到相关提示词")
                                 .font(.title)
@@ -125,7 +128,7 @@ struct PromptChooseView: View {
         Group {
             if !filteredBuiltInPrompts.isEmpty {
                 PromptSection(
-                    selectId: chatManager.chatPrompt?.id,
+                    selectID: chatManager.chatPrompt?.id,
                     title: String(localized: "内置提示词"),
                     prompts: filteredBuiltInPrompts,
                     onPromptTap: handlePromptTap
@@ -134,7 +137,7 @@ struct PromptChooseView: View {
 
             if !filteredCustomPrompts.isEmpty {
                 PromptSection(
-                    selectId: chatManager.chatPrompt?.id,
+                    selectID: chatManager.chatPrompt?.id,
                     title: String(localized: "自定义提示词"),
                     prompts: filteredCustomPrompts,
                     onPromptTap: handlePromptTap
@@ -152,7 +155,7 @@ struct PromptChooseView: View {
             }
         }
     }
-    
+
     private var addPromptButton: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             Button {
@@ -162,43 +165,37 @@ struct PromptChooseView: View {
             }
         }
     }
-    
-    
 
     // MARK: - Methods
+
     private func handlePromptTap(_ prompt: ChatPrompt) {
-        if chatManager.chatPrompt == prompt{
+        if chatManager.chatPrompt == prompt {
             chatManager.chatPrompt = nil
-        }else{
+        } else {
             chatManager.chatPrompt = prompt
             dismiss()
         }
-        
-        
     }
-    
-    
 }
 
 // MARK: - PromptSection
+
 private struct PromptSection: View {
-    let selectId:String?
+    let selectID: String?
     let title: String
     let prompts: [ChatPrompt]
     let onPromptTap: (ChatPrompt) -> Void
-    
+
     @State private var showDeleteAlert = false
     @State private var promptToDelete: ChatPrompt?
-    
 
     var body: some View {
         Section(title) {
             ForEach(prompts) { prompt in
-                PromptRowView(prompt: prompt,selectId: selectId)
+                PromptRowView(prompt: prompt, selectID: selectID)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         onPromptTap(prompt)
-                       
                     }
                     .modifier(PromptSwipeActions(
                         prompt: prompt,
@@ -207,13 +204,13 @@ private struct PromptSection: View {
                     ))
             }
         }
-        .alert("确认删除", isPresented: $showDeleteAlert, presenting: promptToDelete) { prompt in
+        .alert("确认删除", isPresented: $showDeleteAlert, presenting: promptToDelete) { _ in
             Button("取消", role: .cancel) {}
             Button("删除", role: .destructive) {
-                if let prompt = promptToDelete{
+                if let prompt = promptToDelete {
                     Task.detached(priority: .userInitiated) {
                         do {
-                            _ = try await  DatabaseManager.shared.dbQueue.write { db in
+                            _ = try await DatabaseManager.shared.dbQueue.write { db in
                                 try ChatPrompt
                                     .filter(Column("id") == prompt.id)
                                     .deleteAll(db)
@@ -223,7 +220,6 @@ private struct PromptSection: View {
                         }
                     }
                 }
-               
             }
         } message: { prompt in
             Text("确定要删除\"\(prompt.title)\"提示词吗？此操作无法撤销。")
@@ -232,19 +228,22 @@ private struct PromptSection: View {
 }
 
 // MARK: - PromptRowView
+
 private struct PromptRowView: View {
     let prompt: ChatPrompt
-    var selectId:String?
+    var selectID: String?
     var body: some View {
         HStack(spacing: 12) {
             // 选中状态指示器
             Circle()
-                .fill( prompt.id == selectId ? Color.blue : Color.clear)
+                .fill(prompt.id == selectID ? Color.blue : Color.clear)
                 .frame(width: 8, height: 8)
                 .overlay(
                     Circle()
                         .strokeBorder(
-                            prompt.id == selectId ? Color.blue : Color.gray.opacity(0.3), lineWidth: 1)
+                            prompt.id == selectID ? Color.blue : Color.gray.opacity(0.3),
+                            lineWidth: 1
+                        )
                 )
 
             // 提示词内容
@@ -279,16 +278,15 @@ private struct PromptRowView: View {
 }
 
 // MARK: - PromptSwipeActions
-private struct PromptSwipeActions: ViewModifier {
-    let prompt:  ChatPrompt
-    @Binding var showDeleteAlert: Bool
-    @Binding var promptToDelete:  ChatPrompt?
 
+private struct PromptSwipeActions: ViewModifier {
+    let prompt: ChatPrompt
+    @Binding var showDeleteAlert: Bool
+    @Binding var promptToDelete: ChatPrompt?
 
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading, allowsFullSwipe: false) {
-               
                 // 编辑按钮
                 NavigationLink {
                     PromptDetailView(prompt: prompt)
@@ -299,27 +297,27 @@ private struct PromptSwipeActions: ViewModifier {
             }
             .if(!prompt.inside) {
                 $0.swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            promptToDelete = prompt
-                            showDeleteAlert = true
-                        } label: {
-                            Label("删除", systemImage: "trash")
-                        }
+                    Button(role: .destructive) {
+                        promptToDelete = prompt
+                        showDeleteAlert = true
+                    } label: {
+                        Label("删除", systemImage: "trash")
                     }
+                }
             }
-        
-        
     }
 }
 
 // MARK: - PromptButtonView
+
 struct PromptButtonView: View {
     // MARK: - Properties
+
     @State private var showPromptChooseView = false
     @State private var selectedPromptIndex: Int?
-    
-    
+
     // MARK: - Body
+
     var body: some View {
         Button {
             showPromptChooseView = true
@@ -336,17 +334,18 @@ struct PromptButtonView: View {
     }
 }
 
-
 // MARK: - 添加Prompt视图
+
 struct AddPromptView: View {
     // MARK: - Properties
+
     @Environment(\.dismiss) private var dismiss
     @State private var title = ""
     @State private var content = ""
     @State private var address = ""
 
-    
     // MARK: - View
+
     var body: some View {
         NavigationStack {
             Form {
@@ -365,7 +364,6 @@ struct AddPromptView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("保存") {
-                        
                         let chatprompt = ChatPrompt(
                             id: UUID().uuidString,
                             timestamp: Date(),
@@ -375,17 +373,16 @@ struct AddPromptView: View {
                         )
                         Task.detached(priority: .userInitiated) {
                             do {
-                                try await  DatabaseManager.shared.dbQueue.write { db in
+                                try await DatabaseManager.shared.dbQueue.write { db in
                                     try chatprompt.insert(db)
                                 }
                                 await MainActor.run {
                                     self.dismiss()
                                 }
-                               
+
                             } catch {
                                 NLog.error("❌ 插入 ChatPrompt 失败: \(error)")
                             }
-                            
                         }
                     }
                     .disabled(!(!title.isEmpty && !content.isEmpty))
@@ -393,12 +390,10 @@ struct AddPromptView: View {
             }
         }
     }
-    
 }
 
-
-
 // MARK: - Preview
+
 #Preview("提示词选择") {
     PromptChooseView()
 }

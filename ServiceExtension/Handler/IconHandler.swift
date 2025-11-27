@@ -6,52 +6,56 @@
 //    Created by Neo 2024/8/8.
 //
 
+import Defaults
 import Foundation
 import Intents
-import Defaults
-import UserNotifications
 import UIKit
+import UserNotifications
 
-class IconHandler: NotificationContentHandler{
-    func handler(identifier: String, content bestAttemptContent: UNMutableNotificationContent) async throws -> UNMutableNotificationContent {
+class IconHandler: NotificationContentHandler {
+    func handler(
+        identifier _: String,
+        content bestAttemptContent: UNMutableNotificationContent
+    ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
-        
-        
-        guard let imageUrl:String = userInfo.raw(.icon) else { return bestAttemptContent}
-        
-        var localPath = await ImageManager.downloadImage(imageUrl)
-        
+
+        guard let imageURL: String = userInfo.raw(.icon) else { return bestAttemptContent }
+
+        var localPath = await ImageManager.downloadImage(imageURL)
+
         /// 获取icon 云图标
         if localPath == nil {
-            
-            let images = await CloudManager.shared.queryIcons(name: imageUrl)
-            
-            if let image = images.first, let icon = image.toPushIcon(), let previewImage = icon.previewImage, let data = previewImage.pngData() {
-                
-                await ImageManager.storeImage(data: data, key: imageUrl , expiration: .days(Defaults[.imageSaveDays].days))
-                
-                localPath =  await ImageManager.downloadImage(imageUrl)
-                
+            let images = await CloudManager.shared.queryIcons(name: imageURL)
+
+            if let image = images.first, let icon = image.toPushIcon(),
+               let previewImage = icon.previewImage, let data = previewImage.pngData()
+            {
+                await ImageManager.storeImage(
+                    data: data,
+                    key: imageURL,
+                    expiration: .days(Defaults[.imageSaveDays].days)
+                )
+
+                localPath = await ImageManager.downloadImage(imageURL)
             }
         }
-        
-        
-        var imageData: Data?{
-            if let localPath = localPath, let localImageData = NSData(contentsOfFile: localPath) as? Data{
+
+        var imageData: Data? {
+            if let localPath = localPath,
+               let localImageData = NSData(contentsOfFile: localPath) as? Data
+            {
                 return localImageData
-            }else{
-                return imageUrl.avatarImage()?.pngData()
+            } else {
+                return imageURL.avatarImage()?.pngData()
             }
         }
-        
+
         guard let imageData = imageData else { return bestAttemptContent }
-        
-        
+
         let avatar = INImage(imageData: imageData)
         var personNameComponents = PersonNameComponents()
         personNameComponents.nickname = bestAttemptContent.title
-        
-        
+
         let senderPerson = INPerson(
             personHandle: INPersonHandle(value: "", type: .unknown),
             nameComponents: personNameComponents,
@@ -72,7 +76,7 @@ class IconHandler: NotificationContentHandler{
             isMe: true,
             suggestionType: .none
         )
-   
+
         let placeholderPerson = INPerson(
             personHandle: INPersonHandle(value: "", type: .unknown),
             nameComponents: personNameComponents,
@@ -81,7 +85,7 @@ class IconHandler: NotificationContentHandler{
             contactIdentifier: nil,
             customIdentifier: nil
         )
-        
+
         let intent = INSendMessageIntent(
             recipients: [mePerson, placeholderPerson],
             outgoingMessageType: .outgoingMessageText,
@@ -92,12 +96,12 @@ class IconHandler: NotificationContentHandler{
             sender: senderPerson,
             attachments: nil
         )
-        
+
         intent.setImage(avatar, forParameterNamed: \.speakableGroupName)
-        
+
         let interaction = INInteraction(intent: intent, response: nil)
         interaction.direction = .incoming
-        
+
         do {
             try await interaction.donate()
             return try bestAttemptContent.updating(from: intent) as! UNMutableNotificationContent
@@ -105,9 +109,4 @@ class IconHandler: NotificationContentHandler{
             return bestAttemptContent
         }
     }
-
-   
-    
-
 }
-

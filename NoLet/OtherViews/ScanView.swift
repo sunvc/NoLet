@@ -10,38 +10,35 @@
 //    Created by Neo 2024/8/10.
 //
 
-
-import SwiftUI
 import AVFoundation
-import QRScanner
-import UIKit
 import Defaults
-
-
+import QRScanner
+import SwiftUI
+import UIKit
 
 struct ScanView: View {
-	@Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) var dismiss
     @State private var isScanning = true
     @State private var isTorchOn = false
     @State private var shouldRescan = false
 
-    @State private var code:String? = nil
-    @EnvironmentObject private var manager:AppManager
+    @State private var code: String? = nil
+    @EnvironmentObject private var manager: AppManager
     @Default(.limitScanningArea) var limitScanningArea
-    var response: (String)async-> Void
+    var response: (String) async -> Void
     var close: (() -> Void)? = nil
-    var config: QRScannerSwiftUIView.Configuration{
-        .init(focusImage: nil,
-              focusImagePadding: nil,
-              animationDuration: nil,
-              scanningAreaLimit: limitScanningArea,
-              metadataObjectTypes: [.qr, .aztec, .microQR, .dataMatrix])
+    var config: QRScannerSwiftUIView.Configuration {
+        .init(
+            focusImage: nil,
+            focusImagePadding: nil,
+            animationDuration: nil,
+            scanningAreaLimit: limitScanningArea,
+            metadataObjectTypes: [.qr, .aztec, .microQR, .dataMatrix]
+        )
     }
-    
 
-    
     var body: some View {
-        ZStack{
+        ZStack {
             QRScannerSwiftUIView(
                 configuration: config,
                 isScanning: $isScanning,
@@ -49,18 +46,17 @@ struct ScanView: View {
                 shouldRescan: $shouldRescan,
                 onSuccess: { code in
                     AudioManager.tips(.qrcode)
-                    Task{@MainActor in
+                    Task { @MainActor in
                         try await Task.sleep(for: .seconds(0.5))
                         self.code = code
                         await response(code)
                     }
                 },
                 onFailure: { error in
-                    
-                    switch error{
+                    switch error {
                     case .unauthorized(let status):
-                        if status != .authorized{
-                            Toast.info(title:  "没有相机权限")
+                        if status != .authorized {
+                            Toast.info(title: "没有相机权限")
                         }
                     default:
                         Toast.error(title: "扫码失败")
@@ -72,20 +68,18 @@ struct ScanView: View {
                     isTorchOn = isOn
                 }
             )
-         
 
-            VStack{
-                HStack{
-                    
+            VStack {
+                HStack {
                     Spacer()
-                    Button{
-                        if let close = close{
+                    Button {
+                        if let close = close {
                             close()
-                        }else{
+                        } else {
                             self.dismiss()
                         }
                         Haptic.impact()
-                    }label: {
+                    } label: {
                         Image(systemName: "xmark")
                             .font(.title3.bold())
                             .foregroundColor(.secondary)
@@ -93,16 +87,16 @@ struct ScanView: View {
                             .background26(.ultraThinMaterial, radius: 10)
                             .clipShape(Circle())
                     }
-				}
-				.padding()
+                }
+                .padding()
                 .padding(.top, close == nil ? 50 : 0)
-				Spacer()
-                
-                Group{
-                    if let code = code{
-                        VStack{
-                            Menu{
-                                Section{
+                Spacer()
+
+                Group {
+                    if let code = code {
+                        VStack {
+                            Menu {
+                                Section {
                                     Button(role: .destructive) {
                                         self.shouldRescan.toggle()
                                         self.code = nil
@@ -110,33 +104,32 @@ struct ScanView: View {
                                         Label("重新扫码", systemImage: "qrcode.viewfinder")
                                     }
                                 }
-                                
-                                
-                                if let url = URL(string: code), code.contains("://"){
-                                    Section{
-                                        Button{
+
+                                if let url = URL(string: code), code.contains("://") {
+                                    Section {
+                                        Button {
                                             self.dismiss()
-                                            AppManager.openUrl(url: url, .safari)
-                                        }label: {
+                                            AppManager.openURL(url: url, .safari)
+                                        } label: {
                                             Label("打开地址", systemImage: "link.circle")
                                         }
                                     }
                                 }
-                                
-                                Section{
-                                    Button{
+
+                                Section {
+                                    Button {
                                         self.dismiss()
-                                        AppManager.shared.sheetPage = .quickResponseCode(text: code, title: String("二维码"), preview: String("二维码"))
-                                    }label: {
+                                        AppManager.shared.sheetPage = .quickResponseCode(
+                                            text: code,
+                                            title: String("二维码"),
+                                            preview: String("二维码")
+                                        )
+                                    } label: {
                                         Label("生成二维码", systemImage: "qrcode")
                                     }
                                 }
-                                
-                                
-                                
-                               
-                                
-                            }label: {
+
+                            } label: {
                                 Text(verbatim: code)
                                     .tint(.accent)
                                     .lineLimit(1)
@@ -144,23 +137,23 @@ struct ScanView: View {
                                     .padding()
                                     .background26(.ultraThinMaterial, radius: 10)
                             }
-                            
                         }
-                    }else{
-                        VStack{
-                            Image(systemName: isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
+                    } else {
+                        VStack {
+                            Image(systemName: isTorchOn ? "flashlight.on.fill" :
+                                "flashlight.off.fill")
                                 .font(.system(size: 35))
                                 .symbolRenderingMode(.palette)
                                 .symbolEffect(.replace)
                                 .padding()
                                 .contentShape(Rectangle())
-                                .if(true){ view in
-                                    Group{
-                                        if isTorchOn{
+                                .if(true) { view in
+                                    Group {
+                                        if isTorchOn {
                                             view
                                                 .foregroundStyle(Color.black)
-                                                .background( Circle().fill(.white))
-                                        }else{
+                                                .background(Circle().fill(.white))
+                                        } else {
                                             view
                                                 .foregroundStyle(Color.white)
                                                 .background26(.ultraThickMaterial, radius: 0)
@@ -172,46 +165,31 @@ struct ScanView: View {
                                     self.isTorchOn.toggle()
                                     return true
                                 })
-                            
                         }
-                       
                     }
-                } .padding(.bottom,close == nil ? 80 : 10)
-                
-			}
-
-		}
+                }.padding(.bottom, close == nil ? 80 : 10)
+            }
+        }
         .ignoresSafeArea()
         .contentShape(Rectangle())
-        .if(close == nil){view in
+        .if(close == nil) { view in
             view
                 .gesture(
                     DragGesture(minimumDistance: 30, coordinateSpace: .global)
-                        .onChanged({ active in
+                        .onChanged { _ in
                             Haptic.selection()
-                        })
-                        .onEnded({ action in
-                            
-                            if action.translation.height > 100{
+                        }
+                        .onEnded { action in
+                            if action.translation.height > 100 {
                                 self.dismiss()
                                 Haptic.impact()
                             }
-                        })
+                        }
                 )
         }
-
-	}
-
-
+    }
 }
-
-
-
 
 #Preview {
-    ScanView(){_ in }
+    ScanView { _ in }
 }
-
-
-
-

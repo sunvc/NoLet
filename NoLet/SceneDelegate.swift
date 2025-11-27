@@ -10,66 +10,66 @@
 //    Created by Neo on 2025/6/2.
 //
 
-import UIKit
-import SwiftUI
-import GRDB
 import Defaults
-
+import GRDB
+import SwiftUI
+import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
     var window: UIWindow?
     var overlayWindow: UIWindow?
 
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
+    func scene(
+        _ scene: UIScene,
+        willConnectTo _: UISceneSession,
+        options connectionOptions: UIScene.ConnectionOptions
+    ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        
+
         let hosting = UIHostingController(rootView: ContentView())
-       
-        self.window?.rootViewController = hosting
+
+        window?.rootViewController = hosting
         window?.makeKeyAndVisible()
         // 2. 添加 overlay window（如 Toast 层）
         if overlayWindow == nil {
             let overlay = PassthroughWindow(windowScene: windowScene)
             overlay.backgroundColor = .clear
-            
+
             let toastController = UIHostingController(rootView: ToastGroup())
             toastController.view.backgroundColor = .clear
             toastController.view.frame = windowScene.coordinateSpace.bounds
-            
+
             overlay.rootViewController = toastController
             overlay.isHidden = false
             overlay.isUserInteractionEnabled = true
             overlay.tag = 1009
-            
+
             overlayWindow = overlay
         }
-        
+
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url
             // 处理这个 URL
-            _ = AppManager.shared.HandlerOpenUrl(url: url.absoluteString)
-        }else if let shortcutItem = connectionOptions.shortcutItem{
+            _ = AppManager.shared.HandlerOpenURL(url: url.absoluteString)
+        } else if let shortcutItem = connectionOptions.shortcutItem {
             _ = AppManager.runQuick(shortcutItem.type)
         }
-        
     }
-    
-    @MainActor
-    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem) async -> Bool{
 
+    @MainActor
+    func windowScene(
+        _: UIWindowScene,
+        performActionFor shortcutItem: UIApplicationShortcutItem
+    ) async -> Bool {
         return AppManager.runQuick(shortcutItem.type)
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {  }
+    func sceneDidDisconnect(_: UIScene) {}
 
-    func sceneDidBecomeActive(_ scene: UIScene) {
-
+    func sceneDidBecomeActive(_: UIScene) {
         let manager = AppManager.shared
-        if !manager.isWarmStart{
+        if !manager.isWarmStart {
             NLog.log("❄️ 冷启动")
             manager.isWarmStart = true
             openChatManager.shared.clearunuse()
@@ -77,15 +77,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task.detached(priority: .userInitiated) {
             await MessagesManager.shared.updateGroup()
         }
-        
-        
+
         setLangAssistantPrompt()
-        
     }
 
-    func sceneWillResignActive(_ scene: UIScene) {  }
+    func sceneWillResignActive(_: UIScene) {}
 
-    func sceneWillEnterForeground(_ scene: UIScene) {
+    func sceneWillEnterForeground(_: UIScene) {
         Task.detached(priority: .userInitiated) {
             await MessagesManager.shared.deleteExpired()
             let unread = MessagesManager.shared.unreadCount()
@@ -93,66 +91,60 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        UIApplication.shared.shortcutItems = QuickAction.allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
+    func sceneDidEnterBackground(_: UIScene) {
+        UIApplication.shared.shortcutItems = QuickAction
+            .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 
-    
-    func setLangAssistantPrompt(){
-        if let currentLang  = Locale.preferredLanguages.first{
-           
-            if Defaults[.lang] != currentLang{
+    func setLangAssistantPrompt() {
+        if let currentLang = Locale.preferredLanguages.first {
+            if Defaults[.lang] != currentLang {
                 Task.detached(priority: .background) {
                     try await DatabaseManager.shared.dbQueue.write { db in
                         // 删除 inside == true 的项
                         try ChatPrompt.filter(ChatPrompt.Columns.inside == true).deleteAll(db)
-                        
+
                         // 添加默认 prompts
                         for prompt in ChatPromptMode.prompts {
                             try prompt.insert(db)
                         }
-                        
+
                         // 回到主线程设置语言
-                         DispatchQueue.main.async {
-                             Defaults[.lang] = currentLang
+                        DispatchQueue.main.async {
+                            Defaults[.lang] = currentLang
                         }
                     }
                 }
             }
         }
     }
-    
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+
+    func scene(_: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-        _ = AppManager.shared.HandlerOpenUrl(url: url.absoluteString)
+        _ = AppManager.shared.HandlerOpenURL(url: url.absoluteString)
     }
 }
 
-
-
-extension QuickAction{
-    static func allShortcutItems(showAssistant:Bool) -> [UIApplicationShortcutItem] {
-        
+extension QuickAction {
+    static func allShortcutItems(showAssistant: Bool) -> [UIApplicationShortcutItem] {
         var items = [UIApplicationShortcutItem(
             type: Self.scan.rawValue,
-            localizedTitle: String(localized:  "扫描二维码"),
+            localizedTitle: String(localized: "扫描二维码"),
             localizedSubtitle: "",
             icon: UIApplicationShortcutIcon(systemImageName: "qrcode.viewfinder"),
             userInfo: ["name": assistant.rawValue as NSSecureCoding]
         )]
-        
-        if showAssistant{
+
+        if showAssistant {
             items.insert(UIApplicationShortcutItem(
                 type: Self.assistant.rawValue,
-                localizedTitle: String(localized:  "问智能助手"),
+                localizedTitle: String(localized: "问智能助手"),
                 localizedSubtitle: "",
                 icon: UIApplicationShortcutIcon(systemImageName: "message.and.waveform"),
                 userInfo: ["name": scan.rawValue as NSSecureCoding]
             ), at: 0)
         }
         return items
-        
     }
-    
 }

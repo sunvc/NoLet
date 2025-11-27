@@ -11,21 +11,19 @@
 //    Created by Neo 2024/10/8.
 //
 
-
-import SwiftUI
+import AVKit
 import Defaults
 import Kingfisher
-import AVKit
+import SwiftUI
 
 struct AvatarView: View {
+    var icon: String?
+    var customIcon: String = ""
 
-	var icon:String?
-    var customIcon:String = ""
-	
-	@Default(.appIcon) var appicon
-	
+    @Default(.appIcon) var appicon
+
     @State private var image: URL?
-	
+
     var body: some View {
         GeometryReader { proxy in
             contentView(size: proxy.size)
@@ -38,8 +36,9 @@ struct AvatarView: View {
     }
 
     // MARK: - 主视图构建
+
     @ViewBuilder
-    private func contentView(size: CGSize) -> some View {
+    private func contentView(size _: CGSize) -> some View {
         if let icon, customIcon.isEmpty {
             if icon.hasHttp {
                 if let image {
@@ -55,27 +54,26 @@ struct AvatarView: View {
             } else if let imagedata = icon.avatarImage() {
                 Image(uiImage: imagedata)
                     .resizable()
-                    
+
             } else {
                 defaultImage()
             }
         } else if !customIcon.isEmpty {
             Image(customIcon)
                 .resizable()
-                
+
         } else {
             defaultImage()
         }
     }
 
-
     private func defaultImage() -> some View {
         Image(appicon.logo)
             .resizable()
-            
     }
 
     // MARK: - 加载远程图片
+
     private func loadImage(icon: String) {
         image = nil
         Task.detached(priority: .background) {

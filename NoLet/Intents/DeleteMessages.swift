@@ -11,28 +11,26 @@
 //
 
 import AppIntents
-import SwiftUI
 import GRDB
+import SwiftUI
 
 struct DeleteMessageIntent: AppIntent {
-    
     static var title: LocalizedStringResource = "删除消息"
     static var openAppWhenRun: Bool = false
-    
-    
+
     @Parameter(title: "日期")
     var date: Date
-    
+
     static var parameterSummary: some ParameterSummary {
         Summary("删除 \(\.$date) 之前的消息")
     }
-    
+
     @MainActor
-    func perform()  async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult {
         do {
-           _ = try await DatabaseManager.shared.dbQueue.write { db in
+            _ = try await DatabaseManager.shared.dbQueue.write { db in
                 try Message
-                   .filter(Message.Columns.createDate < date)
+                    .filter(Message.Columns.createDate < date)
                     .deleteAll(db)
             }
         } catch {

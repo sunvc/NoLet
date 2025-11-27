@@ -9,29 +9,29 @@
 //  History:
 //    Created by Neo on 2025/7/12.
 //
-import Foundation
 import Defaults
+import Foundation
 import StoreKit
 
+extension Multilingual.Country: Defaults.Serializable {}
 
-
-
-extension Multilingual.Country: Defaults.Serializable{}
-
-extension Defaults.Keys{
-    static let translateLang = Key<Multilingual.Country>("MultilingualCountry", default: Multilingual.firstChoice)
+extension Defaults.Keys {
+    static let translateLang = Key<Multilingual.Country>(
+        "MultilingualCountry",
+        default: Multilingual.firstChoice
+    )
 }
 
-enum Multilingual{
+enum Multilingual {
     struct Country: Identifiable, Equatable, Hashable, Codable {
         var id: String { code }
         let code: String // e.g. "US"
         let name: String // e.g. "United States"
         let flag: String
     }
-    
-    static var firstChoice:Country{ commonLanguages.first! }
-    
+
+    static var firstChoice: Country { commonLanguages.first! }
+
     static let commonLanguages: [Country] = [
         Country(code: "en", name: String(localized: "英语"), flag: "🇺🇸"),
         Country(code: "zh", name: String(localized: "中文"), flag: "🇨🇳"),
@@ -46,18 +46,16 @@ enum Multilingual{
         Country(code: "hi", name: String(localized: "印地语"), flag: "🇮🇳"),
         Country(code: "id", name: String(localized: "印尼语"), flag: "🇮🇩"),
         Country(code: "vi", name: String(localized: "越南语"), flag: "🇻🇳"),
-        Country(code: "th", name: String(localized: "泰语"), flag: "🇹🇭")
+        Country(code: "th", name: String(localized: "泰语"), flag: "🇹🇭"),
     ]
-    
-    static func resetTransLang(){
+
+    static func resetTransLang() {
         let current = Defaults[.translateLang]
-        
-        if let code = Locale.current.language.languageCode?.identifier, current.id != code{
-            if let newCurrent = Self.commonLanguages.first(where: {$0.id == code}){
+
+        if let code = Locale.current.language.languageCode?.identifier, current.id != code {
+            if let newCurrent = Self.commonLanguages.first(where: { $0.id == code }) {
                 Defaults[.translateLang] = newCurrent
             }
         }
-        
     }
-    
 }

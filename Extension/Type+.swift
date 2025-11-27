@@ -12,7 +12,6 @@
 
 import UniformTypeIdentifiers
 
-
 extension UTType {
     static var trnExportType = UTType(exportedAs: "me.uuneo.nolet.exv")
 }

@@ -14,6 +14,7 @@ struct SkeletonView<S: Shape>: View {
         self.shape = shape
         self.color = color
     }
+
     @State private var isAnimating: Bool = false
     var body: some View {
         shape
@@ -29,7 +30,7 @@ struct SkeletonView<S: Shape>: View {
                     /// Movement Offsets
                     let minX = -(skeletonWidth + blurDiameter)
                     let maxX = size.width + skeletonWidth + blurDiameter
-                    
+
                     Rectangle()
                         .fill(.gray)
                         .frame(width: skeletonWidth, height: size.height * 2)
@@ -59,12 +60,12 @@ struct SkeletonView<S: Shape>: View {
                 }
             }
     }
-    
+
     /// Customizable Properties
     var rotation: Double {
         return 5
     }
-    
+
     var animation: Animation {
         .easeInOut(duration: 1.5).repeatForever(autoreverses: false)
     }

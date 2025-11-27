@@ -10,18 +10,17 @@
 //    Created by Neo on 2025/9/28.
 //
 
-import SwiftUI
 import Charts
 import Defaults
-
+import SwiftUI
 
 struct ServerMonitoringView: View {
     @Environment(\.dismiss) var dismiss
     @StateObject private var manager = AppManager.shared
     // 监控数据模型
-    @State private var cpuUsage: CPUUsage = CPUUsage(pidPercentage: 0.0, osPercentage: 0)
-    @State private var memoryInfo: MemoryInfo = MemoryInfo(pidRamMB: 0, osRamGB: 0, totalRamGB: 0)
-    @State private var connectionsInfo: ConnectionsInfo = ConnectionsInfo(pidConns: 0,osConns: 0,load_svg: 0)
+    @State private var cpuUsage: CPUUsage = .init(pidPercentage: 0.0, osPercentage: 0)
+    @State private var memoryInfo: MemoryInfo = .init(pidRamMB: 0, osRamGB: 0, totalRamGB: 0)
+    @State private var connectionsInfo = ConnectionsInfo(pidConns: 0, osConns: 0, load_svg: 0)
 
     // 历史数据记录
     @State private var cpuHistory: [Double] = Array(repeating: 0, count: 10)
@@ -32,19 +31,17 @@ struct ServerMonitoringView: View {
     @State private var maxHistoricalConnections: Int = 1
 
     var server: PushServerModel
-    
 
     let network = NetworkManager()
 
     @State private var timer: Timer? = nil
-    
+
     @State private var errorCount = 0
 
     var body: some View {
-        List{
-          
-            Section{
-                    // CPU使用率卡片
+        List {
+            Section {
+                // CPU使用率卡片
                 CPUCard(
                     pidPercentage: cpuUsage.pidPercentage,
                     osPercentage: cpuUsage.osPercentage,
@@ -52,8 +49,8 @@ struct ServerMonitoringView: View {
                 )
             }.listSectionSeparator(.hidden)
 
-            Section{
-                    // 内存使用情况卡片
+            Section {
+                // 内存使用情况卡片
                 MemoryCard(
                     pidRamMB: memoryInfo.pidRamMB,
                     osRamGB: memoryInfo.osRamGB,
@@ -61,21 +58,21 @@ struct ServerMonitoringView: View {
                     chartData: memoryHistory
                 )
             }.listSectionSeparator(.hidden)
-            
-            Section{
-                    // 连接数卡片
+
+            Section {
+                // 连接数卡片
                 ConnectionsCard(
                     pidConns: connectionsInfo.pidConns,
                     osConns: connectionsInfo.osConns,
                     chartData: connectionsHistory,
                     load_svg: connectionsInfo.load_svg,
-                    maxConnections:  maxHistoricalConnections
+                    maxConnections: maxHistoricalConnections
                 )
             }.listSectionSeparator(.hidden)
         }
         .listStyle(.plain)
         .task {
-            if self.timer == nil  {
+            if self.timer == nil {
                 updateData()
                 self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
                     updateData()
@@ -84,25 +81,23 @@ struct ServerMonitoringView: View {
             }
         }
         .onDisappear {
-
             self.timer?.invalidate()
             self.timer = nil
             NLog.error("离开页面")
         }
         .navigationTitle("服务器监控")
     }
-    
+
     // 数据更新
     private func updateData() {
         guard errorCount < 2 else {
-            self.timer?.invalidate()
-            self.timer = nil
+            timer?.invalidate()
+            timer = nil
             dismiss()
             return
         }
-        
+
         Task {
-          
             do {
                 let data: ServerData = try await network.fetch(
                     url: server.url,
@@ -115,28 +110,28 @@ struct ServerMonitoringView: View {
                     self.cpuUsage = CPUUsage.fromAPIData(data: data)
                     self.memoryInfo = MemoryInfo.fromAPIData(data: data)
                     self.connectionsInfo = ConnectionsInfo.fromAPIData(data: data)
-                    
+
                     // 更新历史数据
                     // 移除最旧的数据点并添加新的数据点
                     cpuHistory.removeFirst()
                     cpuHistory.append(cpuUsage.osPercentage) // 使用OS CPU使用率
-                    
+
                     memoryHistory.removeFirst()
                     // 计算OS内存使用百分比：已使用OS内存/总OS内存
                     let memoryUsagePercentage = (memoryInfo.osRamGB / memoryInfo.totalRamGB) * 100
                     memoryHistory.append(memoryUsagePercentage)
-                    
+
                     // 更新历史最大连接数
                     if connectionsInfo.pidConns >= maxHistoricalConnections {
                         maxHistoricalConnections = connectionsInfo.pidConns + 2
                     }
-                    
+
                     connectionsHistory.removeFirst()
                     // 计算连接数比例：pid连接数/历史最大连接数 * 100（转为百分比）
-                    let connectionsPercentage =  (Double(connectionsInfo.pidConns) / Double(maxHistoricalConnections)) * 100 
-                        
-                    connectionsHistory.append(connectionsPercentage)
+                    let connectionsPercentage =
+                        (Double(connectionsInfo.pidConns) / Double(maxHistoricalConnections)) * 100
 
+                    connectionsHistory.append(connectionsPercentage)
                 }
             } catch {
                 errorCount += 1
@@ -148,24 +143,24 @@ struct ServerMonitoringView: View {
 }
 
 // CPU卡片组件（横向布局）
-fileprivate struct CPUCard: View {
+private struct CPUCard: View {
     var pidPercentage: Double
     var osPercentage: Double
     var chartData: [Double]
-    
+
     var body: some View {
         ZStack {
             // 背景
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.cyan.opacity(0.1))
-            
+
             // 背景图表
             UsageChartView(dataPoints: chartData, color: .red)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .opacity(0.5)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding(2)
-            
+
             VStack(spacing: 0) {
                 // 顶部：标题和图标
                 HStack {
@@ -174,12 +169,12 @@ fileprivate struct CPUCard: View {
                         .foregroundColor(.gray.opacity(0.7))
 
                     Spacer()
-                    
+
                     Image(systemName: "cpu")
                         .foregroundColor(.primary)
                 }
                 .padding([.horizontal, .top])
-                
+
                 // 中间：横向布局的百分比显示
                 HStack(alignment: .bottom, spacing: 10) {
                     // PID百分比（大字体）
@@ -208,25 +203,25 @@ fileprivate struct CPUCard: View {
 }
 
 // 内存卡片组件
-fileprivate struct MemoryCard: View {
+private struct MemoryCard: View {
     var pidRamMB: Double
     var osRamGB: Double
     var totalRamGB: Double
     var chartData: [Double]
-    
+
     var body: some View {
         ZStack {
             // 背景
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.cyan.opacity(0.1))
-            
+
             // 背景图表
             UsageChartView(dataPoints: chartData, color: .blue)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .opacity(0.5)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding(2)
-            
+
             VStack(spacing: 0) {
                 // 顶部：标题和图标
                 HStack {
@@ -235,12 +230,12 @@ fileprivate struct MemoryCard: View {
                         .foregroundColor(.gray.opacity(0.7))
 
                     Spacer()
-                    
+
                     Image(systemName: "memorychip")
                         .foregroundColor(.primary)
                 }
                 .padding([.horizontal, .top])
-                
+
                 // 中间：主值显示（PID RAM）
                 Text(String(format: "%.1f MB", pidRamMB))
                     .font(.system(size: 60, weight: .bold, design: .monospaced))
@@ -250,11 +245,11 @@ fileprivate struct MemoryCard: View {
                     .minimumScaleFactor(0.5)
 
                 Spacer()
-                
+
                 // 底部：OS RAM和总RAM
                 HStack {
                     Spacer()
-                    
+
                     VStack(alignment: .center) {
                         Text("已使用")
                             .font(.system(size: 12))
@@ -264,9 +259,9 @@ fileprivate struct MemoryCard: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.primary)
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .center) {
                         Text("总内存")
                             .font(.system(size: 12))
@@ -276,7 +271,7 @@ fileprivate struct MemoryCard: View {
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.primary)
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -288,26 +283,26 @@ fileprivate struct MemoryCard: View {
 }
 
 // 连接数卡片组件
-fileprivate struct ConnectionsCard: View {
+private struct ConnectionsCard: View {
     var pidConns: Int
     var osConns: Int
     var chartData: [Double]
     var load_svg: Double
     var maxConnections: Int = 1 // 默认最大连接数
-    
+
     var body: some View {
         ZStack {
             // 背景
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.cyan.opacity(0.1))
-            
+
             // 背景图表
             UsageChartView(dataPoints: chartData, color: .purple)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .opacity(0.5)
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding(2)
-            
+
             VStack(spacing: 0) {
                 // 顶部：标题和图标
                 HStack {
@@ -320,12 +315,12 @@ fileprivate struct ConnectionsCard: View {
                         .foregroundColor(.gray.opacity(0.7))
 
                     Spacer()
-                    
+
                     Image(systemName: "network")
                         .foregroundColor(.primary)
                 }
                 .padding([.horizontal, .top])
-                
+
                 // 中间：横向布局的连接数显示
                 HStack(alignment: .bottom, spacing: 10) {
                     // PID连接数（大字体）
@@ -354,33 +349,32 @@ fileprivate struct ConnectionsCard: View {
     }
 }
 
-
 // 使用Charts框架的图表组件
-fileprivate struct UsageChartView: View {
+private struct UsageChartView: View {
     var dataPoints: [Double]
     var color: Color
-    
+
     // 将原始数据转换为结构化数据点
     private var chartData: [UsageDataPoint] {
         dataPoints.enumerated().map { index, value in
             UsageDataPoint(id: index, time: index, value: value)
         }
     }
-    
+
     var body: some View {
         Chart(chartData) { point in
             // 线条标记
             LineMark(
                 x: .value(Text(verbatim: "Time"), point.time),
-                y: .value(Text(verbatim:"Usage"), point.value)
+                y: .value(Text(verbatim: "Usage"), point.value)
             )
             .foregroundStyle(color)
             .interpolationMethod(.catmullRom)
-            
+
             // 区域填充
             AreaMark(
-                x: .value(Text(verbatim:"Time"), point.time),
-                y: .value(Text(verbatim:"Usage"), point.value)
+                x: .value(Text(verbatim: "Time"), point.time),
+                y: .value(Text(verbatim: "Usage"), point.value)
             )
             .foregroundStyle(color.opacity(0.2))
             .interpolationMethod(.catmullRom)
@@ -391,33 +385,32 @@ fileprivate struct UsageChartView: View {
     }
 }
 
-
 // 创建数据点结构体以符合Charts要求
-fileprivate struct UsageDataPoint: Identifiable {
+private struct UsageDataPoint: Identifiable {
     let id: Int
     let time: Int
     let value: Double
 }
 
 // 数据模型
-fileprivate struct DetailItem: Codable {
+private struct DetailItem: Codable {
     var label: String
     var value: String
 }
 
 // 数据模型
-fileprivate struct ServerData: Codable {
+private struct ServerData: Codable {
     var pid: ServerProcessInfo
     var os: SystemInfo
 }
 
-fileprivate struct ServerProcessInfo: Codable {
+private struct ServerProcessInfo: Codable {
     var cpu: Double
     var ram: Double
     var conns: Int
 }
 
-fileprivate struct SystemInfo: Codable {
+private struct SystemInfo: Codable {
     var cpu: Double
     var ram: Double
     var total_ram: Double
@@ -426,32 +419,32 @@ fileprivate struct SystemInfo: Codable {
 }
 
 // CPU使用率数据模型
-fileprivate struct CPUUsage {
+private struct CPUUsage {
     var pidPercentage: Double
     var osPercentage: Double
-    
+
     static func fromAPIData(data: ServerData) -> CPUUsage {
         return CPUUsage(
-            pidPercentage: data.pid.cpu ,
-            osPercentage: data.os.cpu 
+            pidPercentage: data.pid.cpu,
+            osPercentage: data.os.cpu
         )
     }
 }
 
 // 内存信息数据模型
-fileprivate struct MemoryInfo {
+private struct MemoryInfo {
     var pidRamMB: Double
     var osRamGB: Double
     var totalRamGB: Double
-    
+
     static func fromAPIData(data: ServerData) -> MemoryInfo {
         // 将进程内存从字节转换为MB
         let pidMemoryMB = Double(data.pid.ram) / 1024 / 1024
-        
+
         // 将系统内存从字节转换为GB
         let osMemoryGB = Double(data.os.ram) / 1024 / 1024 / 1024
         let totalMemoryGB = Double(data.os.total_ram) / 1024 / 1024 / 1024
-        
+
         return MemoryInfo(
             pidRamMB: pidMemoryMB,
             osRamGB: osMemoryGB,
@@ -461,7 +454,7 @@ fileprivate struct MemoryInfo {
 }
 
 // 连接数数据模型
-fileprivate struct ConnectionsInfo {
+private struct ConnectionsInfo {
     var pidConns: Int
     var osConns: Int
     var load_svg: Double
@@ -476,6 +469,6 @@ fileprivate struct ConnectionsInfo {
 }
 
 // 预览
-#Preview{
-    ServerMonitoringView(server: PushServerModel(url:"https://example.com"))
+#Preview {
+    ServerMonitoringView(server: PushServerModel(url: "https://example.com"))
 }

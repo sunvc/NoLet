@@ -1,5 +1,5 @@
 //
-//  SoundItemView.swift
+//  SoundtemView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,85 +10,80 @@
 //    Created by Neo 2024/8/9.
 //
 
-import SwiftUI
 import AVKit
 import Defaults
-
-
+import SwiftUI
 
 struct SoundItemView: View {
-    
-    @ObservedObject var tipsManager:AudioManager
-	@Default(.sound) var sound
+    @ObservedObject var tipsManager: AudioManager
+    @Default(.sound) var sound
 
-	var audio:URL
-	var fileName:String?
-	
-    @State var duration:Double = 0.0
-	@State private var title:String?
-    
-	var name:String{
-		audio.deletingPathExtension().lastPathComponent
-	}
-    
-    var defaultSound:Bool{
-		sound == audio.deletingPathExtension().lastPathComponent
+    var audio: URL
+    var fileName: String?
+
+    @State var duration: Double = 0.0
+    @State private var title: String?
+
+    var name: String {
+        audio.deletingPathExtension().lastPathComponent
     }
-    
-    
-    var progress: CGFloat{
-        if audio == tipsManager.currentURL{
+
+    var defaultSound: Bool {
+        sound == audio.deletingPathExtension().lastPathComponent
+    }
+
+    var progress: CGFloat {
+        if audio == tipsManager.currentURL {
             return tipsManager.currentTime / tipsManager.duration
         }
         return 0.0
     }
 
-    var body: some View{
-        HStack{
-            
-            HStack{
-                
-                VStack(alignment: .leading){
-                    Text( name)
-                        .foregroundStyle(defaultSound ? Color.green :  Color.textBlack)
+    var body: some View {
+        HStack {
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(name)
+                        .foregroundStyle(defaultSound ? Color.green : Color.textBlack)
                     Text(verbatim: "\(tipsManager.formatDuration(duration))s")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
-                
-                WaveformScrubber(config: defaultSound ? .init(activeTint: Color.accentColor) : .init(activeTint: .textBlack),
-                                 url: audio,
-                                 progress: Binding(get: {progress}, set: { value in
-                    tipsManager.seek(to: value *  tipsManager.duration)
-                }))
-                    .scaleEffect(0.8)
-                    .disabled(progress == 0.0)
-                
+
+                WaveformScrubber(
+                    config: defaultSound ? .init(activeTint: Color.accentColor) :
+                        .init(activeTint: .textBlack),
+                    url: audio,
+                    progress: Binding(get: { progress }, set: { value in
+                        tipsManager.seek(to: value * tipsManager.duration)
+                    })
+                )
+                .scaleEffect(0.8)
+                .disabled(progress == 0.0)
             }
-            .diff{view in
-                Group{
-                    if #available(iOS 26.0, *){
+            .diff { view in
+                Group {
+                    if #available(iOS 26.0, *) {
                         view
                             .onTapGesture {
                                 playAudio()
                                 Haptic.impact()
                             }
-                    }else{
+                    } else {
                         view
-                            .VButton(onRelease:{ _ in
+                            .VButton(onRelease: { _ in
                                 playAudio()
                                 return true
                             })
                     }
                 }
-
             }
-            
+
             Spacer(minLength: 0)
-            
+
             Image(systemName: "doc.on.doc")
                 .symbolRenderingMode(.palette)
-                .foregroundStyle( .tint, Color.primary)
+                .foregroundStyle(.tint, Color.primary)
                 .onTapGesture {
                     Clipboard.set(self.name)
                     Toast.copy(title: "复制成功")
@@ -105,12 +100,11 @@ struct SoundItemView: View {
         }
         .task {
             do {
-                self.duration =  try await tipsManager.loadVideoDuration(fromURL: self.audio)
+                self.duration = try await tipsManager.loadVideoDuration(fromURL: self.audio)
             } catch {
-#if DEBUG
+                #if DEBUG
                 NLog.error("Error loading aideo duration: \(error.localizedDescription)")
-#endif
-                
+                #endif
             }
         }
 
@@ -124,23 +118,14 @@ struct SoundItemView: View {
         .accessibilityAction(named: "播放铃声") {
             playAudio()
         }
-
-        
     }
 
-    func playAudio(){
+    func playAudio() {
         tipsManager.togglePlay(url: audio)
     }
-
-	
 }
 
-
-
-
-
-
-#Preview{
+#Preview {
     ContentView()
-		.environmentObject(AppManager.shared)
+        .environmentObject(AppManager.shared)
 }

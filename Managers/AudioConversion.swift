@@ -13,9 +13,7 @@
 
 import AVFoundation
 
-
 actor AudioCAFManager {
-    
     let reader: AVAssetReader
     let readerOutput: AVAssetReaderTrackOutput
     let writer: AVAssetWriter
@@ -35,7 +33,6 @@ actor AudioCAFManager {
         self.writerInput = writerInput
         self.outputURL = outputURL
     }
-
 
     func run() async throws -> URL {
         if !reader.startReading() {
@@ -75,12 +72,11 @@ actor AudioCAFManager {
         return outputURL
     }
 
-    
     static func toCAFLong(
         inputURL: URL,
         outputURL: URL,
         bitrate: Int = 128_000,
-        sampleRate: Double = 44_100,
+        sampleRate: Double = 44100,
         channels: Int = 2,
         targetSeconds: Double = 30
     ) async throws -> URL {
@@ -92,7 +88,8 @@ actor AudioCAFManager {
         guard let srcTrack = tracks.first else {
             throw NSError(
                 domain: "AudioCAF", code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "No audio track"])
+                userInfo: [NSLocalizedDescriptionKey: "No audio track"]
+            )
         }
         let reader: AVAssetReader
         let readerOutput: AVAssetReaderTrackOutput
@@ -106,7 +103,8 @@ actor AudioCAFManager {
                     AVLinearPCMBitDepthKey: 16,
                     AVLinearPCMIsFloatKey: false,
                     AVLinearPCMIsBigEndianKey: false,
-                ])
+                ]
+            )
             reader.add(readerOutput)
         } else {
             let tr = try await srcTrack.load(.timeRange)
@@ -116,29 +114,34 @@ actor AudioCAFManager {
             if sourceDuration <= CMTime.zero {
                 throw NSError(
                     domain: "AudioCAF", code: -12,
-                    userInfo: [NSLocalizedDescriptionKey: "Invalid source duration"])
+                    userInfo: [NSLocalizedDescriptionKey: "Invalid source duration"]
+                )
             }
             let composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
-                    withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+                    withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
+                )
             else {
                 throw NSError(
                     domain: "AudioCAF", code: -11,
-                    userInfo: [NSLocalizedDescriptionKey: "Composition track failed"])
+                    userInfo: [NSLocalizedDescriptionKey: "Composition track failed"]
+                )
             }
             while cursor < target {
                 let remaining = target - cursor
                 let chunk = remaining < sourceDuration ? remaining : sourceDuration
                 try compTrack.insertTimeRange(
-                    CMTimeRange(start: .zero, duration: chunk), of: srcTrack, at: cursor)
+                    CMTimeRange(start: .zero, duration: chunk), of: srcTrack, at: cursor
+                )
                 cursor = cursor + chunk
             }
             let compTracks = try await composition.loadTracks(withMediaType: .audio)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -13,
-                    userInfo: [NSLocalizedDescriptionKey: "No composed audio track"])
+                    userInfo: [NSLocalizedDescriptionKey: "No composed audio track"]
+                )
             }
             reader = try AVAssetReader(asset: composition)
             readerOutput = AVAssetReaderTrackOutput(
@@ -149,7 +152,8 @@ actor AudioCAFManager {
                     AVLinearPCMBitDepthKey: 16,
                     AVLinearPCMIsFloatKey: false,
                     AVLinearPCMIsBigEndianKey: false,
-                ])
+                ]
+            )
             reader.add(readerOutput)
         }
 
@@ -176,16 +180,16 @@ actor AudioCAFManager {
 
         let actor = AudioCAFManager(
             reader: reader, readerOutput: readerOutput, writer: writer, writerInput: input,
-            outputURL: outputURL)
+            outputURL: outputURL
+        )
         return try await actor.run()
     }
-
 
     static func toCAFShort(
         inputURL: URL,
         outputURL: URL,
         bitrate: Int = 128_000,
-        sampleRate: Double = 44_100,
+        sampleRate: Double = 44100,
         channels: Int = 2,
         maxSeconds: Double = 0
     ) async throws -> URL {
@@ -197,7 +201,8 @@ actor AudioCAFManager {
         guard let srcTrack = tracks.first else {
             throw NSError(
                 domain: "AudioCAF", code: -1,
-                userInfo: [NSLocalizedDescriptionKey: "No audio track"])
+                userInfo: [NSLocalizedDescriptionKey: "No audio track"]
+            )
         }
         let tr = try await srcTrack.load(.timeRange)
         let sourceDuration = tr.duration
@@ -208,19 +213,23 @@ actor AudioCAFManager {
             let composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
-                    withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+                    withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
+                )
             else {
                 throw NSError(
                     domain: "AudioCAF", code: -21,
-                    userInfo: [NSLocalizedDescriptionKey: "Composition track failed"])
+                    userInfo: [NSLocalizedDescriptionKey: "Composition track failed"]
+                )
             }
             try compTrack.insertTimeRange(
-                CMTimeRange(start: .zero, duration: maxDuration), of: srcTrack, at: .zero)
+                CMTimeRange(start: .zero, duration: maxDuration), of: srcTrack, at: .zero
+            )
             let compTracks = try await composition.loadTracks(withMediaType: .audio)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -22,
-                    userInfo: [NSLocalizedDescriptionKey: "No composed audio track"])
+                    userInfo: [NSLocalizedDescriptionKey: "No composed audio track"]
+                )
             }
             reader = try AVAssetReader(asset: composition)
             readerOutput = AVAssetReaderTrackOutput(
@@ -231,7 +240,8 @@ actor AudioCAFManager {
                     AVLinearPCMBitDepthKey: 16,
                     AVLinearPCMIsFloatKey: false,
                     AVLinearPCMIsBigEndianKey: false,
-                ])
+                ]
+            )
             reader.add(readerOutput)
         } else {
             reader = try AVAssetReader(asset: asset)
@@ -243,7 +253,8 @@ actor AudioCAFManager {
                     AVLinearPCMBitDepthKey: 16,
                     AVLinearPCMIsFloatKey: false,
                     AVLinearPCMIsBigEndianKey: false,
-                ])
+                ]
+            )
             reader.add(readerOutput)
         }
 
@@ -270,7 +281,8 @@ actor AudioCAFManager {
 
         let actor = AudioCAFManager(
             reader: reader, readerOutput: readerOutput, writer: writer, writerInput: input,
-            outputURL: outputURL)
+            outputURL: outputURL
+        )
         return try await actor.run()
     }
 }

@@ -1,5 +1,5 @@
 //
-//  Manager.swift
+//  AppManager.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -11,138 +11,125 @@
 //    Created by Neo 2024/10/26.
 //
 
-import UIKit
-import SwiftUI
 import Defaults
 import Foundation
 import StoreKit
+import SwiftUI
+import UIKit
 import Zip
 
-
-
-final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
+final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
     static let shared = AppManager()
-    
-    
-    @Published var page:      TabPage = .message
+
+    @Published var page: TabPage = .message
     @Published var sheetPage: SubPage = .none
-    @Published var fullPage:  SubPage = .none
-    
-    
-    @Published var selectId:    String? = nil
+    @Published var fullPage: SubPage = .none
+
+    @Published var selectID: String? = nil
     @Published var selectGroup: String? = nil
-    @Published var searchText:  String = ""
-    
-    
-    @Published var mrouter:  [RouterPage] = []
-    @Published var srouter:  [RouterPage] = []
+    @Published var searchText: String = ""
+
+    @Published var mrouter: [RouterPage] = []
+    @Published var srouter: [RouterPage] = []
     @Published var sorouter: [RouterPage] = []
-    @Published var prouter:  [RouterPage] = []
-    
-    @Published var isWarmStart:Bool = false
-    
-    @Published var selectMessage:Message? = nil
-    @Published var selectPoint:CGPoint = .zero
+    @Published var prouter: [RouterPage] = []
+
+    @Published var isWarmStart: Bool = false
+
+    @Published var selectMessage: Message? = nil
+    @Published var selectPoint: CGPoint = .zero
     /// 首页彩色框
-    @Published var isLoading:Bool = false
-    @Published var inAssistant:Bool = false
-    
+    @Published var isLoading: Bool = false
+    @Published var inAssistant: Bool = false
+
     /// 问智能助手
-    @Published var askMessageId:String? = nil
-    
-    @Published var customServerURL:String = ""
+    @Published var askMessageID: String? = nil
+
+    @Published var customServerURL: String = ""
     @Published var VipInfo: SubscribeUser? = nil
-    
-    var router:[RouterPage] = []{
-        didSet{
-            if .ISPAD{
-                self.prouter = router
-            }else{
-                
+
+    var router: [RouterPage] = [] {
+        didSet {
+            if .ISPAD {
+                prouter = router
+            } else {
                 switch page {
                 case .message:
-                    self.mrouter = router
+                    mrouter = router
                 case .setting:
-                    self.srouter = router
+                    srouter = router
                 case .search:
-                    self.sorouter = router
-                    
+                    sorouter = router
                 }
             }
         }
     }
-    
-    var fullShow:Binding<Bool>{
+
+    var fullShow: Binding<Bool> {
         Binding {
             self.fullPage != .none
         } set: { _ in
             self.fullPage = .none
         }
     }
-    
-    var sheetShow:Binding<Bool>{
+
+    var sheetShow: Binding<Bool> {
         Binding {
             self.sheetPage != .none
         } set: { _ in
             self.sheetPage = .none
         }
     }
-    
-    
-    private var appending:Bool = false
-    
+
+    private var appending: Bool = false
+
     private override init() {
         super.init()
         updates = newTransactionListenerTask()
     }
-    
-    deinit {  updates?.cancel() }
-    
-    var updates: Task<Void, Never>? = nil
-    
-    
-    
-    
+
+    deinit { updates?.cancel() }
+
+    var updates: Task<Void, Never>?
+
     class func syncLocalToCloud() {
         let locals = Defaults[.servers]
         let clouds = Defaults[.cloudServers]
-        
+
         // 过滤掉有 group 的
         let filteredLocals = locals.filter { $0.group?.isEmpty ?? true }
         let filteredClouds = clouds.filter { $0.group?.isEmpty ?? true }
-        
+
         // 合并并去重（前提是 PushServerModel 遵守 Hashable）
         let merged = Array(Set(filteredLocals + filteredClouds))
-        
+
         // 同步回云端
         Defaults[.cloudServers] = merged
     }
 
-    
-    func HandlerOpenUrl(url:String) -> String?{
-        
-        switch self.outParamsHandler(address: url) {
+    func HandlerOpenURL(url: String) -> String? {
+        switch outParamsHandler(address: url) {
         case .crypto(let text):
             NLog.log(text)
-            if let config = CryptoModelConfig(inputText: text){
-                Task{@MainActor in
+            if let config = CryptoModelConfig(inputText: text) {
+                Task { @MainActor in
                     self.page = .setting
                     self.router = [.crypto]
-                    if !Defaults[.cryptoConfigs].contains(where: {$0 == config}){
+                    if !Defaults[.cryptoConfigs].contains(where: { $0 == config }) {
                         Defaults[.cryptoConfigs].append(config)
                         Toast.info(title: "添加成功")
-                    }else{
+                    } else {
                         Toast.info(title: "配置已存在")
                     }
                 }
             }
             return nil
-        case .server(let url, let key,let group, let sign):
+        case .server(let url, let key, let group, let sign):
             Task.detached(priority: .userInitiated) {
                 let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
-                let server = PushServerModel(url: url,key: key,group: group, sign: crypto)
+                let server = PushServerModel(url: url, key: key, group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
-                if success{
+                if success {
                     await MainActor.run {
                         self.page = .setting
                         self.router = [.server]
@@ -151,37 +138,34 @@ final class AppManager:  NetworkManager, ObservableObject, @unchecked Sendable {
             }
             return nil
         case .assistant(let text):
-            if let account = AssistantAccount(base64: text){
-                Task{@MainActor in
+            if let account = AssistantAccount(base64: text) {
+                Task { @MainActor in
                     self.page = .setting
                     self.router = [.assistantSetting(account)]
-                    
                 }
             }
             return nil
         case .cloudIcon:
-            self.page = .setting
-            self.sheetPage = .cloudIcon
+            page = .setting
+            sheetPage = .cloudIcon
             return nil
         default:
             return url
-            
         }
     }
-    
 }
 
-
-extension AppManager{
+extension AppManager {
     /// open app settings
-    class func openSetting(){
-        AppManager.openUrl(url: URL(string: UIApplication.openSettingsURLString)!, .safari)
+    class func openSetting() {
+        AppManager.openURL(url: URL(string: UIApplication.openSettingsURLString)!, .safari)
     }
+
     /// Open a URL or handle a fallback if the URL cannot be opened
     /// - Parameters:
     ///   - url: The URL to open
     ///   - unOpen: A closure called when the URL cannot be opened, passing the URL as an argument
-    class func openUrl(url: URL, _ mode: DefaultBrowserModel) {
+    class func openURL(url: URL, _ mode: DefaultBrowserModel) {
         guard url.absoluteString.hasHttp else {
             // 非 http/https 直接打开
             UIApplication.shared.open(url, options: [:])
@@ -206,39 +190,42 @@ extension AppManager{
             }
         }
     }
-    
-    class func openUrl(url: String, _ mode:DefaultBrowserModel) {
+
+    class func openURL(url: String, _ mode: DefaultBrowserModel) {
         if let url = URL(string: url) {
-            self.openUrl(url: url, mode)
+            openURL(url: url, mode)
         }
     }
-    
-    
-    
-    class func hideKeyboard(){
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),to: nil,from: nil,for: nil)
+
+    class func hideKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
-    
-    
+
     // MARK: 注册设备以接收远程推送通知
-    func registerForRemoteNotifications(_ isCriticalAlert:Bool = false) async -> Bool {
-        
-        var auths: UNAuthorizationOptions = [.alert, .sound, .badge,
-                                             .providesAppNotificationSettings]
-        if isCriticalAlert{
+
+    func registerForRemoteNotifications(_ isCriticalAlert: Bool = false) async -> Bool {
+        var auths: UNAuthorizationOptions = [
+            .alert,
+            .sound,
+            .badge,
+            .providesAppNotificationSettings,
+        ]
+        if isCriticalAlert {
             auths.insert(.criticalAlert)
         }
-        
-        
+
         guard let granted = try? await UNUserNotificationCenter.current()
             .requestAuthorization(options: auths)
-        else { return false}
-        
-        
-        
+        else { return false }
+
         if granted {
             // 如果授权，注册设备接收推送通知
-            Task{@MainActor in
+            Task { @MainActor in
                 UIApplication.shared.registerForRemoteNotifications()
             }
         } else {
@@ -246,101 +233,118 @@ extension AppManager{
         }
         return granted
     }
-    
+
     func clearContentsOfDirectory(at url: URL) {
         let fileManager = FileManager.default
-        
+
         do {
-            let contents = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-            
+            let contents = try fileManager.contentsOfDirectory(
+                at: url,
+                includingPropertiesForKeys: nil,
+                options: []
+            )
+
             for fileURL in contents {
-                do{
+                do {
                     try fileManager.removeItem(at: fileURL)
                     NLog.log("✅ 删除: \(fileURL.lastPathComponent)")
-                }catch{
+                } catch {
                     NLog.error("❌ 清空失败: \(error.localizedDescription)")
                 }
             }
-            
+
             NLog.log("🧹 清空完成：\(url.path)")
         } catch {
             NLog.error("❌ 清空失败: \(error.localizedDescription)")
         }
     }
-    
+
     func calculateDirectorySize(at url: URL) -> UInt64 {
         var totalSize: UInt64 = 0
-        
-        if let enumerator = FileManager.default.enumerator(at: url, includingPropertiesForKeys: [.fileSizeKey], options: [], errorHandler: nil) {
+
+        if let enumerator = FileManager.default.enumerator(
+            at: url,
+            includingPropertiesForKeys: [.fileSizeKey],
+            options: [],
+            errorHandler: nil
+        ) {
             for case let fileURL as URL in enumerator {
                 do {
-                    let resourceValues = try fileURL.resourceValues(forKeys: [.isRegularFileKey, .fileSizeKey])
+                    let resourceValues = try fileURL.resourceValues(forKeys: [
+                        .isRegularFileKey,
+                        .fileSizeKey,
+                    ])
                     if resourceValues.isRegularFile == true {
                         if let fileSize = resourceValues.fileSize {
                             totalSize += UInt64(fileSize)
                         }
                     }
                 } catch {
-                    NLog.error("❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)")
+                    NLog
+                        .error(
+                            "❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)"
+                        )
                 }
             }
         }
-        
+
         return totalSize
     }
-    
-    
-    func outParamsHandler(address:String) -> OutDataType{
-        
+
+    func outParamsHandler(address: String) -> OutDataType {
         guard let url = URL(string: address), let scheme = url.scheme?.lowercased() else {
             return .text(address)
         }
-        
+
         if PBScheme.schemes.contains(scheme),
            let host = url.host(),
            let host = PBScheme.HostType(rawValue: host),
-           let components = URLComponents(url: url, resolvingAgainstBaseURL: false){
+           let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        {
             let params = components.getParams()
-            
+
             switch host {
             case .server:
-                if let url = params["text"],let urlResponse = URL(string: url), url.hasHttp {
+                if let url = params["text"], let urlResponse = URL(string: url), url.hasHttp {
                     let (result, key) = urlResponse.findNameAndKey()
-                    return .server(url: result, key:key, group: params["group"], sign: params["sign"])
+                    return .server(
+                        url: result,
+                        key: key,
+                        group: params["group"],
+                        sign: params["sign"]
+                    )
                 }
             case .crypto:
-                if let config = params["text"]{
+                if let config = params["text"] {
                     return .crypto(config)
                 }
             case .assistant:
-                if let config = params["text"]{
+                if let config = params["text"] {
                     return .assistant(config)
                 }
-                
             case .openPage:
                 /// pb://openPage
-                if let _ = params["page"]{
+                if let _ = params["page"] {
                     return .cloudIcon
                 }
             }
-            
         }
-        
-        return .otherUrl(address)
+
+        return .otherURL(address)
     }
-    
+
     func printDirectoryContents(at path: String, indent: String = "") {
         let fileManager = FileManager.default
         var isDir: ObjCBool = false
-        
+
         guard fileManager.fileExists(atPath: path, isDirectory: &isDir) else {
             NLog.error("\(indent)❌ Path not found: \(path)")
             return
         }
-        
+
         if isDir.boolValue {
             NLog.log("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
-            
+
             if let contents = try? fileManager.contentsOfDirectory(atPath: path) {
                 for item in contents {
                     let itemPath = (path as NSString).appendingPathComponent(item)
@@ -349,20 +353,23 @@ extension AppManager{
             }
         } else {
             if let attrs = try? fileManager.attributesOfItem(atPath: path),
-               let fileSize = attrs[.size] as? UInt64 {
+               let fileSize = attrs[.size] as? UInt64
+            {
                 let sizeMB = Double(fileSize) / (1024.0 * 1024.0)
-                NLog.log("\(indent)📄 \(URL(fileURLWithPath: path).lastPathComponent) (\(String(format: "%.2f", sizeMB)) MB)")
+                NLog
+                    .log(
+                        "\(indent)📄 \(URL(fileURLWithPath: path).lastPathComponent) (\(String(format: "%.2f", sizeMB)) MB)"
+                    )
             }
         }
     }
-    
-    static func createDatabaseFileTem() -> URL?{
+
+    static func createDatabaseFileTem() -> URL? {
         let path = NCONFIG.configPath
-        do{
+        do {
             let data = try Data(contentsOf: path)
-            
-            if let cryptData = CryptoManager(.data).encrypt(data: data){
-                
+
+            if let cryptData = CryptoManager(.data).encrypt(data: data) {
                 let pathTem = FileManager.default.temporaryDirectory.appendingPathComponent(
                     path.lastPathComponent,
                     conformingTo: .data
@@ -370,60 +377,55 @@ extension AppManager{
                 try cryptData.write(to: pathTem)
                 return pathTem
             }
-        }catch{
+        } catch {
             NLog.error("配置文件加密失败")
         }
-        
+
         return nil
     }
-    
-    
-    static func runQuick(_ action: String) -> Bool{
-        switch QuickAction(rawValue: action.lowercased()){
+
+    static func runQuick(_ action: String) -> Bool {
+        switch QuickAction(rawValue: action.lowercased()) {
         case .assistant:
-            Self.shared.router = [.assistant]
+            shared.router = [.assistant]
         case .scan:
-            Self.shared.fullPage = .scan
+            shared.fullPage = .scan
         default:
             return false
         }
         return true
     }
-    
-    
 }
 
-extension AppManager{
-    
-    func restore(address:String, deviceKey:String, sign:String? = nil) async -> Bool{
-        do{
-            let response:baseResponse<String> =
-            try await self.fetch(
-                url: address,
-                path: "/register/\(deviceKey)",
-                headers: self.signature(sign: sign)
-            )
-  
-            guard 200...299 ~= response.code else{
+extension AppManager {
+    func restore(address: String, deviceKey: String, sign: String? = nil) async -> Bool {
+        do {
+            let response: baseResponse<String> =
+                try await fetch(
+                    url: address,
+                    path: "/register/\(deviceKey)",
+                    headers: signature(sign: sign)
+                )
+
+            guard 200...299 ~= response.code else {
                 Toast.shared.present(title: response.message, symbol: .error)
                 return false
             }
-            
-            
-            if response.message == "success"{
-                let serever = PushServerModel(url: address,key: deviceKey, sign: sign)
-                let success = await self.appendServer(server: serever)
+
+            if response.message == "success" {
+                let serever = PushServerModel(url: address, key: deviceKey, sign: sign)
+                let success = await appendServer(server: serever)
                 return success
-            }else{
+            } else {
                 return false
             }
-        }catch{
+        } catch {
             Toast.error(title: "数据不正确")
             return false
-        }        
+        }
     }
-    
-    func registers(){
+
+    func registers() {
         Task.detached(priority: .userInitiated) {
             let servers = Defaults[.servers]
             let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -433,51 +435,59 @@ extension AppManager{
                         return (index, result)
                     }
                 }
-                
+
                 var tmp: [(Int, PushServerModel)] = []
                 for await pair in group {
                     tmp.append(pair)
                 }
-                
+
                 // 按 index 排序，保证和 servers 顺序一致
                 return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
             }
-            
-            if results.filter({$0.status}).count == servers.count{
+
+            if results.filter({ $0.status }).count == servers.count {
                 Toast.success(title: "注册成功")
-            }else if results.filter({!$0.status}).count == servers.count{
+            } else if results.filter({ !$0.status }).count == servers.count {
                 Toast.error(title: "注册失败")
-            }else{
+            } else {
                 Toast.info(title: "部分注册成功")
             }
-            
+
             await MainActor.run {
                 Defaults[.servers] = results
             }
-            
         }
     }
-    
-    func register(server:PushServerModel, reset:Bool = false, msg:Bool = false) async -> PushServerModel{
+
+    func register(
+        server: PushServerModel,
+        reset: Bool = false,
+        msg: Bool = false
+    ) async -> PushServerModel {
         var server = server
-        
-        if  server.name == "uuneo.com" || server.name == "push.uuneo.com"{
+
+        if server.name == "uuneo.com" || server.name == "push.uuneo.com" {
             server.url = NCONFIG.server
         }
-        
-        do{
-            
+
+        do {
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
-            let params  = DeviceInfo(deviceKey: server.key, deviceToken: deviceToken, group: server.group ).toEncodableDictionary() ?? [:]
-            
-            
-            let response:baseResponse<DeviceInfo> = try await self.fetch(url: server.url,
-                                                                         path: "/register",
-                                                                         method: .POST,
-                                                                         params: params,
-                                                                         headers: self.signature(sign: server.key))
-            
-            guard 200...299 ~= response.code else{
+            let params = DeviceInfo(
+                deviceKey: server.key,
+                deviceToken: deviceToken,
+                group: server.group
+            ).toEncodableDictionary() ?? [:]
+
+            let response: baseResponse<DeviceInfo> = try await fetch(
+                url: server.url,
+                path: "/register",
+                method: .POST,
+                params: params,
+                headers: signature(sign: server
+                    .key)
+            )
+
+            guard 200...299 ~= response.code else {
                 Toast.shared.present(title: response.message, symbol: .error)
                 throw "erroe"
             }
@@ -485,91 +495,84 @@ extension AppManager{
             if let data = response.data {
                 server.key = data.deviceKey
                 server.status = true
-                if msg{
-                    if reset{ Toast.info(title: "解绑成功") }else{
+                if msg {
+                    if reset { Toast.info(title: "解绑成功") } else {
                         Toast.success(title: "注册成功")
                     }
                 }
-            }else{
-                
-                if msg{
+            } else {
+                if msg {
                     Toast.error(title: "注册失败")
                 }
                 throw "erroe"
             }
             Self.syncLocalToCloud()
             return server
-        }catch{
+        } catch {
             server.status = false
             server.voice = false
             NLog.error(error.localizedDescription)
             return server
         }
     }
-    
-    
-    
-    func appendServer(server:PushServerModel, reset: Bool = false) async -> Bool{
-        
-        guard !appending && !Defaults[.deviceToken].isEmpty else { return false}
-        self.appending = true
-        
+
+    func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
+        guard !appending && !Defaults[.deviceToken].isEmpty else { return false }
+        appending = true
+
         var serverCopy = server
-        if reset {  
+        if reset {
             serverCopy.key = ""
             serverCopy.id = UUID().uuidString
         }
-        
-        guard !Defaults[.servers].contains(where: {$0 == serverCopy})else{
+
+        guard !Defaults[.servers].contains(where: { $0 == serverCopy }) else {
             Toast.error(title: "服务器已存在")
             return false
         }
-        
-        
-        let serverNew = await self.register(server: serverCopy, msg: true)
+
+        let serverNew = await register(server: serverCopy, msg: true)
         if serverNew.status {
-            if reset{
+            if reset {
                 /// 重置后清空老的token
-                _ = await self.register(server: server, reset: true)
+                _ = await register(server: server, reset: true)
             }
-           
+
             await MainActor.run {
-                if reset{
-                    Defaults[.servers].removeAll(where: {$0 == server})
+                if reset {
+                    Defaults[.servers].removeAll(where: { $0 == server })
                 }
                 Defaults[.servers].insert(serverNew, at: 0)
             }
             Toast.success(title: "添加成功")
         }
         Self.syncLocalToCloud()
-        self.appending = false
+        appending = false
         return serverNew.status
     }
 }
 
-
-extension AppManager{
+extension AppManager {
     private func newTransactionListenerTask() -> Task<Void, Never> {
         Task(priority: .background) {
             for await verificationResult in Transaction.updates {
                 self.handle(updatedTransaction: verificationResult)
             }
-            
+
             for await result in Transaction.currentEntitlements {
                 self.handle(updatedTransaction: result)
             }
         }
     }
-    
-    
-    private func handle(updatedTransaction verificationResult: VerificationResult<StoreKit.Transaction>) {
-    
-        
+
+    private func handle(updatedTransaction verificationResult: VerificationResult<StoreKit
+            .Transaction>)
+    {
         guard case .verified(let transaction) = verificationResult else {
             // Ignore unverified transactions.
             return
         }
-        
+
         if let revocationDate = transaction.revocationDate {
             // Remove access to the product identified by transaction.productID.
             // Transaction.revocationReason provides details about
@@ -577,57 +580,58 @@ extension AppManager{
             if let reason = transaction.revocationReason {
                 NLog.log("Transaction revoked due to: \(revocationDate) - \(reason) ")
             }
-        
-            if self.VipInfo?.productID == transaction.productID{
-                self.VipInfo = nil
+
+            if VipInfo?.productID == transaction.productID {
+                VipInfo = nil
             }
             return
-    
+
         } else if let expirationDate = transaction.expirationDate, expirationDate < Date() {
             // Do nothing, this subscription is expired.
-            if self.VipInfo?.productID == transaction.productID{
-                self.VipInfo = nil
+            if VipInfo?.productID == transaction.productID {
+                VipInfo = nil
             }
             return
         } else if transaction.isUpgraded {
             // Do nothing, there is an active transaction
             // for a higher level of service.
             return
-        }else{
-            DispatchQueue.main.async{
-                self.VipInfo = SubscribeUser( expirationDate: transaction.expirationDate,
-                                              productID: transaction.productID)
+        } else {
+            DispatchQueue.main.async {
+                self.VipInfo = SubscribeUser(
+                    expirationDate: transaction.expirationDate,
+                    productID: transaction.productID
+                )
             }
         }
     }
 }
 
-
-struct SubscribeUser: Codable, Hashable, Identifiable{
+struct SubscribeUser: Codable, Hashable, Identifiable {
     var id: String = UUID().uuidString
     var expirationDate: Date?
     var productID: String = ""
-    
-    var isVip: Bool{
-        if let expirationDate{
+
+    var isVip: Bool {
+        if let expirationDate {
             return expirationDate > Date() && level != .none
         }
         return false
     }
-    
-    var level:levelType{
-        if productID == StoreProduct.monthly{
+
+    var level: levelType {
+        if productID == StoreProduct.monthly {
             return .monthly
-        }else if productID == StoreProduct.yearly{
+        } else if productID == StoreProduct.yearly {
             return .yearly
-        }else if productID == StoreProduct.once{
+        } else if productID == StoreProduct.once {
             return .onece
-        }else{
+        } else {
             return .none
         }
     }
-    
-    enum levelType{
+
+    enum levelType {
         case monthly
         case yearly
         case onece
@@ -635,27 +639,22 @@ struct SubscribeUser: Codable, Hashable, Identifiable{
     }
 }
 
-extension AppManager{
-    
-    func signature(sign: String?) ->[String: String] {
-        
-        var result:[String:String] = [
-            "Authorization": Defaults[.id]
+extension AppManager {
+    func signature(sign: String?) -> [String: String] {
+        var result: [String: String] = [
+            "Authorization": Defaults[.id],
         ]
-        
+
         let data = "\(Int(Date().timeIntervalSince1970))"
-        
-        if let sign = sign , sign.count > 10{
-            let config: CryptoModelConfig = CryptoModelConfig(inputText: sign) ?? .data
+
+        if let sign = sign, sign.count > 10 {
+            let config = CryptoModelConfig(inputText: sign) ?? .data
             result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
-        }else{
+        } else {
             result["X-Signature"] = CryptoManager(.data)
                 .encrypt(data)?.safeBase64
         }
-        
-        
-        
+
         return result
     }
-
 }

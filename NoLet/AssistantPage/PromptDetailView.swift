@@ -15,21 +15,21 @@ import SwiftUI
 struct PromptDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    
+
     let prompt: ChatPrompt?
-    
+
     @State private var title: String
     @State private var content: String
     @State private var showDeleteConfirmation = false
     @State private var isEditing = false
-    
+
     init(prompt: ChatPrompt?) {
         self.prompt = prompt
         _title = State(initialValue: prompt?.title ?? "")
         _content = State(initialValue: prompt?.content ?? "")
         _isEditing = State(initialValue: prompt == nil)
     }
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -49,8 +49,9 @@ struct PromptDetailView: View {
         }
         .presentationDetents([.large])
     }
-    
+
     // MARK: - View Components
+
     private var titleSection: some View {
         SectionView(title: String(localized: "标题")) {
             if isEditing {
@@ -62,7 +63,6 @@ struct PromptDetailView: View {
         }
     }
 
-    
     private var contentSection: some View {
         SectionView(title: String(localized: "内容")) {
             if isEditing {
@@ -78,7 +78,7 @@ struct PromptDetailView: View {
             }
         }
     }
-    
+
     private var promptInfoSection: some View {
         Group {
             if let prompt = prompt {
@@ -87,12 +87,12 @@ struct PromptDetailView: View {
                         InfoBanner(
                             icon: "info.circle",
                             title: String(localized: "内置提示词"),
-                            message:  String(localized: "这是一个内置提示词，你可以基于它创建一个新的自定义提示词")
+                            message: String(localized: "这是一个内置提示词，你可以基于它创建一个新的自定义提示词")
                         )
                     } else {
                         InfoBanner(
                             icon: "calendar",
-                            title: String(localized:"创建时间"),
+                            title: String(localized: "创建时间"),
                             message: prompt.timestamp.formatted(
                                 .dateTime
                                     .year().month().day()
@@ -105,7 +105,7 @@ struct PromptDetailView: View {
             }
         }
     }
-    
+
     private var actionButtonsSection: some View {
         Group {
             if !isEditing {
@@ -126,7 +126,7 @@ struct PromptDetailView: View {
             }
         }
     }
-    
+
     private var trailingToolbarItem: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             if prompt?.inside == false {
@@ -143,8 +143,9 @@ struct PromptDetailView: View {
             }
         }
     }
-    
+
     // MARK: - Private Methods
+
     private func getNavigationTitle() -> String {
         if prompt == nil {
             return String(localized: "新建提示词")
@@ -154,19 +155,18 @@ struct PromptDetailView: View {
             return String(localized: "提示词详情")
         }
     }
-    
+
     private func handleUsePrompt() {
         guard prompt != nil else { return }
-            
-            let chatPrompt = ChatPrompt(
-                title: title,
-                content: content,
-                inside: false
-            )
+
+        let chatPrompt = ChatPrompt(
+            title: title,
+            content: content,
+            inside: false
+        )
         Task.detached(priority: .userInitiated) {
-            
             do {
-                try await  DatabaseManager.shared.dbQueue.write { db in
+                try await DatabaseManager.shared.dbQueue.write { db in
                     try chatPrompt.insert(db)
                 }
                 await MainActor.run {
@@ -176,16 +176,15 @@ struct PromptDetailView: View {
                 NLog.error("❌ 插入 ChatPrompt 失败:", error)
             }
         }
-       
     }
-    
+
     private func handleSavePrompt() {
         let title = self.title
         let content = self.content
         Task.detached(priority: .userInitiated) {
             do {
-                try await  DatabaseManager.shared.dbQueue.write { db in
-                    if var item = try ChatPrompt.fetchOne(db, key: prompt?.id){
+                try await DatabaseManager.shared.dbQueue.write { db in
+                    if var item = try ChatPrompt.fetchOne(db, key: prompt?.id) {
                         item.title = title
                         item.content = content
                         try item.update(db)
@@ -206,21 +205,19 @@ struct PromptDetailView: View {
 }
 
 // MARK: - SectionView
+
 private struct SectionView<Content: View>: View {
     let title: String
-    let center:Bool
+    let center: Bool
     let content: Content
-    
-    
-    init(_ center:Bool = true, title: String, @ViewBuilder content: () -> Content) {
+
+    init(_ center: Bool = true, title: String, @ViewBuilder content: () -> Content) {
         self.title = title
         self.center = center
         self.content = content()
-      
     }
-    
+
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.headline)
@@ -228,33 +225,32 @@ private struct SectionView<Content: View>: View {
             content
         }
         .padding(.horizontal)
-        .if(!center){ view in
-            HStack{
-               view
+        .if(!center) { view in
+            HStack {
+                view
                 Spacer()
             }
         }
-        
-        
     }
 }
 
 // MARK: - InfoBanner
+
 private struct InfoBanner: View {
     let icon: String
     let title: String
     let message: String
-    
+
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundColor(.blue)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .font(.headline)
-                
+
                 Text(message)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -266,7 +262,6 @@ private struct InfoBanner: View {
         .cornerRadius(10)
     }
 }
-
 
 #Preview("提示词详情") {
     PromptDetailView(

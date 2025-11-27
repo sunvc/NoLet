@@ -9,7 +9,7 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func router(_ manager: AppManager) -> some View {
+    func router(_: AppManager) -> some View {
         navigationDestination(for: RouterPage.self) { page in
             switch page {
             case .server:
@@ -20,9 +20,9 @@ extension View {
                 SoundView()
             case .more:
                 MoreOperationsView()
-            case .widget(let title, let data):
+            case let .widget(title, data):
                 Text(title ?? "Widget")
-            case .assistantSetting(let account):
+            case let .assistantSetting(account):
                 Text("Assistant Setting")
             case .about:
                 AboutNoLetView()

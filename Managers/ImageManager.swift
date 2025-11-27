@@ -11,8 +11,8 @@
 //    Created by Neo 2024/10/14.
 //
 
-import Kingfisher
 import Foundation
+import Kingfisher
 
 /// Image Manager
 ///
@@ -29,19 +29,18 @@ import Foundation
 /// - Failure Handling: Returns `nil` on download or cache setup failures; callers should implement
 ///   graceful fallbacks based on a `nil` result.
 class ImageManager {
-
     /// Store raw image bytes into the specified cache (disk-only)
     /// - Parameters:
     ///   - cache: Target `ImageCache`; if `nil`, uses the default cache (`defaultCache()`)
     ///   - data: Raw image data to persist
     ///   - key: Cache key (use a stable key such as `URL.cacheKey`)
     ///   - expiration: Cache expiration policy; defaults to `.never`
-    /// - Notes: Uses Kingfisher `storeToDisk` to write directly to disk; does not populate memory cache.
+    /// - Notes: Uses Kingfisher `storeToDisk` to write directly to disk; does not populate memory
+    /// cache.
     /// - Errors: If default cache creation fails, the method returns immediately.
     class func storeImage(
         cache: ImageCache? = nil, data: Data, key: String, expiration: StorageExpiration = .never
     ) async {
-
         let cacheTem: ImageCache
 
         if let cache = cache {
@@ -68,17 +67,18 @@ class ImageManager {
     ///   2. Check the original URL string as the cache key; return path if cached
     ///   3. Check `URL.cacheKey` as the standard key; return path if cached
     ///   4. If not cached, download → store to disk → return path
-    /// - Proxy & Auth: When proxy is enabled (`Defaults[.proxyServer]`), request headers include custom
+    /// - Proxy & Auth: When proxy is enabled (`Defaults[.proxyServer]`), request headers include
+    /// custom
     ///   UA, Authorization, and signed `X-DATA` (see `getOptionsInfo(from:)`).
-    class func downloadImage(_ imageUrl: String, expiration: StorageExpiration = .never) async
-        -> String? {
-
+    class func downloadImage(_ imageURL: String, expiration: StorageExpiration = .never) async
+        -> String?
+    {
         guard let cache = defaultCache() else { return nil }
 
         // Return cached path if image is already cached
-        if cache.diskStorage.isCached(forKey: imageUrl) { return cache.cachePath(forKey: imageUrl) }
+        if cache.diskStorage.isCached(forKey: imageURL) { return cache.cachePath(forKey: imageURL) }
 
-        guard let imageResource = URL(string: imageUrl) else { return nil }
+        guard let imageResource = URL(string: imageURL) else { return nil }
 
         let cacheKey = imageResource.cacheKey
 
@@ -91,7 +91,8 @@ class ImageManager {
 
         // Cache downloaded image
         await storeImage(
-            cache: cache, data: result.originalData, key: cacheKey, expiration: expiration)
+            cache: cache, data: result.originalData, key: cacheKey, expiration: expiration
+        )
 
         return cache.cachePath(forKey: cacheKey)
     }
@@ -100,14 +101,14 @@ class ImageManager {
     /// - Parameters:
     ///   - url: Remote image URL
     ///   - options: Kingfisher options (request modifiers, cache policies, etc.)
-    /// - Returns: `Result<ImageLoadingResult, KingfisherError>` including original data and image on success
+    /// - Returns: `Result<ImageLoadingResult, KingfisherError>` including original data and image
+    /// on success
     /// - Details: Default download timeout is `15s`.
     class func downloadImage(
         url: URL,
         options: KingfisherOptionsInfo? = nil
     ) async -> Result<ImageLoadingResult, KingfisherError> {
         return await withCheckedContinuation { continuation in
-
             let downloader = Kingfisher.ImageDownloader.default
 
             downloader.downloadTimeout = 15.0
@@ -119,7 +120,8 @@ class ImageManager {
 
     /// Get the default disk image cache
     /// - Returns: `ImageCache` instance; `nil` if creation fails
-    /// - Location: Uses `NCONFIG.FolderType.image.path` as the cache root, suitable for shared storage.
+    /// - Location: Uses `NCONFIG.FolderType.image.path` as the cache root, suitable for shared
+    /// storage.
     class func defaultCache() -> ImageCache? {
         return try? ImageCache(name: "shared", cacheDirectoryURL: NCONFIG.FolderType.image.path)
     }
@@ -130,13 +132,14 @@ class ImageManager {
     /// - Returns: Kingfisher options; `nil` if proxy is disabled or signing fails
     /// - Behavior:
     ///   - Enabled only when `Defaults[.proxyServer]` is active and uses HTTP(S)
-    ///   - If proxy URL equals `NCONFIG.server`, use fixed config; otherwise derive a signature from
+    ///   - If proxy URL equals `NCONFIG.server`, use fixed config; otherwise derive a signature
+    /// from
     ///     `proxyServer.sign`
     ///   - Request headers set:
     ///     - `User-Agent`: `NCONFIG.customUserAgent`
     ///     - `Authorization`: `Defaults[.id]`
     ///     - `X-DATA`: Encrypted signature string (safe Base64)
-    private class func getOptionsInfo(from mediaUrl: String) -> KingfisherOptionsInfo? {
+    private class func getOptionsInfo(from mediaURL: String) -> KingfisherOptionsInfo? {
         let proxyServer = Defaults[.proxyServer]
 
         guard proxyServer.url.hasHttp, proxyServer.status else { return nil }
@@ -148,7 +151,7 @@ class ImageManager {
         }
 
         guard let config = config,
-            let signStr = CryptoManager(config).encrypt(mediaUrl)?.safeBase64
+              let signStr = CryptoManager(config).encrypt(mediaURL)?.safeBase64
         else {
             return nil
         }
@@ -161,9 +164,7 @@ class ImageManager {
                     request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
                     request.setValue(signStr, forHTTPHeaderField: "X-DATA")
                     return request
-                })
+                }),
         ]
-
     }
-
 }

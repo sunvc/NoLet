@@ -10,57 +10,49 @@
 //    Created by Neo on 2025/5/28.
 //
 
-import SwiftUI
 import Defaults
+import SwiftUI
 
 struct ChatMessageView: View {
-    @EnvironmentObject private var chatManager:openChatManager
+    @EnvironmentObject private var chatManager: openChatManager
     let message: ChatMessage
-    let isLoading:Bool
-    
-    
-    private var quote:Message?{
-        guard let messageId = AppManager.shared.askMessageId  else { return nil }
-        return  MessagesManager.shared.query(id: messageId)
+    let isLoading: Bool
+
+    private var quote: Message? {
+        guard let messageID = AppManager.shared.askMessageID else { return nil }
+        return MessagesManager.shared.query(id: messageID)
     }
-    
-    
+
     var body: some View {
-        
-        VStack{
-            
+        VStack {
             timestampView
-            
-            
+
             if message.request.count > 0 || quote != nil {
-                VStack{
-                    if let quote = quote{
-                        HStack{
+                VStack {
+                    if let quote = quote {
+                        HStack {
                             Spacer()
                             QuoteView(message: quote)
                             Spacer()
                         }
                         .padding(.bottom, 5)
                     }
-                    if message.request.count > 0{
+                    if message.request.count > 0 {
                         HStack {
                             Spacer()
-                            
+
                             userMessageView
-                                .if(isLoading) {  $0.lineLimit(2) }
+                                .if(isLoading) { $0.lineLimit(2) }
                                 .assistantMenu(message.request)
-                                
-                            
                         }
                     }
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
             }
-            
-            
-            if  !message.content.isEmpty {
-                HStack{
+
+            if !message.content.isEmpty {
+                HStack {
                     assistantMessageView
                         .assistantMenu(message.content)
                     Spacer()
@@ -68,16 +60,12 @@ struct ChatMessageView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
             }
-            
         }
         .padding(.vertical, 4)
     }
-    
-    
-    
+
     // MARK: - View Components
-    
-    
+
     /// 时间戳视图
     private var timestampView: some View {
         HStack {
@@ -90,7 +78,7 @@ struct ChatMessageView: View {
         .padding(.horizontal)
         .padding(.vertical, 5)
     }
-    
+
     /// 用户消息视图
     private var userMessageView: some View {
         MarkdownCustomView(content: message.request)
@@ -101,9 +89,8 @@ struct ChatMessageView: View {
                 Color.blue.opacity(0.2)
             }
             .clipShape(RoundedRectangle(cornerRadius: 20))
-        
     }
-    
+
     /// AI助手消息视图
     private var assistantMessageView: some View {
         MarkdownCustomView(content: message.content)
@@ -111,48 +98,39 @@ struct ChatMessageView: View {
             .foregroundColor(.primary)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 20))
-        
     }
-    
 }
 
-
-extension View{
-    
-    func assistantMenu(_ text:String)-> some View{
-        self
-            .onTapGesture(count: 2){
-                Clipboard.set(text)
-                Toast.success(title: "复制成功")
-            }
-            .contextMenu{
-                
-                Section{
-                    Button(action: {
-                        Clipboard.set(text)
-                        Toast.success(title: "复制成功")
-                    }) {
-                        Label("复制", systemImage: "doc.on.doc")
-                            .customForegroundStyle(.accent, .primary)
-                    }
+extension View {
+    func assistantMenu(_ text: String) -> some View {
+        onTapGesture(count: 2) {
+            Clipboard.set(text)
+            Toast.success(title: "复制成功")
+        }
+        .contextMenu {
+            Section {
+                Button(action: {
+                    Clipboard.set(text)
+                    Toast.success(title: "复制成功")
+                }) {
+                    Label("复制", systemImage: "doc.on.doc")
+                        .customForegroundStyle(.accent, .primary)
                 }
-                
             }
+        }
     }
 }
 
-struct QuoteView:View {
-    var message:Message
-    
+struct QuoteView: View {
+    var message: Message
+
     var body: some View {
         HStack(spacing: 5) {
-            
             Text(verbatim: "\(message.search.trimmingSpaceAndNewLines)")
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .font(.caption2)
-            
-            
+
             Image(systemName: "quote.bubble")
                 .foregroundColor(.gray)
                 .padding(.leading, 10)
@@ -165,8 +143,15 @@ struct QuoteView:View {
 }
 
 #Preview {
-    ChatMessageView(message: ChatMessage(id: "", timestamp: .now, chat: "", request: "", content: "", message: ""), isLoading: false)
+    ChatMessageView(
+        message: ChatMessage(
+            id: "",
+            timestamp: .now,
+            chat: "",
+            request: "",
+            content: "",
+            message: ""
+        ),
+        isLoading: false
+    )
 }
-
-
-

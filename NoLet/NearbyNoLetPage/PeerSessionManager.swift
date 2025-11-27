@@ -1,5 +1,5 @@
 //
-//  LocalNetwork.swift
+//  PeerSessionManager.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -17,49 +17,53 @@ import Network
 
 class PeerSessionManager: NSObject {
     static let shared = PeerSessionManager()
-    
+
     private let serviceType = NCONFIG.appSymbol.lowercased()
     private var peerID: MCPeerID!
     private var session: MCSession!
     private var advertiser: MCNearbyServiceAdvertiser!
     private var browser: MCNearbyServiceBrowser!
-    
+
     // 消息接收回调
     var onMessageReceived: ((String, MCPeerID) -> Void)?
     var onPeerStatusChanged: ((MCPeerID, MCSessionState) -> Void)?
-    
+
     // 初始化
     private override init() {
         super.init()
         setupPeerSession()
     }
-    
-    deinit{
+
+    deinit {
         advertiser.stopAdvertisingPeer()
         browser.stopBrowsingForPeers()
     }
-    
+
     private func setupPeerSession() {
         peerID = MCPeerID(displayName: UIDevice.current.name)
         session = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
         session.delegate = self
-        
+
         // 广播自身
-        advertiser = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: nil, serviceType: serviceType)
+        advertiser = MCNearbyServiceAdvertiser(
+            peer: peerID,
+            discoveryInfo: nil,
+            serviceType: serviceType
+        )
         advertiser.delegate = self
         advertiser.startAdvertisingPeer()
-        
+
         // 搜索附近设备
         browser = MCNearbyServiceBrowser(peer: peerID, serviceType: serviceType)
         browser.delegate = self
         browser.startBrowsingForPeers()
     }
-    
+
     // 获取当前连接的所有设备
     var connectedPeers: [MCPeerID] {
         return session.connectedPeers
     }
-    
+
     // 发送数据（例如发送字符串）- 群发消息
     func sendMessage(_ message: String) {
         guard let data = message.data(using: .utf8), !session.connectedPeers.isEmpty else { return }
@@ -69,7 +73,7 @@ class PeerSessionManager: NSObject {
             print("发送失败: \(error)")
         }
     }
-    
+
     // 发送消息到特定设备
     func sendMessage(_ message: String, toPeer peer: MCPeerID) {
         guard let data = message.data(using: .utf8) else { return }
@@ -82,20 +86,21 @@ class PeerSessionManager: NSObject {
 }
 
 // MARK: - MCSessionDelegate 处理会话状态和数据接收
+
 extension PeerSessionManager: MCSessionDelegate {
-    func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+    func session(_: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
         print("设备 \(peerID.displayName) 状态变更为: \(state)")
-        
+
         // 通知状态变更
         DispatchQueue.main.async {
             self.onPeerStatusChanged?(peerID, state)
         }
-        
+
         switch state {
         case .connected:
             print("已连接: \(peerID.displayName)")
             // 连接成功后发送欢迎消息
-            self.sendMessage("已加入群聊", toPeer: peerID)
+            sendMessage("已加入群聊", toPeer: peerID)
         case .connecting:
             print("连接中...")
         case .notConnected:
@@ -104,8 +109,8 @@ extension PeerSessionManager: MCSessionDelegate {
             break
         }
     }
-    
-    func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+
+    func session(_: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
         if let message = String(data: data, encoding: .utf8) {
             print("收到来自 \(peerID.displayName) 的消息: \(message)")
             // 在主线程更新 UI
@@ -115,28 +120,52 @@ extension PeerSessionManager: MCSessionDelegate {
             }
         }
     }
-    
+
     // 以下方法按需实现（文件/流传输）
-    func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {}
-    func session(_ session: MCSession, didStartReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, with progress: Progress) {}
-    func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {}
+    func session(
+        _: MCSession,
+        didReceive _: InputStream,
+        withName _: String,
+        fromPeer _: MCPeerID
+    ) {}
+    func session(
+        _: MCSession,
+        didStartReceivingResourceWithName _: String,
+        fromPeer _: MCPeerID,
+        with _: Progress
+    ) {}
+    func session(
+        _: MCSession,
+        didFinishReceivingResourceWithName _: String,
+        fromPeer _: MCPeerID,
+        at _: URL?,
+        withError _: Error?
+    ) {}
 }
 
 // MARK: - Advertiser & Browser Delegates
+
 extension PeerSessionManager: MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate {
     // 收到连接请求
-    func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+    func advertiser(
+        _: MCNearbyServiceAdvertiser,
+        didReceiveInvitationFromPeer _: MCPeerID,
+        withContext _: Data?,
+        invitationHandler: @escaping (Bool, MCSession?) -> Void
+    ) {
         invitationHandler(true, session) // 自动接受邀请
     }
-    
+
     // 发现附近设备
-    func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+    func browser(
+        _ browser: MCNearbyServiceBrowser,
+        foundPeer peerID: MCPeerID,
+        withDiscoveryInfo _: [String: String]?
+    ) {
         browser.invitePeer(peerID, to: session, withContext: nil, timeout: 10) // 自动邀请对方
     }
-    
-    func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+
+    func browser(_: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
         print("设备离线: \(peerID.displayName) \(peerID.description)")
-        
     }
 }
-

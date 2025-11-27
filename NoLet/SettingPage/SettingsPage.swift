@@ -11,70 +11,59 @@
 //    Created by Neo 2024/10/8.
 //
 
-
-import SwiftUI
 import Defaults
-
+import SwiftUI
 
 struct SettingsPage: View {
+    @EnvironmentObject private var manager: AppManager
 
-	@EnvironmentObject private var manager:AppManager
-	
-	@Default(.appIcon) var setting_active_app_icon
-	
+    @Default(.appIcon) var setting_active_app_icon
+
     @Default(.sound) var sound
-	@Default(.servers) var servers
+    @Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
-    
-	@State private var webShow:Bool = false
-	@State private var showLoading:Bool = false
-	@State private var showPaywall:Bool = false
-	@State private var buildDetail:Bool = false
-    
-	var serverTypeColor:Color{
 
-		let right =  servers.filter(\.status == true).count
-		let left = servers.filter(\.status == false).count
+    @State private var webShow: Bool = false
+    @State private var showLoading: Bool = false
+    @State private var showPaywall: Bool = false
+    @State private var buildDetail: Bool = false
 
-		if right > 0 && left == 0 {
-			return .green
-		}else if left > 0 && right == 0{
-			return .red
-		}else {
-			return .orange
-		}
-	}
-    
-	// 定义一个 NumberFormatter
-	private var numberFormatter: NumberFormatter {
-		let formatter = NumberFormatter()
-		formatter.numberStyle = .decimal
-		formatter.minimumFractionDigits = 0
-		formatter.maximumFractionDigits = 2
-		return formatter
-	}
+    var serverTypeColor: Color {
+        let right = servers.filter(\.status == true).count
+        let left = servers.filter(\.status == false).count
 
+        if right > 0 && left == 0 {
+            return .green
+        } else if left > 0 && right == 0 {
+            return .red
+        } else {
+            return .orange
+        }
+    }
 
-	var body: some View {
-        List{
+    // 定义一个 NumberFormatter
+    private var numberFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }
 
-
-
-            if .ISPAD{
+    var body: some View {
+        List {
+            if .ISPAD {
                 ListButton {
-                    Label( "消息", systemImage: "ellipsis.message")
+                    Label("消息", systemImage: "ellipsis.message")
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = []
                     }
                     return true
                 }
             }
-            
-           
-            
-            Section(header: Text("App配置") .textCase(.none)) {
-                
+
+            Section(header: Text("App配置").textCase(.none)) {
                 ListButton {
                     Label {
                         Text("服务器")
@@ -83,28 +72,24 @@ struct SettingsPage: View {
                         Image(systemName: "externaldrive.badge.wifi")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(serverTypeColor, Color.primary)
-                            .if(serverTypeColor == .red){view in
+                            .if(serverTypeColor == .red) { view in
                                 view.symbolEffect(.variableColor, delay: 0.5)
                             }
                     }
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = [.server]
                     }
 
                     return true
-                    
                 }
-                
-                
-                
-                
+
                 ListButton {
                     Label {
-                        Text( "云图标")
+                        Text("云图标")
                             .foregroundStyle(.textBlack)
                     } icon: {
-                        ZStack{
+                        ZStack {
                             Image(systemName: "icloud")
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(Color.primary)
@@ -116,16 +101,15 @@ struct SettingsPage: View {
                         }
                     }
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.sheetPage = .cloudIcon
                     }
                     return true
                 }
-                
+
                 ListButton {
-                    
                     Label {
-                        Text( "智能助手")
+                        Text("智能助手")
                     } icon: {
                         Image("chatgpt")
                             .resizable()
@@ -134,18 +118,17 @@ struct SettingsPage: View {
                             .frame(width: 26)
                             .customForegroundStyle(.accent, .primary)
                     }
-                    
-                   
-                } action:{
-                    Task{@MainActor in
+
+                } action: {
+                    Task { @MainActor in
                         manager.router = [.assistantSetting(nil)]
                     }
                     return true
                 }
-                
+
                 ListButton {
                     Label {
-                        Text( "声音设置")
+                        Text("声音设置")
                     } icon: {
                         Image(systemName: "speaker.wave.2.circle")
                             .symbolRenderingMode(.palette)
@@ -155,16 +138,15 @@ struct SettingsPage: View {
                     Text(sound)
                         .foregroundStyle(.gray)
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = [.sound]
                     }
                     return true
-                    
                 }
-                
+
                 ListButton {
                     Label {
-                        Text( "算法配置")
+                        Text("算法配置")
                     } icon: {
                         Image(systemName: "key.viewfinder")
                             .symbolRenderingMode(.palette)
@@ -172,55 +154,48 @@ struct SettingsPage: View {
                             .scaleEffect(0.9)
                     }
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = [.crypto]
                     }
                     return true
                 }
 
-               
                 ListButton {
                     Label {
-                        Text( "数据管理")
+                        Text("数据管理")
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "archivebox.circle")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.accent, Color.primary)
                     }
-                } action:{
-                    Task{@MainActor in
+                } action: {
+                    Task { @MainActor in
                         manager.router = [.dataSetting]
                     }
                     return true
                 }
-                
-               
 
-                ListButton  {
+                ListButton {
                     Label {
-                        Text( "更多设置")
+                        Text("更多设置")
                     } icon: {
                         Image(systemName: "dial.high")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.accent, Color.primary)
                     }
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = [.more]
                     }
                     return true
-
                 }
-
             }
-            
 
             Section {
-                
                 ListButton {
                     Label {
-                        Text( "关于无字书")
+                        Text("关于无字书")
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "exclamationmark.octagon")
@@ -229,56 +204,49 @@ struct SettingsPage: View {
                             .customForegroundStyle(.accent, Color.primary)
                     }
                 } action: {
-                    Task{@MainActor in
+                    Task { @MainActor in
                         manager.router = [.about]
                     }
                     return true
                 }
 
-                
                 if #available(iOS 17.0, *) {
-                    
-                   
-                        ListButton {
-                            if let vipInfo = manager.VipInfo, vipInfo.isVip{
-                                Label {
-                                    Text("获取开发者支持")
-                                        .foregroundStyle(.textBlack)
-                                } icon: {
-                                    Image(systemName: "questionmark.app.dashed")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, Color.primary)
-                                }
-                            }else{
-                                
-                                Label {
-                                    Text("开发者支持计划")
-                                        .foregroundStyle(.textBlack)
-                                } icon: {
-                                    Image(systemName: "creditcard.circle")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, Color.primary)
-                                }
-                                
+                    ListButton {
+                        if let vipInfo = manager.VipInfo, vipInfo.isVip {
+                            Label {
+                                Text("获取开发者支持")
+                                    .foregroundStyle(.textBlack)
+                            } icon: {
+                                Image(systemName: "questionmark.app.dashed")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(.accent, Color.primary)
                             }
-                        } action: {
-                            if  let vipInfo = manager.VipInfo, vipInfo.isVip{
-                                AppManager.openUrl(url: NCONFIG.telegram, .safari)
-                            }else{
-                                Task{@MainActor in
-                                    manager.sheetPage = .paywall
-                                }
+                        } else {
+                            Label {
+                                Text("开发者支持计划")
+                                    .foregroundStyle(.textBlack)
+                            } icon: {
+                                Image(systemName: "creditcard.circle")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(.accent, Color.primary)
                             }
-                            return true
                         }
+                    } action: {
+                        if let vipInfo = manager.VipInfo, vipInfo.isVip {
+                            AppManager.openURL(url: NCONFIG.telegram, .safari)
+                        } else {
+                            Task { @MainActor in
+                                manager.sheetPage = .paywall
+                            }
+                        }
+                        return true
+                    }
                 }
-                
-            }header:{
-                Text( "其他" )
+
+            } header: {
+                Text("其他")
                     .textCase(.none)
             }
-           
-            
         }
         .navigationTitle("设置")
         .toolbar {
@@ -290,25 +258,15 @@ struct SettingsPage: View {
                     Image(systemName: "qrcode.viewfinder")
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.accent, Color.primary)
-
                 }
-
             }
         }
-
     }
-
-   
-
 }
 
-
-
-
 #Preview {
-	NavigationStack{
+    NavigationStack {
         SettingsPage()
-			.environmentObject(AppManager.shared)
-	}
-
+            .environmentObject(AppManager.shared)
+    }
 }

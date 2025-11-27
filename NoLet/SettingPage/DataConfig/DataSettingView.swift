@@ -10,16 +10,16 @@
 //    Created by Neo on 2025/4/13.
 //
 
-import SwiftUI
 import Defaults
+import SwiftUI
 import UniformTypeIdentifiers
 
-extension UTType{
+extension UTType {
     static let sqlite = UTType(filenameExtension: "sqlite")!
 }
 
 struct DataSettingView: View {
-    @EnvironmentObject private var manager:AppManager
+    @EnvironmentObject private var manager: AppManager
     @StateObject private var messageManager = MessagesManager.shared
 
     @Default(.messageExpiration) var messageExpiration
@@ -27,127 +27,131 @@ struct DataSettingView: View {
     @Default(.proxyServer) var proxyServer
     @Default(.servers) var servers
 
-    @State private var showImport:Bool = false
-    @State private var showexportLoading:Bool = false
-    @State private var showDriveCheckLoading:Bool = false
+    @State private var showImport: Bool = false
+    @State private var showexportLoading: Bool = false
+    @State private var showDriveCheckLoading: Bool = false
 
-    @State private var showDeleteAlert:Bool = false
-    @State private var resetAppShow:Bool = false
-    @State private var restartAppShow:Bool = false
+    @State private var showDeleteAlert: Bool = false
+    @State private var resetAppShow: Bool = false
+    @State private var restartAppShow: Bool = false
 
-    @State private var totalSize:UInt64 = 0
-    @State private var cacheSize:UInt64 = 0
-    
+    @State private var totalSize: UInt64 = 0
+    @State private var cacheSize: UInt64 = 0
 
     @State private var cancelTask: Task<Void, Never>?
 
     @State private var selectAction: MessageAction? = nil
-    @State private var addLoading:Bool = false
-    
+    @State private var addLoading: Bool = false
+
     @State private var exampleValue = 10000.0
-    var pickerServers:[PushServerModel]{
-        [ PushServerModel.space] + servers
+    var pickerServers: [PushServerModel] {
+        [PushServerModel.space] + servers
     }
-    
+
     var body: some View {
-        List{
-#if DEBUG
-                Section{
-                    Stepper(value: $exampleValue,
-                            in: 10000...1000000,
-                            step: 50000) {
-                        Button{
-                            self.addLoading = true
-                            Task.detached(priority: .high){
-                                _ =  await MessagesManager.createStressTest(max: Int(exampleValue), len: 500)
-                                await MainActor.run{
-                                    self.addLoading = false
-                                    self.calculateSize()
-                                }
-                            }
-                        }label:{
-                            Label {
-                                Text(verbatim: addLoading ? "Adding..." : "Add \(Int(exampleValue)) Test")
-                            } icon: {
-                                Image(systemName: "plus.message.fill")
+        List {
+            #if DEBUG
+            Section {
+                Stepper(
+                    value: $exampleValue,
+                    in: 10000...1_000_000,
+                    step: 50000
+                ) {
+                    Button {
+                        self.addLoading = true
+                        Task.detached(priority: .high) {
+                            _ = await MessagesManager.createStressTest(
+                                max: Int(exampleValue),
+                                len: 500
+                            )
+                            await MainActor.run {
+                                self.addLoading = false
+                                self.calculateSize()
                             }
                         }
-                        .button26(BorderedProminentButtonStyle())
-                        .disabled(addLoading)
+                    } label: {
+                        Label {
+                            Text(verbatim: addLoading ? "Adding..." :
+                                "Add \(Int(exampleValue)) Test")
+                        } icon: {
+                            Image(systemName: "plus.message.fill")
+                        }
                     }
-                    
-                }header:{
-                    Text(verbatim: "")
+                    .button26(BorderedProminentButtonStyle())
+                    .disabled(addLoading)
                 }
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
-#endif
-            
+
+            } header: {
+                Text(verbatim: "")
+            }
+            .listRowBackground(Color.clear)
+            .listSectionSeparator(.hidden)
+            #endif
+
             Section {
-                
-                
-                Menu{
-                    if messageManager.allCount > 0{
-                        Section{
-                            Button{
+                Menu {
+                    if messageManager.allCount > 0 {
+                        Section {
+                            Button {
                                 guard !showexportLoading else { return }
                                 self.showexportLoading = true
                                 cancelTask = Task.detached(priority: .userInitiated) {
-                                    do{
-                                        
-                                        let filepath = FileManager.default.temporaryDirectory.appendingPathComponent("NoLet_\(Date().formatString(format:"yyyy_MM_dd_HH_mm"))", conformingTo: .trnExportType)
+                                    do {
+                                        let filepath = FileManager.default.temporaryDirectory
+                                            .appendingPathComponent(
+                                                "NoLet_\(Date().formatString(format: "yyyy_MM_dd_HH_mm"))",
+                                                conformingTo: .trnExportType
+                                            )
                                         try await messageManager.exportToJSONFile(fileURL: filepath)
-                                        
-                                        
+
                                         DispatchQueue.main.async {
-                                            AppManager.shared.sheetPage = .share(contents: [filepath])
+                                            AppManager.shared
+                                                .sheetPage = .share(contents: [filepath])
                                             self.showexportLoading = false
                                             self.calculateSize()
                                         }
-                                    }catch{
+                                    } catch {
                                         NLog.error(error.localizedDescription)
-                                        DispatchQueue.main.async{
+                                        DispatchQueue.main.async {
                                             self.showexportLoading = false
                                         }
                                     }
                                 }
-                            }label: {
+                            } label: {
                                 Label("消息列表", systemImage: "list.bullet.clipboard")
                                     .symbolRenderingMode(.palette)
                                     .foregroundStyle(.tint, Color.primary)
-                                
                             }
                         }
                     }
-                    
-                    
-                    Section{
-                        Button{
-                            if let configPath = AppManager.createDatabaseFileTem(){
+
+                    Section {
+                        Button {
+                            if let configPath = AppManager.createDatabaseFileTem() {
                                 AppManager.shared.sheetPage = .share(contents: [configPath])
                                 self.calculateSize()
                             }
-                            
-                        }label:{
+
+                        } label: {
                             Label("配置文件", systemImage: "doc.badge.gearshape")
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.tint, Color.primary)
                         }
                     }
-                    
-                    Section{
-                        Button{
+
+                    Section {
+                        Button {
                             AppManager.shared.sheetPage = .share(contents: [NCONFIG.databasePath])
                             self.calculateSize()
-                        }label:{
+                        } label: {
                             Label("数据库文件", systemImage: "internaldrive")
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.tint, Color.primary)
                         }
                     }
-                    
-                }label: {
-                    HStack{
+
+                } label: {
+                    HStack {
                         Label("导出", systemImage: "square.and.arrow.up")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
@@ -159,21 +163,19 @@ struct DataSettingView: View {
                                     .symbolEffect(.rotate)
                             }
                         Spacer()
-                        Text(String(format: String(localized: "%d条消息"), messageManager.allCount) )
+                        Text(String(format: String(localized: "%d条消息"), messageManager.allCount))
                             .foregroundStyle(Color.green)
                     }
                 }
-                .onDisappear{
+                .onDisappear {
                     cancelTask?.cancel()
                 }
-                
-                
-                
-                HStack{
-                    Button{
+
+                HStack {
+                    Button {
                         self.showImport.toggle()
-                    }label: {
-                        Label( "导入", systemImage: "arrow.down.circle")
+                    } label: {
+                        Label("导入", systemImage: "arrow.down.circle")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
                             .symbolEffect(.wiggle, delay: 6)
@@ -182,7 +184,7 @@ struct DataSettingView: View {
                 }
                 .fileImporter(
                     isPresented: $showImport,
-                    allowedContentTypes: [ .trnExportType, .sqlite, .propertyList ],
+                    allowedContentTypes: [.trnExportType, .sqlite, .propertyList],
                     allowsMultipleSelection: false,
                     onCompletion: { result in
                         Task.detached(priority: .userInitiated) {
@@ -191,90 +193,89 @@ struct DataSettingView: View {
                                 let msg = await importMessage(files)
                                 Toast.shared.present(title: msg, symbol: .info)
                             case .failure(let err):
-                                Toast.shared.present(title: err.localizedDescription, symbol: .error)
+                                Toast.shared.present(
+                                    title: err.localizedDescription,
+                                    symbol: .error
+                                )
                             }
                         }
-                        
-                    })
+                    }
+                )
             } header: {
                 Text(verbatim: "")
-            } footer:{
+            } footer: {
                 Text("导出/导入(消息/配置/数据库)")
                     .textCase(.none)
             }
 
-
-            Section{
-                
-                
-      
-                
+            Section {
                 Picker(selection: $proxyServer) {
-                    
-                    ForEach(pickerServers, id: \.id){server in
+                    ForEach(pickerServers, id: \.id) { server in
                         Text(server.name).tag(server)
                     }
-                    
-                }label:{
-  
+
+                } label: {
                     Label {
                         Text("下载代理")
                     } icon: {
                         Image(systemName: "network.badge.shield.half.filled")
                             .scaleEffect(0.9)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle( proxyServer.status ? .green : .red, Color.primary)
+                            .foregroundStyle(proxyServer.status ? .green : .red, Color.primary)
                             .symbolEffect(.pulse, delay: 1)
                     }
                 }
-                
-                
+
                 .pickerStyle(MenuPickerStyle())
-       
-                
-                
-                
+
                 Picker(selection: $messageExpiration) {
-                    ForEach(ExpirationTime.allCases, id: \.self){ item in
+                    ForEach(ExpirationTime.allCases, id: \.self) { item in
                         Text(item.title)
                             .tag(item)
                     }
                 } label: {
                     Label {
-                        Text( "消息存档")
+                        Text("消息存档")
                     } icon: {
                         Image(systemName: "externaldrive.badge.timemachine")
                             .scaleEffect(0.9)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle((messageExpiration == .no ? .red : (messageExpiration == .forever  ? .green : .yellow)), Color.primary)
+                            .foregroundStyle(
+                                messageExpiration == .no ? .red :
+                                    (messageExpiration == .forever ? .green : .yellow),
+                                Color.primary
+                            )
                             .symbolEffect(.pulse, delay: 1)
                     }
                 }
-
 
                 Picker(selection: $imageSaveDays) {
-                    ForEach(ExpirationTime.allCases, id: \.self){ item in
+                    ForEach(ExpirationTime.allCases, id: \.self) { item in
                         Text(item.title)
                             .tag(item)
                     }
                 } label: {
                     Label {
-                        Text( "图片存档")
+                        Text("图片存档")
                     } icon: {
                         Image(systemName: "externaldrive.badge.timemachine")
                             .scaleEffect(0.9)
                             .symbolRenderingMode(.palette)
                             .symbolEffect(.pulse, delay: 1)
-                            .foregroundStyle((imageSaveDays == .no ? .red : (imageSaveDays == .forever  ? .green : .yellow)), Color.primary)
+                            .foregroundStyle(
+                                imageSaveDays == .no ? .red :
+                                    (imageSaveDays == .forever ? .green : .yellow),
+                                Color.primary
+                            )
                     }
                 }
-            }footer:{
-                Text( "当推送请求URL没有指定 isArchive 参数时，将按照此设置来决定是否保存通知消息")
+            } footer: {
+                Text("当推送请求URL没有指定 isArchive 参数时，将按照此设置来决定是否保存通知消息")
                     .foregroundStyle(.gray)
             }
 
-            Section(header: Text(verbatim: "")){
-                HStack{
+            Section(header: Text(verbatim: "")) {
+                HStack {
                     Label {
                         Text("存储使用")
                     } icon: {
@@ -282,11 +283,10 @@ struct DataSettingView: View {
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.green, Color.primary)
                             .symbolEffect(.pulse, delay: 3)
-                            
                     }
 
                     Spacer()
-                    HStack{
+                    HStack {
                         Text(verbatim: cacheSize.fileSize())
                         Text(verbatim: "/")
                             .foregroundStyle(.gray)
@@ -297,14 +297,13 @@ struct DataSettingView: View {
                 .onTapGesture {
                     manager.router = [.dataSetting, .files(url: CONTAINER)]
                 }
-                  
 
-                HStack{
-                    Button{
+                HStack {
+                    Button {
                         guard !showDeleteAlert else { return }
                         self.showDeleteAlert.toggle()
-                    }label: {
-                        HStack{
+                    } label: {
+                        HStack {
                             Spacer()
                             Label("清空缓存数据", systemImage: "trash.circle")
                                 .foregroundStyle(.white, Color.primary)
@@ -319,28 +318,25 @@ struct DataSettingView: View {
 
                             Spacer()
                         }
-
                     }
-                    .diff{view in
-                        Group{
+                    .diff { view in
+                        Group {
                             if #available(iOS 26.0, *) {
                                 view
                                     .buttonStyle(.glassProminent)
-                            }else{
+                            } else {
                                 view
                                     .buttonStyle(BorderedProminentButtonStyle())
                             }
                         }
-
                     }
-
                 }
 
-                HStack{
-                    Button{
+                HStack {
+                    Button {
                         self.resetAppShow.toggle()
-                    }label: {
-                        HStack{
+                    } label: {
+                        HStack {
                             Spacer()
                             Label("初始化App", systemImage: "arrow.3.trianglepath")
                                 .foregroundStyle(.white, Color.primary)
@@ -349,19 +345,18 @@ struct DataSettingView: View {
 
                             Spacer()
                         }
-
                     }
                     .tint(.red)
                     .buttonStyle(.borderedProminent)
-                    
                 }
             }
-
-
         }
         .navigationTitle("数据管理")
-        .if(selectAction != nil ){ view in
-            view.alert("确认删除", isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })) {
+        .if(selectAction != nil) { view in
+            view.alert(
+                "确认删除",
+                isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })
+            ) {
                 Button("取消", role: .cancel) {
                     self.selectAction = nil
                 }
@@ -369,7 +364,7 @@ struct DataSettingView: View {
                     if let mode = selectAction {
                         Task.detached(priority: .userInitiated) {
                             await messageManager.delete(date: mode.date)
-                            await MainActor.run{
+                            await MainActor.run {
                                 self.selectAction = nil
                                 self.calculateSize()
                             }
@@ -382,59 +377,71 @@ struct DataSettingView: View {
                 }
             }
         }
-        .if(restartAppShow){ view in
+        .if(restartAppShow) { view in
             view
                 .alert(isPresented: $restartAppShow) {
-
-                    Alert(title: Text("导入成功"),
-                          message:  Text("重启才能生效,即将退出程序！"),
-                          dismissButton:
-                            .destructive(Text("确定"), action: { exit(0) })
-                    )}
+                    Alert(
+                        title: Text("导入成功"),
+                        message: Text("重启才能生效,即将退出程序！"),
+                        dismissButton:
+                        .destructive(Text("确定"), action: { exit(0) })
+                    )
+                }
         }
-        .if(resetAppShow){ view in
+        .if(resetAppShow) { view in
             view
                 .alert(isPresented: $resetAppShow) {
-                    Alert(title: Text("危险操作!!! 恢复初始化."),
-                          message:  Text("将丢失所有数据"),
-                          primaryButton: .destructive(Text("确定"), action: { resetApp() }),
-                          secondaryButton: .cancel()
-                    )}
+                    Alert(
+                        title: Text("危险操作!!! 恢复初始化."),
+                        message: Text("将丢失所有数据"),
+                        primaryButton: .destructive(Text("确定"), action: { resetApp() }),
+                        secondaryButton: .cancel()
+                    )
+                }
         }
-        .if(showDeleteAlert){ view in
+        .if(showDeleteAlert) { view in
             view
                 .alert(isPresented: $showDeleteAlert) {
-                    Alert(title: Text("是否确定清空?"),  message: Text("删除后不能还原!!!"),
-                          primaryButton: .destructive(Text("清空"),
-                                                      action: {
-                        self.showDriveCheckLoading = true
-                        if let cache = ImageManager.defaultCache(),
-                           let fileUrl = NCONFIG.getDir(.sounds),
-                           let cacheUrl = NCONFIG.getDir(.tem) {
-                            cache.clearDiskCache()
-                            manager.clearContentsOfDirectory(at: fileUrl)
-                            manager.clearContentsOfDirectory(at: cacheUrl)
-                            Defaults[.imageSaves] = []
-                        }
-    
-                        try? DatabaseManager.shared.dbQueue.vacuum()
+                    Alert(
+                        title: Text("是否确定清空?"),
+                        message: Text("删除后不能还原!!!"),
+                        primaryButton: .destructive(
+                            Text("清空"),
+                            action: {
+                                self.showDriveCheckLoading = true
+                                if let cache = ImageManager
+                                    .defaultCache(),
+                                    let fileURL = NCONFIG.getDir(.sounds),
+                                    let cacheURL = NCONFIG.getDir(.tem)
+                                {
+                                    cache.clearDiskCache()
+                                    manager
+                                        .clearContentsOfDirectory(
+                                            at: fileURL
+                                        )
+                                    manager
+                                        .clearContentsOfDirectory(
+                                            at: cacheURL
+                                        )
+                                    Defaults[.imageSaves] = []
+                                }
 
-                        Toast.success(title: "清理成功")
+                                try? DatabaseManager.shared.dbQueue
+                                    .vacuum()
 
-                        DispatchQueue.main.async{
-                            self.showDriveCheckLoading = false
-                            calculateSize()
-                        }
+                                Toast.success(title: "清理成功")
 
-
-                    }),
-                          secondaryButton: .cancel())
-
+                                DispatchQueue.main.async {
+                                    self.showDriveCheckLoading = false
+                                    calculateSize()
+                                }
+                            }
+                        ),
+                        secondaryButton: .cancel()
+                    )
                 }
-
         }
         .toolbar {
-            
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     ForEach(MessageAction.allCases, id: \.self) { item in
@@ -447,7 +454,7 @@ struct DataSettingView: View {
                                 }
                             }
                         } else {
-                            Section{
+                            Section {
                                 Button {
                                     self.selectAction = item
                                 } label: {
@@ -468,54 +475,45 @@ struct DataSettingView: View {
         .onChange(of: messageManager.allCount) { _ in
             self.calculateSize()
         }
-        .task{ calculateSize() }
+        .task { calculateSize() }
     }
 
-    
-
-
-    fileprivate func resetApp(){
+    fileprivate func resetApp() {
         manager.clearContentsOfDirectory(at: CONTAINER)
         exit(0)
     }
-    
 
-
-    func calculateSize(){
+    func calculateSize() {
         if
-           let soundsUrl = NCONFIG.getDir(.sounds),
-           let imageUrl = NCONFIG.getDir(.image),
-           let cacheFileUrl = NCONFIG.getDir(.tem){
-            
-            
-            self.totalSize = manager.calculateDirectorySize(at: CONTAINER)
-            
-            self.cacheSize =  manager.calculateDirectorySize(at: soundsUrl) +  manager.calculateDirectorySize(at: imageUrl) +
-            manager.calculateDirectorySize(at: cacheFileUrl)
-            
+            let soundsURL = NCONFIG.getDir(.sounds),
+            let imageURL = NCONFIG.getDir(.image),
+            let cacheFileURL = NCONFIG.getDir(.tem)
+        {
+            totalSize = manager.calculateDirectorySize(at: CONTAINER)
+
+            cacheSize = manager.calculateDirectorySize(at: soundsURL) + manager
+                .calculateDirectorySize(at: imageURL) +
+                manager.calculateDirectorySize(at: cacheFileURL)
         }
     }
 
+    fileprivate func importMessage(_ fileURLs: [URL]) async -> String {
+        guard let url = fileURLs.first else { return "" }
 
-
-    fileprivate func importMessage(_ fileUrls: [URL]) async -> String {
-        guard let url = fileUrls.first else { return ""}
-
-        do{
-
-            if url.startAccessingSecurityScopedResource(){
-
-                switch url.pathExtension{
+        do {
+            if url.startAccessingSecurityScopedResource() {
+                switch url.pathExtension {
                 case "plist":
                     let raw = try Data(contentsOf: url)
-                    if let data = CryptoManager(.data).decrypt(data: raw){
+                    if let data = CryptoManager(.data).decrypt(data: raw) {
                         try data.write(to: NCONFIG.configPath)
-                    }else{
+                    } else {
                         throw NoletError.basic("解密失败")
                     }
                     await MainActor.run {
                         self.restartAppShow.toggle()
                     }
+
                 case "sqlite":
                     let raw = try Data(contentsOf: url)
                     try raw.write(to: NCONFIG.databasePath)
@@ -526,45 +524,44 @@ struct DataSettingView: View {
                 default:
                     try messageManager.importJSONFile(fileURL: url)
                 }
-
             }
 
             return String(localized: "导入成功")
 
-        }catch{
+        } catch {
             NLog.log(error)
             return error.localizedDescription
         }
     }
 }
 
-extension UInt64{
-    func fileSize()->String{
+extension UInt64 {
+    func fileSize() -> String {
         if self >= 1_073_741_824 { // 1GB
             return String(format: "%.2fGB", Double(self) / 1_073_741_824)
         } else if self >= 1_048_576 { // 1MB
             return String(format: "%.2fMB", Double(self) / 1_048_576)
-        } else if self >= 1_024 { // 1KB
-            return String(format: "%dKB", self / 1_024)
+        } else if self >= 1024 { // 1KB
+            return String(format: "%dKB", self / 1024)
         } else {
             return "\(self)B" // 小于 1KB 直接显示字节
         }
     }
 }
 
-extension MessageAction{
-    var title:String{
+extension MessageAction {
+    var title: String {
         switch self {
-        case .lastHour: String(localized: "一小时前")+String(localized: "的消息")
-        case .lastDay: String(localized: "一天前")+String(localized: "的消息")
-        case .lastWeek: String(localized: "一周前")+String(localized: "的消息")
-        case .lastMonth: String(localized: "一月前")+String(localized: "的消息")
+        case .lastHour: String(localized: "一小时前") + String(localized: "的消息")
+        case .lastDay: String(localized: "一天前") + String(localized: "的消息")
+        case .lastWeek: String(localized: "一周前") + String(localized: "的消息")
+        case .lastMonth: String(localized: "一月前") + String(localized: "的消息")
         case .allTime: String(localized: "所有消息")
         case .cancel: String(localized: "取消")
         }
     }
-    
-    var date:Date{
+
+    var date: Date {
         switch self {
         case .lastHour: Date().someHourBefore(1)
         case .lastDay: Date().someDayBefore(0)
@@ -574,21 +571,19 @@ extension MessageAction{
         default: Date().s1970
         }
     }
-    
 }
 
-extension  ExpirationTime{
-    var title:String{
+extension ExpirationTime {
+    var title: String {
         switch self {
         case .no: String(localized: "不保存")
-        case .oneDay: String(localized:"1天")
-        case .weekDay: String(localized:"1周")
-        case .month: String(localized:"1月")
+        case .oneDay: String(localized: "1天")
+        case .weekDay: String(localized: "1周")
+        case .month: String(localized: "1月")
         case .forever: String(localized: "长期")
         }
     }
 }
-
 
 #Preview {
     DataSettingView()

@@ -12,31 +12,28 @@
 
 import UserNotifications
 
-enum Params: String, CaseIterable{
-    case  id, title, subtitle, body, from, host, group, url, category, level, ttl, markdown,
-          index, count,
-          sound, volume, badge, call,
-          callback, autoCopy, copy,
-          icon, image, saveAlbum,
-          cipherText, cipherNumber, iv,
-          aps, alert, caf
-    
-    var name:String{ self.rawValue.lowercased() }
+enum Params: String, CaseIterable {
+    case id, title, subtitle, body, from, host, group, url, category, level, ttl, markdown,
+         index, count,
+         sound, volume, badge, call,
+         callback, autoCopy, copy,
+         icon, image, saveAlbum,
+         cipherText, cipherNumber, iv,
+         aps, alert, caf
 
+    var name: String { rawValue.lowercased() }
 }
 
 extension [Params] {
-    func allString() -> [String]{
-        self.compactMap { param in
+    func allString() -> [String] {
+        compactMap { param in
             param.name
         }
     }
 }
 
-
-extension Dictionary where Key == AnyHashable, Value == Any{
-
-    func raw<T>(_ params: Params, nesting:Bool = true) -> T? {
+extension Dictionary where Key == AnyHashable, Value == Any {
+    func raw<T>(_ params: Params, nesting: Bool = true) -> T? {
         let value = raw(params, nesting: nesting)
 
         switch T.self {
@@ -51,7 +48,7 @@ extension Dictionary where Key == AnyHashable, Value == Any{
             } else {
                 return value as? T
             }
-            
+
         case is Int.Type:
             // 整数类型转换
             if let n = value as? Int {
@@ -61,13 +58,13 @@ extension Dictionary where Key == AnyHashable, Value == Any{
             } else {
                 return value as? T
             }
-            
+
         case is Bool.Type:
             // 布尔类型转换
             if let b = value as? Bool {
                 return b as? T
-            }else if let data = value as? Int{
-                return  (data > 0) as? T
+            } else if let data = value as? Int {
+                return (data > 0) as? T
             } else if let data = value as? String {
                 // 支持更多布尔值字符串格式
                 let lowercased = data.lowercased()
@@ -78,26 +75,27 @@ extension Dictionary where Key == AnyHashable, Value == Any{
                 }
             }
             return value as? T
-            
+
         default:
             return value as? T
         }
     }
 
-    private func raw(_ params: Params, nesting:Bool = true)-> Any? {
+    private func raw(_ params: Params, nesting: Bool = true) -> Any? {
         switch params {
-        case .title,.subtitle, .body:
-            if nesting{
-                let alert = (self[Params.aps.name] as? [String: Any])?[Params.alert.name] as? [String: Any]
+        case .title, .subtitle, .body:
+            if nesting {
+                let alert =
+                    (self[Params.aps.name] as? [String: Any])?[Params.alert.name] as? [String: Any]
                 return alert?[params.name]
-            }else{
+            } else {
                 return self[params.name]
             }
 
         case .sound:
-            if nesting{
-                return  (self[Params.aps.name] as? [AnyHashable: Any])?[Params.sound.name]
-            }else{
+            if nesting {
+                return (self[Params.aps.name] as? [AnyHashable: Any])?[Params.sound.name]
+            } else {
                 return self[params.name]
             }
 
@@ -105,11 +103,11 @@ extension Dictionary where Key == AnyHashable, Value == Any{
             return self[params.name]
         }
     }
+
     func other() -> Self {
-        self.filter { key, _ in
+        filter { key, _ in
             guard let keyStr = key as? String else { return true }
             return !Params.allCases.contains { $0.name == keyStr }
         }
     }
 }
-

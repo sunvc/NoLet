@@ -12,7 +12,6 @@
 
 import SwiftUI
 
-
 struct HackerTextView: View {
     /// Config
     var text: String
@@ -23,12 +22,13 @@ struct HackerTextView: View {
     /// View Properties
     @State private var animatedText: String = ""
     @State private var randomCharacters: [Character] = {
-       let string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ0123456789-?/#$%@!^&*()="
+        let string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ0123456789-?/#$%@!^&*()="
         return Array(string)
     }()
+
     @State private var animationID: String = UUID().uuidString
-	
-	var body: some View {
+
+    var body: some View {
         Text(animatedText)
             .monospaced()
             .truncationMode(.tail)
@@ -39,24 +39,23 @@ struct HackerTextView: View {
                 setRandomCharacters()
                 animateText()
             }
-            .onChange(of: trigger){ _ in
+            .onChange(of: trigger) { _ in
                 animateText()
             }
-            .onChange(of: trigger){ _ in
+            .onChange(of: trigger) { _ in
                 animatedText = text
                 animationID = UUID().uuidString
                 setRandomCharacters()
                 animateText()
             }
-     
     }
-    
+
     private func animateText() {
         let currentID = animationID
         for index in text.indices {
             let delay = CGFloat.random(in: 0...duration)
             var timerDuration: CGFloat = 0
-            
+
             let timer = Timer.scheduledTimer(withTimeInterval: speed, repeats: true) { timer in
                 if currentID != animationID {
                     timer.invalidate()
@@ -67,7 +66,7 @@ struct HackerTextView: View {
                             let actualCharacter = text[index]
                             replaceCharacter(at: index, character: actualCharacter)
                         }
-                        
+
                         timer.invalidate()
                     } else {
                         guard let randomCharacter = randomCharacters.randomElement() else { return }
@@ -75,11 +74,11 @@ struct HackerTextView: View {
                     }
                 }
             }
-            
+
             timer.fire()
         }
     }
-    
+
     private func setRandomCharacters() {
         animatedText = text
         for index in animatedText.indices {
@@ -87,12 +86,12 @@ struct HackerTextView: View {
             replaceCharacter(at: index, character: randomCharacter)
         }
     }
-    
+
     /// Changes Character at the given index
     func replaceCharacter(at index: String.Index, character: Character) {
         guard animatedText.indices.contains(index) else { return }
         let indexCharacter = String(animatedText[index])
-        
+
         if indexCharacter.trimmingCharacters(in: .whitespacesAndNewlines) != "" {
             animatedText.replaceSubrange(index...index, with: String(character))
         }
@@ -100,16 +99,15 @@ struct HackerTextView: View {
 }
 
 #Preview {
-	
-	if #available(iOS 16.1, *) {
-		HackerTextView(
-			text: "123",
-			trigger: true,
-			transition: .numericText(),
-			speed: 0.05
-		)
-		
-	} else {
-		// Fallback on earlier versions
-	}
+    if #available(iOS 16.1, *) {
+        HackerTextView(
+            text: "123",
+            trigger: true,
+            transition: .numericText(),
+            speed: 0.05
+        )
+
+    } else {
+        // Fallback on earlier versions
+    }
 }

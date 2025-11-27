@@ -9,38 +9,33 @@
 //  History:
 //    Created by Neo on 2025/3/15.
 //
-import Foundation
 import CloudKit
-import SwiftUI
 import Defaults
-
+import Foundation
+import SwiftUI
 
 struct PushIcon: Identifiable {
-    var id:String = UUID().uuidString
-    var name:String
-    var description:[String]
-    var size:Int
-    var sha256:String
+    var id: String = UUID().uuidString
+    var name: String
+    var description: [String]
+    var size: Int
+    var sha256: String
     var file: URL?
     var previewImage: UIImage?
-    
-    
-    func toRecord(recordType: String) -> CKRecord?{
-        
-        guard let file = self.file else { return nil }
-        
-        let recordID = CKRecord.ID(recordName: self.id)
+
+    func toRecord(recordType: String) -> CKRecord? {
+        guard let file = file else { return nil }
+
+        let recordID = CKRecord.ID(recordName: id)
         let record = CKRecord(recordType: recordType, recordID: recordID)
-        record["name"] = self.name as CKRecordValue
-        record["description"] = self.description as CKRecordValue
+        record["name"] = name as CKRecordValue
+        record["description"] = description as CKRecordValue
         record["data"] = CKAsset(fileURL: file)
-        record["size"] = self.size as CKRecordValue
-        record["sha256"] = self.sha256 as CKRecordValue
-        
-        
+        record["size"] = size as CKRecordValue
+        record["sha256"] = sha256 as CKRecordValue
+
         return record
     }
-    
 }
 
 enum PushIconCloudError: Error {
@@ -51,77 +46,86 @@ enum PushIconCloudError: Error {
     case iconRepeat(String)
     case success(String)
     case authority(String)
-    
+
     var tips: String {
         switch self {
-        case .notFile(let msg), .paramsSpace(let msg), .saveError(let msg), .nameRepeat(let msg), .iconRepeat(let msg), .success(let msg), .authority(let msg):
+        case .notFile(let msg), .paramsSpace(let msg), .saveError(let msg), .nameRepeat(let msg),
+             .iconRepeat(let msg), .success(let msg), .authority(let msg):
             return msg
-            
         }
     }
 }
 
-extension CKRecord{
+extension CKRecord {
     func toPushIcon() -> PushIcon? {
-        guard let name =  self["name"] as? String ,
-              let description =  self["description"] as? [String] ,
+        guard let name = self["name"] as? String,
+              let description = self["description"] as? [String],
               let asset = self["data"] as? CKAsset,
               let fileURL = asset.fileURL,
               let imageData = try? Data(contentsOf: fileURL),
-              let image = UIImage(data: imageData) ,
+              let image = UIImage(data: imageData),
               let size = self["size"] as? Int,
-              let sha256 =  self["sha256"] as? String else { return nil }
-        
-        return PushIcon(id: self.recordID.recordName, name: name, description: description,size: size,sha256: sha256, file: fileURL, previewImage: image)
+              let sha256 = self["sha256"] as? String else { return nil }
+
+        return PushIcon(
+            id: recordID.recordName,
+            name: name,
+            description: description,
+            size: size,
+            sha256: sha256,
+            file: fileURL,
+            previewImage: image
+        )
     }
 }
 
-
 class CloudManager {
-    
     static let shared = CloudManager()
-    
+
     private init() {}
     private let container = CKContainer(identifier: NCONFIG.icloudName)
-    
+
     private var database: CKDatabase {
         container.publicCloudDatabase
     }
+
     private let recordType = "PushIcon"
-    
+
     func checkAccount() async -> (Bool, String) {
         do {
             let status = try await container.accountStatus()
-            
-          
-            
+
             switch status {
             case .available:
-                return (true,  String(localized: "iCloud 账户可用"))
+                return (true, String(localized: "iCloud 账户可用"))
             case .couldNotDetermine:
-                return (false,  String(localized: "无法确定 iCloud 账户状态，可能是网络问题"))
+                return (false, String(localized: "无法确定 iCloud 账户状态，可能是网络问题"))
             case .restricted:
-                return (false,  String(localized: "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"))
+                return (false, String(localized: "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"))
             case .noAccount:
-                return (false,  String(localized: "未登录 iCloud，请登录 iCloud 账户"))
+                return (false, String(localized: "未登录 iCloud，请登录 iCloud 账户"))
             case .temporarilyUnavailable:
-                return (false,  String(localized: "iCloud 服务暂时不可用，请稍后再试"))
+                return (false, String(localized: "iCloud 服务暂时不可用，请稍后再试"))
             @unknown default:
-                return (false,  String(localized: "未知 iCloud 状态"))
+                return (false, String(localized: "未知 iCloud 状态"))
             }
         } catch {
-            return (false,  String(localized: "检查 iCloud 账户状态出错: \(error.localizedDescription)"))
+            return (false, String(localized: "检查 iCloud 账户状态出错: \(error.localizedDescription)"))
         }
     }
-    
-    func fetchRecords(for predicate: NSPredicate, in database: CKDatabase, limit: Int = 100) async -> [CKRecord] {
+
+    func fetchRecords(
+        for predicate: NSPredicate,
+        in database: CKDatabase,
+        limit: Int = 100
+    ) async -> [CKRecord] {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         do {
             // 直接使用 async 方法查询
             let (records, _) = try await database.records(matching: query, resultsLimit: limit)
-            
+
             // 返回查询到的记录
-            return records.compactMap { (_, result) -> CKRecord? in
+            return records.compactMap { _, result -> CKRecord? in
                 switch result {
                 case .success(let record):
                     return record
@@ -132,24 +136,26 @@ class CloudManager {
             }
         } catch {
             NLog.error("查询失败: \(error.localizedDescription)")
-            return []  // 查询失败返回空数组
+            return [] // 查询失败返回空数组
         }
     }
-    
+
     func queryIconsForMe() async -> [CKRecord] {
-        do{
-            let userId = try await container.userRecordID()
-            let datas = await self.fetchRecords(for: NSPredicate(format: "creatorUserRecordID == %@", userId), in: database)
-            
+        do {
+            let userID = try await container.userRecordID()
+            let datas = await fetchRecords(
+                for: NSPredicate(format: "creatorUserRecordID == %@", userID),
+                in: database
+            )
+
             return datas
-        }catch {
+        } catch {
             NLog.error(error.localizedDescription)
             return []
         }
     }
-    
+
     func queryIcons(name: String? = nil, descriptions: [String]? = nil) async -> [CKRecord] {
-        
         var predicates: [NSPredicate] = []
 
         // **查询 Name**
@@ -173,7 +179,7 @@ class CloudManager {
         }
 
         // **执行查询**
-        let records = await fetchRecords(for: predicate,in: database)
+        let records = await fetchRecords(for: predicate, in: database)
 
         // **去重**
         var uniqueRecords: [CKRecord] = []
@@ -186,47 +192,47 @@ class CloudManager {
         }
 
         NLog.log("查询到 \(uniqueRecords.count) 条记录")
-        
+
         return uniqueRecords
     }
-    
-    // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
-    func savePushIconModel(_ model: PushIcon) async -> PushIconCloudError {
 
-        let (success,message) = await self.checkAccount()
-        
-        guard success else { return .authority(message)}
-        
-        NLog.log(model.name,model.description)
-        
-        if model.name.isEmpty  {
+    // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
+
+    func savePushIconModel(_ model: PushIcon) async -> PushIconCloudError {
+        let (success, message) = await checkAccount()
+
+        guard success else { return .authority(message) }
+
+        NLog.log(model.name, model.description)
+
+        if model.name.isEmpty {
             return .paramsSpace(String(localized: "参数不全"))
         }
 
-        let records =  await self.queryIcons(name: model.name)
+        let records = await queryIcons(name: model.name)
 
-        guard records.count == 0 else {  return .nameRepeat(String(localized: "图片key重复")) }
-        
-        guard let record = model.toRecord(recordType: self.recordType) else { return PushIconCloudError.notFile(String(localized: "没有文件"))}
-        
-        do{
+        guard records.count == 0 else { return .nameRepeat(String(localized: "图片key重复")) }
+
+        guard let record = model.toRecord(recordType: recordType)
+        else { return PushIconCloudError.notFile(String(localized: "没有文件")) }
+
+        do {
             let recordRes = try await database.save(record)
             NLog.error(recordRes)
             return .success(String(localized: "保存成功"))
-        }catch{
+        } catch {
             NLog.error(error.localizedDescription)
             return .saveError(String(localized: "保存失败") + "：\(error.localizedDescription)")
         }
-        
     }
-    
+
     // 删除指定的 PushIcon
     func deleteCloudIcon(_ serverID: String, completion: @escaping (Error?) -> Void) {
         // 创建 CKRecord.ID 对象
         let recordID = CKRecord.ID(recordName: serverID)
-        
+
         // 调用数据库的 delete 方法删除记录
-        database.delete(withRecordID: recordID) { (deletedRecordID, error) in
+        database.delete(withRecordID: recordID) { _, error in
             if let error = error {
                 // 删除失败时，调用 completion 回调并传递错误信息
                 completion(error)
@@ -236,40 +242,39 @@ class CloudManager {
             }
         }
     }
-    
+
     // MARK: - LOGIN
-    func queryUser(_ userID: String? = nil, email: String? = nil, token: String? = nil) async -> CKRecord?{
-        do{
+
+    func queryUser(
+        _ userID: String? = nil,
+        email: String? = nil,
+        token: String? = nil
+    ) async -> CKRecord? {
+        do {
             let id = try await container.userRecordID()
             let user = try await database.record(for: id)
-        
-        
 
-            if let userID{
+            if let userID {
                 user["phone"] = userID as CKRecordValue
             }
-            
-            if let email{
+
+            if let email {
                 user["email"] = email as CKRecordValue
             }
-            
-            if let token{
+
+            if let token {
                 user["token"] = token as CKRecordValue
             }
-           
+
             guard userID != nil || email != nil || token != nil else {
                 return user
             }
-           
-            
+
             let recordRes = try await database.save(user)
             return recordRes
-        }catch{
+        } catch {
             NLog.error(error.localizedDescription)
             return nil
         }
     }
-    
 }
-
-

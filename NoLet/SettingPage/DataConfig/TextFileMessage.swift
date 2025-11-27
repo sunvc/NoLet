@@ -13,7 +13,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct TextFileMessage: FileDocument {
-
     static var readableContentTypes: [UTType] { [.trnExportType] } // 使用 JSON 文件类型
 
     var content: [Message]
@@ -35,7 +34,7 @@ struct TextFileMessage: FileDocument {
     }
 
     // 写入内容到文件
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+    func fileWrapper(configuration _: WriteConfiguration) throws -> FileWrapper {
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted // 格式化输出
         encoder.dateEncodingStrategy = .secondsSince1970
@@ -43,7 +42,4 @@ struct TextFileMessage: FileDocument {
         let data = try encoder.encode(content)
         return FileWrapper(regularFileWithContents: data)
     }
-    
-    
-   
 }

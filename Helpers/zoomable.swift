@@ -1,5 +1,5 @@
 //
-//  zoomAble.swift
+//  zoomable.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -144,9 +144,9 @@ struct ZoomableModifier: ViewModifier {
     }
 }
 
-public extension View {
+extension View {
     @ViewBuilder
-    func zoomable(
+    public func zoomable(
         minZoomScale: CGFloat = 1,
         doubleTapZoomScale: CGFloat = 3
     ) -> some View {
@@ -157,12 +157,12 @@ public extension View {
     }
 
     @ViewBuilder
-    func zoomable(
+    public func zoomable(
         minZoomScale: CGFloat = 1,
         doubleTapZoomScale: CGFloat = 3,
         outOfBoundsColor: Color = .clear
     ) -> some View {
-        GeometryReader { proxy in
+        GeometryReader { _ in
             ZStack {
                 outOfBoundsColor
                 self.zoomable(
@@ -174,14 +174,14 @@ public extension View {
     }
 }
 
-private extension View {
+extension View {
     @ViewBuilder
-    func modify(@ViewBuilder _ fn: (Self) -> some View) -> some View {
+    fileprivate func modify(@ViewBuilder _ fn: (Self) -> some View) -> some View {
         fn(self)
     }
 
     @ViewBuilder
-    func animatableTransformEffect(_ transform: CGAffineTransform) -> some View {
+    fileprivate func animatableTransformEffect(_ transform: CGAffineTransform) -> some View {
         scaleEffect(
             x: transform.scaleX,
             y: transform.scaleY,
@@ -191,8 +191,8 @@ private extension View {
     }
 }
 
-private extension UnitPoint {
-    func scaledBy(_ size: CGSize) -> CGPoint {
+extension UnitPoint {
+    fileprivate func scaledBy(_ size: CGSize) -> CGPoint {
         .init(
             x: x * size.width,
             y: y * size.height
@@ -200,18 +200,18 @@ private extension UnitPoint {
     }
 }
 
-private extension CGAffineTransform {
-    static func anchoredScale(scale: CGFloat, anchor: CGPoint) -> CGAffineTransform {
+extension CGAffineTransform {
+    fileprivate static func anchoredScale(scale: CGFloat, anchor: CGPoint) -> CGAffineTransform {
         CGAffineTransform(translationX: anchor.x, y: anchor.y)
             .scaledBy(x: scale, y: scale)
             .translatedBy(x: -anchor.x, y: -anchor.y)
     }
 
-    var scaleX: CGFloat {
+    fileprivate var scaleX: CGFloat {
         sqrt(a * a + c * c)
     }
 
-    var scaleY: CGFloat {
+    fileprivate var scaleY: CGFloat {
         sqrt(b * b + d * d)
     }
 }

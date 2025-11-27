@@ -11,18 +11,17 @@
 //
 
 import Foundation
-import UIKit
 import SwiftUI
-
+import UIKit
 
 extension UIColor {
     convenience init?(hexString: String) {
         // 只保留 0-9 A-F a-f
         let hex = hexString.uppercased().filter { "0123456789ABCDEF".contains($0) }
         guard !hex.isEmpty else { return nil }
-        
+
         guard let int = UInt64(hex, radix: 16) else { return nil }
-        
+
         let a, r, g, b: UInt64
         switch hex.count {
         case 3: // RGB (12-bit)
@@ -34,11 +33,11 @@ extension UIColor {
         default:
             return nil
         }
-        self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255,  blue: CGFloat(b) / 255,  alpha: CGFloat(a) / 255)
+        self.init(
+            red: CGFloat(r) / 255,
+            green: CGFloat(g) / 255,
+            blue: CGFloat(b) / 255,
+            alpha: CGFloat(a) / 255
+        )
     }
-    
-  
 }
-
-
-

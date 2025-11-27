@@ -1,5 +1,5 @@
 //
-//  DefaultsConfig.swift
+//  DefaultsBaseKeys.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -19,20 +19,17 @@ let DEFAULTSTORE = UserDefaults(suiteName: NCONFIG.groupName)!
 private var uniquekeys: Set<NoletKey> = []
 #endif
 
-
-extension Defaults.Key{
-    convenience init(_ name: NoletKey, _ defaultValue: Value, iCloud: Bool = false){
-#if DEBUG
+extension Defaults.Key {
+    convenience init(_ name: NoletKey, _ defaultValue: Value, iCloud: Bool = false) {
+        #if DEBUG
         assert(!uniquekeys.contains(name), "错误：\(name.rawValue) 已经存在！")
         uniquekeys.insert(name)
-#endif
-        self.init( name.rawValue, default: defaultValue, suite: DEFAULTSTORE, iCloud: iCloud )
+        #endif
+        self.init(name.rawValue, default: defaultValue, suite: DEFAULTSTORE, iCloud: iCloud)
     }
 }
 
-extension Defaults.Keys{
-    
-    
+extension Defaults.Keys {
     static let deviceToken = Key<String>(.deviceToken, "")
     static let voipDeviceToken = Key<String>(.voipDeviceToken, "")
     static let firstStart = Key<Bool>(.firstStartApp, true)
@@ -41,22 +38,21 @@ extension Defaults.Keys{
     static let showGroup = Key<Bool>(.showGroupMessage, false)
     static let historyMessageCount = Key<Int>(.historyMessageCount, 10)
     static let freeCloudImageCount = Key<Int>(.freeCloudImageCount, 30)
-    static let muteSetting = Key<[String: Date]>(.muteSetting,[:])
+    static let muteSetting = Key<[String: Date]>(.muteSetting, [:])
 
     static let imageSaves = Key<[String]>(.imageSaves, [])
     static let showMessageAvatar = Key<Bool>(.showMessageAvatar, false)
-    static let id = Key<String>(.UserDeviceUniqueId, "")
-    static let lang = Key<String>(.LocalePreferredLanguagesFirst,"")
+    static let id = Key<String>(.UserDeviceUniqueID, "")
+    static let lang = Key<String>(.LocalePreferredLanguagesFirst, "")
     static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
-    
+
     static let feedbackSound = Key<Bool>(.feedbackSound, false)
     static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
     static let limitMessageLine = Key<Int>(.limitMessageLine, 6)
     static let nearbyShow = Key<Bool>(.nearbyShow, false)
-   
 }
 
-enum NoletKey:String, CaseIterable{
+enum NoletKey: String, CaseIterable {
     case deviceToken
     case voipDeviceToken
     case firstStartApp
@@ -68,7 +64,7 @@ enum NoletKey:String, CaseIterable{
     case muteSetting
     case imageSaves
     case showMessageAvatar
-    case UserDeviceUniqueId
+    case UserDeviceUniqueID
     case LocalePreferredLanguagesFirst
     case allMessagecount
     case serverArrayStroage

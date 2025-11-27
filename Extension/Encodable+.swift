@@ -1,5 +1,5 @@
 //
-//  Equatable+.swift
+//  Encodable+.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -12,27 +12,27 @@
 
 import SwiftUI
 
-
 extension Encodable {
     func toEncodableDictionary() -> [String: Any]? {
         // 1. 使用 JSONEncoder 将结构体编码为 JSON 数据
         guard let data = try? JSONEncoder().encode(self) else { return nil }
         // 2. 使用 JSONSerialization 将 JSON 数据转换为字典
-        guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else { return nil }
+        guard let dictionary = try? JSONSerialization.jsonObject(
+            with: data,
+            options: .allowFragments
+        ) as? [String: Any] else { return nil }
         return dictionary
     }
 }
 
 extension Dictionary where Key == AnyHashable, Value == Any {
-    
     /// 转成 [String: String]，可排除一些 key
     func toStringDict(excluding keysToExclude: [String] = []) -> [String: String] {
-  
         var result: [String: String] = [:]
         for (keyAny, valueAny) in self {
             // 只处理 key 为 String 的情况
             guard let key = keyAny as? String, !keysToExclude.contains(key) else { continue }
-            
+
             // 将 value 转成 String
             let strValue: String
             switch valueAny {
@@ -40,19 +40,23 @@ extension Dictionary where Key == AnyHashable, Value == Any {
             case let v as CustomStringConvertible: strValue = v.description
             default: strValue = String(describing: valueAny)
             }
-            
+
             result[key] = strValue
         }
         return result
     }
-    
+
     /// 转成 JSON 字符串
     func toJSONString(excluding keysToExclude: [String] = []) -> String? {
-        let stringDict = self.toStringDict(excluding: keysToExclude)
+        let stringDict = toStringDict(excluding: keysToExclude)
         guard stringDict.count > 0 else { return nil }
-         
+
         guard JSONSerialization.isValidJSONObject(stringDict),
-              let data = try? JSONSerialization.data(withJSONObject: stringDict, options: [.prettyPrinted]) else {
+              let data = try? JSONSerialization.data(
+                  withJSONObject: stringDict,
+                  options: [.prettyPrinted]
+              )
+        else {
             return nil
         }
         return String(data: data, encoding: .utf8)

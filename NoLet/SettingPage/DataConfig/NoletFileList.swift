@@ -1,5 +1,5 @@
 //
-//  NoLetFileList.swift
+//  NoletFileList.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,11 +10,12 @@
 //    Created by Neo on 2025/4/13.
 //
 
-import SwiftUI
 import Foundation
 import QuickLookThumbnailing
+import SwiftUI
 
 // MARK: - 文件项数据模型
+
 struct FileItem: Identifiable, Hashable {
     let id = UUID()
     let name: String
@@ -23,68 +24,73 @@ struct FileItem: Identifiable, Hashable {
     let size: Int64
     let modificationDate: Date
     var children: [FileItem]?
-    
+
     init(url: URL) {
         self.url = url
-        self.name = url.lastPathComponent
-        
+        name = url.lastPathComponent
+
         var isDir: ObjCBool = false
         let exists = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
-        self.isDirectory = exists && isDir.boolValue
-        
+        isDirectory = exists && isDir.boolValue
+
         // 获取文件大小
         do {
             let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
-            self.size = attributes[.size] as? Int64 ?? 0
-            self.modificationDate = attributes[.modificationDate] as? Date ?? Date()
+            size = attributes[.size] as? Int64 ?? 0
+            modificationDate = attributes[.modificationDate] as? Date ?? Date()
         } catch {
-            self.size = 0
-            self.modificationDate = Date()
+            size = 0
+            modificationDate = Date()
         }
-        
+
         // 如果是目录，懒加载子项
-        if self.isDirectory {
-            self.children = loadChildren()
+        if isDirectory {
+            children = loadChildren()
         }
     }
-    
+
     // 懒加载子项
     private func loadChildren() -> [FileItem]? {
         guard isDirectory else { return nil }
-        
+
         do {
             let contents = try FileManager.default.contentsOfDirectory(
                 at: url,
-                includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey],
+                includingPropertiesForKeys: [
+                    .isDirectoryKey,
+                    .fileSizeKey,
+                    .contentModificationDateKey,
+                ],
                 options: [.skipsHiddenFiles]
             )
-            
+
             return contents.map { FileItem(url: $0) }
                 .sorted { item1, item2 in
                     // 文件夹排在前面，然后按名称排序
                     if item1.isDirectory != item2.isDirectory {
                         return item1.isDirectory
                     }
-                    return item1.name.localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
+                    return item1.name
+                        .localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
                 }
         } catch {
             NLog.error("加载子项失败: \(error.localizedDescription)")
             return []
         }
     }
-    
+
     // 格式化文件大小
     var formattedSize: String {
         if isDirectory {
             return "文件夹"
         }
-        
+
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useKB, .useMB, .useGB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: size)
     }
-    
+
     // 文件图标
     var icon: String {
         isDirectory ? "folder.fill" : "doc.fill"
@@ -92,23 +98,24 @@ struct FileItem: Identifiable, Hashable {
 }
 
 // MARK: - 文件管理器
+
 class FileTreeManager: ObservableObject {
     @Published var rootItems: [FileItem] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    
+
     private let rootURL: URL
 
-    init(rootURL: URL ) {
+    init(rootURL: URL) {
         self.rootURL = rootURL
         loadRootItems()
     }
-    
+
     // 加载根目录项
     func loadRootItems() {
         isLoading = true
         errorMessage = nil
-        
+
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let items = try self.loadItems(at: self.rootURL)
@@ -124,15 +131,19 @@ class FileTreeManager: ObservableObject {
             }
         }
     }
-    
+
     // 加载指定目录的项
     private func loadItems(at url: URL) throws -> [FileItem] {
         let contents = try FileManager.default.contentsOfDirectory(
             at: url,
-            includingPropertiesForKeys: [.isDirectoryKey, .fileSizeKey, .contentModificationDateKey],
-            options: [ .skipsHiddenFiles ]
+            includingPropertiesForKeys: [
+                .isDirectoryKey,
+                .fileSizeKey,
+                .contentModificationDateKey,
+            ],
+            options: [.skipsHiddenFiles]
         )
-        
+
         return contents.map { FileItem(url: $0) }
             .sorted { item1, item2 in
                 // 文件夹排在前面，然后按名称排序
@@ -142,18 +153,17 @@ class FileTreeManager: ObservableObject {
                 return item1.name.localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
             }
     }
-    
+
     // 删除文件或文件夹
     func deleteItem(_ item: FileItem) {
         do {
-
             try FileManager.default.removeItem(at: item.url)
             // 重新加载根目录项
-            Task {@MainActor in
+            Task { @MainActor in
                 self.loadRootItems()
             }
         } catch {
-            Task {@MainActor in
+            Task { @MainActor in
                 self.errorMessage = "删除失败: \(error.localizedDescription)"
             }
         }
@@ -161,10 +171,11 @@ class FileTreeManager: ObservableObject {
 }
 
 // MARK: - 文件项视图
+
 struct FileItemView: View {
     let item: FileItem
     let fileManager: FileTreeManager
-    
+
     var body: some View {
         if item.isDirectory && !(item.children?.isEmpty ?? true) {
             // 使用 DisclosureGroup 处理文件夹
@@ -183,6 +194,7 @@ struct FileItemView: View {
 }
 
 // MARK: - 文件行内容
+
 struct FileRowContent: View {
     let item: FileItem
     let fileManager: FileTreeManager
@@ -194,14 +206,14 @@ struct FileRowContent: View {
 
     var body: some View {
         HStack(spacing: 12) {
-                // 文件图标
+            // 文件图标
 
-            if item.isDirectory{
+            if item.isDirectory {
                 Image(systemName: item.icon)
                     .foregroundColor(.blue)
                     .font(.title2)
-            }else{
-                if let imageIcon{
+            } else {
+                if let imageIcon {
                     imageIcon
                         .resizable()
                         .scaledToFit()
@@ -209,7 +221,7 @@ struct FileRowContent: View {
                 }
             }
 
-                // 文件信息
+            // 文件信息
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
                     .font(.system(size: 15, weight: .medium))
@@ -234,10 +246,10 @@ struct FileRowContent: View {
         .padding(.vertical, 8)
         .contentShape(Rectangle())
         .contextMenu {
-            if let uiImage = imageIcon, let sharedFile, !item.isDirectory{
+            if let uiImage = imageIcon, let sharedFile, !item.isDirectory {
                 ShareLink(
                     item: sharedFile,
-                    preview:  SharePreview(
+                    preview: SharePreview(
                         item.url.lastPathComponent,
                         image: uiImage
                     )
@@ -247,27 +259,24 @@ struct FileRowContent: View {
                 Divider()
             }
 
-
             Button(role: .destructive) {
                 showDeleteAlert = true
             } label: {
                 Label("删除", systemImage: "trash")
             }
         }
-        
 
         .alert("确认删除", isPresented: $showDeleteAlert) {
-            Button("取消", role: .cancel) { }
+            Button("取消", role: .cancel) {}
             Button("删除", role: .destructive) {
                 let excludedExtensions: Set<String> = ["plist", "sqlite"]
 
                 if !excludedExtensions.contains(item.url.pathExtension) {
                     fileManager.deleteItem(item)
-                }else{
+                } else {
                     Toast.info(title: "系统保留文件!")
                 }
                 AudioManager.shared.updateFileList()
-
             }
         } message: {
             Text("确定要删除 \"\(item.name)\" 吗？此操作无法撤销。")
@@ -278,22 +287,23 @@ struct FileRowContent: View {
                 defaultIcon: item.icon
             )
 
-            if item.url.pathExtension == "plist"{
+            if item.url.pathExtension == "plist" {
                 self.sharedFile = AppManager.createDatabaseFileTem()
-            }else{
+            } else {
                 self.sharedFile = item.url
             }
         }
     }
 
-    func thumbnail(url: URL, size:CGFloat = 100, defaultIcon: String) async  -> Image{
-
-        do{
+    func thumbnail(url: URL, size: CGFloat = 100, defaultIcon _: String) async -> Image {
+        do {
             NLog.log(url.absoluteString)
-            if url.path.contains("ImageCache"), let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data){
+            if url.path.contains("ImageCache"), let data = try? Data(contentsOf: url),
+               let uiImage = UIImage(data: data)
+            {
                 return Image(uiImage: uiImage)
 
-            }else if url.pathExtension == "sqlite" {
+            } else if url.pathExtension == "sqlite" {
                 return Image("sqlite")
             }
 
@@ -303,44 +313,36 @@ struct FileRowContent: View {
                 scale: UIScreen.main.scale,
                 representationTypes: .all
             )
-            let data = try await QLThumbnailGenerator.shared.generateBestRepresentation(for: request)
+            let data = try await QLThumbnailGenerator.shared
+                .generateBestRepresentation(for: request)
             return Image(uiImage: data.uiImage)
 
-        }catch{
+        } catch {
             return Image("nolet")
         }
-
-
-
     }
-
-
-    
 }
 
-
-
 // MARK: - 主文件列表视图
+
 struct NoletFileList: View {
-    @StateObject private var fileManager:FileTreeManager
-    
-    init(rootURL: URL ) {
-        self._fileManager = StateObject(wrappedValue: FileTreeManager(rootURL: rootURL))
+    @StateObject private var fileManager: FileTreeManager
+
+    init(rootURL: URL) {
+        _fileManager = StateObject(wrappedValue: FileTreeManager(rootURL: rootURL))
     }
-    
 
     var body: some View {
-
         VStack(spacing: 0) {
             if fileManager.isLoading {
-                    // 加载状态
+                // 加载状态
                 VStack {
                     Spacer()
                     ProgressView("加载文件中...")
                     Spacer()
                 }
             } else if fileManager.rootItems.isEmpty {
-                    // 空状态
+                // 空状态
                 VStack {
                     Spacer()
                     Image(systemName: "folder")
@@ -353,7 +355,7 @@ struct NoletFileList: View {
                     Spacer()
                 }
             } else {
-                    // 文件列表
+                // 文件列表
                 List {
                     ForEach(fileManager.rootItems) { item in
                         FileItemView(item: item, fileManager: fileManager)
@@ -377,8 +379,8 @@ struct NoletFileList: View {
     }
 }
 
-
 // MARK: - 扩展
+
 extension DateFormatter {
     static let fileDate: DateFormatter = {
         let formatter = DateFormatter()
@@ -387,7 +389,6 @@ extension DateFormatter {
         return formatter
     }()
 }
-
 
 #Preview {
     NavigationStack {
