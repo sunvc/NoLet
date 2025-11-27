@@ -84,10 +84,12 @@ class ImageManager {
 
         if cache.diskStorage.isCached(forKey: cacheKey) { return cache.cachePath(forKey: cacheKey) }
 
-        let optionsInfo: KingfisherOptionsInfo? = getOptionsInfo(from: imageResource.absoluteString)
+        let (optionsInfo, server) = getOptionsInfo(from: imageResource.absoluteString)
 
-        guard let result = try? await downloadImage(url: imageResource, options: optionsInfo).get()
-        else { return nil }
+        guard let result = try? await downloadImage(
+            url: server ?? imageResource,
+            options: optionsInfo
+        ).get() else { return nil }
 
         // Cache downloaded image
         await storeImage(
@@ -139,32 +141,35 @@ class ImageManager {
     ///     - `User-Agent`: `NCONFIG.customUserAgent`
     ///     - `Authorization`: `Defaults[.id]`
     ///     - `X-DATA`: Encrypted signature string (safe Base64)
-    private class func getOptionsInfo(from mediaURL: String) -> KingfisherOptionsInfo? {
+    private class func getOptionsInfo(from mediaURL: String) -> (KingfisherOptionsInfo?, URL?) {
         let proxyServer = Defaults[.proxyServer]
 
-        guard proxyServer.url.hasHttp, proxyServer.status else { return nil }
+        guard proxyServer.url.hasHttp,
+              proxyServer.status,
+              let serverURL = URL(string: proxyServer.url) else { return (nil, nil) }
 
         var config: CryptoModelConfig? {
-            if proxyServer.url == NCONFIG.server { return .data }
-            if let sign = proxyServer.sign { return CryptoModelConfig(inputText: sign) }
-            return nil
+            guard let sign = proxyServer.sign else { return .data }
+            return CryptoModelConfig(inputText: sign)
         }
 
         guard let config = config,
               let signStr = CryptoManager(config).encrypt(mediaURL)?.safeBase64
         else {
-            return nil
+            return (nil, nil)
         }
 
-        return [
-            .requestModifier(
-                AnyModifier { request in
-                    var request = request
-                    request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
-                    request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
-                    request.setValue(signStr, forHTTPHeaderField: "X-DATA")
-                    return request
-                }),
-        ]
+        return (
+            [
+                .requestModifier(
+                    AnyModifier { request in
+                        var request = request
+                        request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
+                        request.setValue(Defaults[.id], forHTTPHeaderField: "Authorization")
+                        request.setValue(signStr, forHTTPHeaderField: "X-DATA")
+                        return request
+                    }),
+            ], serverURL
+        )
     }
 }

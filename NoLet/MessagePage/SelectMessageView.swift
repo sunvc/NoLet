@@ -37,8 +37,6 @@ struct SelectMessageView: View {
 
     @StateObject private var manager = AppManager.shared
 
-    @State private var image: UIImage? = nil
-
     @State private var isDismiss: Bool = false
     @State private var messageShowMode: SelectMessageViewMode = .raw
     @State private var translateResult: String = ""
@@ -56,36 +54,9 @@ struct SelectMessageView: View {
         ScrollView {
             VStack {
                 VStack {
-                    if let image {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .cornerRadius(15)
+                    if let image = message.image {
+                        AsyncPhotoView(url: image)
                             .zoomable()
-                            .contextMenu {
-                                Section {
-                                    Button {
-                                        image.bat_save(intoAlbum: nil) { success, status in
-                                            if status == .authorized || status == .limited {
-                                                if success {
-                                                    Toast.success(title: "保存成功")
-                                                } else {
-                                                    Toast.question(title: "保存失败")
-                                                }
-                                            } else {
-                                                Toast.error(title: "没有相册权限")
-                                            }
-                                        }
-                                    } label: {
-                                        Label(
-                                            "保存图片",
-                                            systemImage: "square.and.arrow.down.on.square"
-                                        )
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, .primary)
-                                    }
-                                }
-                            }
                     }
                 }
                 .padding(.top, UIApplication.shared.topSafeAreaHeight)
@@ -256,15 +227,6 @@ struct SelectMessageView: View {
             .frame(width: windowWidth)
             .padding(.top, 30)
             .padding(.bottom, 150)
-            .onAppear {
-                Task(priority: .userInitiated) {
-                    if let image = message.image,
-                       let file = await ImageManager.downloadImage(image)
-                    {
-                        self.image = UIImage(contentsOfFile: file)
-                    }
-                }
-            }
             .onChange(of: translateLang) { _ in
                 self.translateResult = ""
                 self.abstractResult = ""

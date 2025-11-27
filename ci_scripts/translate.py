@@ -14,9 +14,10 @@ import asyncio
 import json
 import os
 import re
-
+import argparse
 
 class Translate:
+    mode:int = 0
     semaphore_number: int = 10
     deepseek_key: str = ""
     host: str = ""
@@ -29,19 +30,46 @@ class Translate:
     lang_keys:list[str] = []
     client: AsyncOpenAI = {}
 
-    def __init__(self, host="https://api.deepseek.com", mode="deepseek-chat", key=None, root_dir: str = "../",
-                 semaphore_number=10):
-        if key is None:
-            self.deepseek_key = os.getenv("DEEPSEEK_KEY")
+    def __init__(self, host:str=None, model:str=None, key:str=None, root_dir:str=None, mode:int=0):
+        parser = argparse.ArgumentParser(description="params parser")
+        parser.add_argument("--path", type=str, default="../", help="pth")
+        parser.add_argument("--key", type=str, default=None, help="key")
+        parser.add_argument("--host", type=str, default="https://api.deepseek.com", help="host")
+        parser.add_argument("--model", type=str, default="deepseek-chat", help="mode")
+        parser.add_argument("--mode", type=int, default=0, help="mode")
+        args = parser.parse_args()
+
+        self.deepseek_key = (
+            (args.key if args.key else None)
+            or (key if key else None)
+            or os.getenv("DEEPSEEK_KEY")
+        )
+
+        if not self.deepseek_key or len(self.deepseek_key) < 10:
+            exit("DEEPSEEK_KEY not provided. Use --key, constructor key=..., or set environment variable.")
+
+        if host is None:
+            self.host = args.host
         else:
-            self.deepseek_key = key
-        if self.deepseek_key is None:
-            exit("DEEPSEEK_KEY environment variable not set")
-        self.host = host
-        self.mode = mode
-        self.semaphore_number = semaphore_number
-        self.root_dir = root_dir
-        self.client = AsyncOpenAI(base_url=host, api_key=self.deepseek_key)
+            self.host = host
+
+        if model is None:
+            self.model = args.model
+        else:
+            self.model = model
+
+        if root_dir is None:
+            self.root_dir = args.path
+        else:
+            self.root_dir = root_dir
+
+        if mode > 0:
+            self.mode = mode
+        else:
+            self.mode = args.mode
+
+        self.client = AsyncOpenAI(base_url=self.host, api_key=self.deepseek_key)
+
 
     async def translate_deepseek(self, datas, system_message, semaphore: Semaphore, is_json=False):
         messages = [
@@ -177,12 +205,9 @@ class Translate:
     def get_other_tips(file_type, lang_code="en"):
         return f"Translate this Xcode {file_type} into {lang_code}, keep the format, return only the translation, and do not translate ‘无字书’, ‘無字書’ or ‘NoLet’."
 
-    def localizable_handler(self, langs = None):
+    def localizable_handler(self):
         print("start handler:")
-        if langs is None:
-            langs = self.find_langs()
-        if len(langs) <= 0:
-            exit("No localizable files found")
+        langs = self.find_langs()
         # ------- Localizable.xcstrings  -------
         for lang_code in langs:
             paths = self.find_localizable_files(file_name=self.local_file)
@@ -202,13 +227,29 @@ class Translate:
         paths = self.find_localizable_files(file_name=self.screen_file)
         asyncio.run(self.translate_other(paths, file_type=self.screen_file))
 
-if __name__ == '__main__':
-    translator = Translate()
-    # ------- Localizable.xcstrings  -------
-    # translator.localizable_handler(langs=["en"])
-    translator.localizable_handler()
 
-    # -------  InfoPlist.strings  ------
-    # translator.info_file_handler()
-    # ------- LaunchScreen.strings  ------
-    # translator.screen_file_handler()
+    def run(self):
+        # 0: Localizable.xcstrings  -------
+        # 1:  InfoPlist.strings  ------
+        # 2: LaunchScreen.strings  ------
+        print("mode", self.mode)
+        if self.mode == 0:
+            self.localizable_handler()
+            return
+        elif self.mode == 1:
+            self.info_file_handler()
+            return
+        elif self.mode == 2:
+            self.screen_file_handler()
+            return
+        else:
+            self.localizable_handler()
+            self.info_file_handler()
+            self.screen_file_handler()
+            return
+
+
+if __name__ == '__main__':
+
+    Translate().run()
+

@@ -3417,6 +3417,34 @@
         }
       }
     },
+    "加载中…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加载中…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「読み込み中…」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로딩 중…"
+          }
+        }
+      }
+    },
     "加载失败": {
       "localizations": {
         "en": {
@@ -5275,12 +5303,6 @@
             "value": "Developer Support"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "开发者支持"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -5291,6 +5313,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "개발자 지원"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开发者支持"
           }
         }
       }

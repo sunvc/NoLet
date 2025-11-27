@@ -49,8 +49,6 @@ struct MessageCard: View {
         return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
     }
 
-    @State private var image: UIImage? = nil
-    @State private var imageHeight: CGFloat = .zero
     @State private var showDetail: Bool = false
     @Namespace private var sms
     var body: some View {
@@ -158,70 +156,8 @@ struct MessageCard: View {
                         .padding(.horizontal, 3)
                 }
                 VStack {
-                    if let uiImage = image {
-                        GeometryReader { proxy in
-                            VStack {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        width: proxy.size.width,
-                                        height: proxy.size.height,
-                                        alignment: .topLeading
-                                    )
-                                    .onAppear {
-                                        let size = uiImage.size
-                                        let aspectRatio = size.height / size.width
-                                        imageHeight = proxy.size.width * aspectRatio
-                                    }
-                                    .contextMenu {
-                                        Button {
-                                            if let image = image {
-                                                image.bat_save(intoAlbum: nil) { success, status in
-                                                    if status == .authorized || status == .limited {
-                                                        if success {
-                                                            Toast.success(title: "保存成功")
-                                                        } else {
-                                                            Toast.question(title: "保存失败")
-                                                        }
-                                                    } else {
-                                                        Toast.error(title: "没有相册权限")
-                                                    }
-                                                }
-                                            }
-                                        } label: {
-                                            Label(
-                                                "保存图片",
-                                                systemImage: "square.and.arrow.down.on.square"
-                                            )
-                                        }
-                                    } preview: {
-                                        Image(uiImage: uiImage)
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fill)
-                                            .frame(
-                                                width: proxy.size.width,
-                                                height: proxy.size.height,
-                                                alignment: .topLeading
-                                            )
-                                    }
-
-                                Line()
-                                    .stroke(
-                                        .gray,
-                                        style: StrokeStyle(
-                                            lineWidth: 1,
-                                            lineCap: .butt,
-                                            lineJoin: .miter,
-                                            dash: [5, 3]
-                                        )
-                                    )
-                                    .frame(height: 1)
-                                    .padding(.vertical, 1)
-                                    .padding(.horizontal, 3)
-                            }
-                        }
-                        .frame(height: imageHeight)
+                    if let url = message.image {
+                        AsyncPhotoView(url: url)
                         .clipShape(Rectangle())
                         .contentShape(Rectangle())
                         .diff { view in
@@ -254,14 +190,7 @@ struct MessageCard: View {
                                 .contextMenu {
                                     Button {
                                         Haptic.impact()
-                                        if let image = image {
-                                            Clipboard.set(
-                                                message.search,
-                                                [UTType.image.identifier: image]
-                                            )
-                                        } else {
-                                            Clipboard.set(message.search)
-                                        }
+                                        Clipboard.set(message.search)
                                         Toast.copy(title: "复制成功")
                                     } label: {
                                         Label("复制", systemImage: "doc.on.clipboard")
@@ -339,17 +268,6 @@ struct MessageCard: View {
             }
             .frame(minHeight: 50)
             .mbackground26(.message, radius: 15)
-            .onAppear {
-                if self.image == nil {
-                    Task(priority: .background) {
-                        if let image = message.image,
-                           let file = await ImageManager.downloadImage(image)
-                        {
-                            self.image = UIImage(contentsOfFile: file)
-                        }
-                    }
-                }
-            }
             .padding(.horizontal, 15)
             .padding(.vertical, 5)
             .diff { view in
