@@ -13,6 +13,7 @@
 
 import Foundation
 import Kingfisher
+import UIKit
 
 /// Image Manager
 ///
@@ -29,6 +30,9 @@ import Kingfisher
 /// - Failure Handling: Returns `nil` on download or cache setup failures; callers should implement
 ///   graceful fallbacks based on a `nil` result.
 class ImageManager {
+    
+    static let memoryCache = NSCache<NSString, UIImage>()
+    
     /// Store raw image bytes into the specified cache (disk-only)
     /// - Parameters:
     ///   - cache: Target `ImageCache`; if `nil`, uses the default cache (`defaultCache()`)
@@ -88,7 +92,7 @@ class ImageManager {
 
         guard let result = try? await downloadImage(
             url: server ?? imageResource,
-            options: optionsInfo
+            options: optionsInfo 
         ).get() else { return nil }
 
         // Cache downloaded image
@@ -171,5 +175,52 @@ class ImageManager {
                     }),
             ], serverURL
         )
+    }
+    
+    class func preloading(_ urls: [String], maxPixel: CGFloat = 800){
+        Task.detached( priority: .background) { 
+            await withTaskGroup(of: Void.self) { group in
+                for url in urls {
+                    group.addTask {
+                        _ = await thumbImage(url, maxPixel: maxPixel)
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    class func thumbImage( _ url:String, maxPixel: CGFloat = 800) async -> UIImage? {
+        // 1. memory cache
+        
+        if let cached = ImageManager.memoryCache.object(forKey: url as NSString) {
+            return cached
+        }
+        
+        if let file = await ImageManager.downloadImage( url),
+           let thumb = await loadThumbnail(path: file, maxPixel: maxPixel) {
+            ImageManager.memoryCache.setObject(thumb, forKey: url as NSString)
+            return thumb
+            
+        }
+        
+        return nil
+    }
+    
+   class func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
+        let url = URL(fileURLWithPath: path)
+        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+        guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else { return nil }
+
+        let options = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+            kCGImageSourceShouldCacheImmediately: true
+        ] as CFDictionary
+
+        if let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options) {
+            return UIImage(cgImage: cgImage)
+        }
+        return nil
     }
 }

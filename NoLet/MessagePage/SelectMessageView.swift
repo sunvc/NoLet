@@ -56,7 +56,6 @@ struct SelectMessageView: View {
                 VStack {
                     if let image = message.image {
                         AsyncPhotoView(url: image)
-                            .zoomable()
                     }
                 }
                 .padding(.top, UIApplication.shared.topSafeAreaHeight)

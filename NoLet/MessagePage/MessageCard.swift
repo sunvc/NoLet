@@ -157,11 +157,14 @@ struct MessageCard: View {
                 }
                 VStack {
                     if let url = message.image {
-                        AsyncPhotoView(url: url)
-                        .clipShape(Rectangle())
-                        .contentShape(Rectangle())
-                        .diff { view in
-                            Group {
+                        
+                        AsyncPhotoView(url: url, zoom: false)
+                            .frame(maxHeight: 150)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.horizontal, 5)
+                            .contentShape(Rectangle())
+                            .diff { view in
+                                Group {
                                 if #available(iOS 18.0, *) {
                                     view.onTapGesture {
                                         self.showDetail.toggle()

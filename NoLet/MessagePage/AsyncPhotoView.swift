@@ -12,19 +12,22 @@
 //    Created by Neo on 2025/11/27 22:33.
 
 import SwiftUI
+import Kingfisher
+
 
 struct AsyncPhotoView: View {
     var url: String
 
     @State private var imageHeight: CGFloat = 100
-    @State private var imageStatus: ImageLoadState = .empty
+    @State private var status: ImageLoadState = .empty
+    
+    var zoom:Bool = true
     var body: some View {
         GeometryReader { proxy in
-           
 
             VStack {
                
-                switch imageStatus {
+                switch status {
                 case .empty:
                     VStack{
                         Spacer()
@@ -40,6 +43,7 @@ struct AsyncPhotoView: View {
                             height: proxy.size.height,
                             alignment: .topLeading
                         )
+                        
                         .contextMenu {
                             Button {
                                 
@@ -75,6 +79,9 @@ struct AsyncPhotoView: View {
                                     alignment: .topLeading
                                 )
                         }
+                        .if(zoom){ view in
+                            view.zoomable()
+                        }
                     
                 case .failure:
                     VStack{
@@ -105,41 +112,28 @@ struct AsyncPhotoView: View {
             .task(id: url) {
                 self.loadingImage(width: proxy.size.width)
             }
-           
         }
         .frame(height: imageHeight)
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .contentShape(Rectangle())
+        
     }
 
     func loadingImage(width: CGFloat)  {
-        Task{ 
-            if let file = await ImageManager.downloadImage( url),
-               let thumb = loadThumbnail(path: file, maxPixel: 800)
-            {
-                self.imageHeight = thumb.scaledSize(withWidth: width).height
-                self.imageStatus = .success(thumb)
+        // 1. memory cache
+        Task.detached(priority: .background){ 
+            if  let thumb = await ImageManager.thumbImage(url, maxPixel: 800) {
+                DispatchQueue.main.async{
+                    self.imageHeight = thumb.scaledSize(withWidth: width).height
+                    self.status = .success(thumb)
+                }
+                
             }else{
-                self.imageStatus = .failure
+                DispatchQueue.main.async{
+                    self.status = .failure
+                }
             }
         }
-    }
-    
-    func loadThumbnail(path: String, maxPixel: CGFloat) -> UIImage? {
-        let url = URL(fileURLWithPath: path)
-        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else { return nil }
-
-        let options = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
-            kCGImageSourceShouldCacheImmediately: true
-        ] as CFDictionary
-
-        if let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options) {
-            return UIImage(cgImage: cgImage)
-        }
-        return nil
     }
     
     enum ImageLoadState {

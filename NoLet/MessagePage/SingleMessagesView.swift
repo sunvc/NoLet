@@ -31,7 +31,7 @@ struct SingleMessagesView: View {
     @State private var selectMessage: Message? = nil
     @State private var messages: [Message] = []
 
-    private let messagePage: Int = 100
+    private let messagePage: Int = 50
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -163,7 +163,7 @@ struct SingleMessagesView: View {
 
     private func loadData(
         proxy: ScrollViewProxy? = nil,
-        limit: Int = 100,
+        limit: Int = 50,
         item: Message? = nil
     ) {
         guard !showLoading else { return }
@@ -171,6 +171,9 @@ struct SingleMessagesView: View {
 
         Task.detached(priority: .userInitiated) {
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
+            
+            let urls = results.compactMap({$0.image})
+            ImageManager.preloading(urls)
 
             await MainActor.run {
                 if item == nil {

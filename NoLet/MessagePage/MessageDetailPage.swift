@@ -153,6 +153,11 @@ struct MessageDetailPage: View {
                 limit: limit,
                 item?.createDate
             )
+            
+            let urls = results.compactMap({$0.image})
+            
+            ImageManager.preloading(urls)
+            
             let count = MessagesManager.shared.count(group: self.group)
             await MainActor.run {
                 self.allCount = count

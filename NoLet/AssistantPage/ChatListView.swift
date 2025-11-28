@@ -123,7 +123,7 @@ struct ChatMessageListView: View {
                         }
                 }
             }
-            .task {
+            .task(id: chatLastMessageID) {
                 chatManager.loadData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
