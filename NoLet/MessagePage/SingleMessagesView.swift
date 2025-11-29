@@ -130,11 +130,11 @@ struct SingleMessagesView: View {
                 }
             }
         }
-        .task {
+        .task (id: "singleData"){
             self.loadData()
             Task.detached(priority: .background) {
-                guard let count = await messageManager.updateRead() else { return }
-
+                guard let count = await messageManager.updateRead() else{ return }
+                
                 // 清除徽章
                 try await UNUserNotificationCenter.current().setBadgeCount(0)
 
@@ -190,6 +190,7 @@ struct SingleMessagesView: View {
             }
         }
     }
+    
 }
 
 #Preview {

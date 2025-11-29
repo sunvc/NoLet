@@ -245,7 +245,7 @@ struct FileRowContent: View {
         }
         .padding(.vertical, 8)
         .contentShape(Rectangle())
-        .contextMenu {
+        .contextMenu(menuItems: { 
             if let uiImage = imageIcon, let sharedFile, !item.isDirectory {
                 ShareLink(
                     item: sharedFile,
@@ -264,7 +264,15 @@ struct FileRowContent: View {
             } label: {
                 Label("删除", systemImage: "trash")
             }
-        }
+        }, preview: { 
+            if let image = imageIcon{
+                image
+                    .font(.system(size: 200))
+            }else{
+                Image(systemName: "doc.append")
+                    .font(.title2)
+            }
+        })
 
         .alert("确认删除", isPresented: $showDeleteAlert) {
             Button("取消", role: .cancel) {}
@@ -281,11 +289,8 @@ struct FileRowContent: View {
         } message: {
             Text("确定要删除 \"\(item.name)\" 吗？此操作无法撤销。")
         }
-        .task {
-            self.imageIcon = await thumbnail(
-                url: item.url,
-                defaultIcon: item.icon
-            )
+        .task(id: item.url) {
+            self.imageIcon = await thumbnail( url: item.url, defaultIcon: item.icon )
 
             if item.url.pathExtension == "plist" {
                 self.sharedFile = AppManager.createDatabaseFileTem()
@@ -298,8 +303,8 @@ struct FileRowContent: View {
     func thumbnail(url: URL, size: CGFloat = 100, defaultIcon _: String) async -> Image {
         do {
             NLog.log(url.absoluteString)
-            if url.path.contains("ImageCache"), let data = try? Data(contentsOf: url),
-               let uiImage = UIImage(data: data)
+            if url.path.contains("ImageCache"),!item.isDirectory,
+               let uiImage = await ImageManager.loadThumbnail(path: url.path(), maxPixel: 300)
             {
                 return Image(uiImage: uiImage)
 
@@ -315,10 +320,13 @@ struct FileRowContent: View {
             )
             let data = try await QLThumbnailGenerator.shared
                 .generateBestRepresentation(for: request)
+            
             return Image(uiImage: data.uiImage)
 
         } catch {
-            return Image("nolet")
+            
+            
+            return Image(systemName: "photo.stack").resizable()
         }
     }
 }

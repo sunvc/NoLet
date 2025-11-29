@@ -90,36 +90,20 @@ struct MessagePage: View {
                             .symbolEffect(delay: 0)
                         }
                     }
-                    Section {
-                        Button {
-                            manager.router = [.assistant]
-                            Haptic.impact()
-                        } label: {
-                            if #available(iOS 18.0, *) {
-                                Label("智能助手", systemImage: "apple.intelligence")
-                                    .symbolRenderingMode(.palette)
-                                    .customForegroundStyle(.accent, .primary)
-                            } else {
-                                Label("智能助手", systemImage: "atom")
-                                    .symbolRenderingMode(.palette)
-                                    .customForegroundStyle(.accent, .primary)
-                            }
-                        }
-                    }
-
+                   
                 } label: {
                     Label("更多", systemImage: "fuelpump")
                 }
             }
         }
         .fullScreenCover(item: $manager.selectMessage) { message in
-            NavigationStack {
-                SelectMessageView(message: message) {
-                    withAnimation {
-                        manager.selectMessage = nil
-                    }
+            
+            SelectMessageView(message: message) {
+                withAnimation {
+                    manager.selectMessage = nil
                 }
             }
+            
         }
     }
 }

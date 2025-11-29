@@ -275,27 +275,29 @@ struct DataSettingView: View {
             }
 
             Section(header: Text(verbatim: "")) {
-                HStack {
-                    Label {
-                        Text("存储使用")
-                    } icon: {
-                        Image(systemName: "externaldrive.badge.person.crop")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.green, Color.primary)
-                            .symbolEffect(.pulse, delay: 3)
-                    }
-
-                    Spacer()
+                
+                NavigationLink { 
+                    NoletFileList(rootURL: CONTAINER)
+                } label: { 
                     HStack {
-                        Text(verbatim: cacheSize.fileSize())
-                        Text(verbatim: "/")
-                            .foregroundStyle(.gray)
-                        Text(verbatim: totalSize.fileSize())
+                        Label {
+                            Text("文件管理")
+                        } icon: {
+                            Image(systemName: "folder.badge.questionmark")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.green, Color.primary)
+                                .symbolEffect(.pulse, delay: 3)
+                        }
+
+                        Spacer()
+                        HStack {
+                            Text(verbatim: cacheSize.fileSize())
+                            Text(verbatim: "/")
+                                .foregroundStyle(.gray)
+                            Text(verbatim: totalSize.fileSize())
+                        }
                     }
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    manager.router = [.dataSetting, .files(url: CONTAINER)]
+                    .contentShape(Rectangle())
                 }
 
                 HStack {

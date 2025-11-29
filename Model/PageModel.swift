@@ -91,5 +91,6 @@ extension RouterPage: Equatable {
 enum TabPage: String, Sendable, CaseIterable {
     case message
     case setting
+    case assistant
     case search
 }

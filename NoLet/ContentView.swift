@@ -23,6 +23,7 @@ struct ContentView: View {
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
     @Default(.firstStart) private var firstStart
+    @Default(.assistantAccouns) var assistantAccouns
 
     @State private var HomeViewMode: NavigationSplitViewVisibility = .detailOnly
 
@@ -70,8 +71,29 @@ struct ContentView: View {
                         Label("消息", systemImage: "ellipsis.message")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.green, .primary)
+                    }.badge(messageManager.unreadCount)
+                    
+                    if assistantAccouns.count > 0 {
+                        Tab(value: .assistant) {
+                            NavigationStack(path: Binding(get: {
+                                manager.arouter
+                            }, set: { value in
+                                manager.router = value
+                            })) {
+                               
+                                // MARK: 信息页面
+
+                                AssistantPageView()
+                                    .router(manager)
+                            }
+                        } label: {
+                            Label("无字书", systemImage: "apple.intelligence")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.green, .primary)
+                        }
                     }
-                    .badge(messageManager.unreadCount)
+                    
+                    
 
                     Tab(value: .setting) {
                         NavigationStack(path: Binding(get: {
@@ -127,7 +149,27 @@ struct ContentView: View {
                     }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
+                    
+                    if assistantAccouns.count > 0{
+                        NavigationStack(path: Binding(get: {
+                            manager.arouter
+                        }, set: { value in
+                            manager.router = value
+                        })) {
+                           
+                            // MARK: 信息页面
 
+                            AssistantPageView()
+                                .router(manager)
+                        }
+                        .tabItem {
+                            Label("无字书", systemImage: "apple.intelligence")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.green, .primary)
+                        }
+                        .tag(TabPage.assistant)
+                    }
+                    
                     NavigationStack(path: Binding(get: {
                         manager.srouter
                     }, set: { value in
@@ -139,7 +181,7 @@ struct ContentView: View {
                             .router(manager)
                     }
                     .tabItem {
-                        Label("设置", systemImage: "gear.badge.questionmark")
+                        Label("设置", systemImage: "atom")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.green, .primary)
                     }

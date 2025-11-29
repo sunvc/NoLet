@@ -52,13 +52,23 @@ struct AssistantPageView: View {
                     Spacer()
 
                     VStack {
-                        Image("openchat")
-                            .resizable()
+                        AssistantIcon()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(stops: [
+                                        .init(color: .red, location: 0.0),
+                                        .init(color: .yellow, location: 0.5),
+                                        .init(color: .green, location: 1.0),
+                                    ]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
                             .scaledToFit()
                             .frame(width: 200)
                             .minimumScaleFactor(0.5)
 
-                        Text("嗨! 我是智能助手")
+                        Text("嗨! 我是无字书")
                             .font(.title)
                             .fontWeight(.medium)
                             .multilineTextAlignment(.center)
@@ -139,9 +149,9 @@ struct AssistantPageView: View {
         .toolbar {
             principalToolbarContent
 
-            if manager.router.count == 0 {
-                backupMenu
-            }
+//            if manager.router.count != 0 {
+//                backupMenu
+//            }
         }
         .sheet(isPresented: $showMenu) {
             OpenChatHistoryView(show: $showMenu)
@@ -211,17 +221,17 @@ struct AssistantPageView: View {
         }
     }
 
-    private var backupMenu: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            Button {
-                manager.router = []
-            } label: {
-                HStack(spacing: 10) {
-                    Label("消息", systemImage: "chevron.left")
-                }
-            }
-        }
-    }
+//    private var backupMenu: some ToolbarContent {
+//        ToolbarItem(placement: .topBarLeading) {
+//            Button {
+//                manager.router = []
+//            } label: {
+//                HStack(spacing: 10) {
+//                    Label("消息", systemImage: "chevron.left")
+//                }
+//            }
+//        }
+//    }
 
     // 发送消息
     private func sendMessage(_ text: String) {
@@ -462,4 +472,8 @@ func runOnMain(_ block: @escaping () -> Void) {
             block()
         }
     }
+}
+
+#Preview {
+    AssistantPageView()
 }

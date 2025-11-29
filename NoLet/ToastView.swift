@@ -115,7 +115,7 @@ class Toast: ObservableObject {
     }
 
     class func copy(
-        title: String.LocalizationValue,
+        title: String.LocalizationValue = "复制成功",
         isUserInteractionEnabled: Bool = true,
         timing: ToastTime = .medium
     ) {

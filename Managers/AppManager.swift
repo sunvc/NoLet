@@ -31,6 +31,7 @@ final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
 
     @Published var mrouter: [RouterPage] = []
     @Published var srouter: [RouterPage] = []
+    @Published var arouter: [RouterPage] = []
     @Published var sorouter: [RouterPage] = []
     @Published var prouter: [RouterPage] = []
 
@@ -60,6 +61,8 @@ final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
                     srouter = router
                 case .search:
                     sorouter = router
+                case .assistant:
+                    arouter = router
                 }
             }
         }
@@ -280,8 +283,7 @@ extension AppManager {
                         }
                     }
                 } catch {
-                    NLog
-                        .error(
+                    NLog.error(
                             "❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)"
                         )
                 }

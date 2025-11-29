@@ -84,6 +84,10 @@
 		B5835D782DEDFFF90066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		B5835D7A2DEDFFF90066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
+		BA4FEA652EDB00C30002F71F /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4FEA642EDB00C00002F71F /* Logo.swift */; };
+		BA4FEA662EDB00C30002F71F /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4FEA642EDB00C00002F71F /* Logo.swift */; };
+		BA4FEA672EDB00C30002F71F /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4FEA642EDB00C00002F71F /* Logo.swift */; };
+		BA4FEA682EDB00C30002F71F /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4FEA642EDB00C00002F71F /* Logo.swift */; };
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 		BAE61E492ED55B55009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
 		BAE61E4A2ED55B55009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB211C22EC6526E0003F7A3 /* MarkdownUI */; };
@@ -197,6 +201,7 @@
 		B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B5AA557F2E6D71D8000F3042 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		BA4FEA642EDB00C00002F71F /* Logo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logo.swift; sourceTree = "<group>"; };
 		BAC5A8162ED1B0DD00BCC38B /* translate.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = translate.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -578,6 +583,7 @@
 		B54057062DF1B1900058DC87 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				BA4FEA642EDB00C00002F71F /* Logo.swift */,
 				B542AC252E083D80001B0919 /* Color+.swift */,
 				B54057422DF1B6940058DC87 /* Application+.swift */,
 				B540573B2DF1B63E0058DC87 /* Encodable+.swift */,
@@ -933,6 +939,7 @@
 				B58359B62DEDD9060066B32E /* PassthroughWindow.swift in Sources */,
 				B54057122DF1B3850058DC87 /* Date+.swift in Sources */,
 				B55BD5532E21EFE800A1F014 /* Lang.swift in Sources */,
+				BA4FEA672EDB00C30002F71F /* Logo.swift in Sources */,
 				B583591C2DEDD65A0066B32E /* PopView.swift in Sources */,
 				B542AC272E083D8A001B0919 /* Color+.swift in Sources */,
 				B54057242DF1B52C0058DC87 /* Data+.swift in Sources */,
@@ -954,6 +961,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA4FEA662EDB00C30002F71F /* Logo.swift in Sources */,
 				B540570F2DF1B3850058DC87 /* Date+.swift in Sources */,
 				B5835D5F2DEDFCE80066B32E /* TagField.swift in Sources */,
 				B540570C2DF1B1A20058DC87 /* Image+.swift in Sources */,
@@ -987,6 +995,7 @@
 				B54057142DF1B3850058DC87 /* Date+.swift in Sources */,
 				B540571B2DF1B3DB0058DC87 /* String+.swift in Sources */,
 				B540570D2DF1B1A20058DC87 /* Image+.swift in Sources */,
+				BA4FEA652EDB00C30002F71F /* Logo.swift in Sources */,
 				B54057392DF1B61F0058DC87 /* Type+.swift in Sources */,
 				B54057282DF1B52C0058DC87 /* Data+.swift in Sources */,
 			);
@@ -997,6 +1006,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B54057102DF1B3850058DC87 /* Date+.swift in Sources */,
+				BA4FEA682EDB00C30002F71F /* Logo.swift in Sources */,
 				B54057082DF1B1A20058DC87 /* Image+.swift in Sources */,
 				B54057352DF1B61F0058DC87 /* Type+.swift in Sources */,
 				B540571F2DF1B4560058DC87 /* URL+.swift in Sources */,
