@@ -308,31 +308,6 @@ private struct PromptSwipeActions: ViewModifier {
     }
 }
 
-// MARK: - PromptButtonView
-
-struct PromptButtonView: View {
-    // MARK: - Properties
-
-    @State private var showPromptChooseView = false
-    @State private var selectedPromptIndex: Int?
-
-    // MARK: - Body
-
-    var body: some View {
-        Button {
-            showPromptChooseView = true
-        } label: {
-            Image(systemName: "puzzlepiece.extension")
-                .tint(.gray)
-                .font(.title2)
-                .padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 12))
-        }
-        .sheet(isPresented: $showPromptChooseView) {
-            PromptChooseView()
-                .customPresentationCornerRadius(20)
-        }
-    }
-}
 
 // MARK: - 添加Prompt视图
 

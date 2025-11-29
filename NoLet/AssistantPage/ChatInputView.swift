@@ -24,6 +24,8 @@ struct ChatInputView<Content: View>: View {
 
     @State private var showPromptChooseView = false
     @FocusState private var isFocusedInput: Bool
+    
+    @State private var selectedPromptIndex: Int?
 
     private var quote: Message? {
         guard let messageID = manager.askMessageID else { return nil }
@@ -39,6 +41,7 @@ struct ChatInputView<Content: View>: View {
             HStack(spacing: 10) {
                 inputField
                     .disabled(manager.isLoading)
+                    .opacity(manager.isLoading ? 0 : 1)
                 rightActionButton
             }
             .padding(.horizontal)
@@ -63,7 +66,28 @@ struct ChatInputView<Content: View>: View {
                     chatManager.isFocusedInput = value
                 }
 
-            PromptButtonView()
+           
+
+            Menu{
+                rightBtn()
+                
+                
+                Button {
+                    showPromptChooseView = true
+                } label: {
+                   Label("提示词", systemImage: "puzzlepiece.extension")
+                }
+            }label:{
+                Image(systemName: "puzzlepiece.extension")
+                    .tint(.gray)
+                    .font(.title2)
+                    .padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 12))
+            }
+            
+            .sheet(isPresented: $showPromptChooseView) {
+                PromptChooseView()
+                    .customPresentationCornerRadius(20)
+            }
         }
         .background26(Color(.systemGray6), radius: 17)
     }
@@ -71,17 +95,19 @@ struct ChatInputView<Content: View>: View {
     @ViewBuilder
     private var rightActionButton: some View {
         if manager.isLoading {
+            
             Button(action: {
                 chatManager.cancellableRequest?.cancelRequest()
             }) {
+                
                 Image(systemName: "xmark.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 38, height: 38)
+                    .font(.largeTitle)
                     .background26(Color.white, radius: 20)
+                    .padding(.horizontal, 30)
                     .tint(.red)
             }
-            .transition(.scale)
+            .transition(.move(edge: .trailing))
+            
         } else {
             if !text.isEmpty {
                 // 发送按钮
@@ -96,24 +122,8 @@ struct ChatInputView<Content: View>: View {
 
                 }) {
                     Image(systemName: "arrow.up.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 38, height: 38)
+                        .font(.largeTitle)
                         .background26(Color.white, radius: 20)
-                }
-                .transition(.scale)
-            } else {
-                // 附件菜单
-                Menu {
-                    rightBtn()
-
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 38, height: 38)
-                        .background26(Color.white, radius: 20)
-                        .menuStyle(.button)
                 }
                 .transition(.scale)
             }

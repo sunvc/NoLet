@@ -139,7 +139,7 @@ struct SelectMessageView: View {
                                 } label: {
                                     Image(systemName: "doc.on.clipboard")
                                         .padding(.trailing)
-                                        .offset(x: 0, y: -10)
+                                        .offset(x: 0, y: -20)
                                 }
                             }
                         }
@@ -162,14 +162,17 @@ struct SelectMessageView: View {
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.bottom, 5)
                                 }
-                            }.overlay(alignment: .topTrailing) {
-                                Button {
-                                    Clipboard.set(translateResult)
-                                    Toast.copy()
-                                } label: {
-                                    Image(systemName: "doc.on.clipboard")
-                                        .padding(.trailing)
-                                        .offset(x: 0, y: -10)
+                            }
+                            .overlay(alignment: .topTrailing) {
+                                if !translateResult.isEmpty{
+                                    Button {
+                                        Clipboard.set(translateResult)
+                                        Toast.copy()
+                                    } label: {
+                                        Image(systemName: "doc.on.clipboard")
+                                            .padding(.trailing)
+                                            .offset(x: 0, y: -10)
+                                    }
                                 }
                             }
 
