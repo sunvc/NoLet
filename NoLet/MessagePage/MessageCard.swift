@@ -54,6 +54,7 @@ struct MessageCard: View {
     @Namespace private var sms
     var body: some View {
         Section {
+           
             VStack {
                 HStack(alignment: .center) {
                     if showAvatar {
@@ -201,87 +202,6 @@ struct MessageCard: View {
                 }
             }
             .padding(8)
-            .contextMenu {
-                
-                Section{
-                    
-                    Button {
-                        Haptic.impact()
-                        Clipboard.set(message.body)
-                        Toast.copy(title: "复制成功")
-                    } label: {
-                        Label("复制", systemImage: "doc.on.clipboard")
-                            .symbolEffect(.bounce, delay: 2)
-                            .customForegroundStyle(.yellow, .white)
-                        
-                    }.tint(.accent)
-                }
-               
-                
-                if let url = message.url{
-                    Button{
-                        if let fileURL = URL(string: url) {
-                            AppManager.openURL(url: fileURL, .safari)
-                        }
-                        Haptic.impact()
-                    }label:{
-                        Label(
-                            "打开链接",
-                            systemImage: "network"
-                        )
-                    }
-                }
-                
-                if let image = message.image{
-                    Section{
-                        Button {
-                            
-                            Task{ 
-                                if let file = await ImageManager.downloadImage( image),
-                                   let uiimage = UIImage(contentsOfFile: file){
-                                    uiimage.bat_save(intoAlbum: nil) { success, status in
-                                        if status == .authorized || status == .limited {
-                                            if success {
-                                                Toast.success(title: "保存成功")
-                                            } else {
-                                                Toast.question(title: "保存失败")
-                                            }
-                                        } else {
-                                            Toast.error(title: "没有相册权限")
-                                        }
-                                    }
-                                }
-                            }
-                        } label: {
-                            Label(
-                                "保存图片",
-                                systemImage: "square.and.arrow.down.on.square"
-                            )
-                        }
-                    }
-                }
-                
-                if assistantAccouns.count > 0 {
-                    Section{
-                        Button {
-                            Haptic.impact()
-                            DispatchQueue.main.async {
-                                AppManager.shared.askMessageID = message.id
-                                
-                                if AppManager.shared.page == .message {
-                                    AppManager.shared.router.append(.assistant)
-                                } else if AppManager.shared.page == .search {
-                                    AppManager.shared.router.append(.assistant)
-                                }
-                            }
-                        } label: {
-                            Label("智能助手", systemImage: "atom")
-                                .symbolEffect(.rotate, delay: 2)
-                        }.tint(.green)
-                    }
-                }
-               
-            }
             .swipeActions(edge: .leading, allowsFullSwipe: true) {
                 Button {
                     Haptic.impact()
@@ -385,7 +305,95 @@ struct MessageCard: View {
                     .textSelection(.enabled)
                     .accessibilityLabel("群组名")
                     .accessibilityValue(message.group)
+                Spacer()
             }
+            Menu{
+                Section{
+                    
+                    Button {
+                        Haptic.impact()
+                        Clipboard.set(message.body)
+                        Toast.copy(title: "复制成功")
+                    } label: {
+                        Label("复制", systemImage: "doc.on.clipboard")
+                            .symbolEffect(.bounce, delay: 2)
+                            .customForegroundStyle(.yellow, .white)
+                        
+                    }.tint(.accent)
+                }
+                
+                
+                if let url = message.url{
+                    Button{
+                        if let fileURL = URL(string: url) {
+                            AppManager.openURL(url: fileURL, .safari)
+                        }
+                        Haptic.impact()
+                    }label:{
+                        Label(
+                            "打开链接",
+                            systemImage: "network"
+                        )
+                    }
+                }
+                
+                if let image = message.image{
+                    Section{
+                        Button {
+                            
+                            Task{ 
+                                if let file = await ImageManager.downloadImage( image),
+                                   let uiimage = UIImage(contentsOfFile: file){
+                                    uiimage.bat_save(intoAlbum: nil) { success, status in
+                                        if status == .authorized || status == .limited {
+                                            if success {
+                                                Toast.success(title: "保存成功")
+                                            } else {
+                                                Toast.question(title: "保存失败")
+                                            }
+                                        } else {
+                                            Toast.error(title: "没有相册权限")
+                                        }
+                                    }
+                                }
+                            }
+                        } label: {
+                            Label(
+                                "保存图片",
+                                systemImage: "square.and.arrow.down.on.square"
+                            )
+                        }
+                    }
+                }
+                
+                if assistantAccouns.count > 0 {
+                    Section{
+                        Button {
+                            Haptic.impact()
+                            DispatchQueue.main.async {
+                                AppManager.shared.askMessageID = message.id
+                                
+                                if AppManager.shared.page == .message {
+                                    AppManager.shared.router.append(.assistant)
+                                } else if AppManager.shared.page == .search {
+                                    AppManager.shared.router.append(.assistant)
+                                }
+                            }
+                        } label: {
+                            Label("智能助手", systemImage: "atom")
+                                .symbolEffect(.rotate, delay: 2)
+                        }.tint(.green)
+                    }
+                }
+            }label: {
+                HStack{
+                    Spacer()
+                    Image(systemName: "ellipsis")
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                }
+                .contentShape(Rectangle())
+            }.zIndex(9999)
         }
         .background(linColor.gradient)
         .clipShape(RoundedRectangle(cornerRadius: 5))
