@@ -63,7 +63,6 @@
 		B58359B62DEDD9060066B32E /* PassthroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58359B52DEDD9030066B32E /* PassthroughWindow.swift */; };
 		B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359B92DEDDB170066B32E /* StoreKit.framework */; };
 		B58359F12DEDDF860066B32E /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B58359E72DEDDF860066B32E /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		B5835A302DEDE00B0066B32E /* SafariExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B5835A182DEDE00B0066B32E /* SafariExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B5835B182DEDE07C0066B32E /* ServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B5835B112DEDE07C0066B32E /* ServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B5835B222DEDE0930066B32E /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359D12DEDDF360066B32E /* UserNotifications.framework */; };
 		B5835B232DEDE0930066B32E /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359D32DEDDF360066B32E /* UserNotificationsUI.framework */; };
@@ -105,13 +104,6 @@
 			remoteGlobalIDString = B58359E62DEDDF860066B32E;
 			remoteInfo = ShareExtension;
 		};
-		B5835A2E2DEDE00B0066B32E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B58357EF2DEDD3B10066B32E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B5835A172DEDE00B0066B32E;
-			remoteInfo = SafariExtension;
-		};
 		B5835B162DEDE07C0066B32E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B58357EF2DEDD3B10066B32E /* Project object */;
@@ -145,7 +137,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				B5835A302DEDE00B0066B32E /* SafariExtension.appex in Embed Foundation Extensions */,
 				B58359F12DEDDF860066B32E /* ShareExtension.appex in Embed Foundation Extensions */,
 				B5835B2D2DEDE0930066B32E /* ContentExtension.appex in Embed Foundation Extensions */,
 				B5835B182DEDE07C0066B32E /* ServiceExtension.appex in Embed Foundation Extensions */,
@@ -194,7 +185,6 @@
 		B58359D32DEDDF360066B32E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		B58359E72DEDDF860066B32E /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58359FD2DEDDFE10066B32E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		B5835A182DEDE00B0066B32E /* SafariExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SafariExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5835B112DEDE07C0066B32E /* ServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5835B212DEDE0930066B32E /* ContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5835D7B2DEE14C10066B32E /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
@@ -219,13 +209,6 @@
 				Info.plist,
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
-		};
-		B5835A342DEDE00B0066B32E /* Exceptions for "SafariExtension" folder in "SafariExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
 		};
 		B5835B0B2DEDE0490066B32E /* Exceptions for "Managers" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -446,22 +429,6 @@
 			path = ShareExtension;
 			sourceTree = "<group>";
 		};
-		B5835A192DEDE00B0066B32E /* SafariExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B5835A342DEDE00B0066B32E /* Exceptions for "SafariExtension" folder in "SafariExtension" target */,
-			);
-			explicitFolders = (
-				Resources/_locales,
-				Resources/assets,
-				Resources/chunks,
-				"Resources/content-scripts",
-				Resources/icon,
-				Resources/lottie,
-			);
-			path = SafariExtension;
-			sourceTree = "<group>";
-		};
 		B5835A7B2DEDE0490066B32E /* Managers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -544,13 +511,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B5835A152DEDE00B0066B32E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B5835B0E2DEDE07C0066B32E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -608,7 +568,6 @@
 				B5835ABD2DEDE0490066B32E /* Publics */,
 				B58357F92DEDD3B10066B32E /* NoLet */,
 				B58359E82DEDDF860066B32E /* ShareExtension */,
-				B5835A192DEDE00B0066B32E /* SafariExtension */,
 				B5835B122DEDE07C0066B32E /* ServiceExtension */,
 				B5835B242DEDE0930066B32E /* ContentExtension */,
 				B58359B82DEDDB170066B32E /* Frameworks */,
@@ -623,7 +582,6 @@
 			children = (
 				B58357F72DEDD3B10066B32E /* NoLet.app */,
 				B58359E72DEDDF860066B32E /* ShareExtension.appex */,
-				B5835A182DEDE00B0066B32E /* SafariExtension.appex */,
 				B5835B112DEDE07C0066B32E /* ServiceExtension.appex */,
 				B5835B212DEDE0930066B32E /* ContentExtension.appex */,
 			);
@@ -697,7 +655,6 @@
 			);
 			dependencies = (
 				B58359F02DEDDF860066B32E /* PBXTargetDependency */,
-				B5835A2F2DEDE00B0066B32E /* PBXTargetDependency */,
 				B5835B172DEDE07C0066B32E /* PBXTargetDependency */,
 				B5835B2C2DEDE0930066B32E /* PBXTargetDependency */,
 			);
@@ -747,28 +704,6 @@
 			);
 			productName = ShareExtension;
 			productReference = B58359E72DEDDF860066B32E /* ShareExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		B5835A172DEDE00B0066B32E /* SafariExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B5835A312DEDE00B0066B32E /* Build configuration list for PBXNativeTarget "SafariExtension" */;
-			buildPhases = (
-				B5835A142DEDE00B0066B32E /* Sources */,
-				B5835A152DEDE00B0066B32E /* Frameworks */,
-				B5835A162DEDE00B0066B32E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				B5835A192DEDE00B0066B32E /* SafariExtension */,
-			);
-			name = SafariExtension;
-			packageProductDependencies = (
-			);
-			productName = SafariExtension;
-			productReference = B5835A182DEDE00B0066B32E /* SafariExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		B5835B102DEDE07C0066B32E /* ServiceExtension */ = {
@@ -840,9 +775,6 @@
 					B58359E62DEDDF860066B32E = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					B5835A172DEDE00B0066B32E = {
-						CreatedOnToolsVersion = 16.3;
-					};
 					B5835B102DEDE07C0066B32E = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -881,7 +813,6 @@
 			targets = (
 				B58357F62DEDD3B10066B32E /* NoLet */,
 				B58359E62DEDDF860066B32E /* ShareExtension */,
-				B5835A172DEDE00B0066B32E /* SafariExtension */,
 				B5835B102DEDE07C0066B32E /* ServiceExtension */,
 				B5835B202DEDE0930066B32E /* ContentExtension */,
 			);
@@ -897,13 +828,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B58359E52DEDDF860066B32E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B5835A162DEDE00B0066B32E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -976,13 +900,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B5835A142DEDE00B0066B32E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B5835B0D2DEDE07C0066B32E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1025,11 +942,6 @@
 			isa = PBXTargetDependency;
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 			targetProxy = B58359EF2DEDDF860066B32E /* PBXContainerItemProxy */;
-		};
-		B5835A2F2DEDE00B0066B32E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B5835A172DEDE00B0066B32E /* SafariExtension */;
-			targetProxy = B5835A2E2DEDE00B0066B32E /* PBXContainerItemProxy */;
 		};
 		B5835B172DEDE07C0066B32E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1331,78 +1243,6 @@
 			};
 			name = Release;
 		};
-		B5835A322DEDE00B0066B32E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = SafariExtension/SafariExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1000001;
-				DEVELOPMENT_TEAM = FUWV6U942Q;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SafariExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SafariExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 2.2.1;
-				OTHER_LDFLAGS = (
-					"-framework",
-					SafariServices,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.SafariExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		B5835A332DEDE00B0066B32E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = SafariExtension/SafariExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1000001;
-				DEVELOPMENT_TEAM = FUWV6U942Q;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = SafariExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = SafariExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 2.2.1;
-				OTHER_LDFLAGS = (
-					"-framework",
-					SafariServices,
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.SafariExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 		B5835B1A2DEDE07C0066B32E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1546,15 +1386,6 @@
 			buildConfigurations = (
 				B58359F32DEDDF860066B32E /* Debug */,
 				B58359F42DEDDF860066B32E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B5835A312DEDE00B0066B32E /* Build configuration list for PBXNativeTarget "SafariExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B5835A322DEDE00B0066B32E /* Debug */,
-				B5835A332DEDE00B0066B32E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
