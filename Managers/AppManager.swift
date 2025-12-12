@@ -284,8 +284,8 @@ extension AppManager {
                     }
                 } catch {
                     NLog.error(
-                            "❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)"
-                        )
+                        "❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)"
+                    )
                 }
             }
         }
@@ -406,7 +406,7 @@ extension AppManager {
                 try await fetch(
                     url: address,
                     path: "/register/\(deviceKey)",
-                    headers: signature(sign: sign)
+                    headers: signature(sign: sign) + ["X-USER": deviceKey]
                 )
 
             guard 200...299 ~= response.code else {
@@ -415,9 +415,11 @@ extension AppManager {
             }
 
             if response.message == "success" {
-                let serever = PushServerModel(url: address, key: deviceKey, sign: sign)
-                let success = await appendServer(server: serever)
-                return success
+                return await appendServer(server: PushServerModel(
+                    url: address,
+                    key: deviceKey,
+                    sign: sign
+                ))
             } else {
                 return false
             }
@@ -485,8 +487,7 @@ extension AppManager {
                 path: "/register",
                 method: .POST,
                 params: params,
-                headers: signature(sign: server
-                    .key)
+                headers: signature(sign: server.sign) + ["X-USER": server.key]
             )
 
             guard 200...299 ~= response.code else {
@@ -511,6 +512,7 @@ extension AppManager {
             Self.syncLocalToCloud()
             return server
         } catch {
+            Toast.error(title: "注册失败")
             server.status = false
             server.voice = false
             NLog.error(error.localizedDescription)
@@ -648,7 +650,6 @@ extension AppManager {
         ]
 
         let data = "\(Int(Date().timeIntervalSince1970))"
-
         if let sign = sign, sign.count > 10 {
             let config = CryptoModelConfig(inputText: sign) ?? .data
             result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
@@ -656,7 +657,12 @@ extension AppManager {
             result["X-Signature"] = CryptoManager(.data)
                 .encrypt(data)?.safeBase64
         }
-
         return result
+    }
+}
+
+extension Dictionary {
+    fileprivate static func + (lhs: Dictionary, rhs: Dictionary) -> Dictionary {
+        lhs.merging(rhs) { _, new in new }
     }
 }

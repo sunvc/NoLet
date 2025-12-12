@@ -314,7 +314,6 @@ struct ChangeKeyCenterView: View {
                         }
                     }
                 } else {
-                    Toast.error(title: "key不正确")
                     await view.next(.fail)
                     self.disabledPage = false
                 }

@@ -76,6 +76,7 @@ class NetworkManager: NSObject {
         if session == nil {
             let config = URLSessionConfiguration.default
             config.requestCachePolicy = .reloadIgnoringLocalCacheData
+            config.urlCache = nil
             session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
         }
 
@@ -103,6 +104,7 @@ class NetworkManager: NSObject {
 
         request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
+        request.setValue(Defaults[.id], forHTTPHeaderField: "X-Device")
 
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
@@ -116,7 +118,7 @@ class NetworkManager: NSObject {
 
         request.assumesHTTP3Capable = true
 
-        NLog.log(request.description)
+        NLog.log(request.description, params)
         let (data, response) = try await session.data(for: request)
         NLog.log(String(data: data, encoding: .utf8))
         return (data, response)

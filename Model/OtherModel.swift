@@ -52,19 +52,15 @@ enum Identifiers: String, CaseIterable, Codable {
 
         var title: String {
             switch self {
-            case .copyAction:
-                String(localized: "复制")
-            case .muteAction:
-                String(localized: "静音分组1小时")
+            case .copyAction: String(localized: "复制")
+            case .muteAction: String(localized: "静音分组1小时")
             }
         }
 
         var icon: String {
             switch self {
-            case .copyAction:
-                "doc.on.doc"
-            case .muteAction:
-                "speaker.slash"
+            case .copyAction: "doc.on.doc"
+            case .muteAction: "speaker.slash"
             }
         }
     }
