@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-cmark",
       "state" : {
-        "revision" : "b022b08312decdc46585e0b3440d97f6f22ef703",
-        "version" : "0.6.0"
+        "revision" : "5d9bdaa4228b381639fff09403e39a04926e2dbe",
+        "version" : "0.7.1"
       }
     },
     {
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/swift-markdown-ui",
       "state" : {
-        "revision" : "4e0fea3ec5005204df0d0220e572004c5028e3d8",
-        "version" : "3.0.3"
+        "revision" : "2a07f0b2170751698cd793a417014a6f7c449729",
+        "version" : "1.0.0"
       }
     },
     {

@@ -1463,8 +1463,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.3;
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
