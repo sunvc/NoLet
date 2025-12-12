@@ -30,3 +30,4 @@ public class DatabaseManager {
         try ChatPrompt.createInit(dbQueue: dbQueue)
     }
 }
+
