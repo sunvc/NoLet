@@ -34,6 +34,7 @@ class PeerSessionManager: NSObject {
         setupPeerSession()
     }
 
+    @MainActor
     deinit {
         advertiser.stopAdvertisingPeer()
         browser.stopBrowsingForPeers()

@@ -11,6 +11,7 @@ import UIKit
 import UniformTypeIdentifiers
 
 class MediaHandler: NotificationContentHandler {
+    
     func handler(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

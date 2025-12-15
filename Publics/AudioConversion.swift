@@ -13,66 +13,18 @@
 
 import AVFoundation
 
-actor AudioCAFManager {
-    let reader: AVAssetReader
-    let readerOutput: AVAssetReaderTrackOutput
-    let writer: AVAssetWriter
-    let writerInput: AVAssetWriterInput
-    let outputURL: URL
+@globalActor actor AudioProcessing {
+    static let shared = AudioProcessing()
+    private init() {}
+}
 
-    init(
-        reader: AVAssetReader,
-        readerOutput: AVAssetReaderTrackOutput,
-        writer: AVAssetWriter,
-        writerInput: AVAssetWriterInput,
-        outputURL: URL
-    ) {
-        self.reader = reader
-        self.readerOutput = readerOutput
-        self.writer = writer
-        self.writerInput = writerInput
-        self.outputURL = outputURL
-    }
 
-    func run() async throws -> URL {
-        if !reader.startReading() {
-            throw reader.error ?? NSError(domain: "AudioCAF", code: -2)
-        }
-        if !writer.startWriting() {
-            throw writer.error ?? NSError(domain: "AudioCAF", code: -3)
-        }
-        writer.startSession(atSourceTime: .zero)
+@AudioProcessing
+final class AudioConversion {
+    
+    private var composition = AVMutableComposition()
 
-        while true {
-            if writerInput.isReadyForMoreMediaData {
-                if let sampleBuffer = readerOutput.copyNextSampleBuffer() {
-                    if !writerInput.append(sampleBuffer) {
-                        reader.cancelReading()
-                        writerInput.markAsFinished()
-                        writer.cancelWriting()
-                        throw writer.error ?? NSError(domain: "AudioCAF", code: -4)
-                    }
-                } else {
-                    break
-                }
-            } else {
-                try await Task.sleep(nanoseconds: 5_000_000)
-            }
-        }
-
-        writerInput.markAsFinished()
-        await writer.finishWriting()
-
-        if reader.status == .failed {
-            throw reader.error ?? NSError(domain: "AudioCAF", code: -5)
-        } else if writer.status == .failed {
-            throw writer.error ?? NSError(domain: "AudioCAF", code: -6)
-        }
-
-        return outputURL
-    }
-
-    static func toCAFLong(
+    func toCAFLong(
         inputURL: URL,
         outputURL: URL,
         bitrate: Int = 128_000,
@@ -117,7 +69,7 @@ actor AudioCAFManager {
                     userInfo: [NSLocalizedDescriptionKey: "Invalid source duration"]
                 )
             }
-            let composition = AVMutableComposition()
+            composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
                     withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
@@ -136,7 +88,7 @@ actor AudioCAFManager {
                 )
                 cursor = cursor + chunk
             }
-            let compTracks = try await composition.loadTracks(withMediaType: .audio)
+            let compTracks = try await perform(composition)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -13,
@@ -178,14 +130,19 @@ actor AudioCAFManager {
         input.expectsMediaDataInRealTime = false
         writer.add(input)
 
-        let actor = AudioCAFManager(
+        return try await run(
             reader: reader, readerOutput: readerOutput, writer: writer, writerInput: input,
             outputURL: outputURL
         )
-        return try await actor.run()
     }
 
-    static func toCAFShort(
+    func perform(_ composition: sending AVMutableComposition) async throws
+        -> [AVMutableCompositionTrack]
+    {
+        return try await composition.loadTracks(withMediaType: .audio)
+    }
+
+    func toCAFShort(
         inputURL: URL,
         outputURL: URL,
         bitrate: Int = 128_000,
@@ -210,7 +167,7 @@ actor AudioCAFManager {
         let reader: AVAssetReader
         let readerOutput: AVAssetReaderTrackOutput
         if maxSeconds > 0 && sourceDuration > maxDuration {
-            let composition = AVMutableComposition()
+            composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
                     withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
@@ -224,7 +181,7 @@ actor AudioCAFManager {
             try compTrack.insertTimeRange(
                 CMTimeRange(start: .zero, duration: maxDuration), of: srcTrack, at: .zero
             )
-            let compTracks = try await composition.loadTracks(withMediaType: .audio)
+            let compTracks = try await perform(composition)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -22,
@@ -279,10 +236,56 @@ actor AudioCAFManager {
         input.expectsMediaDataInRealTime = false
         writer.add(input)
 
-        let actor = AudioCAFManager(
-            reader: reader, readerOutput: readerOutput, writer: writer, writerInput: input,
+        return try await run(
+            reader: reader,
+            readerOutput: readerOutput,
+            writer: writer,
+            writerInput: input,
             outputURL: outputURL
         )
-        return try await actor.run()
+    }
+
+    private func run(
+        reader: AVAssetReader,
+        readerOutput: AVAssetReaderTrackOutput,
+        writer: AVAssetWriter,
+        writerInput: AVAssetWriterInput,
+        outputURL: URL
+    ) async throws -> URL {
+        if !reader.startReading() {
+            throw reader.error ?? NSError(domain: "AudioCAF", code: -2)
+        }
+        if !writer.startWriting() {
+            throw writer.error ?? NSError(domain: "AudioCAF", code: -3)
+        }
+        writer.startSession(atSourceTime: .zero)
+
+        while true {
+            if writerInput.isReadyForMoreMediaData {
+                if let sampleBuffer = readerOutput.copyNextSampleBuffer() {
+                    if !writerInput.append(sampleBuffer) {
+                        reader.cancelReading()
+                        writerInput.markAsFinished()
+                        writer.cancelWriting()
+                        throw writer.error ?? NSError(domain: "AudioCAF", code: -4)
+                    }
+                } else {
+                    break
+                }
+            } else {
+                try await Task.sleep(nanoseconds: 5_000_000)
+            }
+        }
+
+        writerInput.markAsFinished()
+        await writer.finishWriting()
+
+        if reader.status == .failed {
+            throw reader.error ?? NSError(domain: "AudioCAF", code: -5)
+        } else if writer.status == .failed {
+            throw writer.error ?? NSError(domain: "AudioCAF", code: -6)
+        }
+
+        return outputURL
     }
 }

@@ -20,7 +20,8 @@ extension Calendar {
 // MARK: -  Date+.swift
 
 extension Date {
-    public func formatString(format: String = "yyyy-MM-dd HH:mm:ss") -> String {
+    
+    nonisolated func formatString(format: String = "yyyy-MM-dd HH:mm:ss") -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
         return dateFormatter.string(from: self)
@@ -60,6 +61,7 @@ extension Date {
     /// 计算给定天数减去（当前日期 - 自身日期）的天数
     /// - Parameter days: 给定的天数
     /// - Returns: 剩余的天数
+    nonisolated
     func daysRemaining(afterSubtractingFrom days: Int) -> Int {
         // 计算当前日期和目标日期之间的天数差
         guard let daysBetween = Calendar.current.dateComponents([.day], from: Date(), to: self).day

@@ -75,7 +75,9 @@ struct ServerMonitoringView: View {
             if self.timer == nil {
                 updateData()
                 self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                    updateData()
+                    Task{@MainActor in 
+                        self.updateData()    
+                    }
                 }
                 NLog.error("启动定时器")
             }

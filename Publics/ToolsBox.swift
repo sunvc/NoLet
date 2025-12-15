@@ -63,6 +63,7 @@ public class Clipboard {
     }
 }
 
+@MainActor
 public enum Haptic {
     private static var lastImpactTime: Date?
     private static var minInterval: TimeInterval = 0.1 // 最小震动间隔
@@ -106,6 +107,7 @@ public enum Haptic {
 }
 
 // var Log = os.Logger()
+nonisolated
 public enum NLog {
     /// 日志级别
     enum Level: String {
@@ -127,31 +129,31 @@ public enum NLog {
         line: Int = #line,
         _ message: Any?...
     ) {
+       
         #if DEBUG
-        Task.detached(priority: .background) {
-            let currentDate = Date()
-            if level == .ERROR {
-                print("\n")
-                print(Array(repeating: "‼️", count: 50).joined())
-                print("[‼️\(level.rawValue)] - \(currentDate.formatString())")
-            } else {
-                print("\n[☘️\(level.rawValue)] - \(currentDate.formatString())")
-            }
+        let message = message
+        let currentDate = Date()
+        if level == .ERROR {
+            print("\n")
+            print(Array(repeating: "‼️", count: 50).joined())
+            print("[‼️\(level.rawValue)] - \(currentDate.formatString())")
+        } else {
+            print("\n[☘️\(level.rawValue)] - \(currentDate.formatString())")
+        }
 
-            print("🏳️‍🌈: \((file as NSString).lastPathComponent)\(" - \(line) ") 🎖️: \(function) -> ")
+        print("🏳️‍🌈: \((file as NSString).lastPathComponent)\(" - \(line) ") 🎖️: \(function) -> ")
 
-            for item in message {
-                if String("\(item ?? "")"
-                    .trimmingCharacters(in:
-                        .whitespacesAndNewlines)).count > 0
-                {
-                    print("- ", item ?? "")
-                }
+        for item in message {
+            if String("\(item ?? "")"
+                .trimmingCharacters(in:
+                    .whitespacesAndNewlines)).count > 0
+            {
+                print("- ", item ?? "")
             }
+        }
 
-            if level == .ERROR {
-                print(Array(repeating: "‼️", count: 50).joined())
-            }
+        if level == .ERROR {
+            print(Array(repeating: "‼️", count: 50).joined())
         }
 
         #endif

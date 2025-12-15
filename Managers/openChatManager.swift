@@ -53,11 +53,13 @@ final class openChatManager: ObservableObject {
         startObservingUnreadCount()
     }
 
+
     private func startObservingUnreadCount() {
+        let id = self.chatgroup?.id
         let observation = ValueObservation.tracking { db -> (Int, [ChatMessage], Int) in
             let groupsCount: Int = try ChatGroup.fetchCount(db)
             let messages: [ChatMessage] = try ChatMessage
-                .filter(ChatMessage.Columns.chat == self.chatgroup?.id).fetchAll(db)
+                .filter(ChatMessage.Columns.chat == id).fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
             return (groupsCount, messages, promptCount)
         }

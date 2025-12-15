@@ -12,6 +12,7 @@
 import Foundation
 import GRDB
 
+
 public class DatabaseManager {
     public static let shared = try! DatabaseManager()
 

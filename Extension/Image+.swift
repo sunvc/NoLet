@@ -20,9 +20,10 @@ extension UIImage {
     /// Description`
     /// @param albumName 自定义相册的名字
     /// @param complete `success`代表图片保存是否成功,`authorizationStatus`代表授权状态
+    @MainActor
     func bat_save(
         intoAlbum albumName: String?,
-        complete: @escaping (_ success: Bool, _ authorizationStatus: PHAuthorizationStatus) -> Void
+        complete: @escaping @Sendable (_ success: Bool, _ authorizationStatus: PHAuthorizationStatus) -> Void
     ) {
         let albumName = albumName ?? NCONFIG.AppName
 
@@ -43,6 +44,7 @@ extension UIImage {
     }
 
     /// 私有的，负责具体的保存图片的操作
+    nonisolated
     private func p_excuteSaveImage(intoAlbum albumName: String?) -> Bool {
         guard let albumName = albumName else {
             // 保存图片到`相机胶卷`
@@ -80,6 +82,7 @@ extension UIImage {
     }
 
     /// 当前App对应的自定义相册
+    nonisolated
     private func p_createdCollection(albumName: String) -> PHAssetCollection? {
         // 抓取所有的自定义相册
         let collections = PHAssetCollection.fetchAssetCollections(
@@ -115,6 +118,7 @@ extension UIImage {
     }
 
     /// 返回刚才保存到`相机胶卷`的图片
+    nonisolated
     private func p_createdAssets() -> PHFetchResult<PHAsset>? {
         do {
             var assetID = ""
@@ -129,6 +133,7 @@ extension UIImage {
         }
     }
 
+    nonisolated
     func scaledSize(withWidth width: CGFloat) -> CGSize {
         let scaleFactor = width / size.width
         let newHeight = size.height * scaleFactor

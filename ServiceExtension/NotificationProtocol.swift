@@ -12,7 +12,7 @@
 //
 
 import Foundation
-import UserNotifications
+@preconcurrency import UserNotifications
 
 public protocol NotificationContentHandler {
     /// 处理 UNMutableNotificationContent
@@ -21,12 +21,14 @@ public protocol NotificationContentHandler {
     ///   - bestAttemptContent: 需要处理的 UNMutableNotificationContent
     /// - Returns: 处理成功后的 UNMutableNotificationContent
     /// - Throws: 处理失败后，应该中断处理
+    @MainActor
     func handler(
         identifier: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent
 
     /// serviceExtension 即将终止，不管 handler 是否处理完成，最好立即调用 contentHandler 交付已完成的部分，否则会原样展示服务器传递过来的推送
+  
     func serviceExtensionTimeWillExpire(contentHandler: (UNNotificationContent) -> Void)
 }
 
@@ -36,6 +38,7 @@ extension NotificationContentHandler {
 
 // enum 遵循 CaseIterable 所以所有的 handler， 按顺序从上往下对推送进行处理
 // ciphertext 需要放在最前面，有可能所有的推送数据都在密文里
+
 enum NotificationContentHandlerItem: CaseIterable {
     case ciphertext
     case archive

@@ -51,6 +51,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
     // MultipeerConnectivity 组件
     private let serviceType = "nolet"
     private var myPeerID: MCPeerID
+
     private var session: MCSession
     private var advertiser: MCNearbyServiceAdvertiser
     private var browser: MCNearbyServiceBrowser
@@ -196,18 +197,17 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         sendProgressCancellables[msgID] = [:]
         // 为每个设备启动独立并发任务，确保真正并发
         for peer in peers {
-            Task.detached(priority: .userInitiated) { [weak self] in
-                guard let self = self else { return }
-                if let progress = self.session.sendResource(
-                    at: tempURL,
-                    withName: "image.jpg",
-                    toPeer: peer,
-                    withCompletionHandler: { [weak self] error in
-                        guard let self = self else { return }
-                        if let error = error {
-                            print("图片发送到 \(peer.displayName) 失败: \(error.localizedDescription)")
-                        }
-                        // 完成计数
+            if let progress = self.session.sendResource(
+                at: tempURL,
+                withName: "image.jpg",
+                toPeer: peer,
+                withCompletionHandler: { [weak self] error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print("图片发送到 \(peer.displayName) 失败: \(error.localizedDescription)")
+                    }
+                    // 完成计数
+                    DispatchQueue.main.async {
                         self.updateMessage(msgID) { m in
                             m.completedPeers += 1
                             m.progress = m
@@ -216,21 +216,21 @@ class NearbyNoLetManager: NSObject, ObservableObject {
                                 1.0
                             if m.completedPeers >= m.totalPeers { m.isTransferring = false }
                         }
-                        DispatchQueue.main.async {
-                            self.sendProgressCancellables[msgID]?[peer] = nil
-                        }
+                        self.sendProgressCancellables[msgID]?[peer] = nil
                     }
-                ) {
-                    let cancellable = progress.publisher(for: \.fractionCompleted)
-                        .receive(on: DispatchQueue.main)
-                        .sink { [weak self] _ in
+                }
+            ) {
+                let cancellable = progress.publisher(for: \.fractionCompleted)
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] _ in
+                        Task{@MainActor in
                             self?.updateAggregateProgress(messageID: msgID)
                         }
-                    DispatchQueue.main.async {
-                        self.sendProgressCancellables[msgID]?[peer] = cancellable
-                        if self.sendProgresses[msgID] == nil { self.sendProgresses[msgID] = [:] }
-                        self.sendProgresses[msgID]?[peer] = progress
                     }
+                DispatchQueue.main.async {
+                    self.sendProgressCancellables[msgID]?[peer] = cancellable
+                    if self.sendProgresses[msgID] == nil { self.sendProgresses[msgID] = [:] }
+                    self.sendProgresses[msgID]?[peer] = progress
                 }
             }
         }
@@ -277,40 +277,37 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         sendProgressCancellables[msgID] = [:]
         // 为每个设备启动独立并发任务，确保真正并发
         for peer in peers {
-            Task.detached(priority: .userInitiated) { [weak self] in
-                guard let self = self else { return }
-                if let progress = self.session.sendResource(
-                    at: tempURL,
-                    withName: fileName,
-                    toPeer: peer,
-                    withCompletionHandler: { [weak self] error in
-                        guard let self = self else { return }
-                        if let error = error {
-                            print("群发文件失败到 \(peer.displayName): \(error.localizedDescription)")
-                        }
-                        self.updateMessage(msgID) { m in
-                            m.completedPeers += 1
-                            m.progress = m
-                                .totalPeers > 0 ?
-                                (Double(m.completedPeers) / Double(m.totalPeers)) :
-                                1.0
-                            if m.completedPeers >= m.totalPeers { m.isTransferring = false }
-                        }
-                        DispatchQueue.main.async {
-                            self.sendProgressCancellables[msgID]?[peer] = nil
-                        }
+            if let progress = self.session.sendResource(
+                at: tempURL,
+                withName: fileName,
+                toPeer: peer,
+                withCompletionHandler: { [weak self] error in
+                    guard let self = self else { return }
+                    if let error = error {
+                        print("群发文件失败到 \(peer.displayName): \(error.localizedDescription)")
                     }
-                ) {
-                    let cancellable = progress.publisher(for: \.fractionCompleted)
-                        .receive(on: DispatchQueue.main)
-                        .sink { [weak self] _ in
-                            self?.updateAggregateProgress(messageID: msgID)
-                        }
+                    self.updateMessage(msgID) { m in
+                        m.completedPeers += 1
+                        m.progress = m
+                            .totalPeers > 0 ?
+                            (Double(m.completedPeers) / Double(m.totalPeers)) :
+                            1.0
+                        if m.completedPeers >= m.totalPeers { m.isTransferring = false }
+                    }
                     DispatchQueue.main.async {
-                        self.sendProgressCancellables[msgID]?[peer] = cancellable
-                        if self.sendProgresses[msgID] == nil { self.sendProgresses[msgID] = [:] }
-                        self.sendProgresses[msgID]?[peer] = progress
+                        self.sendProgressCancellables[msgID]?[peer] = nil
                     }
+                }
+            ) {
+                let cancellable = progress.publisher(for: \.fractionCompleted)
+                    .receive(on: DispatchQueue.main)
+                    .sink { [weak self] _ in
+                        self?.updateAggregateProgress(messageID: msgID)
+                    }
+                DispatchQueue.main.async {
+                    self.sendProgressCancellables[msgID]?[peer] = cancellable
+                    if self.sendProgresses[msgID] == nil { self.sendProgresses[msgID] = [:] }
+                    self.sendProgresses[msgID]?[peer] = progress
                 }
             }
         }

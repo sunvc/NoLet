@@ -13,8 +13,8 @@
 import AppIntents
 
 struct EasyPushIntent: AppIntent {
-    static var title: LocalizedStringResource = "快速通知"
-    static var openAppWhenRun: Bool = false
+    static let title: LocalizedStringResource = "快速通知"
+    static let openAppWhenRun: Bool = false
 
     @Parameter(title: "服务器", optionsProvider: ServerAddressProvider())
     var address: String

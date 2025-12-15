@@ -101,6 +101,7 @@ enum MessageAction: String, CaseIterable, Equatable {
 
 // MARK: - QuickAction model
 
+
 enum QuickAction: String, CaseIterable {
     static var selectAction: UIApplicationShortcutItem?
 
@@ -171,7 +172,6 @@ struct PushServerModel: Codable, Identifiable, Equatable, Hashable {
 }
 
 // MARK: - AppIconMode
-
 enum AppIconEnum: String, CaseIterable, Equatable {
     case nolet
     case nolet0
@@ -216,7 +216,6 @@ struct PushExampleModel: Identifiable {
     }
 }
 
-// MARK: - ExpirationTime
 
 enum DefaultBrowserModel: String, CaseIterable {
     case auto
@@ -349,30 +348,4 @@ struct MoreMessage: Codable, Hashable {
     var body: String
     var index: Int
     var count: Int
-}
-
-struct PushToTalkGroup: Codable, Hashable {
-    var id: UUID
-    var name: String
-    var avatar: URL?
-    var active: Bool
-    private(set) var prefix: Int = 10
-    private(set) var suffix: Int = 1
-
-    var uiimage: UIImage? {
-        if let avatar {
-            UIImage(contentsOfFile: avatar.absoluteString)
-        } else {
-            UIImage(contentsOfFile: "logo2")
-        }
-    }
-
-    mutating func set(_ prefix: Int? = nil, suffix: Int? = nil) {
-        if let prefix {
-            self.prefix = max(min(prefix, 999), 10)
-        }
-        if let suffix {
-            self.suffix = max(min(suffix, 999), 1)
-        }
-    }
 }

@@ -13,19 +13,33 @@
 @_exported import Defaults
 import Foundation
 
-let DEFAULTSTORE = UserDefaults(suiteName: NCONFIG.groupName)!
-
 #if DEBUG
-private var uniquekeys: Set<NoletKey> = []
+actor UniqueKeysChecker {
+    static let shared = UniqueKeysChecker()
+    private var keys = Set<NoletKey>()
+
+    func checkAndInsert(_ key: NoletKey) {
+        assert(!keys.contains(key), "错误：\(key.rawValue) 已经存在！")
+        keys.insert(key)
+    }
+}
 #endif
+
+
+
+func DEFAULTSTORE() -> UserDefaults {
+   return  UserDefaults(suiteName: NCONFIG.groupName)!
+}
 
 extension Defaults.Key {
     convenience init(_ name: NoletKey, _ defaultValue: Value, iCloud: Bool = false) {
         #if DEBUG
-        assert(!uniquekeys.contains(name), "错误：\(name.rawValue) 已经存在！")
-        uniquekeys.insert(name)
+        Task {
+            await UniqueKeysChecker.shared.checkAndInsert(name)
+        }
         #endif
-        self.init(name.rawValue, default: defaultValue, suite: DEFAULTSTORE, iCloud: iCloud)
+
+        self.init(name.rawValue, default: defaultValue, suite: DEFAULTSTORE(), iCloud: iCloud)
     }
 }
 

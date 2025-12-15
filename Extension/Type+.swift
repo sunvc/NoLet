@@ -12,8 +12,10 @@
 
 import UniformTypeIdentifiers
 
+nonisolated
 extension UTType {
-    static var trnExportType = UTType(exportedAs: "me.uuneo.nolet.exv")
+    
+    static let trnExportType = UTType(exportedAs: "me.uuneo.nolet.exv")
 }
 
 extension Bundle {

@@ -171,8 +171,8 @@ struct OpenChatHistoryView: View {
                             try? await DatabaseManager.shared.dbQueue.write { db in
                                 // 查找 ChatGroup
                                 let groups = try ChatGroup.fetchCount(db)
-                                if groups == 1 || openChatManager.shared.chatgroup == chatgroup {
-                                    Task { @MainActor in
+                                Task { @MainActor in
+                                    if groups == 1 || openChatManager.shared.chatgroup == chatgroup {
                                         openChatManager.shared.chatgroup = nil
                                     }
                                 }

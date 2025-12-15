@@ -185,7 +185,7 @@ struct SoundView: View {
             if skipFiles.contains(baseName) { continue }
             let destinationURL = destinationURL.appendingPathComponent("\(baseName).caf")
             if fileManager.fileExists(atPath: destinationURL.path) { continue }
-            if (try? await AudioCAFManager.toCAFShort(
+            if (try? await AudioConversion().toCAFShort(
                 inputURL: fileURL,
                 outputURL: destinationURL
             )) != nil {
@@ -224,7 +224,7 @@ struct SoundView: View {
         }
 
         do {
-            _ = try await AudioCAFManager.toCAFShort(
+            _ = try await AudioConversion().toCAFShort(
                 inputURL: sourceURL,
                 outputURL: groupDestinationURL,
                 maxSeconds: 29.9

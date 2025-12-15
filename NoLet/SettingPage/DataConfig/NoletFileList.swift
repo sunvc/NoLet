@@ -116,7 +116,7 @@ class FileTreeManager: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task {
             do {
                 let items = try self.loadItems(at: self.rootURL)
                 DispatchQueue.main.async {

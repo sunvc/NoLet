@@ -13,6 +13,7 @@
 import CryptoKit
 import Foundation
 
+
 public enum Domap {
     static let Beta = false
     static let KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF"

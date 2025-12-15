@@ -87,10 +87,13 @@ final class AudioManager: NetworkManager, ObservableObject {
             queue: .main
         ) { [weak self] time in
             guard let self = self else { return }
-            self.currentTime = time.seconds
-            if let dur = self.player?.currentItem?.duration.seconds, dur > 0 {
-                self.duration = dur
+            Task{@MainActor in
+                self.currentTime = time.seconds
+                if let dur = self.player?.currentItem?.duration.seconds, dur > 0 {
+                    self.duration = dur
+                }
             }
+            
         }
 
         //  监听播放结束
@@ -101,7 +104,9 @@ final class AudioManager: NetworkManager, ObservableObject {
         ) { [weak self] _ in
             guard let self = self else { return }
             // 停止并清理
-            self.cleanup()
+            Task{@MainActor in
+                self.cleanup()
+            }
         }
     }
 
@@ -139,7 +144,7 @@ final class AudioManager: NetworkManager, ObservableObject {
         currentURL = nil
         isPlaying = false
     }
-
+    @MainActor
     deinit {
         cleanup()
     }
@@ -207,7 +212,7 @@ extension AudioManager {
     /// 加载系统默认音效和用户自定义音效文件列表
     func updateFileList() {
         Task.detached(priority: .userInitiated) {
-            let (customSounds, defaultSounds) = self.getFileList()
+            let (customSounds, defaultSounds) = await self.getFileList()
             // 回到主线程，更新界面相关状态（如 SwiftUI 或 UIKit 列表）
             await MainActor.run {
                 self.customSounds = customSounds

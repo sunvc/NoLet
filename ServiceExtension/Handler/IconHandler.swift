@@ -13,6 +13,7 @@ import UIKit
 import UserNotifications
 
 class IconHandler: NotificationContentHandler {
+    
     func handler(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
@@ -30,6 +31,7 @@ class IconHandler: NotificationContentHandler {
             if let image = images.first, let icon = image.toPushIcon(),
                let previewImage = icon.previewImage, let data = previewImage.pngData()
             {
+                
                 await ImageManager.storeImage(
                     data: data,
                     key: imageURL,

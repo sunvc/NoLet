@@ -221,20 +221,9 @@ struct AssistantPageView: View {
         }
     }
 
-//    private var backupMenu: some ToolbarContent {
-//        ToolbarItem(placement: .topBarLeading) {
-//            Button {
-//                manager.router = []
-//            } label: {
-//                HStack(spacing: 10) {
-//                    Label("消息", systemImage: "chevron.left")
-//                }
-//            }
-//        }
-//    }
 
     // 发送消息
-    private func sendMessage(_ text: String) {
+    private func sendMessage(_ text: String)  {
         guard assistantAccouns.first(where: { $0.current }) != nil else {
             manager.router.append(.assistantSetting(nil))
             return
@@ -281,22 +270,27 @@ struct AssistantPageView: View {
                     if let res = result.choices.first?.delta.content {
                         Task { @MainActor in
                             chatManager.currentContent = chatManager.currentContent + res
-                        }
-                        if AppManager.shared.inAssistant {
-                            Haptic.selection()
+                            if AppManager.shared.inAssistant {
+                                Haptic.selection()
+                            }
                         }
                     }
 
                 case .failure(let error):
                     // Handle chunk error here
                     NLog.error(error)
-                    Toast.error(title: "发生错误\(error.localizedDescription)")
+                    Task { @MainActor in
+                        Toast.error(title: "发生错误\(error.localizedDescription)")
+                    }
                 }
             } completion: { error in
-                Haptic.impact()
-
+                Task { @MainActor in
+                    Haptic.impact()
+                }
                 if let error {
-                    Toast.error(title: "发生错误\(error.localizedDescription)")
+                    Task { @MainActor in
+                        Toast.error(title: "发生错误\(error.localizedDescription)")
+                    }
                     NLog.error(error)
                     Task { @MainActor in
                         manager.isLoading = false
@@ -305,26 +299,26 @@ struct AssistantPageView: View {
                     }
                     return
                 }
+                
+                
 
-                Task.detached(priority: .userInitiated) {
+                Task {@MainActor in
                     do {
                         try await Task.sleep(for: .seconds(0.3))
-
+                        
                         let responseMessage: ChatMessage = {
                             var message = openChatManager.shared.currentChatMessage
                             message.chat = newGroup.id
                             return message
                         }()
-
+                        
                         try await DatabaseManager.shared.dbQueue.write { db in
                             try responseMessage.insert(db)
                         }
 
-                        Task { @MainActor in
-                            openChatManager.shared.currentRequest = ""
-                            AppManager.shared.isLoading = false
-                            self.hideKeyboard()
-                        }
+                        openChatManager.shared.currentRequest = ""
+                        AppManager.shared.isLoading = false
+                        self.hideKeyboard()
 
                     } catch {
                         NLog.error(error.localizedDescription)

@@ -14,6 +14,7 @@
 import Defaults
 import Foundation
 
+@MainActor
 extension Defaults.Keys {
     static let servers = Key<[PushServerModel]>(.serverArrayStroage, [])
     static let cloudServers = Key<[PushServerModel]>(.serverArrayCloudStroage, [], iCloud: true)
@@ -26,11 +27,10 @@ extension Defaults.Keys {
     static let proxyServer = Key<PushServerModel>(.proxyDownloadServer, PushServerModel.space)
 }
 
-extension ExpirationTime: Defaults.Serializable {}
-extension DefaultBrowserModel: Defaults.Serializable {}
-extension AssistantAccount: Defaults.Serializable {}
-extension Identifiers: Defaults.Serializable {}
-extension AppIconEnum: Defaults.Serializable {}
-extension PushServerModel: Defaults.Serializable {}
-extension MoreMessage: Defaults.Serializable {}
-extension PushToTalkGroup: Defaults.Serializable {}
+extension ExpirationTime: @MainActor Defaults.Serializable {}
+extension DefaultBrowserModel: @MainActor Defaults.Serializable {}
+extension AssistantAccount: @MainActor Defaults.Serializable {}
+extension Identifiers: @MainActor Defaults.Serializable {}
+extension AppIconEnum: @MainActor Defaults.Serializable {}
+extension PushServerModel: @MainActor Defaults.Serializable {}
+extension MoreMessage: @MainActor Defaults.Serializable {}

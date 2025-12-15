@@ -15,11 +15,9 @@ import CommonCrypto
 import Compression
 import Defaults
 import Foundation
-import os
-import UIKit
 import UniformTypeIdentifiers
 
-class NetworkManager: NSObject {
+class NetworkManager: NSObject{
     private var session: URLSession!
 
     enum requestMethod: String {
@@ -77,7 +75,7 @@ class NetworkManager: NSObject {
             let config = URLSessionConfiguration.default
             config.requestCachePolicy = .reloadIgnoringLocalCacheData
             config.urlCache = nil
-            session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
+            session = URLSession(configuration: config, delegate: nil, delegateQueue: .main)
         }
 
         // 尝试将字符串转换为 URL，如果失败则抛出错误
@@ -186,19 +184,5 @@ class NetworkManager: NSObject {
         try FileManager.default.moveItem(at: downloadedURL, to: destinationURL)
 
         return destinationURL
-    }
-}
-
-extension NetworkManager: URLSessionDataDelegate {
-    func urlSession(
-        _: URLSession, task _: URLSessionTask,
-        didFinishCollecting metrics: URLSessionTaskMetrics
-    ) {
-        #if DEBUG
-        let protocols = metrics.transactionMetrics.map { $0.networkProtocolName ?? "-" }.joined(
-            separator: "-")
-        os_log("protocols: \(protocols)")
-        // 这里获取响应信息
-        #endif
     }
 }

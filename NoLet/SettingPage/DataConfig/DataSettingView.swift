@@ -191,9 +191,9 @@ struct DataSettingView: View {
                             switch result {
                             case .success(let files):
                                 let msg = await importMessage(files)
-                                Toast.shared.present(title: msg, symbol: .info)
+                                await Toast.shared.present(title: msg, symbol: .info)
                             case .failure(let err):
-                                Toast.shared.present(
+                                await Toast.shared.present(
                                     title: err.localizedDescription,
                                     symbol: .error
                                 )

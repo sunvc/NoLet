@@ -153,7 +153,7 @@ struct WebInlineImageProvider: InlineImageProvider {
         }
 
         // 获取屏幕宽度（逻辑点）
-        let maxWidth = await UIScreen.main.bounds.width - 30
+        let maxWidth = UIScreen.main.bounds.width - 30
 
         // 按屏幕宽度等比缩放
         let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)

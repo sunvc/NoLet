@@ -164,7 +164,7 @@ struct SelectMessageView: View {
                                 }
                             }
                             .overlay(alignment: .topTrailing) {
-                                if !translateResult.isEmpty{
+                                if !translateResult.isEmpty {
                                     Button {
                                         Clipboard.set(translateResult)
                                         Toast.copy()
@@ -328,7 +328,6 @@ struct SelectMessageView: View {
                                 } label: {
                                     Label("复制其他字段", systemImage: "doc.on.doc")
                                         .customForegroundStyle(.green, .primary)
-                                    
                                 }
                             }
                         }
@@ -383,10 +382,9 @@ struct SelectMessageView: View {
                                 }
                             }
                         }
-                        
-                        
-                        Section{
-                            if let image = message.image{
+
+                        Section {
+                            if let image = message.image {
                                 Button {
                                     Task {
                                         if let file = await ImageManager.downloadImage(image),

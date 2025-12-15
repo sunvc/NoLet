@@ -99,34 +99,34 @@ struct CloudIcon: View {
 
                                                 Section {
                                                     Button(role: .destructive) {
-                                                        CloudManager.shared
-                                                            .deleteCloudIcon(icon.recordID
-                                                                .recordName)
-                                                            { error in
-                                                                if let error {
-                                                                    Toast.shared.present(
-                                                                        title: "\(error.localizedDescription)",
-                                                                        symbol: .error,
-                                                                        tint: .red
+                                                        Task {
+                                                            let success = await CloudManager.shared
+                                                                .deleteCloudIcon(icon.recordID
+                                                                    .recordName)
+                                                            if !success {
+                                                                Toast.shared.present(
+                                                                    title: "图片删除失败",
+                                                                    symbol: .error,
+                                                                    tint: .red
+                                                                )
+                                                            } else {
+                                                                Toast
+                                                                    .success(
+                                                                        title: "图片删除成功"
                                                                     )
-                                                                } else {
-                                                                    Toast
-                                                                        .success(
-                                                                            title: "图片删除成功"
-                                                                        )
-                                                                    if let index = icons
-                                                                        .firstIndex(where: {
-                                                                            $0.recordID
-                                                                                .recordName ==
-                                                                                icon
-                                                                                .recordID
-                                                                                .recordName
-                                                                        })
-                                                                    {
-                                                                        icons.remove(at: index)
-                                                                    }
+                                                                if let index = icons
+                                                                    .firstIndex(where: {
+                                                                        $0.recordID
+                                                                            .recordName ==
+                                                                            icon
+                                                                            .recordID
+                                                                            .recordName
+                                                                    })
+                                                                {
+                                                                    icons.remove(at: index)
                                                                 }
                                                             }
+                                                        }
                                                     } label: {
                                                         Label("删除云图标", systemImage: "trash")
                                                             .customForegroundStyle(

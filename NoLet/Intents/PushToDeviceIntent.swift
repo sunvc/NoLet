@@ -13,8 +13,8 @@
 import AppIntents
 
 struct PushToDeviceIntent: AppIntent {
-    static var title: LocalizedStringResource = "发送通知到设备"
-    static var openAppWhenRun: Bool = false
+    static let title: LocalizedStringResource = "发送通知到设备"
+    static let openAppWhenRun: Bool = false
 
     @Parameter(title: "服务器", optionsProvider: ServerAddressProvider())
     var address: String
@@ -65,10 +65,10 @@ struct PushToDeviceIntent: AppIntent {
 
         var params: [String: Any] = [:]
 
-        if let level, !level.isEmpty, let level = LevelTitle.rawValue(fromDisplayName: level) {
+        if let level, !level.isEmpty, let level = await LevelTitle.rawValue(fromDisplayName: level) {
             params["level"] = level
 
-            if level == LevelTitle.critical.name {
+            if await level == LevelTitle.critical.name {
                 params["volume"] = volume
             }
         }
@@ -114,11 +114,11 @@ struct PushToDeviceIntent: AppIntent {
         }
 
         if cipher {
-            let cryptoConfigs = Defaults[.cryptoConfigs]
+            let cryptoConfigs = await Defaults[.cryptoConfigs]
             guard let field = cryptoConfigs.first else { return .result(value: false) }
 
             let jsonData = try JSONSerialization.data(withJSONObject: params)
-            guard let cipherResult = CryptoManager(field).encrypt(jsonData) else {
+            guard let cipherResult = await CryptoManager(field).encrypt(jsonData) else {
                 return .result(value: false)
             }
             params = ["cipherText": cipherResult]

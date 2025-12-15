@@ -180,6 +180,7 @@ enum ChatPromptMode: Equatable {
     case abstract(String?)
 }
 
+nonisolated
 extension CodingKey {
     fileprivate var lows: String {
         stringValue.lowercased()

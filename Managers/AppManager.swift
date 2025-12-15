@@ -18,7 +18,7 @@ import SwiftUI
 import UIKit
 import Zip
 
-final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
+final class AppManager: NetworkManager, ObservableObject, Sendable {
     static let shared = AppManager()
 
     @Published var page: TabPage = .message
@@ -91,7 +91,10 @@ final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
         updates = newTransactionListenerTask()
     }
 
-    deinit { updates?.cancel() }
+    @MainActor
+    deinit { 
+        self.updates?.cancel()
+    }
 
     var updates: Task<Void, Never>?
 
@@ -129,8 +132,8 @@ final class AppManager: NetworkManager, ObservableObject, @unchecked Sendable {
             return nil
         case .server(let url, let key, let group, let sign):
             Task.detached(priority: .userInitiated) {
-                let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
-                let server = PushServerModel(url: url, key: key, group: group, sign: crypto)
+                let crypto = await CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
+                let server = await PushServerModel(url: url, key: key, group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
                 if success {
                     await MainActor.run {
@@ -431,7 +434,7 @@ extension AppManager {
 
     func registers() {
         Task.detached(priority: .userInitiated) {
-            let servers = Defaults[.servers]
+            let servers = await Defaults[.servers]
             let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
                 for (index, server) in servers.enumerated() {
                     group.addTask {

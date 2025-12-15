@@ -21,12 +21,11 @@ extension Defaults.Keys {
     static let cryptoConfigs = Key<[CryptoModelConfig]>(.CryptoSettingFieldsList, [])
 }
 
-extension CryptoModelConfig: Defaults.Serializable {}
-extension CryptoAlgorithm: Defaults.Serializable {}
-extension CryptoMode: Defaults.Serializable {}
+extension CryptoModelConfig: @MainActor Defaults.Serializable {}
+extension CryptoAlgorithm: @MainActor Defaults.Serializable {}
+extension CryptoMode: @MainActor Defaults.Serializable {}
 
 // MARK: - CryptoMode
-
 enum CryptoMode: String, Codable, CaseIterable, RawRepresentable {
     case GCM
     var Icon: String { "circle.grid.cross.right.filled" }

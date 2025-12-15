@@ -16,7 +16,7 @@ import UserNotifications
 import UserNotificationsUI
 import WebKit
 
-class NotificationViewController: UIViewController, UNNotificationContentExtension,
+class NotificationViewController: UIViewController, @MainActor UNNotificationContentExtension,
     WKNavigationDelegate
 {
     @IBOutlet var tipsView: UILabel!
@@ -198,10 +198,11 @@ class NotificationViewController: UIViewController, UNNotificationContentExtensi
 
 extension NotificationViewController {
     func ImageHandler(imageURL: String) {
+        let day = Defaults[.imageSaveDays].rawValue
         Task.detached(priority: .high) {
             if let localPath = await ImageManager.downloadImage(
                 imageURL,
-                expiration: .days(Defaults[.imageSaveDays].rawValue)
+                expiration: .days(day)
             ),
                 let image = UIImage(contentsOfFile: localPath)
             {

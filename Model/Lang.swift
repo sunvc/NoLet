@@ -13,7 +13,7 @@ import Defaults
 import Foundation
 import StoreKit
 
-extension Multilingual.Country: Defaults.Serializable {}
+extension Multilingual.Country: @MainActor Defaults.Serializable {}
 
 extension Defaults.Keys {
     static let translateLang = Key<Multilingual.Country>(

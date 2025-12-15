@@ -169,12 +169,9 @@ struct SingleMessagesView: View {
         guard !showLoading else { return }
         showLoading = true
 
-        Task.detached(priority: .userInitiated) {
+        Task {
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
             
-            let urls = results.compactMap({$0.image})
-            ImageManager.preloading(urls)
-
             await MainActor.run {
                 if item == nil {
                     self.messages = results

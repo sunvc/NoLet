@@ -12,6 +12,7 @@
 
 import UserNotifications
 
+
 class NotificationService: UNNotificationServiceExtension {
     /// 当前正在运行的
     var currentNotificationHandler: NotificationContentHandler?
@@ -22,7 +23,7 @@ class NotificationService: UNNotificationServiceExtension {
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ) {
-        Task {
+        Task{
             guard var bestAttemptContent = (request.content
                 .mutableCopy() as? UNMutableNotificationContent)
             else {
@@ -31,7 +32,6 @@ class NotificationService: UNNotificationServiceExtension {
             }
 
             self.currentContentHandler = contentHandler
-
             // 各个 handler 依次对推送进行处理
             for handler in NotificationContentHandlerItem.allCases.map({ $0.handler }) {
                 do {
@@ -49,11 +49,15 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
         }
     }
-
+    
     override func serviceExtensionTimeWillExpire() {
         super.serviceExtensionTimeWillExpire()
+        
         if let handler = currentContentHandler {
-            currentNotificationHandler?.serviceExtensionTimeWillExpire(contentHandler: handler)
+            guard let currentNotificationHandler = currentNotificationHandler else{ return }
+            currentNotificationHandler.serviceExtensionTimeWillExpire(contentHandler: handler)
+            
         }
     }
+
 }

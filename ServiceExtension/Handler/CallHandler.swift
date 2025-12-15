@@ -95,7 +95,7 @@ extension CallHandler {
         )
 
         do {
-            return try await AudioCAFManager.toCAFLong(
+            return try await AudioConversion().toCAFLong(
                 inputURL: inputFile,
                 outputURL: longSoundPath,
                 bitrate: 128_000,

@@ -24,6 +24,7 @@ extension NURL {
     var url: URL { URL(string: self)! }
 }
 
+
 class NCONFIG {
     static let appSymbol = "NoLet"
     static let groupName = "group.pushback"

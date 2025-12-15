@@ -34,6 +34,7 @@ class LevelHandler: NotificationContentHandler {
         return .active
     }
 
+    
     class func setCriticalSound(
         content bestAttemptContent: UNMutableNotificationContent,
         soundName: String? = nil

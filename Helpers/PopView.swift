@@ -64,12 +64,9 @@ private struct PopViewHelper<ViewContent: View>: ViewModifier {
                     if #available(iOS 17.0, *) {
                         viewContent
                             .visualEffect { content, proxy in
-                                content
-                                    .offset(y: offset(
-                                        proxy,
-                                        screenHeight: screenHeight,
-                                        animateView: animateView
-                                    ))
+                                let viewHeight = proxy.size.height
+                                return content
+                                    .offset(y: animateView ? 0 : (screenHeight + viewHeight) / 2)
                             }
                             .presentationBackground(.clear)
                             .task {
@@ -124,14 +121,6 @@ private struct PopViewHelper<ViewContent: View>: ViewModifier {
         }
     }
 
-    nonisolated func offset(
-        _ proxy: GeometryProxy,
-        screenHeight: CGFloat,
-        animateView: Bool
-    ) -> CGFloat {
-        let viewHeight = proxy.size.height
-        return animateView ? 0 : (screenHeight + viewHeight) / 2
-    }
 
     var screenSize: CGSize {
         var size: CGSize = .zero

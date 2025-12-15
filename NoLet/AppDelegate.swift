@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let manager = AppManager.shared
         if Defaults[.servers].count == 0 {
             Task.detached(priority: .userInitiated) {
-                if !manager.customServerURL.isEmpty {
+                if await !manager.customServerURL.isEmpty {
                     _ = await manager
                         .appendServer(server: PushServerModel(url: manager.customServerURL))
                 } else {

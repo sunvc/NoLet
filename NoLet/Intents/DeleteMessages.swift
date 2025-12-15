@@ -15,8 +15,8 @@ import GRDB
 import SwiftUI
 
 struct DeleteMessageIntent: AppIntent {
-    static var title: LocalizedStringResource = "删除消息"
-    static var openAppWhenRun: Bool = false
+    static let title: LocalizedStringResource = "删除消息"
+    static let openAppWhenRun: Bool = false
 
     @Parameter(title: "日期")
     var date: Date

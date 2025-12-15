@@ -79,6 +79,7 @@ extension CKRecord {
     }
 }
 
+
 class CloudManager {
     static let shared = CloudManager()
 
@@ -227,19 +228,15 @@ class CloudManager {
     }
 
     // 删除指定的 PushIcon
-    func deleteCloudIcon(_ serverID: String, completion: @escaping (Error?) -> Void) {
-        // 创建 CKRecord.ID 对象
-        let recordID = CKRecord.ID(recordName: serverID)
-
-        // 调用数据库的 delete 方法删除记录
-        database.delete(withRecordID: recordID) { _, error in
-            if let error = error {
-                // 删除失败时，调用 completion 回调并传递错误信息
-                completion(error)
-            } else {
-                // 删除成功时，调用 completion 回调
-                completion(nil)
-            }
+    func deleteCloudIcon(_ serverID: String) async -> Bool {
+        do {
+            // 创建 CKRecord.ID 对象
+            let recordID = CKRecord.ID(recordName: serverID)
+            // 调用数据库的 delete 方法删除记录
+            _ = try await database.deleteRecord(withID: recordID)
+            return true
+        } catch {
+            return false
         }
     }
 

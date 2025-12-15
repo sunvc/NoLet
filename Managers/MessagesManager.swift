@@ -12,6 +12,7 @@
 import Foundation
 import GRDB
 
+
 class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: DatabaseManager = .shared
@@ -27,12 +28,8 @@ class MessagesManager: ObservableObject {
     private let chunkSize: Int = 8192
 
     private init() {
-        Task.detached(priority: .userInitiated) {
-            let messages = DiskCache.shared.get()
-            await MainActor.run {
-                self.groupMessages = messages
-            }
-        }
+        let messages = DiskCache.shared.get()
+        self.groupMessages = messages
         if !Bundle.main.isAppExtension {
             startObservingUnreadCount()
         }
@@ -73,7 +70,7 @@ class MessagesManager: ObservableObject {
         await MainActor.run {
             self.showGroupLoading = true
         }
-        let results = await queryGroup()
+        let results = queryGroup()
         let count = self.count()
         let unCount = unreadCount()
         await MainActor.run { [weak self] in
@@ -241,17 +238,6 @@ extension MessagesManager {
         } catch {
             NLog.error("Query error: \(error)")
             return ([], 0)
-        }
-    }
-
-    func queryGroup() async -> [Message] {
-        do {
-            return try await DB.dbQueue.read { db in
-                try self.fetchGroupedMessages(from: db)
-            }
-        } catch {
-            NLog.error("Failed to query messages:", error)
-            return []
         }
     }
 
@@ -436,8 +422,8 @@ extension MessagesManager {
         len textLength: Int = 500
     ) async -> Bool {
         do {
+            let body = Domap.generateRandomString(textLength)
             try await shared.DB.dbQueue.write { db in
-                let body = Domap.generateRandomString(textLength)
                 try autoreleasepool {
                     for k in 0..<number {
                         let message = Message(

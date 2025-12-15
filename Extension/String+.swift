@@ -47,6 +47,7 @@ extension String {
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
     }
 
+    nonisolated
     var trimmingSpaceAndNewLines: String {
         replacingOccurrences(of: "\\s+", with: "", options: .regularExpression)
     }

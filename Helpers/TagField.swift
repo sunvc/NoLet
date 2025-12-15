@@ -129,6 +129,7 @@ struct TagLayout: Layout {
 }
 
 /// Returns Maximum Height From the Row
+nonisolated
 extension [LayoutSubviews.Element] {
     func maxHeight(_ proposal: ProposedViewSize) -> CGFloat {
         return compactMap { view in

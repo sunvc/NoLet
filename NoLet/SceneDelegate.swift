@@ -86,7 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_: UIScene) {
         Task.detached(priority: .userInitiated) {
             await MessagesManager.shared.deleteExpired()
-            let unread = MessagesManager.shared.unreadCount()
+            let unread = await MessagesManager.shared.unreadCount()
             try await UNUserNotificationCenter.current().setBadgeCount(unread)
         }
     }
@@ -100,13 +100,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func setLangAssistantPrompt() {
         if let currentLang = Locale.preferredLanguages.first {
             if Defaults[.lang] != currentLang {
+                let prompts =  ChatPromptMode.prompts
                 Task.detached(priority: .background) {
                     try await DatabaseManager.shared.dbQueue.write { db in
                         // 删除 inside == true 的项
                         try ChatPrompt.filter(ChatPrompt.Columns.inside == true).deleteAll(db)
 
                         // 添加默认 prompts
-                        for prompt in ChatPromptMode.prompts {
+                        for prompt in prompts {
                             try prompt.insert(db)
                         }
 

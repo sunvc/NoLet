@@ -62,56 +62,64 @@ class Toast: ObservableObject {
         }
     }
 
-    class func success(
+    nonisolated class func success(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: ToastTime = .medium
     ) {
-        Toast.shared.present(
-            title: String(localized: title),
-            symbol: .success,
-            isUserInteractionEnabled: isUserInteractionEnabled,
-            timing: timing
-        )
+        Task { @MainActor in
+            Toast.shared.present(
+                title: String(localized: title),
+                symbol: .success,
+                isUserInteractionEnabled: isUserInteractionEnabled,
+                timing: timing
+            )
+        }
     }
 
-    class func info(
+    nonisolated class func info(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: ToastTime = .medium
     ) {
-        Toast.shared.present(
-            title: String(localized: title),
-            symbol: .info,
-            isUserInteractionEnabled: isUserInteractionEnabled,
-            timing: timing
-        )
+        Task { @MainActor in
+            Toast.shared.present(
+                title: String(localized: title),
+                symbol: .info,
+                isUserInteractionEnabled: isUserInteractionEnabled,
+                timing: timing
+            )
+        }
     }
 
-    class func question(
+    nonisolated class func question(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: ToastTime = .medium
     ) {
-        Toast.shared.present(
-            title: String(localized: title),
-            symbol: .question,
-            isUserInteractionEnabled: isUserInteractionEnabled,
-            timing: timing
-        )
+        Task { @MainActor in
+            Toast.shared.present(
+                title: String(localized: title),
+                symbol: .question,
+                isUserInteractionEnabled: isUserInteractionEnabled,
+                timing: timing
+            )
+        }
     }
 
-    class func error(
+    nonisolated class func error(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: ToastTime = .medium
     ) {
-        Toast.shared.present(
-            title: String(localized: title),
-            symbol: .error,
-            isUserInteractionEnabled: isUserInteractionEnabled,
-            timing: timing
-        )
+        Task { @MainActor in
+            Toast.shared.present(
+                title: String(localized: title),
+                symbol: .error,
+                isUserInteractionEnabled: isUserInteractionEnabled,
+                timing: timing
+            )
+        }
     }
 
     class func copy(

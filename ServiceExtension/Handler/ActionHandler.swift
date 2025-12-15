@@ -69,15 +69,13 @@ class ActionHandler: NotificationContentHandler {
             _ = try? await NetworkManager()
                 .fetch(url: host, params: ["id": id])
         }
-
-        let mores = Defaults[.moreMessageCache]
+        let mores =  Defaults[.moreMessageCache]
         if mores.count > 0 {
             let oneHourAgo = Date().addingTimeInterval(-3600)
             Defaults[.moreMessageCache].removeAll { message in
                 message.createDate < oneHourAgo
             }
         }
-
         return bestAttemptContent
     }
 }

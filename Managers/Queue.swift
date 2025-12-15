@@ -9,7 +9,7 @@
 //  History:
 //    Created by Neo on 2025/7/24.
 //
-import Foundation
+@preconcurrency import Foundation
 
 private let QueueSpecificKey = DispatchSpecificKey<NSObject>()
 
@@ -72,7 +72,7 @@ public final class Queue {
         }
     }
 
-    public func async(_ f: @escaping () -> Void) {
+    public func async(_ f: @Sendable @escaping () -> Void) {
         if isCurrent() {
             f()
         } else {
@@ -88,15 +88,15 @@ public final class Queue {
         }
     }
 
-    public func justDispatch(_ f: @escaping () -> Void) {
+    public func justDispatch(_ f: @Sendable @escaping () -> Void) {
         nativeQueue.async(execute: f)
     }
 
-    public func justDispatchWithQoS(qos: DispatchQoS, _ f: @escaping () -> Void) {
+    public func justDispatchWithQoS(qos: DispatchQoS, _ f: @Sendable @escaping () -> Void) {
         nativeQueue.async(group: nil, qos: qos, flags: [.enforceQoS], execute: f)
     }
 
-    public func after(_ delay: Double, _ f: @escaping () -> Void) {
+    public func after(_ delay: Double, _ f: @Sendable @escaping () -> Void) {
         let time = DispatchTime.now() + delay
         nativeQueue.asyncAfter(deadline: time, execute: f)
     }

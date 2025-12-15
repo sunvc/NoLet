@@ -220,7 +220,7 @@ struct ContentView: View {
             withAnimation { self.firstStart.toggle() }
 
             Task.detached(priority: .userInitiated) {
-                for item in MessagesManager.examples() {
+                for item in await MessagesManager.examples() {
                     await MessagesManager.shared.add(item)
                 }
             }

@@ -147,16 +147,12 @@ struct MessageDetailPage: View {
     }
 
     private func loadData(proxy: ScrollViewProxy? = nil, limit: Int = 50, item: Message? = nil) {
-        Task.detached(priority: .userInitiated) {
+        Task{
             let results = await MessagesManager.shared.query(
                 group: self.group,
                 limit: limit,
                 item?.createDate
             )
-            
-            let urls = results.compactMap({$0.image})
-            
-            ImageManager.preloading(urls)
             
             let count = MessagesManager.shared.count(group: self.group)
             await MainActor.run {

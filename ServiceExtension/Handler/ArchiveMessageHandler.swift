@@ -11,9 +11,10 @@
 //    Created by Neo 2024/11/23.
 //
 
+@preconcurrency import UserNotifications
 import Defaults
 import Foundation
-import UserNotifications
+
 
 class ArchiveMessageHandler: NotificationContentHandler {
     func handler(
@@ -75,28 +76,31 @@ class ArchiveMessageHandler: NotificationContentHandler {
         if let count: Int = userInfo.raw(.count), let index: Int = userInfo.raw(.index),
            let messageID
         {
-            Defaults[.moreMessageCache].append(MoreMessage(
-                createDate: .now,
-                id: messageID,
-                body: body,
-                index: index,
-                count: count
-            ))
-
-            var datas = Defaults[.moreMessageCache].filter { $0.id == messageID }
-
-            datas.sort(by: { $0.index < $1.index })
-            let content = datas.reduce("") { $0 + $1.body }
-            body = content
-            bestAttemptContent.body = content
-
-            if datas.count == count {
-                Defaults[.moreMessageCache].removeAll(where: { $0.id == messageID })
-
-            } else {
-                bestAttemptContent.interruptionLevel = .passive
+            return await Task{@MainActor in 
+                Defaults[.moreMessageCache].append(MoreMessage(
+                    createDate: .now,
+                    id: messageID,
+                    body: body,
+                    index: index,
+                    count: count
+                ))
+                
+                var datas = Defaults[.moreMessageCache].filter { $0.id == messageID }
+                
+                datas.sort(by: { $0.index < $1.index })
+                let content = datas.reduce("") { $0 + $1.body }
+                body = content
+                bestAttemptContent.body = content
+                
+                if datas.count == count {
+                    Defaults[.moreMessageCache].removeAll(where: { $0.id == messageID })
+                    
+                } else {
+                    bestAttemptContent.interruptionLevel = .passive
+                    return bestAttemptContent
+                }
                 return bestAttemptContent
-            }
+            }.value
         }
 
         guard saveDays > 0 else { return bestAttemptContent }

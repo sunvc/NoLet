@@ -203,7 +203,7 @@ struct ChatInputView<Content: View>: View {
                             }
                         }
                         .onDisappear {
-                            Task.detached(priority: .background) {
+                            Task {@MainActor in
                                 if let group = openChatManager.shared.chatgroup {
                                     let messages = try await DatabaseManager.shared.dbQueue
                                         .read { db in

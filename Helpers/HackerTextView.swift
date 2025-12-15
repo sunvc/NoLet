@@ -26,7 +26,7 @@ struct HackerTextView: View {
         return Array(string)
     }()
 
-    @State private var animationID: String = UUID().uuidString
+    @State private var animationTask: Task<Void, Never>? = nil
 
     var body: some View {
         Text(animatedText)
@@ -40,45 +40,51 @@ struct HackerTextView: View {
                 animateText()
             }
             .onChange(of: trigger) { _ in
-                animateText()
-            }
-            .onChange(of: trigger) { _ in
                 animatedText = text
-                animationID = UUID().uuidString
                 setRandomCharacters()
                 animateText()
+            }
+            .onDisappear {
+                animationTask?.cancel()
             }
     }
 
     private func animateText() {
-        let currentID = animationID
-        for index in text.indices {
-            let delay = CGFloat.random(in: 0...duration)
-            var timerDuration: CGFloat = 0
-
-            let timer = Timer.scheduledTimer(withTimeInterval: speed, repeats: true) { timer in
-                if currentID != animationID {
-                    timer.invalidate()
-                } else {
-                    timerDuration += speed
-                    if timerDuration >= delay {
-                        if text.indices.contains(index) {
-                            let actualCharacter = text[index]
-                            replaceCharacter(at: index, character: actualCharacter)
+        animationTask?.cancel()
+        let count = text.count
+        let delays = (0..<count).map { _ in CGFloat.random(in: 0...duration) }
+        var elapsed = Array(repeating: CGFloat(0), count: count)
+        var settled = Array(repeating: false, count: count)
+        let randomChars = randomCharacters
+        let sleepNs = UInt64(max(speed, 0.01) * 1_000_000_000)
+        animationTask = Task {
+            var finished = 0
+            while !Task.isCancelled && finished < count {
+                try? await Task.sleep(nanoseconds: sleepNs)
+                await MainActor.run {
+                    for i in 0..<count {
+                        if settled[i] { continue }
+                        elapsed[i] += speed
+                        let idxAnimated = animatedText.index(animatedText.startIndex, offsetBy: i)
+                        if elapsed[i] >= delays[i] {
+                            let idxText = text.index(text.startIndex, offsetBy: i)
+                            let actualCharacter = text[idxText]
+                            replaceCharacter(at: idxAnimated, character: actualCharacter)
+                            settled[i] = true
+                            finished += 1
+                        } else {
+                            if let rc = randomChars.randomElement() {
+                                replaceCharacter(at: idxAnimated, character: rc)
+                            }
                         }
-
-                        timer.invalidate()
-                    } else {
-                        guard let randomCharacter = randomCharacters.randomElement() else { return }
-                        replaceCharacter(at: index, character: randomCharacter)
                     }
                 }
             }
-
-            timer.fire()
         }
     }
+    
 
+    
     private func setRandomCharacters() {
         animatedText = text
         for index in animatedText.indices {
@@ -101,11 +107,11 @@ struct HackerTextView: View {
 #Preview {
     if #available(iOS 16.1, *) {
         HackerTextView(
-            text: "123",
+            text: "123asda1ag",
             trigger: true,
             transition: .numericText(),
             speed: 0.05
-        )
+        ).font(.title.bold())
 
     } else {
         // Fallback on earlier versions
