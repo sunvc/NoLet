@@ -381,6 +381,9 @@ struct PermissionsStartView: View {
                 }
             )
         }
+        .padding(.top, 70)
+        .padding(.bottom, 30)
+        
     }
 
     /// 组件初始化

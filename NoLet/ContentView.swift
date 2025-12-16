@@ -37,14 +37,18 @@ struct ContentView: View {
                 IphoneHomeView()
             }
 
-            if firstStart {
-                firstStartLauchFirstStartView()
-            }
+           
         }
         .environmentObject(manager)
         .overlay {
             if manager.isLoading && manager.inAssistant {
                 ColoredBorder()
+            }
+        }
+        .disabled(firstStart)
+        .overlay{
+            if firstStart {
+                firstStartLauchFirstStartView()
             }
         }
         .sheet(isPresented: manager.sheetShow) { ContentSheetViewPage() }
@@ -230,6 +234,7 @@ struct ContentView: View {
             }
         }
         .background26(.ultraThinMaterial, radius: 5)
+        .ignoresSafeArea()
     }
 
     @ViewBuilder

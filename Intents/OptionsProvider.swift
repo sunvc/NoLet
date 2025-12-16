@@ -25,13 +25,13 @@ import Defaults
 struct SoundOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> [String] {
         let (customSounds, defaultSounds) = AudioManager.shared.getFileList()
-        return (customSounds + defaultSounds).map {
+        return ["Default"] + ( customSounds + defaultSounds).map {
             $0.deletingPathExtension().lastPathComponent
         }
     }
 
     func defaultResult() async -> String? {
-        return "nolet"
+        return "Default"
     }
 }
 

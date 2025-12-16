@@ -71,8 +71,10 @@ struct PushToDeviceIntent: AppIntent {
             }
         }
 
-        if let sound, !sound.isEmpty {
+        if let sound, !sound.isEmpty, sound.lowercased() != "default" {
+        
             params["sound"] = "\(sound).caf"
+            
         }
 
         if !group.isEmpty {
