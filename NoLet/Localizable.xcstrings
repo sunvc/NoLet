@@ -869,35 +869,6 @@
         }
       }
     },
-    "key不正确" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "key incorrect"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "キーが正しくありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "잘못된 키"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "key不正确"
-          }
-        }
-      }
-    },
     "KEY长度:" : {
       "localizations" : {
         "en" : {
@@ -4986,6 +4957,9 @@
         }
       }
     },
+    "密钥" : {
+
+    },
     "导入" : {
       "localizations" : {
         "en" : {
@@ -5127,6 +5101,7 @@
       }
     },
     "将 ${body} 推送给 ${address}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5661,6 +5636,7 @@
       }
     },
     "快速通知" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7679,6 +7655,9 @@
           }
         }
       }
+    },
+    "服务器/ID" : {
+
     },
     "服务器地址无效" : {
       "localizations" : {

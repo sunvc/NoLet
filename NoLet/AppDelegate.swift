@@ -21,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
+        if Defaults[.id] == "" {
+            Defaults[.id] = KeychainHelper.shared.getDeviceID()
+        }
+        
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
 
@@ -34,9 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
 
-        if Defaults[.id] == "" {
-            Defaults[.id] = KeychainHelper.shared.getDeviceID()
-        }
+        
 
         return true
     }
@@ -49,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         Defaults[.deviceToken] = token
         Task.detached(priority: .userInitiated) {
-            _ = await CloudManager.shared.queryUser(token: token)
+            _ = await CloudManager.shared.queryOrUpdateDeviceToken( Defaults[.id], token: token)
         }
 
         let manager = AppManager.shared
@@ -65,6 +68,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         } else {
             manager.registers()
         }
+        
+        NLog.log("获取到设备Token:\(token)")
     }
 
     // MARK: UISceneSession Lifecycle

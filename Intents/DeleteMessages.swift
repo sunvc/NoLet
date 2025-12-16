@@ -25,7 +25,7 @@ struct DeleteMessageIntent: AppIntent {
         Summary("删除 \(\.$date) 之前的消息")
     }
 
-    @MainActor
+
     func perform() async throws -> some IntentResult {
         do {
             _ = try await DatabaseManager.shared.dbQueue.write { db in

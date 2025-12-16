@@ -416,8 +416,8 @@ extension MessagesManager {
         [
             Message(
                 id: UUID().uuidString,
-                group: "Markdown",
                 createDate: .now,
+                group: "Markdown",
                 title: String(localized: "示例"),
                 body: "# NoLet \n## NoLet \n### NoLet",
                 level: 1,
@@ -427,8 +427,8 @@ extension MessagesManager {
             
             Message(
                 id: UUID().uuidString,
+                createDate: .now,
                 group: String(localized: "示例"),
-                createDate: .now + 10,
                 title: String(localized: "使用方法"),
                 body: String(localized: """
                     * 右上角功能菜单，使用示例，分组
@@ -443,8 +443,8 @@ extension MessagesManager {
             
             Message(
                 id: UUID().uuidString,
-                group: "App",
                 createDate: .now,
+                group: "App",
                 title: String(localized: "点击跳转app"),
                 body: String(localized: "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转"),
                 url: "weixin://",

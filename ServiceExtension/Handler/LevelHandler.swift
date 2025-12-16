@@ -60,8 +60,8 @@ extension UNMutableNotificationContent {
 
     /// 声音名称
     var soundName: String? {
-        if let sound: String = userInfo.raw(.sound), sound.count > 0 {
-            return sound
+        if let sound: String = userInfo.raw(.sound, nesting: false), sound.count > 0 {
+            return sound.hasSuffix(".caf") ? sound : "\(sound).caf"
         }
         return nil
     }

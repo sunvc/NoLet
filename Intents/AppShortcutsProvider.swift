@@ -21,13 +21,5 @@ class NoLetShortcuts: AppShortcutsProvider, @unchecked Sendable {
             shortTitle: "清除过期通知",
             systemImageName: "trash"
         )
-
-        AppShortcut(
-            intent: EasyPushIntent(),
-            phrases:
-            ["\(.applicationName)"],
-            shortTitle: "快速通知",
-            systemImageName: "ellipsis.message"
-        )
     }
 }

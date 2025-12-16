@@ -23,7 +23,6 @@ extension Defaults.Keys {
     static let defaultBrowser = Key<DefaultBrowserModel>(.defaultBrowserOpen, .auto)
     static let imageSaveDays = Key<ExpirationTime>(.imageSaveDays, .forever)
     static let assistantAccouns = Key<[AssistantAccount]>(.AssistantAccount, [], iCloud: true)
-    static let moreMessageCache = Key<[MoreMessage]>(.moreMessageCache, [])
     static let proxyServer = Key<PushServerModel>(.proxyDownloadServer, PushServerModel.space)
 }
 

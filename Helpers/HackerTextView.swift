@@ -21,15 +21,13 @@ struct HackerTextView: View {
     var speed: CGFloat = 0.1
     /// View Properties
     @State private var animatedText: String = ""
-    @State private var randomCharacters: [Character] = {
-        let string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ0123456789-?/#$%@!^&*()="
-        return Array(string)
-    }()
+    @State private var randomCharacters: [Character] =
+        Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ0123456789-?/#$%@!^&*()=")
 
     @State private var animationTask: Task<Void, Never>? = nil
 
     var body: some View {
-        Text(animatedText)
+        Text(verbatim: animatedText)
             .monospaced()
             .truncationMode(.tail)
             .contentTransition(transition)
@@ -82,9 +80,7 @@ struct HackerTextView: View {
             }
         }
     }
-    
 
-    
     private func setRandomCharacters() {
         animatedText = text
         for index in animatedText.indices {
@@ -105,15 +101,10 @@ struct HackerTextView: View {
 }
 
 #Preview {
-    if #available(iOS 16.1, *) {
-        HackerTextView(
-            text: "123asda1ag",
-            trigger: true,
-            transition: .numericText(),
-            speed: 0.05
-        ).font(.title.bold())
-
-    } else {
-        // Fallback on earlier versions
-    }
+    HackerTextView(
+        text: "123asda1ag",
+        trigger: true,
+        transition: .numericText(),
+        speed: 0.05
+    )
 }

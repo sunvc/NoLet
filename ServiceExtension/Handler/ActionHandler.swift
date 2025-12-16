@@ -26,16 +26,14 @@ class ActionHandler: NotificationContentHandler {
         // MARK: - 处理 Ringtone
 
         let call: Int? = bestAttemptContent.userInfo.raw(.call)
-        if call != 1, bestAttemptContent.soundName == nil, bestAttemptContent.getLevel() < 3 {
-            bestAttemptContent
-                .sound =
-                UNNotificationSound(
-                    named: UNNotificationSoundName(rawValue: "\(Defaults[.sound]).caf")
-                )
+        if call != 1, bestAttemptContent.getLevel() < 3 {
+            bestAttemptContent.sound = UNNotificationSound(
+                named: UNNotificationSoundName(rawValue: bestAttemptContent
+                    .soundName ?? "\(Defaults[.sound]).caf")
+            )
         }
 
         // MARK: - 处理 badge
-
         if let badgeStr: String = bestAttemptContent.userInfo.raw(.badge),
            let badge = Int(badgeStr)
         {
@@ -69,13 +67,7 @@ class ActionHandler: NotificationContentHandler {
             _ = try? await NetworkManager()
                 .fetch(url: host, params: ["id": id])
         }
-        let mores =  Defaults[.moreMessageCache]
-        if mores.count > 0 {
-            let oneHourAgo = Date().addingTimeInterval(-3600)
-            Defaults[.moreMessageCache].removeAll { message in
-                message.createDate < oneHourAgo
-            }
-        }
+
         return bestAttemptContent
     }
 }

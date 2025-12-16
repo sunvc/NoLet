@@ -215,7 +215,6 @@
 			membershipExceptions = (
 				AppManager.swift,
 				AudioManager.swift,
-				CloudManager.swift,
 				cryptoManager.swift,
 				DatabaseManager.swift,
 				ImageManager.swift,
@@ -246,6 +245,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
+				CloudBox/CloudManager.swift,
 				DefaultsBaseKeys.swift,
 				Domap.swift,
 				ToolsBox.swift,
@@ -285,7 +285,6 @@
 		B5835D422DEDF94F0066B32E /* Exceptions for "Managers" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				CloudManager.swift,
 				cryptoManager.swift,
 				DatabaseManager.swift,
 				ImageManager.swift,
@@ -299,6 +298,7 @@
 			membershipExceptions = (
 				AudioConversion.swift,
 				BaseConfig.swift,
+				CloudBox/CloudManager.swift,
 				DefaultsBaseKeys.swift,
 				DefaultsModelKeys.swift,
 				Domap.swift,
@@ -311,7 +311,6 @@
 		B5E571922E01314100DDE516 /* Exceptions for "Managers" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				CloudManager.swift,
 				cryptoManager.swift,
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
@@ -477,6 +476,11 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		BAEC60092EF15F4B00D7CB7A /* Intents */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Intents;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +577,7 @@
 				B58357F82DEDD3B10066B32E /* Products */,
 				B5835BC12DEDE1020066B32E /* Sounds */,
 				B58358C92DEDD65A0066B32E /* Helpers */,
+				BAEC60092EF15F4B00D7CB7A /* Intents */,
 			);
 			sourceTree = "<group>";
 		};
@@ -660,6 +665,7 @@
 			fileSystemSynchronizedGroups = (
 				B58357F92DEDD3B10066B32E /* NoLet */,
 				B5835ABD2DEDE0490066B32E /* Publics */,
+				BAEC60092EF15F4B00D7CB7A /* Intents */,
 			);
 			name = NoLet;
 			packageProductDependencies = (

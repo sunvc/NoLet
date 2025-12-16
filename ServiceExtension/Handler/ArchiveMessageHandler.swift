@@ -23,7 +23,7 @@ class ArchiveMessageHandler: NotificationContentHandler {
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
 
-        var body: String = {
+        let body: String = {
             if let body: String = userInfo.raw(.body) {
                 /// 解决换行符渲染问题
                 return MessagesManager.ensureMarkdownLineBreaks(body)
@@ -32,7 +32,6 @@ class ArchiveMessageHandler: NotificationContentHandler {
         }()
 
         // MARK: - markdownbody body 显示
-
         if bestAttemptContent.categoryIdentifier == Identifiers.markdown.rawValue {
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
@@ -72,44 +71,14 @@ class ArchiveMessageHandler: NotificationContentHandler {
             bestAttemptContent.interruptionLevel = .passive
             return bestAttemptContent
         }
-
-        if let count: Int = userInfo.raw(.count), let index: Int = userInfo.raw(.index),
-           let messageID
-        {
-            return await Task{@MainActor in 
-                Defaults[.moreMessageCache].append(MoreMessage(
-                    createDate: .now,
-                    id: messageID,
-                    body: body,
-                    index: index,
-                    count: count
-                ))
-                
-                var datas = Defaults[.moreMessageCache].filter { $0.id == messageID }
-                
-                datas.sort(by: { $0.index < $1.index })
-                let content = datas.reduce("") { $0 + $1.body }
-                body = content
-                bestAttemptContent.body = content
-                
-                if datas.count == count {
-                    Defaults[.moreMessageCache].removeAll(where: { $0.id == messageID })
-                    
-                } else {
-                    bestAttemptContent.interruptionLevel = .passive
-                    return bestAttemptContent
-                }
-                return bestAttemptContent
-            }.value
-        }
-
+        
         guard saveDays > 0 else { return bestAttemptContent }
 
         //  保存数据到数据库
         let message = Message(
             id: messageID ?? UUID().uuidString,
-            group: group,
             createDate: .now,
+            group: group,
             title: title,
             subtitle: subtitle,
             body: body,

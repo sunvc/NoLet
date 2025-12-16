@@ -14,25 +14,17 @@ import Foundation
 import Security
 
 class APNs {
-    private let teamID = "5U8LBRXG3A" // Apple Developer Team ID
-    private let keyID = "LH4T9V5U4R" // Key ID
-    private let topic = "me.fin.bark" // App Bundle ID
-    private let privateKeyPem = """
-        -----BEGIN PRIVATE KEY-----
-        MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQg4vtC3g5L5HgKGJ2+
-        T1eA0tOivREvEAY2g+juRXJkYL2gCgYIKoZIzj0DAQehRANCAASmOs3JkSyoGEWZ
-        sUGxFs/4pw1rIlSV2IC19M8u3G5kq36upOwyFWj9Gi3Ejc9d3sC7+SHRqXrEAJow
-        8/7tRpV+
-        -----END PRIVATE KEY-----
-        """
+    static let shared = APNs()
 
-    private var cachedAuthToken: (String, TimeInterval)?
+    private init() {}
+
+    private var apnsInfo: ApnsInfo?
 
     // MARK: - Generate JWT Token
 
-    private func generateAuthToken() throws -> String {
+    private func generateAuthToken(_ apnsInfo: ApnsInfo) throws -> ApnsInfo {
         // 去掉 PEM 头尾并解码
-        let keyString = privateKeyPem
+        let keyString = apnsInfo.pem
             .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
             .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
             .replacingOccurrences(of: "\n", with: "")
@@ -66,10 +58,10 @@ class APNs {
         // Header & Claims
         let header: [String: String] = [
             "alg": "ES256",
-            "kid": keyID,
+            "kid": apnsInfo.keyID,
         ]
         let claims: [String: Any] = [
-            "iss": teamID,
+            "iss": apnsInfo.teamID,
             "iat": Int(Date().timeIntervalSince1970),
         ]
 
@@ -86,108 +78,144 @@ class APNs {
         let signatureData = signature.derRepresentation
         let signatureBase64 = signatureData.base64URLEncodedString()
 
-        return "\(signingInput).\(signatureBase64)"
-    }
+        var apnsInfo = apnsInfo
 
-    private func getAuthToken() throws -> String {
-        // 20 分钟内复用 token（Apple 要求每 20 分钟更新）
-        let now = Date().timeIntervalSince1970
-        if let (token, ts) = cachedAuthToken, now - ts < 1500 {
-            return token
-        }
-        let token = try generateAuthToken()
-        cachedAuthToken = (token, now)
-        return token
+        apnsInfo.token = "\(signingInput).\(signatureBase64)"
+        apnsInfo.timestamp = Date().addingTimeInterval(30 * 60)
+
+        return apnsInfo
     }
 
     // MARK: - Push
 
     func push(
-        deviceToken: String,
-        headers: [String: String] = [:],
-        aps: [String: Any]
-    ) async throws -> (Int, Data) {
-        let authToken = try getAuthToken()
+        _ deviceToken: String,
+        id: String = UUID().uuidString,
+        title: String? = nil,
+        subtitle: String? = nil,
+        body: String? = nil,
+        markdown: Bool = false,
+        group: String = String(localized: "默认"),
+        custom: [String: Any] = [:]
+    ) async throws -> APNsResponse {
+        if deviceToken.isEmpty {
+            throw "deviceToken is empty"
+        }
+        //
+        if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
+            // apnsInfo 为 nil 或者已经过期
+            self.apnsInfo = try await CloudManager.shared.pushToken(update: generateAuthToken)
+        }
 
+        guard let apnsInfo = apnsInfo else { throw "No Data" }
+
+        let headers = APNsHeaders(
+            apnsTopic: apnsInfo.topic,
+            apnsID: UUID().uuidString,
+            apnsCollapseID: id,
+            apnsPriority: 10,
+            apnsExpiration: Int(Date().addingTimeInterval(24 * 60 * 60).timeIntervalSince1970),
+            apnsPushType: "alert",
+            authorization: apnsInfo.token,
+            contentType: "application/json"
+        )
+
+        let aps = PushPayload(aps: PushPayload.APS(
+            alert: PushPayload.APS.Alert(
+                title: title,
+                subtitle: subtitle,
+                body: body,
+            ),
+            threadID: group,
+            category: markdown ? Identifiers.markdown.rawValue : Identifiers
+                .myNotificationCategory.rawValue,
+            contentAvailable: 0,
+            mutableContent: 1,
+            interruptionLevel: .active,
+            timestamp: Date()
+        ))
+        
+        
+
+        guard var apsBody = aps.toEncodableDictionary() else { throw "No Params" }
+
+        for (key, value) in custom {
+            if key != "aps" {
+                apsBody[key] = value
+            }
+        }
+        
+        #if DEBUG
+        var request =
+            URLRequest(
+                url: URL(string: "https://api.sandbox.push.apple.com/3/device/\(deviceToken)")!
+            )
+
+        #else
         var request =
             URLRequest(url: URL(string: "https://api.push.apple.com/3/device/\(deviceToken)")!)
+        #endif
+
         request.httpMethod = "POST"
-        request.setValue("bearer \(authToken)", forHTTPHeaderField: "authorization")
-        request.setValue(topic, forHTTPHeaderField: "apns-topic")
-        if let priority = headers["apns-priority"] {
-            request.setValue(priority, forHTTPHeaderField: "apns-priority")
-        } else {
-            request.setValue("10", forHTTPHeaderField: "apns-priority")
+        request.timeoutInterval = 30
+        for (key, value) in headers.toStringDictionary() {
+            request.setValue(value, forHTTPHeaderField: key)
         }
-        request.setValue(headers["apns-push-type"] ?? "alert", forHTTPHeaderField: "apns-push-type")
-        request.setValue("application/json", forHTTPHeaderField: "content-type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: aps)
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: apsBody)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        let status = (response as? HTTPURLResponse)?.statusCode ?? -1
-        return (status, data)
-    }
 
-    enum Headers: String {
-        case apnsPriority
+        // 2. 解码 JSON 成 APNsResponse
+
+        if data.isEmpty {
+            var response1 = APNsResponse(statusCode: 200)
+
+            // 1. 检查 HTTP 响应
+            if let httpResponse = response as? HTTPURLResponse {
+                response1.apnsID = httpResponse.value(forHTTPHeaderField: "apns-id")
+                response1.apnsUniqueID = httpResponse.value(forHTTPHeaderField: "apns-unique-id")
+                response1.statusCode = httpResponse.statusCode
+            }
+
+            return response1
+
+        } else {
+            let decoder = JSONDecoder()
+
+            var apnsResponse = try decoder.decode(APNsResponse.self, from: data)
+
+            // 1. 检查 HTTP 响应
+            if let httpResponse = response as? HTTPURLResponse {
+                print("HTTP status code:", httpResponse.statusCode)
+                apnsResponse.apnsID = httpResponse.value(forHTTPHeaderField: "apns-id")
+                apnsResponse.apnsUniqueID = httpResponse.value(forHTTPHeaderField: "apns-unique-id")
+                if httpResponse.statusCode == 410,
+                   let tsString = httpResponse.value(forHTTPHeaderField: "timestamp"),
+                   let tsDouble = Double(tsString)
+                {
+                    apnsResponse.timestamp = Date(timeIntervalSince1970: tsDouble)
+                }
+            }
+            
+            NLog.log("apnsResponse:", apnsResponse)
+
+            return apnsResponse
+        }
     }
 
     func ceshi() async {
-        let apns = APNs()
-
         do {
-            let aps: [String: Any] = [
-                "aps": [
-                    "alert": [
-                        "title": "你好，世界",
-                        "subtitle": "这是一个副标题",
-                        "body": "Swift APNs",
-                    ],
-                    "category": "myNotificationCategory",
-                    "sound": "default",
-                    "mutable-content": 1,
-                    "interruption-level": "critical",
-                ],
-            ]
-
-            let (status, data) = try await apns.push(
-                deviceToken: "8ca2f941c93d4058f3003fd2f602b005c3ddd71d5ede389255dc7202847887ec",
-                headers: [:],
-                aps: aps
+            let response = try await APNs.shared.push(
+                Defaults[.deviceToken],
+                title: "",
+                body: "",
+                markdown: true
             )
-            NLog.log("Status:", status)
-            NLog.log("Response:", String(data: data, encoding: .utf8) ?? "")
+            NLog.log("response:", response)
         } catch {
             NLog.error(error)
         }
-    }
-
-    struct NotificationData: Codable {
-        var aps: Aps
-    }
-
-    struct Aps: Codable {
-        var alert: Alert
-        var badge: Int
-        var category: String
-        var threadID: String?
-        var contentAvailable: Int?
-        var mutableContent: Int?
-        var targetContentID: String
-        var interruptionLevel: InterruptionType
-    }
-
-    struct Alert: Codable {
-        var sound: Sound?
-    }
-
-    struct Sound: Codable {}
-
-    enum InterruptionType: String, Codable {
-        case passive
-        case active
-        case timeSensitive = "time-sensitive"
-        case critical
     }
 }
 
@@ -202,7 +230,7 @@ extension Data {
     }
 }
 
-class APNS {
+extension APNs {
     struct PushPayload: Codable {
         struct APS: Codable {
             struct Alert: Codable {
@@ -285,15 +313,17 @@ class APNS {
         var authorization: String = "bearer "
         var contentType: String = "application/json"
 
-        enum CodingKeys: String, CodingKey {
-            case apnsTopic = "apns-topic"
-            case apnsID = "apns-id"
-            case apnsCollapseID = "apns-collapse-id"
-            case apnsPriority = "apns-priority"
-            case apnsExpiration = "apns-expiration"
-            case apnsPushType = "apns-push-type"
-            case authorization
-            case contentType = "content-type"
+        func toStringDictionary() -> [String: String] {
+            var dict: [String: String] = [:]
+            dict["apns-topic"] = apnsTopic
+            if let id = apnsID { dict["apns-id"] = id }
+            if let collapseID = apnsCollapseID { dict["apns-collapse-id"] = collapseID }
+            dict["apns-priority"] = String(apnsPriority)
+            dict["apns-expiration"] = String(apnsExpiration)
+            dict["apns-push-type"] = apnsPushType
+            dict["authorization"] = "bearer \(authorization)"
+            dict["content-type"] = contentType
+            return dict
         }
     }
 
@@ -302,4 +332,12 @@ class APNS {
         var name: String
         var volume: Double
     }
+}
+
+struct APNsResponse: Codable {
+    var statusCode: Int?
+    var reason: String?
+    var apnsID: String?
+    var timestamp: Date?
+    var apnsUniqueID: String?
 }

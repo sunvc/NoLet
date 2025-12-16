@@ -427,8 +427,8 @@ extension MessagesManager {
                 try autoreleasepool {
                     for k in 0..<number {
                         let message = Message(
-                            id: UUID().uuidString, group: "\(k % 10)",
-                            createDate: .now, title: "\(k) Test",
+                            id: UUID().uuidString, createDate: .now,
+                            group: "\(k % 10)", title: "\(k) Test",
                             body: "Text Data \(body)", level: 1, ttl: 1, read: true
                         )
                         try message.insert(db)

@@ -110,18 +110,14 @@ struct ChangeCryptoConfigView: View {
                             Clipboard.set(cryptoConfig.key)
                             Toast.copy(title: "复制成功")
                         } label: {
-                            Label {
-                                Text(verbatim: "KEY:")
-                            } icon: {
-                                Image(systemName: "doc.on.doc")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(
-                                        cryptoConfig.key.count == expectKeyLength ? Color
-                                            .primary : .red,
-                                        cryptoConfig.key.count == expectKeyLength ? Color
-                                            .accent : .red
-                                    )
-                            }
+                            Image(systemName: "doc.on.doc")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    cryptoConfig.key.count == expectKeyLength ? Color
+                                        .primary : .red,
+                                    cryptoConfig.key.count == expectKeyLength ? Color
+                                        .accent : .red
+                                )
                         }
                         Spacer()
 
@@ -138,11 +134,11 @@ struct ChangeCryptoConfigView: View {
 
                 } header: {
                     HStack {
-                        Text(verbatim: "IV: \(CryptoModelConfig.random())")
+                        Text(verbatim: "KEY:")
                             .padding(.trailing, 5)
                         Spacer()
                         Text(verbatim: "\(expectKeyLength - cryptoConfig.key.count)")
-                    }.padding(.bottom, 10)
+                    }
                 }
 
                 Section {

@@ -644,8 +644,8 @@ struct SelectMessageView: View {
 #Preview {
     SelectMessageView(message: Message(
         id: UUID().uuidString,
-        group: "",
         createDate: .now,
+        group: "",
         title: "123",
         subtitle: "123",
         body: """
@@ -653,11 +653,7 @@ struct SelectMessageView: View {
 
             ### 1231231231
             """,
-        icon: nil,
-        url: nil,
         image: "https://s3.wzs.app/og.png",
-        from: nil,
-        host: nil,
         level: 1,
         ttl: 7,
         read: true,

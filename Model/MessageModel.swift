@@ -14,9 +14,9 @@ import Foundation
 import GRDB
 
 struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
-    var id: String
-    var group: String
+    var id: String 
     var createDate: Date
+    var group: String
     var title: String?
     var subtitle: String?
     var body: String?
@@ -180,8 +180,7 @@ enum ChatPromptMode: Equatable {
     case abstract(String?)
 }
 
-nonisolated
-extension CodingKey {
+nonisolated extension CodingKey {
     fileprivate var lows: String {
         stringValue.lowercased()
     }

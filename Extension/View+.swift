@@ -357,8 +357,7 @@ extension View {
     @ViewBuilder
     func customPresentationCornerRadius(_ radius: CGFloat) -> some View {
         if #available(iOS 16.4, *) {
-            self
-                .presentationCornerRadius(radius)
+            self.presentationCornerRadius(radius)
         } else {
             self
         }

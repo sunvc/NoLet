@@ -101,7 +101,7 @@ struct CloudIcon: View {
                                                     Button(role: .destructive) {
                                                         Task {
                                                             let success = await CloudManager.shared
-                                                                .deleteCloudIcon(icon.recordID
+                                                                .delete(icon.recordID
                                                                     .recordName)
                                                             if !success {
                                                                 Toast.shared.present(

@@ -296,23 +296,6 @@ enum ExpirationTime: Int, CaseIterable, Equatable {
     var days: Int { rawValue }
 }
 
-struct SelectMessage: Codable {
-    var id: UUID = .init()
-    var group: String
-    var createDate: Date
-    var title: String?
-    var subtitle: String?
-    var body: String?
-    var icon: String?
-    var url: String?
-    var image: String?
-    var from: String?
-    var host: String?
-    var level: Int = 1
-    var ttl: Int = ExpirationTime.forever.days
-    var read: Bool = false
-    var search: String
-}
 
 enum PBScheme: String, CaseIterable {
     case pb

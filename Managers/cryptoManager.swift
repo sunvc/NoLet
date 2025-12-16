@@ -26,9 +26,14 @@ extension CryptoAlgorithm: @MainActor Defaults.Serializable {}
 extension CryptoMode: @MainActor Defaults.Serializable {}
 
 // MARK: - CryptoMode
+
 enum CryptoMode: String, Codable, CaseIterable, RawRepresentable {
     case GCM
-    var Icon: String { "circle.grid.cross.right.filled" }
+    var Icon: String {
+        switch self {
+        case .GCM: "circle.grid.cross.right.filled"
+        }
+    }
 }
 
 enum CryptoAlgorithm: Int, Codable, CaseIterable, RawRepresentable {

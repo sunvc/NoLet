@@ -79,11 +79,15 @@ extension CKRecord {
     }
 }
 
-
 class CloudManager {
     static let shared = CloudManager()
 
-    private init() {}
+    private init() {
+        Task {
+            await checkAccount()
+        }
+    }
+
     private let container = CKContainer(identifier: NCONFIG.icloudName)
 
     private var database: CKDatabase {
@@ -91,41 +95,46 @@ class CloudManager {
     }
 
     private let recordType = "PushIcon"
+    private let deviceToken = "DeviceToken"
 
     func checkAccount() async -> (Bool, String) {
+        var message = (false, String(localized: "未知 iCloud 状态"))
         do {
             let status = try await container.accountStatus()
 
             switch status {
             case .available:
-                return (true, String(localized: "iCloud 账户可用"))
+                message = (true, String(localized: "iCloud 账户可用"))
             case .couldNotDetermine:
-                return (false, String(localized: "无法确定 iCloud 账户状态，可能是网络问题"))
+                message = (false, String(localized: "无法确定 iCloud 账户状态，可能是网络问题"))
             case .restricted:
-                return (false, String(localized: "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"))
+                message = (false, String(localized: "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"))
             case .noAccount:
-                return (false, String(localized: "未登录 iCloud，请登录 iCloud 账户"))
+                message = (false, String(localized: "未登录 iCloud，请登录 iCloud 账户"))
             case .temporarilyUnavailable:
-                return (false, String(localized: "iCloud 服务暂时不可用，请稍后再试"))
+                message = (false, String(localized: "iCloud 服务暂时不可用，请稍后再试"))
             @unknown default:
-                return (false, String(localized: "未知 iCloud 状态"))
+                message = (false, String(localized: "未知 iCloud 状态"))
             }
+            NLog.log(message)
         } catch {
-            return (false, String(localized: "检查 iCloud 账户状态出错: \(error.localizedDescription)"))
+            message = (false, String(localized: "检查 iCloud 账户状态出错: \(error.localizedDescription)"))
+            NLog.error(message)
         }
+
+        return message
     }
 
     func fetchRecords(
+        _ recordType: String,
         for predicate: NSPredicate,
         in database: CKDatabase,
         limit: Int = 100
     ) async -> [CKRecord] {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         do {
-            // 直接使用 async 方法查询
             let (records, _) = try await database.records(matching: query, resultsLimit: limit)
 
-            // 返回查询到的记录
             return records.compactMap { _, result -> CKRecord? in
                 switch result {
                 case .success(let record):
@@ -145,6 +154,7 @@ class CloudManager {
         do {
             let userID = try await container.userRecordID()
             let datas = await fetchRecords(
+                recordType,
                 for: NSPredicate(format: "creatorUserRecordID == %@", userID),
                 in: database
             )
@@ -180,7 +190,7 @@ class CloudManager {
         }
 
         // **执行查询**
-        let records = await fetchRecords(for: predicate, in: database)
+        let records = await fetchRecords(recordType, for: predicate, in: database)
 
         // **去重**
         var uniqueRecords: [CKRecord] = []
@@ -228,7 +238,7 @@ class CloudManager {
     }
 
     // 删除指定的 PushIcon
-    func deleteCloudIcon(_ serverID: String) async -> Bool {
+    func delete(_ serverID: String) async -> Bool {
         do {
             // 创建 CKRecord.ID 对象
             let recordID = CKRecord.ID(recordName: serverID)
@@ -242,36 +252,113 @@ class CloudManager {
 
     // MARK: - LOGIN
 
-    func queryUser(
-        _ userID: String? = nil,
-        email: String? = nil,
-        token: String? = nil
-    ) async -> CKRecord? {
+    func queryOrUpdateDeviceToken(_ userID: String, token: String? = nil) async -> String? {
         do {
-            let id = try await container.userRecordID()
-            let user = try await database.record(for: id)
-
-            if let userID {
-                user["phone"] = userID as CKRecordValue
-            }
-
-            if let email {
-                user["email"] = email as CKRecordValue
+            let predicate = NSPredicate(format: "device == %@", userID)
+            guard let record = await fetchRecords(deviceToken, for: predicate, in: database).first
+            else {
+                if let token {
+                    let record = CKRecord(recordType: deviceToken)
+                    record["device"] = userID as CKRecordValue
+                    record["token"] = token as CKRecordValue
+                    let recordRes = try await database.save(record)
+                    return recordRes["token"] as? String
+                }
+                return nil
             }
 
             if let token {
-                user["token"] = token as CKRecordValue
+                record["device"] = userID as CKRecordValue
+                record["token"] = token as CKRecordValue
+                let recordRes = try await database.save(record)
+                return recordRes["token"] as? String
             }
 
-            guard userID != nil || email != nil || token != nil else {
-                return user
-            }
+            return record["token"] as? String
 
-            let recordRes = try await database.save(user)
-            return recordRes
         } catch {
             NLog.error(error.localizedDescription)
             return nil
         }
+    }
+
+    func pushToken(update: @escaping (ApnsInfo) throws -> ApnsInfo) async throws -> ApnsInfo {
+        let predicate = NSPredicate(value: true)
+
+        guard let record = await fetchRecords(ApnsInfo.recordType, for: predicate, in: database)
+            .first
+        else {
+            throw "No Data!!!"
+        }
+
+        guard let apnsInfoOld = ApnsInfo(record: record) else {
+            throw "No Data!!!"
+        }
+
+        // 如果未过期且有 token，直接返回
+        if apnsInfoOld.timestamp > Date() {
+            return apnsInfoOld
+        }
+
+        // 调用 update 获取新 token
+        let apnsInfo = try update(apnsInfoOld)
+        
+        record["token"] = apnsInfo.token as CKRecordValue
+        record["timestamp"] = apnsInfo.timestamp as CKRecordValue
+        // 保存到 CloudKit
+        _ = try await database.save(record)
+
+        return apnsInfo
+    }
+}
+
+struct ApnsInfo: Codable {
+    static let recordType = "ApnsInfo"
+    var id: String
+    var timestamp: Date
+    var token: String
+    var teamID: String
+    var keyID: String
+    var topic: String
+    var pem: String
+
+    init?(record: CKRecord) {
+        // 如果 recordName 对应 id，就直接用
+        id = record.recordID.recordName
+        
+        guard
+            let teamID = record["teamID"] as? String,
+            let keyID = record["keyID"] as? String,
+            let topic = record["topic"] as? String,
+            let pem = record["pem"] as? String
+        else {
+            return nil
+        }
+
+        self.timestamp = record["timestamp"] as? Date ?? Date.distantFuture
+
+        self.token = record["token"] as? String ?? ""
+
+        self.teamID = teamID
+        self.keyID = keyID
+        self.topic = topic
+        self.pem = pem
+    }
+
+    // MARK: - 初始化 CKRecord
+
+    func toCKRecord() -> CKRecord {
+        // 使用 id 作为 recordName
+        let recordID = CKRecord.ID(recordName: id)
+        let record = CKRecord(recordType: ApnsInfo.recordType, recordID: recordID)
+
+        record["timestamp"] = timestamp as CKRecordValue
+        record["token"] = token as CKRecordValue
+        record["teamID"] = teamID as CKRecordValue
+        record["keyID"] = keyID as CKRecordValue
+        record["topic"] = topic as CKRecordValue
+        record["pem"] = pem as CKRecordValue
+
+        return record
     }
 }
