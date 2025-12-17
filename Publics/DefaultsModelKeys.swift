@@ -16,6 +16,7 @@ import Foundation
 
 @MainActor
 extension Defaults.Keys {
+    static let noServerModel = Key<Bool>(.noServerModel, false)
     static let servers = Key<[PushServerModel]>(.serverArrayStroage, [])
     static let cloudServers = Key<[PushServerModel]>(.serverArrayCloudStroage, [], iCloud: true)
     static let appIcon = Key<AppIconEnum>(.setting_active_app_icon, .nolet)

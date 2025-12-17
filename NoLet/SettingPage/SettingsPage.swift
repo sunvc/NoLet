@@ -22,6 +22,7 @@ struct SettingsPage: View {
     @Default(.sound) var sound
     @Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
+    @Default(.noServerModel) var noServerModel
 
     @State private var webShow: Bool = false
     @State private var showLoading: Bool = false
@@ -64,25 +65,50 @@ struct SettingsPage: View {
             }
 
             Section(header: Text("App配置").textCase(.none)) {
-                ListButton {
-                    Label {
-                        Text("服务器")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "externaldrive.badge.wifi")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(serverTypeColor, Color.primary)
-                            .if(serverTypeColor == .red) { view in
-                                view.symbolEffect(.variableColor, delay: 0.5)
+                ZStack{
+                    if noServerModel{
+                        Toggle(isOn: $noServerModel) { 
+                            Label {
+                                Text("无服务器模式")
+                                    .foregroundStyle(.textBlack)
+                            } icon: {
+                                Image(systemName: "apple.logo")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(Color.red)
                             }
+                        }
+                    }else{
+                        ListButton {
+                            Label {
+                                Text("服务器")
+                                    .foregroundStyle(.textBlack)
+                            } icon: {
+                               
+                                Image(systemName: "externaldrive.badge.wifi")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(serverTypeColor, Color.primary)
+                                    .if(serverTypeColor == .red) { view in
+                                        view.symbolEffect(.variableColor, delay: 0.5)
+                                    }
+                            }
+                            
+                        } action: {
+                            Task { @MainActor in
+                                manager.router = [.server]
+                            }
+                            return true
+                        }
                     }
-                } action: {
-                    Task { @MainActor in
-                        manager.router = [.server]
-                    }
-
-                    return true
                 }
+                .onChange(of: noServerModel) { _ in
+                    if !noServerModel{
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                            manager.router = [.server]
+                            Haptic.impact()
+                        }
+                    }
+                }
+               
 
                 ListButton {
                     Label {
@@ -266,7 +292,7 @@ struct SettingsPage: View {
 
 #Preview {
     NavigationStack {
-        SettingsPage()
+        ContentView()
             .environmentObject(AppManager.shared)
     }
 }

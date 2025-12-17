@@ -72,8 +72,10 @@ struct PermissionsStartView: View {
     @State private var customServerAddress: String = "" // 自定义服务器地址
     @State private var urlValidationError: Bool = false // URL验证错误标志
     @State private var useCustomServer = false // 是否使用自定义服务器
-
+    @Default(.noServerModel) var noServerModel
     @StateObject private var appManager = AppManager.shared
+    
+    
 
     var complete: (() -> Void)?
 
@@ -167,49 +169,74 @@ struct PermissionsStartView: View {
 
                     VStack(spacing: 10) {
                         // 自定义服务器开关
-                        HStack {
-                            Image(systemName: "server.rack")
-                                .font(.title2)
-                                .foregroundColor(.blue)
-                                .frame(width: 36, height: 36)
-                                .background {
-                                    Circle()
-                                        .fill(Color.blue.opacity(0.1))
+                        if !useCustomServer{
+                            HStack{
+                                Toggle(isOn: $noServerModel) { 
+                                    Label {
+                                        Text("无服务器模式")
+                                            .font(.headline)
+                                    } icon: {
+                                        Image(systemName: "apple.logo")
+                                            .font(.title)
+                                            .foregroundColor(.blue)
+                                            .frame(width: 36, height: 36)
+                                            .symbolRenderingMode(.palette)
+                                    }
                                 }
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("使用自定义服务器")
-                                    .font(.headline)
-
-                                Text("切换使用官方服务器或自定义服务器")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
+                                .onChange(of: noServerModel) { _ in
+                                    if noServerModel{
+                                        customServerAddress = ""
+                                        useCustomServer = false
+                                    }
+                                }
                             }
-
-                            Spacer()
-
-                            Toggle(isOn: $useCustomServer) {}
-                                .toggleStyle(SwitchToggleStyle(tint: .green))
-                                .labelsHidden()
+                            .padding(.horizontal, 15)
                         }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 15)
-                        .background {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color(UIColor.systemBackground))
-                                .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
+                       
+                        if !noServerModel{
+                            HStack {
+                                Image(systemName: "server.rack")
+                                    .font(.title2)
+                                    .foregroundColor(.blue)
+                                    .frame(width: 36, height: 36)
+                                    .background {
+                                        Circle()
+                                            .fill(Color.blue.opacity(0.1))
+                                    }
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("使用自定义服务器")
+                                        .font(.headline)
+                                    
+                                    Text("切换使用官方服务器或自定义服务器")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                                
+                                Spacer()
+                                
+                                Toggle(isOn: $useCustomServer) {}
+                                    .toggleStyle(SwitchToggleStyle(tint: .green))
+                                    .labelsHidden()
+                            }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 15)
+                            .background {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(UIColor.systemBackground))
+                                    .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
+                            }
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        useCustomServer ? Color.blue.opacity(0.3) : Color.gray
+                                            .opacity(0.1),
+                                        lineWidth: 1
+                                    )
+                            )
                         }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    useCustomServer ? Color.blue.opacity(0.3) : Color.gray
-                                        .opacity(0.1),
-                                    lineWidth: 1
-                                )
-                        )
-
                         // 自定义服务器地址输入框 - 仅在开启自定义服务器时显示
-                        if useCustomServer {
+                        if useCustomServer && !noServerModel{
                             HStack {
                                 Image(systemName: "link")
                                     .font(.title2)
@@ -534,7 +561,8 @@ struct PermissionOptionCard: View {
 }
 
 #Preview {
-    PermissionsStartView()
+   ContentView()
+        .environmentObject(AppManager.shared)
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()
                 .presentationDetents([.large])

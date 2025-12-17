@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         let manager = AppManager.shared
-        if Defaults[.servers].count == 0 {
+        if Defaults[.servers].count == 0 && !Defaults[.noServerModel] {
             Task.detached(priority: .userInitiated) {
                 if await !manager.customServerURL.isEmpty {
                     _ = await manager

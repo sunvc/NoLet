@@ -85,7 +85,6 @@ struct ServerMonitoringView: View {
         .onDisappear {
             self.timer?.invalidate()
             self.timer = nil
-            NLog.error("离开页面")
         }
         .navigationTitle("服务器监控")
     }

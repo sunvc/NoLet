@@ -22,6 +22,9 @@ struct ExampleView: View {
     @Default(.servers) var servers
     @Default(.cryptoConfigs) var cryptoConfigs
 
+    var server: String{
+        pickerSelection?.server ?? "\(NCONFIG.server)/Key" + "/" 
+    }
     var body: some View {
         List {
             if servers.count > 1 {
@@ -42,7 +45,7 @@ struct ExampleView: View {
                 .listRowBackground(Color.clear)
             }
             ForEach(createExample(cryptoData: cryptoConfigs.config()), id: \.id) { item in
-                let resultURL = (pickerSelection?.server ?? "NotKey") + "/" + item.params
+                let resultURL = server + item.params
 
                 Section {
                     HStack {
@@ -75,16 +78,19 @@ struct ExampleView: View {
                                 Toast.copy(title: "复制成功")
                                 return true
                             })
-                        Image(systemName: "safari")
-                            .scaleEffect(1.3)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.tint, Color.primary)
-                            .VButton(onRelease: { _ in
-                                if resultURL.hasHttp, let url = URL(string: resultURL) {
-                                    UIApplication.shared.open(url)
-                                }
-                                return true
-                            })
+                        if pickerSelection != nil {
+                            Image(systemName: "safari")
+                                .scaleEffect(1.3)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.tint, Color.primary)
+                                .VButton(onRelease: { _ in
+                                    if resultURL.hasHttp, let url = URL(string: resultURL) {
+                                        UIApplication.shared.open(url)
+                                    }
+                                    return true
+                                })
+                        }
+                        
                     }
                     Text(verbatim: resultURL).font(.caption)
 

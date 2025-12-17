@@ -45,11 +45,23 @@ struct ContentView: View {
                 ColoredBorder()
             }
         }
-        .disabled(firstStart)
-        .overlay{
-            if firstStart {
-                firstStartLauchFirstStartView()
+        .sheet(isPresented: $firstStart){
+            PermissionsStartView {
+                withAnimation { self.firstStart.toggle() }
+
+                Task.detached(priority: .userInitiated) {
+                    for item in await MessagesManager.examples() {
+                        await MessagesManager.shared.add(item)
+                    }
+                }
+
+                if Defaults[.cryptoConfigs].count == 0 {
+                    Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
+                }
             }
+            .customPresentationCornerRadius(50)
+            .presentationDetents([.large])
+            .interactiveDismissDisabled(true)
         }
         .sheet(isPresented: manager.sheetShow) { ContentSheetViewPage() }
         .fullScreenCover(isPresented: manager.fullShow) { ContentFullViewPage() }
@@ -218,24 +230,7 @@ struct ContentView: View {
         }
     }
 
-    @ViewBuilder
-    func firstStartLauchFirstStartView() -> some View {
-        PermissionsStartView {
-            withAnimation { self.firstStart.toggle() }
 
-            Task.detached(priority: .userInitiated) {
-                for item in await MessagesManager.examples() {
-                    await MessagesManager.shared.add(item)
-                }
-            }
-
-            if Defaults[.cryptoConfigs].count == 0 {
-                Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
-            }
-        }
-        .background26(.ultraThinMaterial, radius: 5)
-        .ignoresSafeArea()
-    }
 
     @ViewBuilder
     func ContentFullViewPage() -> some View {

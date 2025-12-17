@@ -113,37 +113,29 @@ enum QuickAction: String, CaseIterable {
 
 struct PushServerModel: Codable, Identifiable, Equatable, Hashable {
     var id: String = UUID().uuidString
-    var device: String
     var url: String
     var key: String = ""
     var group: String? = nil
     var status: Bool = false
     var createDate: Date = .now
     var updateDate: Date = .now
-    var voice: Bool = false
     var sign: String? = nil
 
     init(
-        id: String = UUID().uuidString,
-        device: String? = nil,
         url: String,
         key: String = "",
         group: String? = nil,
         status: Bool = false,
         createDate: Date = .now,
         updateDate: Date = .now,
-        voice: Bool = false,
         sign: String? = nil
     ) {
-        self.id = id
-        self.device = device ?? NCONFIG.deviceInfoString()
         self.url = url
         self.key = key
         self.group = group
         self.status = status
         self.createDate = createDate
         self.updateDate = updateDate
-        self.voice = voice
         self.sign = sign
     }
 

@@ -18,8 +18,9 @@ struct ServersConfigView: View {
     @Environment(\.dismiss) var dismiss
     @Default(.servers) var servers
     @Default(.cloudServers) var cloudServers
+    @Default(.noServerModel) var noServerModel
     @EnvironmentObject private var manager: AppManager
-
+    @State private var showNoServerMode:Bool = false
     var showClose: Bool = false
 
     var body: some View {
@@ -50,7 +51,10 @@ struct ServersConfigView: View {
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button {
-                            guard servers.count > 1 else { return }
+                            guard servers.count > 1 else { 
+                                self.showNoServerMode.toggle()
+                                return
+                            }
                             if let group = item.group, group.isEmpty {
                                 cloudServers.removeAll(where: { $0.id == item.id })
                             }
@@ -131,7 +135,13 @@ struct ServersConfigView: View {
         .animation(.easeInOut, value: servers)
         .listRowSpacing(10)
         .listStyle(.grouped)
-        .refreshable { manager.registers() }
+        .refreshable { 
+            if servers.count > 0{
+                manager.registers()
+            }else{
+                Toast.question(title: "请先添加服务器")
+            }
+        }
         .toolbar {
             ToolbarItem {
                 withAnimation {
@@ -159,6 +169,32 @@ struct ServersConfigView: View {
             }
         }
         .navigationTitle("服务器")
+        .alert("无服务器模式", isPresented: $showNoServerMode) {
+            Button("取消", role: .cancel) {}
+            Button("开启", role: .destructive) {
+                noServerModel = true
+                servers = []
+                cloudServers.removeAll(where: {$0.group != nil})
+                Task.detached(priority: .userInitiated) {
+                    let servers = await Defaults[.cloudServers]
+                    await withTaskGroup(of: Void.self) { group in
+                        for server in servers{
+                            group.addTask {
+                              _ = await manager.register(server: server, msg: false)
+                            }
+                        }
+                    }
+                }
+                manager.router = []
+            }
+        } message: {
+            Text("开启无服务器模式后, 当前服务器列表的设备令牌将清空!!")
+        }
+        .onDisappear { 
+            if servers.count == 0 {
+                noServerModel = true
+            }
+        }
     }
 }
 

@@ -97,4 +97,5 @@ enum NoletKey: String, CaseIterable {
     case scanTypes
     case proxyDownloadServer
     case nearbyShow
+    case noServerModel
 }

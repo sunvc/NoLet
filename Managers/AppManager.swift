@@ -431,8 +431,9 @@ extension AppManager {
             return false
         }
     }
-
+    
     func registers() {
+        guard Defaults[.servers].count > 0 else { return }
         Task.detached(priority: .userInitiated) {
             let servers = await Defaults[.servers]
             let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -517,7 +518,6 @@ extension AppManager {
         } catch {
             Toast.error(title: "注册失败")
             server.status = false
-            server.voice = false
             NLog.error(error.localizedDescription)
             return server
         }
