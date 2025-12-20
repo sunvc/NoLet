@@ -529,6 +529,11 @@ extension AppManager {
                 }
                 Defaults[.servers].insert(serverNew, at: 0)
             }
+            
+            
+            if let index = Defaults[.servers].firstIndex(where: {$0.id == serverNew.id}){
+                Defaults[.servers][index] = serverNew
+            }
             Toast.success(title: "添加成功")
         }
         Self.syncLocalToCloud()

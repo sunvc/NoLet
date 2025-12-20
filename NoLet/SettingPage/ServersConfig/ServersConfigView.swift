@@ -99,10 +99,10 @@ struct ServersConfigView: View {
                 ForEach(cloudServers, id: \.id) { item in
                     if !servers.contains(where: { $0 == item }) {
                         ServerCardView(item: item, isCloud: true) {
-                            servers.append(item)
                             Task {
                                 let server = await manager.register(server: item)
                                 if server.status {
+                                    servers.append(item)
                                     Toast.success(title: "操作成功")
                                 } else {
                                     Toast.question(title: "操作失败")
