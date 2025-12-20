@@ -21,7 +21,7 @@ class Toast: ObservableObject {
         symbol: String?,
         tint: Color = .primary,
         isUserInteractionEnabled _: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         DispatchQueue.main.async {
             UIAccessibility.post(notification: .announcement, argument: title)
@@ -32,7 +32,7 @@ class Toast: ObservableObject {
                         symbol: symbol,
                         tint: tint,
                         isUserInteractionEnabled: true,
-                        timing: timing
+                        timing: timing - CGFloat(self.toasts.count) * 0.2
                     )
                 )
             }
@@ -44,7 +44,7 @@ class Toast: ObservableObject {
         symbol: ToastSymbol?,
         tint: Color = .primary,
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         DispatchQueue.main.async {
             UIAccessibility.post(notification: .announcement, argument: title)
@@ -55,7 +55,7 @@ class Toast: ObservableObject {
                         symbol: symbol?.rawValue,
                         tint: symbol != nil ? symbol!.color : tint,
                         isUserInteractionEnabled: isUserInteractionEnabled,
-                        timing: timing
+                        timing: timing - CGFloat(self.toasts.count) * 0.2
                     )
                 )
             }
@@ -65,7 +65,7 @@ class Toast: ObservableObject {
     nonisolated class func success(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         Task { @MainActor in
             Toast.shared.present(
@@ -80,7 +80,7 @@ class Toast: ObservableObject {
     nonisolated class func info(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         Task { @MainActor in
             Toast.shared.present(
@@ -95,7 +95,7 @@ class Toast: ObservableObject {
     nonisolated class func question(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         Task { @MainActor in
             Toast.shared.present(
@@ -110,7 +110,7 @@ class Toast: ObservableObject {
     nonisolated class func error(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
         Task { @MainActor in
             Toast.shared.present(
@@ -122,17 +122,19 @@ class Toast: ObservableObject {
         }
     }
 
-    class func copy(
+    nonisolated class func copy(
         title: String.LocalizationValue = "复制成功",
         isUserInteractionEnabled: Bool = true,
-        timing: ToastTime = .medium
+        timing: CGFloat = 2.0
     ) {
-        Toast.shared.present(
-            title: String(localized: title),
-            symbol: .copy,
-            isUserInteractionEnabled: isUserInteractionEnabled,
-            timing: timing
-        )
+        Task { @MainActor in
+            Toast.shared.present(
+                title: String(localized: title),
+                symbol: .copy,
+                isUserInteractionEnabled: isUserInteractionEnabled,
+                timing: timing
+            )
+        }
     }
 }
 
@@ -144,13 +146,7 @@ struct ToastItem: Identifiable {
     var tint: Color
     var isUserInteractionEnabled: Bool
     /// Timing
-    var timing: ToastTime = .medium
-}
-
-enum ToastTime: CGFloat {
-    case short = 1.0
-    case medium = 3.0
-    case long = 5.0
+    var timing: CGFloat = 1.0
 }
 
 enum ToastSymbol: String {
@@ -253,6 +249,11 @@ private struct ToastView: View {
         .contentShape(.capsule)
         .gesture(
             DragGesture(minimumDistance: 0)
+                .onChanged{ _ in
+                    if let delayTask{
+                        delayTask.cancel()
+                    }
+                }
                 .onEnded { value in
                     guard item.isUserInteractionEnabled else { return }
                     let endX = value.translation.width
@@ -261,25 +262,31 @@ private struct ToastView: View {
                         /// Removing Toast
                         removeToast()
                         Haptic.impact(.light)
+                    }else{
+                        startTiming()
                     }
                 }
         )
         .onAppear {
-            guard delayTask == nil else { return }
-            delayTask = .init(block: {
-                removeToast()
-            })
-
-            if let delayTask {
-                DispatchQueue.main.asyncAfter(
-                    deadline: .now() + item.timing.rawValue,
-                    execute: delayTask
-                )
-            }
+            startTiming()
         }
         /// Limiting Size
         .frame(maxWidth: size.width * 0.7)
         .transition(.offset(y: 150))
+    }
+    
+    func startTiming(){
+        guard delayTask == nil else { return }
+        delayTask = .init(block: {
+            removeToast()
+        })
+
+        if let delayTask {
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + item.timing,
+                execute: delayTask
+            )
+        }
     }
 
     func removeToast() {

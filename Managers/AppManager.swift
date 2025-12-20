@@ -432,45 +432,33 @@ extension AppManager {
         }
     }
     
-    func registers() {
+    func registers() async   {
         guard Defaults[.servers].count > 0 else { return }
-        Task.detached(priority: .userInitiated) {
-            let servers = await Defaults[.servers]
-            let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
-                for (index, server) in servers.enumerated() {
-                    group.addTask {
-                        let result = await self.register(server: server, msg: false)
-                        return (index, result)
-                    }
+        let servers = Defaults[.servers]
+        let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
+            for (index, server) in servers.enumerated() {
+                group.addTask {
+                    let result = await self.register(server: server)
+                    return (index, result)
                 }
-
-                var tmp: [(Int, PushServerModel)] = []
-                for await pair in group {
-                    tmp.append(pair)
-                }
-
-                // 按 index 排序，保证和 servers 顺序一致
-                return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
             }
 
-            if results.filter({ $0.status }).count == servers.count {
-                Toast.success(title: "注册成功")
-            } else if results.filter({ !$0.status }).count == servers.count {
-                Toast.error(title: "注册失败")
-            } else {
-                Toast.info(title: "部分注册成功")
+            var tmp: [(Int, PushServerModel)] = []
+            for await pair in group {
+                tmp.append(pair)
             }
+            // 按 index 排序，保证和 servers 顺序一致
+            return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
+        }
 
-            await MainActor.run {
-                Defaults[.servers] = results
-            }
+        await MainActor.run {
+            Defaults[.servers] = results
         }
     }
 
     func register(
         server: PushServerModel,
         reset: Bool = false,
-        msg: Bool = false
     ) async -> PushServerModel {
         var server = server
 
@@ -496,27 +484,17 @@ extension AppManager {
 
             guard 200...299 ~= response.code else {
                 Toast.shared.present(title: response.message, symbol: .error)
-                throw "erroe"
+                throw response.message
             }
 
             if let data = response.data {
                 server.key = data.deviceKey
                 server.status = true
-                if msg {
-                    if reset { Toast.info(title: "解绑成功") } else {
-                        Toast.success(title: "注册成功")
-                    }
-                }
-            } else {
-                if msg {
-                    Toast.error(title: "注册失败")
-                }
-                throw "erroe"
-            }
+            } 
+            
             Self.syncLocalToCloud()
             return server
         } catch {
-            Toast.error(title: "注册失败")
             server.status = false
             NLog.error(error.localizedDescription)
             return server
@@ -538,7 +516,7 @@ extension AppManager {
             return false
         }
 
-        let serverNew = await register(server: serverCopy, msg: true)
+        let serverNew = await register(server: serverCopy)
         if serverNew.status {
             if reset {
                 /// 重置后清空老的token

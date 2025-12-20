@@ -66,7 +66,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
         } else {
-            manager.registers()
+            Task{
+                await manager.registers()
+            }
         }
         
         NLog.log("获取到设备Token:\(token)")

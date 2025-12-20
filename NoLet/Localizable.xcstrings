@@ -6703,6 +6703,12 @@
         }
       }
     },
+    "操作失败" : {
+
+    },
+    "操作成功" : {
+
+    },
     "支持文字图标、Emoji图标、自定义背景" : {
       "localizations" : {
         "en" : {
@@ -7573,6 +7579,9 @@
           }
         }
       }
+    },
+    "更新成功" : {
+
     },
     "有限的访问权限" : {
       "comment" : "Description of a message when the app does not have enough permissions to access the photo library.",
@@ -11027,6 +11036,7 @@
       }
     },
     "解绑成功" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

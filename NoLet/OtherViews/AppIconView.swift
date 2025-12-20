@@ -127,10 +127,10 @@ struct AppIconView: View {
                 }
             }
 
-            Toast.success(title: "切换成功", timing: .long)
+            Toast.success(title: "切换成功")
             dismiss()
         } else {
-            Toast.question(title: "暂时不能切换", timing: .short)
+            Toast.question(title: "暂时不能切换")
         }
     }
 }

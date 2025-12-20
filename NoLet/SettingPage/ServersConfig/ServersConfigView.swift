@@ -20,7 +20,7 @@ struct ServersConfigView: View {
     @Default(.cloudServers) var cloudServers
     @Default(.noServerModel) var noServerModel
     @EnvironmentObject private var manager: AppManager
-    @State private var showNoServerMode:Bool = false
+    @State private var showNoServerMode: Bool = false
     var showClose: Bool = false
 
     var body: some View {
@@ -51,7 +51,7 @@ struct ServersConfigView: View {
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                         Button {
-                            guard servers.count > 1 else { 
+                            guard servers.count > 1 else {
                                 self.showNoServerMode.toggle()
                                 return
                             }
@@ -62,11 +62,12 @@ struct ServersConfigView: View {
                             if let index = servers.firstIndex(where: { $0.id == item.id }) {
                                 servers.remove(at: index)
                                 Task {
-                                    _ = await manager.register(
-                                        server: item,
-                                        reset: true,
-                                        msg: true
-                                    )
+                                    let server = await manager.register(server: item, reset: true)
+                                    if server.status {
+                                        Toast.success(title: "操作成功")
+                                    } else {
+                                        Toast.question(title: "操作失败")
+                                    }
                                 }
                             }
 
@@ -100,7 +101,12 @@ struct ServersConfigView: View {
                         ServerCardView(item: item, isCloud: true) {
                             servers.append(item)
                             Task {
-                                _ = await manager.register(server: item, msg: true)
+                                let server = await manager.register(server: item)
+                                if server.status {
+                                    Toast.success(title: "操作成功")
+                                } else {
+                                    Toast.question(title: "操作失败")
+                                }
                             }
                         }
                         .padding(.horizontal, 15)
@@ -135,10 +141,19 @@ struct ServersConfigView: View {
         .animation(.easeInOut, value: servers)
         .listRowSpacing(10)
         .listStyle(.grouped)
-        .refreshable { 
-            if servers.count > 0{
-                manager.registers()
-            }else{
+        .refreshable {
+            if servers.count > 0 {
+                Task{
+                    await manager.registers()
+                    let updateCount = servers.filter({$0.status}).count 
+                    if updateCount == servers.count{
+                        Toast.success(title: "更新成功")
+                    }else if updateCount > 0 && updateCount < servers.count{
+                        Toast.question(title: "部分注册成功")
+                    }
+                }
+                
+            } else {
                 Toast.question(title: "请先添加服务器")
             }
         }
@@ -174,13 +189,18 @@ struct ServersConfigView: View {
             Button("开启", role: .destructive) {
                 noServerModel = true
                 servers = []
-                cloudServers.removeAll(where: {$0.group != nil})
+                cloudServers.removeAll(where: { $0.group != nil })
                 Task.detached(priority: .userInitiated) {
                     let servers = await Defaults[.cloudServers]
                     await withTaskGroup(of: Void.self) { group in
-                        for server in servers{
+                        for server in servers {
                             group.addTask {
-                              _ = await manager.register(server: server, msg: false)
+                                let server = await manager.register(server: server)
+                                if server.status {
+                                    Toast.success(title: "操作成功")
+                                } else {
+                                    Toast.question(title: "操作失败")
+                                }
                             }
                         }
                     }
@@ -190,7 +210,7 @@ struct ServersConfigView: View {
         } message: {
             Text("开启无服务器模式后, 当前服务器列表的设备令牌将清空!!")
         }
-        .onDisappear { 
+        .onDisappear {
             if servers.count == 0 {
                 noServerModel = true
             }
