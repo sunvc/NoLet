@@ -173,7 +173,6 @@ enum ToastSymbol: String {
 
 struct ToastGroup: View {
     @ObservedObject var model = Toast.shared
-    @StateObject private var manager = AppManager.shared
 
     var body: some View {
         GeometryReader {
@@ -224,6 +223,7 @@ private struct ToastView: View {
 
             Text(item.title)
                 .accessibilityLabel(item.title)
+               
         }
         .foregroundStyle(item.tint)
         .padding(.horizontal, 15)

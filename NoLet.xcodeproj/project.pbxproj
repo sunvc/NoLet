@@ -60,7 +60,6 @@
 		B58359332DEDD65A0066B32E /* AnimatedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358BB2DEDD65A0066B32E /* AnimatedButton.swift */; };
 		B58359342DEDD65A0066B32E /* OtherModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358B02DEDD65A0066B32E /* OtherModel.swift */; };
 		B58359362DEDD65A0066B32E /* zoomable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58358B42DEDD65A0066B32E /* zoomable.swift */; };
-		B58359B62DEDD9060066B32E /* PassthroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B58359B52DEDD9030066B32E /* PassthroughWindow.swift */; };
 		B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359B92DEDDB170066B32E /* StoreKit.framework */; };
 		B58359F12DEDDF860066B32E /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B58359E72DEDDF860066B32E /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B5835B182DEDE07C0066B32E /* ServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B5835B112DEDE07C0066B32E /* ServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -179,7 +178,6 @@
 		B58358BF2DEDD65A0066B32E /* PopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopView.swift; sourceTree = "<group>"; };
 		B58358C52DEDD65A0066B32E /* Snapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snapshot.swift; sourceTree = "<group>"; };
 		B58358C72DEDD65A0066B32E /* HackerTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackerTextView.swift; sourceTree = "<group>"; };
-		B58359B52DEDD9030066B32E /* PassthroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughWindow.swift; sourceTree = "<group>"; };
 		B58359B92DEDDB170066B32E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		B58359D12DEDDF360066B32E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		B58359D32DEDDF360066B32E /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -606,7 +604,6 @@
 		B58358C92DEDD65A0066B32E /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				B58359B52DEDD9030066B32E /* PassthroughWindow.swift */,
 				B58358B42DEDD65A0066B32E /* zoomable.swift */,
 				B58358B92DEDD65A0066B32E /* WaveformScrubber.swift */,
 				B58358BB2DEDD65A0066B32E /* AnimatedButton.swift */,
@@ -865,7 +862,6 @@
 				B54057212DF1B4560058DC87 /* URL+.swift in Sources */,
 				B58359122DEDD65A0066B32E /* Snapshot.swift in Sources */,
 				B54057382DF1B61F0058DC87 /* Type+.swift in Sources */,
-				B58359B62DEDD9060066B32E /* PassthroughWindow.swift in Sources */,
 				B54057122DF1B3850058DC87 /* Date+.swift in Sources */,
 				B55BD5532E21EFE800A1F014 /* Lang.swift in Sources */,
 				BA4FEA672EDB00C30002F71F /* Logo.swift in Sources */,
