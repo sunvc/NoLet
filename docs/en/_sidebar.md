@@ -7,7 +7,4 @@
   - [FAQ](/en/faq)
 - **Server**
   - [Deploy Service](/en/deploy)
-  - [Direct Push](/en/apns)
-  - [Compile Code](/en/build)
-  - [Push Certificate](/en/cert)
 - [Privacy Security](/en/privacy)

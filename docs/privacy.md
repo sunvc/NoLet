@@ -1,5 +1,4 @@
- *感谢[BARK](https://github.com/Finb/Bark) 的开源项目*
-#### 隐私如何泄露 <!-- {docsify-ignore-all} -->
+# 隐私如何泄露
 
 一条推送从发送到接收经过路线是：<br>
 发送端 <font color='red'> →服务端①</font> → 苹果APNS服务器 → 你的设备 → <font color='red'>NoLet APP②</font>。

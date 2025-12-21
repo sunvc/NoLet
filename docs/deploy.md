@@ -1,7 +1,6 @@
-*感谢[BARK](https://github.com/Finb/Bark) 的开源项目*
+# Docker-Compose
 
-## Docker-Compose 
-* 配置
+* 配置文件(不是必须, 只在大量自定义情况使用)
 
 ```yaml
 system:
@@ -52,7 +51,6 @@ apple:
 
 除了配置文件外，还可以通过命令行参数或环境变量来配置服务：
 
-
 | 参数 | 环境变量 | 说明 | 默认值 |
 |------|----------|------|--------|
 | `--addr` | `NoLet_SERVER_ADDRESS` | 服务器监听地址 | `0.0.0.0:8080` |
@@ -88,23 +86,25 @@ docker run -d --name NoLets -p 8080:8080 -v ./data:/data  --restart=always  sanv
 ```
 
 ## Docker-compose部署
+
 * 复制项目中的/deploy文件夹到服务器上，然后执行以下命令即可。
 * 可选 `config.yaml` 配置文件，文件中的配置项，可以根据自己的需求进行修改。
 
 * 启动
+
 ```shell
 docker-compose up -d
 ```
 
 ## 手动部署
 
-1. 根据平台下载可执行文件:<br> <a href='https://github.com/sunvc/NoLets/releases'>https://github.com/sunvc/NoLets/releases</a><br>
-或自己编译<br>
-<a href="https://github.com/sunvc/NoLets">https://github.com/sunvc/NoLets</a>
+1. 根据平台下载可执行文件或自己编译:<br>
+<a href="https://github.com/sunvc/NoLets">NoLets</a>
 
 2. 运行
 ---
-```
+
+```sh
 ./main
 ```
 
@@ -116,3 +116,12 @@ docker-compose up -d
 
 3. App代码: <a href="https://github.com/sunvc/NoLet">https://github.com/sunvc/NoLet</a>
 
+# 其他资料
+
+当你需要集成 NoLet 到自己的系统或重新实现后端代码时可能需要推送证书
+
+##### Key ID：*BNY5GUGV38*
+
+##### TeamID：*FUWV6U942Q*
+
+##### 下载地址：[AuthKey.p8](https://s3.wzs.app/AuthKey_BNY5GUGV38_FUWV6U942Q.p8)

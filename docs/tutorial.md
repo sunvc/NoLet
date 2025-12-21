@@ -1,6 +1,4 @@
- *感谢[BARK](https://github.com/Finb/Bark) 的开源项目*
-
-## 发送推送
+# 发送推送
 
 1. 打开APP，复制测试URL
 
@@ -12,7 +10,7 @@
 
 ## URL格式
 
-URL由推送key、参数 title、参数 body 组成。有下面两种组合方式
+URL由推送key, title, subtitle, body 组成。有下面组合方式
 
 ```URL
 https://wzs.app/:key/:body 
@@ -23,7 +21,7 @@ https://wzs.app/:key/:title/:subtitle/:body
 
 ## 请求方式
 
-### GET 请求参数拼接在 URL 后面，例如
+#### GET 请求参数拼接在 URL 后面，例如
 
 ```sh
 curl https://wzs.app/your_key/推送内容?group=分组&copy=复制
@@ -96,6 +94,78 @@ curl -X "POST" "https://wzs.app/push" \
 | group | 字符串 | 对消息进行分组，推送将按 `group` 分组显示在通知中心中。<br>也可在历史消息列表中选择查看不同的群组。 |
 | ttl | 整数/字符串 | `ttl=天数` 推送过期时间，单位天，默认 app 内设置。 |
 | url | URL  | 点击推送时，跳转的 URL，支持 URL Scheme 和 Universal Link |
+
+## 批量推送
+
+只需传递 `device_keys` 参数的设备ID列表。或者 `device_key`参数的逗号分隔的字符串
+
+* GET请求:
+
+```sh
+https://wzs.app/key1,key2,key3,.../推送内容
+https://wzs.app/push?deviceKey=key1,key2,key3,...&body=推送内容
+```
+
+* 或者POST请求:
+
+```json
+{
+     ...// 其他参数
+     “deviceKeys”: [“key1”, “key2”, “key3”, ...],
+}
+```
+
+## 分组推送
+
+* 服务器必须使用sqlite或者mysql
+* 服务器配置必须设置user,password
+* 用自定义服务器替换以下链接生成二维码, 必须扫码添加
+
+```sh
+pb://server?text=https://wzs.app&group=newgroup
+```
+
+```js
+import axios from "axios";
+
+const url = "https://wzs.app/push";
+const username = "";
+const password = "";
+const token = Buffer.from(`${username}:${password}`, "utf8").toString("base64");
+
+axios.post(
+  url,
+  null,
+  {
+    headers: {
+      Authorization: `Basic ${token}`
+    },
+    params: {
+      PushGroupName: "newgroup",
+      body: "Test NoLet Server",
+      // ...
+    }
+  }
+)
+.then(res => {
+  console.log(res.data);
+})
+.catch(err => {
+  console.error(err.response?.data || err.message);
+});
+```
+
+## MCP 支持
+
+```json
+{
+  "mcpServers": {
+    "nolet": {
+      "url": "https://wzs.app/mcp/your_device_key"
+    }
+  }
+}
+```
 
 ## 快捷指令
 

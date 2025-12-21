@@ -1,5 +1,4 @@
-*Thanks to the open source project [BARK](https://github.com/Finb/Bark)*
-#### How Privacy Can Be Leaked <!-- {docsify-ignore-all} -->
+# How Privacy Can Be Leaked <!-- {docsify-ignore-all} -->
 
 The route of a push notification from sending to receiving is:<br>
 Sender <font color='red'> →Server①</font> → Apple APNS Server → Your Device → <font color='red'>NoLet APP②</font>.

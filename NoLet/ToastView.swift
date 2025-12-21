@@ -32,7 +32,7 @@ class Toast: ObservableObject {
                         symbol: symbol,
                         tint: tint,
                         isUserInteractionEnabled: true,
-                        timing: timing - CGFloat(self.toasts.count) * 0.2
+                        timing: timing
                     )
                 )
             }
@@ -55,7 +55,7 @@ class Toast: ObservableObject {
                         symbol: symbol?.rawValue,
                         tint: symbol != nil ? symbol!.color : tint,
                         isUserInteractionEnabled: isUserInteractionEnabled,
-                        timing: timing - CGFloat(self.toasts.count) * 0.2
+                        timing: timing
                     )
                 )
             }
@@ -159,8 +159,8 @@ enum ToastSymbol: String {
     var color: Color {
         switch self {
         case .success: .green
-        case .info: .orange
-        case .question: .yellow
+        case .info: .blue
+        case .question: .orange
         case .error: .red
         case .copy: .green
         }
@@ -181,8 +181,7 @@ struct ToastGroup: View {
                         ToastView(size: size, item: toast)
                             .scaleEffect(scale(toast))
                             .offset(y: offsetY(toast))
-                            .zIndex(Double(model.toasts
-                                    .firstIndex(where: { $0.id == toast.id }) ?? 0))
+                            .zIndex(Double(model.toasts.firstIndex(where: { $0.id == toast.id }) ?? 0))
                     }
                 }
             }

@@ -1,7 +1,6 @@
-*Thanks to the open source project [BARK](https://github.com/Finb/Bark)*
+# Docker-Compose
 
-## Docker-Compose 
-* Configuration
+* Configuration file (Optional, only used for extensive customization)
 
 ```yaml
 system:
@@ -50,23 +49,22 @@ apple:
 
 ### Command Line Arguments
 
-In addition to the configuration file, you can also configure the service through command line arguments or environment variables:
+In addition to the configuration file, the service can be configured via command line arguments or environment variables:
 
-
-| Parameter | Environment Variable | Description | Default Value |
+| Argument | Environment Variable | Description | Default |
 |------|----------|------|--------|
 | `--addr` | `NoLet_SERVER_ADDRESS` | Server listening address | `0.0.0.0:8080` |
 | `--url-prefix` | `NoLet_SERVER_URL_PREFIX` | Service URL prefix | `/` |
 | `--dir` | `NoLet_SERVER_DATA_DIR` | Data storage directory | `./data` |
 | `--dsn` | `NoLet_SERVER_DSN` | MySQL DSN, format: `user:pass@tcp(host)/dbname` | Empty |
 | `--cert` | `NoLet_SERVER_CERT` | TLS certificate path | Empty |
-| `--key` | `NoLet_SERVER_KEY` | TLS certificate private key path | Empty |
+| `--key` | `NoLet_SERVER_KEY` | TLS private key path | Empty |
 | `--reduce-memory-usage` | `NoLet_SERVER_REDUCE_MEMORY_USAGE` | Reduce memory usage (increases CPU consumption) | `false` |
-| `--user, -u` | `NoLet_SERVER_BASIC_AUTH_USER` | Basic authentication username | Empty |
-| `--password, -p` | `NoLet_SERVER_BASIC_AUTH_PASSWORD` | Basic authentication password | Empty |
-| `--proxy-header` | `NoLet_SERVER_PROXY_HEADER` | Remote IP address source in HTTP header | Empty |
-| `--max-batch-push-count` | `NoLet_SERVER_MAX_BATCH_PUSH_COUNT` | Maximum batch push count, `-1` means unlimited | `-1` |
-| `--max-apns-client-count` | `NoLet_SERVER_MAX_APNS_CLIENT_COUNT` | Maximum APNs client connections | `1` |
+| `--user, -u` | `NoLet_SERVER_BASIC_AUTH_USER` | Basic Auth username | Empty |
+| `--password, -p` | `NoLet_SERVER_BASIC_AUTH_PASSWORD` | Basic Auth password | Empty |
+| `--proxy-header` | `NoLet_SERVER_PROXY_HEADER` | Source of remote IP address in HTTP header | Empty |
+| `--max-batch-push-count` | `NoLet_SERVER_MAX_BATCH_PUSH_COUNT` | Max batch push count, `-1` means unlimited | `-1` |
+| `--max-apns-client-count` | `NoLet_SERVER_MAX_APNS_CLIENT_COUNT` | Max APNs client connection count | `1` |
 | `--admins` | `NoLet_SERVER_ADMINS` | Administrator ID list | Empty |
 | `--debug` | `NoLet_DEBUG` | Enable debug mode | `false` |
 | `--apns-private-key` | `NoLet_APPLE_APNS_PRIVATE_KEY` | APNs private key path | Empty |
@@ -75,10 +73,10 @@ In addition to the configuration file, you can also configure the service throug
 | `--team-id` | `NoLet_APPLE_TEAM_ID` | APNs Team ID | Empty |
 | `--develop, --dev` | `NoLet_APPLE_DEVELOP` | Enable APNs development environment | `false` |
 | `--Expired, --ex` | `NoLet_EXPIRED_TIME` | Voice expiration time (seconds) | `120` |
-| `--help, -h` | - | Display help information | - |
+| `--help, -h` | - | Show help information | - |
 | `--config, -c` | - | Specify configuration file path | - |
 
-Command line arguments have higher priority than configuration files, and environment variables have higher priority than command line arguments.
+Command line arguments take precedence over the configuration file, and environment variables take precedence over command line arguments.
 
 ## Docker Deployment
 
@@ -88,31 +86,43 @@ docker run -d --name NoLets -p 8080:8080 -v ./data:/data  --restart=always  sanv
 ```
 
 ## Docker-compose Deployment
-* Copy the /deploy folder from the project to your server, then execute the following command.
-* Optional `config.yaml` configuration file, the configuration items in the file can be modified according to your needs.
+
+* Copy the `/deploy` folder from the project to the server, then run the following command.
+* Optional `config.yaml` configuration file. You can modify the configuration items in the file according to your needs.
 
 * Start
+
 ```shell
 docker-compose up -d
 ```
 
 ## Manual Deployment
 
-1. Download the executable file according to your platform:<br> <a href='https://github.com/sunvc/NoLets/releases'>https://github.com/sunvc/NoLets/releases</a><br>
-Or compile it yourself<br>
-<a href="https://github.com/sunvc/NoLets">https://github.com/sunvc/NoLets</a>
+1. Download the executable for your platform or compile it yourself:<br>
+<a href="https://github.com/sunvc/NoLets">NoLets</a>
 
 2. Run
+
 ---
-```
+
+```sh
 ./main
 ```
 
-## Other Information
+## Others
 
-1. The APP is responsible for sending the <a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622958-application">DeviceToken</a> to the server. <br>After the server receives a push request, it will send the push to Apple's server. Then the phone receives the push notification.
+1. The App is responsible for sending the <a href="https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622958-application">DeviceToken</a> to the server. <br>When the server receives a push request, it will send the push to the Apple server. Then the phone receives the push notification.
 
-2. Server code: <a href='https://github.com/sunvc/NoLets'>https://github.com/sunvc/NoLets</a><br>
+2. Server-side code: <a href='https://github.com/sunvc/NoLets'>https://github.com/sunvc/NoLets</a><br>
 
 3. App code: <a href="https://github.com/sunvc/NoLet">https://github.com/sunvc/NoLet</a>
 
+# Other Resources
+
+You may need the push certificate when you need to integrate NoLet into your own system or re-implement the backend code.
+
+##### Key ID：*BNY5GUGV38*
+
+##### TeamID：*FUWV6U942Q*
+
+##### Download Link: [AuthKey.p8](https://s3.wzs.app/AuthKey_BNY5GUGV38_FUWV6U942Q.p8)
