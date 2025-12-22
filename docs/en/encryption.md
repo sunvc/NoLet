@@ -1,6 +1,4 @@
-*Thanks to the open-source project [BARK](https://github.com/Finb/Bark)*
-
-#### What is Push Encryption
+# What is Push Encryption
 
 Push encryption is a method to protect notification content. It uses a custom key to encrypt and decrypt data when sending and receiving.<br>This way, the content cannot be accessed or leaked by the NoLet server or Apple APNs during transmission.
 
