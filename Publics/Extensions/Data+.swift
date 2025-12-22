@@ -19,6 +19,7 @@ extension Data {
         return SHA256.hash(data: self).compactMap { String(format: "%02x", $0) }.joined()
     }
 
+    nonisolated
     func toThumbnail(max: Int = 300) -> UIImage? {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailWithTransform: true,

@@ -196,7 +196,7 @@ struct MessageRow: View {
             let count = try await DatabaseManager.shared.dbQueue.read { db in
                 try Message
                     .filter(Message.Columns.group == message.group)
-                    .filter(Message.Columns.read == false)
+                    .filter(Message.Columns.isRead == false)
                     .fetchCount(db)
             }
             await MainActor.run {

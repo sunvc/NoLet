@@ -92,9 +92,6 @@ struct AssistantPageView: View {
 
             Spacer()
         }
-        .onChange(of: chatManager.chatgroup) { _ in
-            chatManager.loadData()
-        }
         .safeAreaInset(edge: .bottom) {
             // 底部输入框
             ChatInputView(
@@ -114,8 +111,7 @@ struct AssistantPageView: View {
                     Section {
                         Button(action: {
                             chatManager.cancellableRequest?.cancelRequest()
-                            chatManager.chatgroup = nil
-                            chatManager.chatMessages = []
+                            chatManager.setGroup()
                             Haptic.impact()
                         }) {
                             Label(String(localized: "新对话"), systemImage: "plus.message")
@@ -135,7 +131,7 @@ struct AssistantPageView: View {
         .popView(isPresented: $showChangeGroupName) {
             showChangeGroupName = false
         } content: {
-            if let chatgroup = chatManager.chatgroup {
+            if let chatgroup = chatManager.chatGroup {
                 CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name) { text in
                     chatManager.updateGroupName(groupID: chatgroup.id, newName: text)
                 }
@@ -183,7 +179,7 @@ struct AssistantPageView: View {
                     Haptic.impact()
 
                 } label: {
-                    if let chatGroup = chatManager.chatgroup {
+                    if let chatGroup = chatManager.chatGroup  {
                         HStack {
                             Text(chatGroup.name.trimmingSpaceAndNewLines)
                                 .lineLimit(1)
@@ -240,18 +236,15 @@ struct AssistantPageView: View {
             }
 
             let newGroup: ChatGroup? = {
-                if let group = openChatManager.shared.chatgroup {
+                if let group = chatManager.chatGroup  {
                     return group
                 } else {
                     let id = manager.askMessageID ?? UUID().uuidString
                     let name = String(text.trimmingSpaceAndNewLines.prefix(10))
-                    let group = ChatGroup(id: id, timestamp: .now, name: name, host: "")
+                    let group = ChatGroup(id: id, timestamp: .now, name: name, host: "", current: true)
                     do {
                         try DatabaseManager.shared.dbQueue.write { db in
                             try group.insert(db)
-                            Task { @MainActor in
-                                chatManager.chatgroup = group
-                            }
                         }
                         return group
                     } catch {

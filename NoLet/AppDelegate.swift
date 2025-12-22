@@ -21,11 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
         if Defaults[.id] == "" {
             Defaults[.id] = KeychainHelper.shared.getDeviceID()
         }
-        
+
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
 
@@ -38,9 +37,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await AppManager.shared.registerForRemoteNotifications()
             }
         }
-
         
-
+        Task.detached(priority: .background) {
+            await AppManager.syncServer()
+        }
+        
         return true
     }
 
@@ -52,11 +53,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         Defaults[.deviceToken] = token
         Task.detached(priority: .userInitiated) {
-            _ = await CloudManager.shared.queryOrUpdateDeviceToken( Defaults[.id], token: token)
+            _ = await CloudManager.shared.queryOrUpdateDeviceToken(Defaults[.id], token: token)
         }
 
         let manager = AppManager.shared
-        if Defaults[.servers].count == 0 && !Defaults[.noServerModel] {
+        if Defaults[.servers].count == 0, !Defaults[.noServerModel] {
             Task.detached(priority: .userInitiated) {
                 if await !manager.customServerURL.isEmpty {
                     _ = await manager
@@ -66,11 +67,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }
             }
         } else {
-            Task{
+            Task {
                 await manager.registers()
             }
         }
-        
+
         NLog.log("获取到设备Token:\(token)")
     }
 

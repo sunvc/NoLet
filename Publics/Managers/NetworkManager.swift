@@ -16,6 +16,7 @@ import Compression
 import Defaults
 import Foundation
 import UniformTypeIdentifiers
+import UIKit
 
 class NetworkManager: NSObject{
     private var session: URLSession!
@@ -100,9 +101,8 @@ class NetworkManager: NSObject{
         var request = URLRequest(url: requestURL)
         request.httpMethod = method.method // .get 或 .post
 
-        request.setValue(NCONFIG.customUserAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue(await self.customUserAgent(), forHTTPHeaderField: "User-Agent")
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
-        request.setValue(Defaults[.id], forHTTPHeaderField: "X-Device")
 
         for (key, value) in headers {
             request.setValue(value, forHTTPHeaderField: key)
@@ -184,5 +184,29 @@ class NetworkManager: NSObject{
         try FileManager.default.moveItem(at: downloadedURL, to: destinationURL)
 
         return destinationURL
+    }
+   
+    func customUserAgent() async -> String {
+        let info = Bundle.main.infoDictionary
+
+        let appName = NCONFIG.appSymbol
+        let appVersion = info?["CFBundleShortVersionString"] as? String ?? "0.0"
+        let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
+
+        var systemInfo = utsname()
+        uname(&systemInfo)
+
+        let deviceModel = withUnsafePointer(to: &systemInfo.machine) {
+            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
+                String(cString: $0)
+            }
+        }
+
+        let systemVer = await MainActor.run{ UIDevice.current.systemVersion }
+        let locale = Locale.current
+        let regionCode = locale.region?.identifier ?? "CN" // e.g. CN
+        let language = locale.language.languageCode?.identifier ?? "en" // e.g. zh
+
+        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
     }
 }

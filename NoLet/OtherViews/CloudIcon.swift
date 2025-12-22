@@ -23,7 +23,7 @@ struct CloudIcon: View {
 
     @State private var searchText: String = ""
 
-    @State private var icons: [CKRecord] = []
+    @State private var icons: [PushIcon] = []
 
     @State private var loading = false
 
@@ -43,9 +43,7 @@ struct CloudIcon: View {
             VStack {
                 if let item = dropImage {
                     UploadIclondIcon(pushIcon: item) { icon in
-                        if let icon = icon.toRecord(recordType: "PushIcon") {
-                            icons.append(icon)
-                        }
+                        icons.append(icon)
                         self.dropImage = nil
                     } endEditing: {
                         self.hideKeyboard()
@@ -68,77 +66,51 @@ struct CloudIcon: View {
                         if icons.count > 0 {
                             VStack {
                                 TagLayout(alignment: .center, spacing: 10) {
-                                    ForEach(icons, id: \.recordID) { icon in
-                                        if let name = icon["name"] as? String {
-                                            Menu {
-                                                Button {
-                                                    if let icon = icon.toPushIcon() {
-                                                        withAnimation {
-                                                            self.selectImage = icon.previewImage
-                                                        }
-
-                                                    } else {
-                                                        Toast.error(title: "图片加载失败")
-                                                    }
-
-                                                } label: {
-                                                    Label(
-                                                        "查看图标",
-                                                        systemImage: "photo.artframe.circle"
-                                                    )
-                                                    .customForegroundStyle(.accent, .primary)
+                                    ForEach(icons, id: \.id) { icon in
+                                        Menu {
+                                            Button {
+                                                withAnimation {
+                                                    self.selectImage = icon.previewImage
                                                 }
+                                            } label: {
+                                                Label(
+                                                    "查看图标",
+                                                    systemImage: "photo.artframe.circle"
+                                                )
+                                                .customForegroundStyle(.accent, .primary)
+                                            }
 
-                                                Button {
-                                                    Clipboard.set(name)
-                                                    Toast.copy(title: "复制成功")
+                                            Button {
+                                                Clipboard.set(icon.name)
+                                                Toast.copy(title: "复制成功")
+                                            } label: {
+                                                Label("复制key", systemImage: "doc.on.doc")
+                                                    .customForegroundStyle(.accent, .primary)
+                                            }
+
+                                            Section {
+                                                Button(role: .destructive) {
+                                                    Task {
+                                                        let success = await CloudManager.shared
+                                                            .delete(icon.id)
+                                                        if !success {
+                                                            Toast.error(title: "图片删除失败")
+                                                        } else {
+                                                            Toast.success(title: "图片删除成功")
+                                                            icons
+                                                                .removeAll(where: {
+                                                                    $0.id == icon.id
+                                                                })
+                                                        }
+                                                    }
                                                 } label: {
-                                                    Label("复制key", systemImage: "doc.on.doc")
+                                                    Label("删除云图标", systemImage: "trash")
                                                         .customForegroundStyle(.accent, .primary)
                                                 }
-
-                                                Section {
-                                                    Button(role: .destructive) {
-                                                        Task {
-                                                            let success = await CloudManager.shared
-                                                                .delete(icon.recordID
-                                                                    .recordName)
-                                                            if !success {
-                                                                Toast.shared.present(
-                                                                    title: "图片删除失败",
-                                                                    symbol: .error,
-                                                                    tint: .red
-                                                                )
-                                                            } else {
-                                                                Toast
-                                                                    .success(
-                                                                        title: "图片删除成功"
-                                                                    )
-                                                                if let index = icons
-                                                                    .firstIndex(where: {
-                                                                        $0.recordID
-                                                                            .recordName ==
-                                                                            icon
-                                                                            .recordID
-                                                                            .recordName
-                                                                    })
-                                                                {
-                                                                    icons.remove(at: index)
-                                                                }
-                                                            }
-                                                        }
-                                                    } label: {
-                                                        Label("删除云图标", systemImage: "trash")
-                                                            .customForegroundStyle(
-                                                                .accent,
-                                                                .primary
-                                                            )
-                                                    }
-                                                }
-
-                                            } label: {
-                                                TagView(name, .blue, "cursorarrow.click.2")
                                             }
+
+                                        } label: {
+                                            TagView(icon.name, .blue, "cursorarrow.click.2")
                                         }
                                     }
                                 }
@@ -161,13 +133,12 @@ struct CloudIcon: View {
                     }
                 }
             }
-
             .overlay {
                 if isTargeted {
                     ColoredBorder(top: 5, bottom: ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 50)
                 }
             }
-            .animation(.smooth, value: icons)
+            .animation(.smooth, value: icons.count)
             .navigationTitle("云图标")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -263,11 +234,28 @@ struct CloudIcon: View {
                         )
                 }
             }
-            .onAppear {
+            .task {
                 withAnimation {
                     self.loading = true
                 }
-                getIcons()
+                Task.detached(priority: .userInitiated) {
+                    let icons = await CloudManager.shared.queryIconsForMe()
+                    
+                    var iconsTem:[PushIcon] = []
+                    
+                    for item in icons{
+                        if let icon = await PushIcon(from: item){
+                            iconsTem.append(icon)
+                        }
+                    }
+                    Task{@MainActor in 
+                        withAnimation {
+                            self.icons = iconsTem
+                            self.loading = false
+                        }  
+                    }
+                    
+                }
             }
             .onChange(of: selectItem) { newItem in
                 guard let newItem else { return }
@@ -286,18 +274,6 @@ struct CloudIcon: View {
                     await MainActor.run {
                         self.selectItem = nil
                     }
-                }
-            }
-        }
-    }
-
-    func getIcons() {
-        Task.detached {
-            let icons = await CloudManager.shared.queryIconsForMe()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                withAnimation {
-                    self.icons = icons
-                    self.loading = false
                 }
             }
         }

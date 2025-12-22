@@ -127,18 +127,18 @@ struct MessageDetailPage: View {
                     // 更新指定 group 的未读消息为已读
                     let count = try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
+                        .filter(Message.Columns.isRead == false)
                         .fetchCount(db)
 
                     guard count > 0 else { return }
 
                     try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
-                        .updateAll(db, [Message.Columns.read.set(to: true)])
+                        .filter(Message.Columns.isRead == false)
+                        .updateAll(db, [Message.Columns.isRead.set(to: true)])
 
                     let unRead = try Message
-                        .filter(Message.Columns.read == false)
+                        .filter(Message.Columns.isRead == false)
                         .fetchCount(db)
                     UNUserNotificationCenter.current().setBadgeCount(unRead)
                 }

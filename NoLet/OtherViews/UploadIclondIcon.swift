@@ -203,18 +203,18 @@ struct UploadIclondIcon: View {
         DispatchQueue.main.async {
             self.pictureLoading = true
         }
-        let err = await CloudManager.shared.savePushIconModel(pushIcon)
-        NLog.log(err.tips)
-
-        switch err {
-        case .success:
+        
+        let (success, msg) = await CloudManager.shared
+            .savePushIconModel(pushIcon.toRecord(recordType: CloudManager.pushIconName))
+        
+        if success{
             saveOk = true
-        default:
-            break
         }
+        
+        NLog.log(msg)
 
         DispatchQueue.main.async {
-            self.tips = err.tips
+            self.tips = msg
             self.pictureLoading = false
         }
     }

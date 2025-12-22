@@ -141,12 +141,12 @@ struct OpenChatHistoryView: View {
                     .truncationMode(.tail) // 超出部分用省略号
                     .padding(.vertical, 10)
                     .padding(.leading, 10)
-                    .foregroundColor(chatManager.chatgroup == chatgroup ? .green : .primary)
+                    .foregroundColor(chatManager.chatGroup == chatgroup ? .green : .primary)
                     Spacer()
 
                     Image(systemName: "chevron.right")
                         .imageScale(.large)
-                        .foregroundColor(chatManager.chatgroup == chatgroup ? .green : .gray)
+                        .foregroundColor(chatManager.chatGroup == chatgroup ? .green : .gray)
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 10)
@@ -154,7 +154,7 @@ struct OpenChatHistoryView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .padding(.horizontal, 10)
                 .onTapGesture {
-                    chatManager.chatgroup = chatgroup
+                    chatManager.setGroup(group: chatgroup)
                     self.show.toggle()
                 }
                 .swipeActions(edge: .leading) {
@@ -172,8 +172,8 @@ struct OpenChatHistoryView: View {
                                 // 查找 ChatGroup
                                 let groups = try ChatGroup.fetchCount(db)
                                 Task { @MainActor in
-                                    if groups == 1 || openChatManager.shared.chatgroup == chatgroup {
-                                        openChatManager.shared.chatgroup = nil
+                                    if groups == 1 || chatManager.chatGroup == chatgroup {
+                                        chatManager.setGroup()
                                     }
                                 }
                                 if let group = try ChatGroup.fetchOne(db, key: chatgroup.id) {
@@ -238,7 +238,7 @@ struct OpenChatHistoryView: View {
             HStack {
                 Spacer()
                 Button(role: .destructive) {
-                    chatManager.chatgroup = nil
+                    chatManager.setGroup()
                     chatManager.chatMessages = []
                     self.show.toggle()
                     Haptic.impact()

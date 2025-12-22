@@ -29,9 +29,24 @@ import UIKit
 ///   `async` interfaces without blocking the main thread.
 /// - Failure Handling: Returns `nil` on download or cache setup failures; callers should implement
 ///   graceful fallbacks based on a `nil` result.
-class ImageManager {
- 
-    static let memoryCache = NSCache<NSString, UIImage>()
+actor ImageManager {
+    static let shared = ImageManager()
+    
+    private init(){}
+    
+    private let memoryCache = NSCache<NSString, UIImage>()
+
+    func image(for key: String) -> UIImage? {
+        memoryCache.object(forKey: key as NSString)
+    }
+
+    func setImage(_ image: UIImage, for key: String) {
+        memoryCache.setObject(image, forKey: key as NSString)
+    }
+
+    func removeImage(for key: String) {
+        memoryCache.removeObject(forKey: key as NSString)
+    }
 
     /// Store raw image bytes into the specified cache (disk-only)
     /// - Parameters:
@@ -42,7 +57,7 @@ class ImageManager {
     /// - Notes: Uses Kingfisher `storeToDisk` to write directly to disk; does not populate memory
     /// cache.
     /// - Errors: If default cache creation fails, the method returns immediately.
-    class func storeImage(
+    static func storeImage(
         cache: ImageCache? = nil, data: Data, key: String, expiration: StorageExpiration = .never
     ) async {
         let cacheTem: ImageCache
@@ -74,17 +89,17 @@ class ImageManager {
     /// - Proxy & Auth: When proxy is enabled (`Defaults[.proxyServer]`), request headers include
     /// custom
     ///   UA, Authorization, and signed `X-DATA` (see `getOptionsInfo(from:)`).
-    class func downloadImage(
+    static func downloadImage(
         _ imageURL: String,
-        expiration: StorageExpiration = .never,
-        proxyServer: PushServerModel? = nil
-    ) async
-        -> String?
-    {
-        guard let cache = defaultCache() else { return nil }
+        expiration: StorageExpiration = .never
+    ) async -> String? {
+        guard
+            let cache = defaultCache() else { return nil }
 
         // Return cached path if image is already cached
-        if cache.diskStorage.isCached(forKey: imageURL) { return cache.cachePath(forKey: imageURL) }
+        if cache.diskStorage.isCached(forKey: imageURL) {
+            return cache.cachePath(forKey: imageURL)
+        }
 
         guard let imageResource = URL(string: imageURL) else { return nil }
 
@@ -92,15 +107,7 @@ class ImageManager {
 
         if cache.diskStorage.isCached(forKey: cacheKey) { return cache.cachePath(forKey: cacheKey) }
 
-        let (optionsInfo, server) = getOptionsInfo(
-            from: imageResource.absoluteString,
-            proxyServer: proxyServer
-        )
-
-        guard let result = try? await downloadImage(
-            url: server ?? imageResource,
-            options: optionsInfo
-        ).get() else { return nil }
+        guard let result = try? await downloadImage(url: imageResource).get() else { return nil }
 
         // Cache downloaded image
         await storeImage(
@@ -117,7 +124,7 @@ class ImageManager {
     /// - Returns: `Result<ImageLoadingResult, KingfisherError>` including original data and image
     /// on success
     /// - Details: Default download timeout is `15s`.
-    class func downloadImage(
+    static func downloadImage(
         url: URL,
         options: KingfisherOptionsInfo? = nil
     ) async -> Result<ImageLoadingResult, KingfisherError> {
@@ -135,78 +142,28 @@ class ImageManager {
     /// - Returns: `ImageCache` instance; `nil` if creation fails
     /// - Location: Uses `NCONFIG.FolderType.image.path` as the cache root, suitable for shared
     /// storage.
-    class func defaultCache() -> ImageCache? {
+    static func defaultCache() -> ImageCache? {
         return try? ImageCache(name: "shared", cacheDirectoryURL: NCONFIG.FolderType.image.path)
     }
 
-    /// Build Kingfisher options from proxy configuration
-    /// - Parameters:
-    ///   - mediaUrl: The media URL string to be requested
-    /// - Returns: Kingfisher options; `nil` if proxy is disabled or signing fails
-    /// - Behavior:
-    ///   - Enabled only when `Defaults[.proxyServer]` is active and uses HTTP(S)
-    ///   - If proxy URL equals `NCONFIG.server`, use fixed config; otherwise derive a signature
-    /// from
-    ///     `proxyServer.sign`
-    ///   - Request headers set:
-    ///     - `User-Agent`: `NCONFIG.customUserAgent`
-    ///     - `Authorization`: `Defaults[.id]`
-    ///     - `X-DATA`: Encrypted signature string (safe Base64)
-
-    private class func getOptionsInfo(
-        from mediaURL: String,
-        proxyServer: PushServerModel? = nil
-    ) -> (KingfisherOptionsInfo?, URL?) {
-        guard let proxyServer,
-              proxyServer.url.hasHttp,
-              proxyServer.status,
-              let serverURL = URL(string: proxyServer.url) else { return (nil, nil) }
-
-        var config: CryptoModelConfig? {
-            guard let sign = proxyServer.sign else { return .data }
-            return CryptoModelConfig(inputText: sign)
-        }
-
-        guard let config = config,
-              let signStr = CryptoManager(config).encrypt(mediaURL)?.safeBase64
-        else {
-            return (nil, nil)
-        }
-
-        let customUserAgent = NCONFIG.customUserAgent
-        let id = Defaults[.id]
-        return (
-            [
-                .requestModifier(
-                    AnyModifier { request in
-                        var request = request
-                        request.setValue(customUserAgent, forHTTPHeaderField: "User-Agent")
-                        request.setValue(id, forHTTPHeaderField: "Authorization")
-                        request.setValue(signStr, forHTTPHeaderField: "X-DATA")
-                        return request
-                    }),
-            ], serverURL
-        )
-    }
-
-    class func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
+    static func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
         // 1. memory cache
 
-        if let cached = ImageManager.memoryCache.object(forKey: url as NSString) {
+        if let cached = await ImageManager.shared.image(for: url) {
             return cached
         }
 
         if let file = await ImageManager.downloadImage(url),
            let thumb = await loadThumbnail(path: file, maxPixel: maxPixel)
         {
-            ImageManager.memoryCache.setObject(thumb, forKey: url as NSString)
+            await ImageManager.shared.setImage(thumb, for: url)
             return thumb
         }
 
         return nil
     }
 
-    class func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
+    static func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
         let url = URL(fileURLWithPath: path)
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions)

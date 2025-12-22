@@ -175,28 +175,27 @@ struct ChatInputView<Content: View>: View {
                             Task.detached(priority: .background) {
                                 try? await DatabaseManager.shared.dbQueue.write { db in
                                     Task { @MainActor in
-                                        openChatManager.shared.chatgroup = nil
+                                        openChatManager.shared.setGroup()
                                     }
 
                                     // 尝试查找 quote.id 对应的 group
                                     if let group = try ChatGroup.fetchOne(db, key: quote.id) {
                                         // 如果存在，就设为 current
                                         Task { @MainActor in
-                                            openChatManager.shared.chatgroup = group
+                                            chatManager.setGroup(group: group)
                                         }
-
-                                        try group.update(db)
                                     } else {
                                         // 如果不存在，创建一个新的
                                         let group = ChatGroup(
                                             id: quote.id,
                                             timestamp: .now,
                                             name: quote.search.trimmingSpaceAndNewLines,
-                                            host: ""
+                                            host: "",
+                                            current: true
                                         )
                                         try group.insert(db)
                                         Task { @MainActor in
-                                            openChatManager.shared.chatgroup = group
+                                            chatManager.setGroup(group: group)
                                         }
                                     }
                                 }
@@ -204,7 +203,7 @@ struct ChatInputView<Content: View>: View {
                         }
                         .onDisappear {
                             Task {@MainActor in
-                                if let group = openChatManager.shared.chatgroup {
+                                if let group = chatManager.chatGroup  {
                                     let messages = try await DatabaseManager.shared.dbQueue
                                         .read { db in
                                             try ChatMessage
@@ -216,9 +215,7 @@ struct ChatInputView<Content: View>: View {
                                         _ = try await DatabaseManager.shared.dbQueue.write { db in
                                             try group.delete(db)
                                         }
-                                        Task { @MainActor in
-                                            openChatManager.shared.chatgroup = nil
-                                        }
+                                        chatManager.setGroup()
                                     }
                                 }
                             }

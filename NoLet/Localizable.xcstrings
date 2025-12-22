@@ -1262,6 +1262,7 @@
       }
     },
     "下载代理" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4257,6 +4258,9 @@
         }
       }
     },
+    "图片删除失败" : {
+
+    },
     "图片删除成功" : {
       "localizations" : {
         "en" : {
@@ -4286,6 +4290,7 @@
       }
     },
     "图片加载失败" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

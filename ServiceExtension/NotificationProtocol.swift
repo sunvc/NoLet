@@ -21,7 +21,6 @@ public protocol NotificationContentHandler {
     ///   - bestAttemptContent: 需要处理的 UNMutableNotificationContent
     /// - Returns: 处理成功后的 UNMutableNotificationContent
     /// - Throws: 处理失败后，应该中断处理
-    @MainActor
     func handler(
         identifier: String,
         content bestAttemptContent: UNMutableNotificationContent

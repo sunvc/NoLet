@@ -28,14 +28,14 @@ class IconHandler: NotificationContentHandler {
         if localPath == nil {
             let images = await CloudManager.shared.queryIcons(name: imageURL)
 
-            if let image = images.first, let icon = image.toPushIcon(),
+            if let image = images.first, let icon = PushIcon(from: image),
                let previewImage = icon.previewImage, let data = previewImage.pngData()
             {
-                
+                let days = await MainActor.run{ Defaults[.imageSaveDays].days }
                 await ImageManager.storeImage(
                     data: data,
                     key: imageURL,
-                    expiration: .days(Defaults[.imageSaveDays].days)
+                    expiration: .days(days)
                 )
 
                 localPath = await ImageManager.downloadImage(imageURL)

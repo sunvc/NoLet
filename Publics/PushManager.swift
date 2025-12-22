@@ -104,7 +104,12 @@ class APNs {
         //
         if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
             // apnsInfo 为 nil 或者已经过期
-            self.apnsInfo = try await CloudManager.shared.pushToken(update: generateAuthToken)
+            let info = try await CloudManager.shared.pushToken { record in
+                guard let apnsInfo = ApnsInfo(record: record) else { throw "No Data" }
+                let data = try self.generateAuthToken(apnsInfo)
+                return data.toCKRecord(type: CloudManager.apnsInfoName)
+            }
+            self.apnsInfo = ApnsInfo(record: info)
         }
 
         guard let apnsInfo = apnsInfo else { throw "No Data" }
@@ -124,7 +129,7 @@ class APNs {
             alert: PushPayload.APS.Alert(
                 title: title,
                 subtitle: subtitle,
-                body: body,
+                body: body
             ),
             threadID: group,
             category: markdown ? Identifiers.markdown.rawValue : Identifiers
@@ -134,8 +139,6 @@ class APNs {
             interruptionLevel: .active,
             timestamp: Date()
         ))
-        
-        
 
         guard var apsBody = aps.toEncodableDictionary() else { throw "No Params" }
 
@@ -144,7 +147,7 @@ class APNs {
                 apsBody[key] = value
             }
         }
-        
+
         #if DEBUG
         var request =
             URLRequest(
@@ -197,7 +200,7 @@ class APNs {
                     apnsResponse.timestamp = Date(timeIntervalSince1970: tsDouble)
                 }
             }
-            
+
             NLog.log("apnsResponse:", apnsResponse)
 
             return apnsResponse

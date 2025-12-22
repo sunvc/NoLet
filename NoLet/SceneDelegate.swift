@@ -56,7 +56,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    @MainActor
     func windowScene(
         _: UIWindowScene,
         performActionFor shortcutItem: UIApplicationShortcutItem
@@ -94,6 +93,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        
+        Task.detached(priority: .background) {
+            await AppManager.syncServer()
+        }
     }
 
     func setLangAssistantPrompt() {
@@ -170,4 +173,10 @@ class PassthroughWindow: UIWindow {
             return hitView == rootView ? nil : hitView
         }
     }
+}
+
+enum QuickAction: String, CaseIterable {
+    static var selectAction: UIApplicationShortcutItem?
+    case assistant
+    case scan
 }

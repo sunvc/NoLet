@@ -656,7 +656,7 @@ struct SelectMessageView: View {
         image: "https://s3.wzs.app/og.png",
         level: 1,
         ttl: 7,
-        read: true,
+        isRead: true,
         other: ""
     )) {}
 }

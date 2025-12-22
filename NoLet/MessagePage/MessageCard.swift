@@ -422,7 +422,7 @@ extension MessagesManager {
                 body: "# NoLet \n## NoLet \n### NoLet",
                 level: 1,
                 ttl: 1,
-                read: false
+                isRead: false
             ),
             
             Message(
@@ -438,7 +438,7 @@ extension MessagesManager {
                     """),
                 level: 1,
                 ttl: 1,
-                read: false
+                isRead: false
             ),
             
             Message(
@@ -450,7 +450,7 @@ extension MessagesManager {
                 url: "weixin://",
                 level: 1,
                 ttl: 1,
-                read: false
+                isRead: false
             ),
         ]
     }

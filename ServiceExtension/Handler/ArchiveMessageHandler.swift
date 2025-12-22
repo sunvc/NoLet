@@ -11,7 +11,7 @@
 //    Created by Neo 2024/11/23.
 //
 
-@preconcurrency import UserNotifications
+import UserNotifications
 import Defaults
 import Foundation
 
@@ -88,7 +88,7 @@ class ArchiveMessageHandler: NotificationContentHandler {
             host: host,
             level: Int(level),
             ttl: saveDays,
-            read: false,
+            isRead: false,
             other: other
         )
 
