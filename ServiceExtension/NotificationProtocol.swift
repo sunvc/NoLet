@@ -12,7 +12,7 @@
 //
 
 import Foundation
-@preconcurrency import UserNotifications
+import UserNotifications
 
 public protocol NotificationContentHandler {
     /// 处理 UNMutableNotificationContent
