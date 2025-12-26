@@ -97,7 +97,7 @@ struct ChatInputView<Content: View>: View {
         if manager.isLoading {
             
             Button(action: {
-                chatManager.cancellableRequest?.cancelRequest()
+                chatManager.cancellableRequest?.cancel()
             }) {
                 
                 Image(systemName: "xmark.circle.fill")

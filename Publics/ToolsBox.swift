@@ -14,7 +14,7 @@ import os
 import UIKit
 import UniformTypeIdentifiers
 
-public class Clipboard {
+public final class Clipboard {
     class func set(_ message: String? = nil, _ items: [String: Any]...) {
         var result: [[String: Any]] = []
 
@@ -63,10 +63,10 @@ public class Clipboard {
     }
 }
 
-@MainActor
+
 public enum Haptic {
     private static var lastImpactTime: Date?
-    private static var minInterval: TimeInterval = 0.1 // 最小震动间隔
+    private static var minInterval: TimeInterval = 0.2 // 最小震动间隔
 
     static func impact(
         _ style: UIImpactFeedbackGenerator.FeedbackStyle = .medium,

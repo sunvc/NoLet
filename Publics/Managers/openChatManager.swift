@@ -36,7 +36,7 @@ final class openChatManager: ObservableObject {
     private let DB: DatabaseManager = .shared
 
     private var observationCancellable: AnyDatabaseCancellable?
-    var cancellableRequest: CancellableRequest?
+    @Published var cancellableRequest: Task<Void, Never>?
 
     var currentChatMessage: ChatMessage {
         ChatMessage(
@@ -53,16 +53,14 @@ final class openChatManager: ObservableObject {
         startObservingUnreadCount()
     }
 
-
     private func startObservingUnreadCount() {
-       
-        let observation = ValueObservation.tracking { db -> (Int, [ChatMessage], Int, ChatGroup?)  in
-            let id = try? ChatGroup.filter({$0.current}).fetchOne(db)?.id
+        let observation = ValueObservation.tracking { db -> (Int, [ChatMessage], Int, ChatGroup?) in
+            let id = try? ChatGroup.filter { $0.current }.fetchOne(db)?.id
             let groupsCount: Int = try ChatGroup.fetchCount(db)
             let messages: [ChatMessage] = try ChatMessage
                 .filter(ChatMessage.Columns.chat == id).fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
-            let current = try ChatGroup.filter({$0.current}).fetchOne(db)
+            let current = try ChatGroup.filter { $0.current }.fetchOne(db)
             return (groupsCount, messages, promptCount, current)
         }
 
@@ -80,25 +78,24 @@ final class openChatManager: ObservableObject {
             }
         )
     }
-    
-    func setGroup(group: ChatGroup? = nil){
-        do{
-            
+
+    func setGroup(group: ChatGroup? = nil) {
+        do {
             _ = try DB.dbQueue.write { db in
-                if let group = group{
+                if let group = group {
                     try ChatGroup
-                        .filter({$0.id != group.id})
+                        .filter { $0.id != group.id }
                         .updateAll(db, ChatGroup.Columns.current.set(to: false))
                     try ChatGroup
-                        .filter({$0.id == group.id})
+                        .filter { $0.id == group.id }
                         .updateAll(db, ChatGroup.Columns.current.set(to: true))
-                }else{
+                } else {
                     try ChatGroup
-                        .filter({$0.current})
+                        .filter { $0.current }
                         .updateAll(db, ChatGroup.Columns.current.set(to: false))
                 }
             }
-        }catch{
+        } catch {
             debugPrint(error.localizedDescription)
         }
     }
@@ -119,28 +116,23 @@ final class openChatManager: ObservableObject {
     }
 
     func loadData() {
-        
-            Task.detached(priority: .background) {
-        
-                let results = try await self.DB.dbQueue.read { db in
-                    let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
-                    let results = try ChatMessage
-                        .filter(ChatMessage.Columns.chat == group?.id)
-                        .order(ChatMessage.Columns.timestamp)
-                        .limit(10)
-                        .fetchAll(db)
+        Task.detached(priority: .background) {
+            let results = try await self.DB.dbQueue.read { db in
+                let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
+                let results = try ChatMessage
+                    .filter(ChatMessage.Columns.chat == group?.id)
+                    .order(ChatMessage.Columns.timestamp)
+                    .limit(10)
+                    .fetchAll(db)
 
-                    return results
-                }
-                await MainActor.run {
-                    self.chatMessages = results
-                }
-            
+                return results
+            }
+            await MainActor.run {
+                self.chatMessages = results
+            }
         }
     }
 }
-
-
 
 extension openChatManager {
     func test(account: AssistantAccount) async -> Bool {
@@ -245,46 +237,36 @@ extension openChatManager {
         }
     }
 
-    func chatsStream(
-        text: String,
-        account _: AssistantAccount? = nil,
-        onResult: @escaping @Sendable (Result<ChatStreamResult, Error>) -> Void,
-        completion: (@Sendable (Error?) -> Void)?
-    ) {
-        guard let openchat = getReady(), let query = getHistoryParams(
-            text: text,
-            messageID: AppManager.shared.askMessageID
-        ) else {
-            completion?("noConfig")
-            return
-        }
-        cancellableRequest = openchat.chatsStream(
-            query: query,
-            onResult: onResult,
-            completion: completion
-        )
-    }
 
     func chatsStream(
         text: String,
-        tips: ChatPromptMode,
-        account _: AssistantAccount? = nil,
-        onResult: @escaping @Sendable (Result<ChatStreamResult, Error>) -> Void,
-        completion: (@Sendable (Error?) -> Void)?
-    ) -> CancellableRequest? {
-        guard let openchat = getReady(), let query = onceParams(text: text, tips: tips) else {
-            completion?("noConfig")
-            return nil
+        tips: ChatPromptMode? = nil
+    ) -> AsyncThrowingStream<ChatStreamResult, Error> {
+        var query: ChatQuery? {
+            if let tips = tips, let query = onceParams(text: text, tips: tips) {
+                return query
+            } else {
+                return getHistoryParams(
+                    text: text,
+                    messageID: AppManager.shared.askMessageID
+                )
+            }
         }
 
-        return openchat.chatsStream(query: query, onResult: onResult, completion: completion)
+        guard let openchat = getReady(), let query = query else {
+            return AsyncThrowingStream { continuation in
+                continuation.finish(throwing: "No Account Or Query")
+            }
+        }
+
+        return openchat.chatsStream(query: query)
     }
+
 
     func clearunuse() {
         Task.detached(priority: .background) {
             do {
                 try self.DB.dbQueue.write { db in
-                    
                     let allGroups = try ChatGroup.fetchAll(db)
                     var deleteList: [ChatGroup] = []
 

@@ -48,8 +48,6 @@ struct SelectMessageView: View {
     @State private var showOther: Bool = false
     @State private var showURL: Bool = false
 
-    @State private var cancels: CancellableRequest? = nil
-
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -446,7 +444,10 @@ struct SelectMessageView: View {
                             self.messageShowMode = .raw
                         } else {
                             self.messageShowMode = .translate
-                            translateMessage()
+                            chatManager.cancellableRequest?.cancel()
+                            chatManager.cancellableRequest = Task.detached( priority: .high) { 
+                                await translateMessage()
+                            }
                         }
                         Haptic.impact()
 
@@ -477,7 +478,10 @@ struct SelectMessageView: View {
                             self.messageShowMode = .raw
                         } else {
                             self.messageShowMode = .abstract
-                            abstractMessage(message.search.trimmingSpaceAndNewLines)
+                            chatManager.cancellableRequest?.cancel()
+                            chatManager.cancellableRequest = Task.detached(priority: .high) { 
+                                await abstractMessage(message.search.trimmingSpaceAndNewLines)
+                            }
                         }
                         Haptic.impact()
                     } label: {
@@ -496,7 +500,7 @@ struct SelectMessageView: View {
             .background26(.background, radius: 0)
             .animation(.spring(), value: messageShowMode)
             .onAppear { self.hideKeyboard() }
-            .onDisappear { chatManager.cancellableRequest?.cancelRequest() }
+            .onDisappear { chatManager.cancellableRequest?.cancel() }
             .sheet(isPresented: $showAssistantSetting) {
                 NavigationStack {
                     AssistantSettingsView()
@@ -544,8 +548,7 @@ struct SelectMessageView: View {
         }
     }
 
-    private func translateMessage() {
-        cancels?.cancelRequest()
+    private func translateMessage() async {
 
         guard translateResult.isEmpty else { return }
 
@@ -569,34 +572,34 @@ struct SelectMessageView: View {
 
             return
         }
-
-        cancels = chatManager
-            .chatsStream(text: datas, tips: .translate(translateLang.name)) { partialResult in
-                switch partialResult {
-                case .success(let result):
-                    if let res = result.choices.first?.delta.content {
-                        DispatchQueue.main.async {
-                            self.translateResult += res
+        
+        do{
+            let results = chatManager.chatsStream(text: datas, tips: .translate(translateLang.name))
+            for try await result in results {
+                for choice in result.choices {
+                    if let outputItem = choice.delta.content {
+                        Task { @MainActor in
+                            self.translateResult += outputItem
                             Haptic.selection(limitFrequency: true)
                         }
-                    }
-                case .failure(let error):
-                    // Handle chunk error here
-                    NLog.error(error)
-                    Toast.error(title: "发生错误\(error.localizedDescription)")
-                }
-
-            } completion: { err in
-                if err != nil {
-                    DispatchQueue.main.async {
-                        translateResult = ""
+                        
                     }
                 }
             }
+            Task { @MainActor in
+                translateResult = ""
+            }
+        }catch{
+            NLog.error(error.localizedDescription)
+            DispatchQueue.main.async {
+                translateResult = ""
+            }
+        }
+
+        
     }
 
-    private func abstractMessage(_ text: String) {
-        cancels?.cancelRequest()
+    private func abstractMessage(_ text: String) async {
         guard abstractResult.isEmpty else { return }
 
         guard assistantAccouns.first(where: { $0.current }) != nil else {
@@ -604,30 +607,28 @@ struct SelectMessageView: View {
             abstractResult = String(localized: "❗️需要配置大模型")
             return
         }
-
-        cancels = chatManager
-            .chatsStream(text: text, tips: .abstract(translateLang.name)) { partialResult in
-                switch partialResult {
-                case .success(let result):
-                    if let res = result.choices.first?.delta.content {
-                        DispatchQueue.main.async {
-                            abstractResult += res
+        
+        do{
+            let results = chatManager.chatsStream(text: text, tips: .abstract(translateLang.name))
+            for try await result in results {
+                for choice in result.choices {
+                    if let outputItem = choice.delta.content {
+                        Task { @MainActor in
+                            abstractResult += outputItem
                             Haptic.selection(limitFrequency: true)
                         }
-                    }
-                case .failure(let error):
-                    // Handle chunk error here
-                    NLog.error(error)
-                    Toast.error(title: "发生错误\(error.localizedDescription)")
-                }
-
-            } completion: { err in
-                if err != nil {
-                    DispatchQueue.main.async {
-                        abstractResult = ""
+                        
                     }
                 }
             }
+            Task { @MainActor in
+                abstractResult = ""
+            }
+        }catch{
+            // Handle chunk error here
+            NLog.error(error)
+            Toast.error(title: "发生错误\(error.localizedDescription)")
+        }
     }
 }
 

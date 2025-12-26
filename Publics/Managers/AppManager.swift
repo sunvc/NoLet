@@ -617,50 +617,49 @@ extension AppManager {
     }
 }
 
-struct SubscribeUser: Codable, Hashable, Identifiable {
-    var id: String = UUID().uuidString
-    var expirationDate: Date?
-    var productID: String = ""
 
-    var isVip: Bool {
-        if let expirationDate {
-            return expirationDate > Date() && level != .none
+
+extension AppManager{
+    
+    enum OutDataType {
+        case text(String)
+        case crypto(String)
+        case server(url: String, key: String, group: String?, sign: String?)
+        case otherURL(String)
+        case assistant(String)
+        case cloudIcon
+    }
+    
+    
+    struct SubscribeUser: Codable, Hashable, Identifiable {
+        var id: String = UUID().uuidString
+        var expirationDate: Date?
+        var productID: String = ""
+
+        var isVip: Bool {
+            if let expirationDate {
+                return expirationDate > Date() && level != .none
+            }
+            return false
         }
-        return false
-    }
 
-    var level: levelType {
-        if productID == StoreProduct.monthly {
-            return .monthly
-        } else if productID == StoreProduct.yearly {
-            return .yearly
-        } else if productID == StoreProduct.once {
-            return .onece
-        } else {
-            return .none
+        var level: levelType {
+            if productID == StoreProduct.monthly {
+                return .monthly
+            } else if productID == StoreProduct.yearly {
+                return .yearly
+            } else if productID == StoreProduct.once {
+                return .onece
+            } else {
+                return .none
+            }
+        }
+
+        enum levelType {
+            case monthly
+            case yearly
+            case onece
+            case none
         }
     }
-
-    enum levelType {
-        case monthly
-        case yearly
-        case onece
-        case none
-    }
-}
-
-
-fileprivate extension Dictionary {
-    static func + (lhs: Dictionary, rhs: Dictionary) -> Dictionary {
-        lhs.merging(rhs) { _, new in new }
-    }
-}
-
-enum OutDataType {
-    case text(String)
-    case crypto(String)
-    case server(url: String, key: String, group: String?, sign: String?)
-    case otherURL(String)
-    case assistant(String)
-    case cloudIcon
 }

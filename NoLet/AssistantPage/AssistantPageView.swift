@@ -110,7 +110,7 @@ struct AssistantPageView: View {
 
                     Section {
                         Button(action: {
-                            chatManager.cancellableRequest?.cancelRequest()
+                            chatManager.cancellableRequest?.cancel()
                             chatManager.setGroup()
                             Haptic.impact()
                         }) {
@@ -121,7 +121,12 @@ struct AssistantPageView: View {
                     }
 
                 },
-                onSend: sendMessage
+                onSend: { text in
+                    chatManager.cancellableRequest?.cancel()
+                    chatManager.cancellableRequest = Task.detached(priority: .userInitiated) {
+                        await sendMessage(text)
+                    }
+                }
             )
             .padding(.bottom, 10)
             .onDrag(towards: .bottom, ofAmount: 100..., perform: {
@@ -179,7 +184,7 @@ struct AssistantPageView: View {
                     Haptic.impact()
 
                 } label: {
-                    if let chatGroup = chatManager.chatGroup  {
+                    if let chatGroup = chatManager.chatGroup {
                         HStack {
                             Text(chatGroup.name.trimmingSpaceAndNewLines)
                                 .lineLimit(1)
@@ -217,9 +222,8 @@ struct AssistantPageView: View {
         }
     }
 
-
     // 发送消息
-    private func sendMessage(_ text: String)  {
+    private func sendMessage(_ text: String) async {
         guard assistantAccouns.first(where: { $0.current }) != nil else {
             manager.router.append(.assistantSetting(nil))
             return
@@ -236,12 +240,18 @@ struct AssistantPageView: View {
             }
 
             let newGroup: ChatGroup? = {
-                if let group = chatManager.chatGroup  {
+                if let group = chatManager.chatGroup {
                     return group
                 } else {
                     let id = manager.askMessageID ?? UUID().uuidString
                     let name = String(text.trimmingSpaceAndNewLines.prefix(10))
-                    let group = ChatGroup(id: id, timestamp: .now, name: name, host: "", current: true)
+                    let group = ChatGroup(
+                        id: id,
+                        timestamp: .now,
+                        name: name,
+                        host: "",
+                        current: true
+                    )
                     do {
                         try DatabaseManager.shared.dbQueue.write { db in
                             try group.insert(db)
@@ -257,66 +267,47 @@ struct AssistantPageView: View {
                 return
             }
 
-            chatManager.chatsStream(text: text) { partialResult in
-                switch partialResult {
-                case .success(let result):
-                    if let res = result.choices.first?.delta.content {
-                        Task { @MainActor in
-                            chatManager.currentContent = chatManager.currentContent + res
-                            if AppManager.shared.inAssistant {
-                                Haptic.selection()
+            let results = chatManager.chatsStream(text: text)
+            do {
+                for try await result in results {
+                    for choice in result.choices {
+                        if let outputItem = choice.delta.content {
+                            Task { @MainActor in
+                                chatManager.currentContent = chatManager.currentContent + outputItem
+                                if AppManager.shared.inAssistant {
+                                    Haptic.selection(limitFrequency: true)
+                                }
                             }
                         }
                     }
-
-                case .failure(let error):
-                    // Handle chunk error here
-                    NLog.error(error)
-                    Task { @MainActor in
-                        Toast.error(title: "发生错误\(error.localizedDescription)")
-                    }
                 }
-            } completion: { error in
+
+                Haptic.impact()
+
+                let responseMessage: ChatMessage = {
+                    var message = openChatManager.shared.currentChatMessage
+                    message.chat = newGroup.id
+                    return message
+                }()
+
+                try await DatabaseManager.shared.dbQueue.write { db in
+                    try responseMessage.insert(db)
+                }
+
+                openChatManager.shared.currentRequest = ""
+                AppManager.shared.isLoading = false
+                hideKeyboard()
+
+            } catch {
+                // Handle chunk error here
+                NLog.error(error)
                 Task { @MainActor in
-                    Haptic.impact()
+                    Toast.error(title: "发生错误\(error.localizedDescription)")
+                    manager.isLoading = false
+                    chatManager.currentRequest = ""
+                    chatManager.currentContent = ""
                 }
-                if let error {
-                    Task { @MainActor in
-                        Toast.error(title: "发生错误\(error.localizedDescription)")
-                    }
-                    NLog.error(error)
-                    Task { @MainActor in
-                        manager.isLoading = false
-                        chatManager.currentRequest = ""
-                        chatManager.currentContent = ""
-                    }
-                    return
-                }
-                
-                
-
-                Task {@MainActor in
-                    do {
-                        try await Task.sleep(for: .seconds(0.3))
-                        
-                        let responseMessage: ChatMessage = {
-                            var message = openChatManager.shared.currentChatMessage
-                            message.chat = newGroup.id
-                            return message
-                        }()
-                        
-                        try await DatabaseManager.shared.dbQueue.write { db in
-                            try responseMessage.insert(db)
-                        }
-
-                        openChatManager.shared.currentRequest = ""
-                        AppManager.shared.isLoading = false
-                        self.hideKeyboard()
-
-                    } catch {
-                        NLog.error(error.localizedDescription)
-                    }
-                }
+                return
             }
         }
     }
