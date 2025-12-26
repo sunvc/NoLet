@@ -48,8 +48,8 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     @Published var customServerURL: String = ""
     @Published var VipInfo: SubscribeUser? = nil
-    
-    @Published var servers:[PushServerModel] = []
+
+    @Published var servers: [PushServerModel] = []
 
     var router: [RouterPage] = [] {
         didSet {
@@ -634,17 +634,22 @@ struct SubscribeUser: Codable, Hashable, Identifiable {
 extension AppManager {
     func signature(sign: String?) -> [String: String] {
         var result: [String: String] = [
-            "X-Device" : Defaults[.id],
+            "X-Device": Defaults[.id],
         ]
 
         let data = "\(Int(Date().timeIntervalSince1970))"
-        if let sign = sign, sign.count > 10 {
-            let config = CryptoModelConfig(inputText: sign) ?? .data
-            result["Authorization"] = CryptoManager(config).encrypt(data)?.safeBase64
-        } else {
-            result["Authorization"] = CryptoManager(.data)
-                .encrypt(data)?.safeBase64
+        var signInt: String? {
+            if let sign = sign, sign.count > 10 {
+                return CryptoManager(
+                    CryptoModelConfig(inputText: sign) ?? .data
+                ).encrypt(data)?.safeBase64
+            } else {
+                return CryptoManager(.data).encrypt(data)?.safeBase64
+            }
         }
+        result["Authorization"] = signInt
+        result["X-Signature"] = signInt
+
         return result
     }
 }
@@ -665,22 +670,21 @@ enum OutDataType {
 }
 
 extension AppManager {
-    nonisolated
-    static func syncServer() async {
-        
-        let pushServerDatas = Array( await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
-        
+    nonisolated static func syncServer() async {
+        let pushServerDatas =
+            Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
+
         let datas = pushServerDatas.compactMap { server in
             server.toCKRecord(recordType: CloudManager.serverName)
         }
-        
-        let records = await CloudManager.shared.synchronousServers(from: datas).compactMap { record in
-            PushServerModel(from: record)
+
+        let records = await CloudManager.shared.synchronousServers(from: datas)
+            .compactMap { record in
+                PushServerModel(from: record)
+            }
+
+        Task { @MainActor in
+            AppManager.shared.servers = records
         }
-        
-        Task{@MainActor in 
-            AppManager.shared.servers = records    
-        }
-        
     }
 }
