@@ -412,7 +412,7 @@ extension AppManager {
                 try await fetch(
                     url: address,
                     path: "/register/\(deviceKey)",
-                    headers: signature(sign: sign) + ["X-USER": deviceKey]
+                    headers: CryptoManager.signature(sign: sign, server: deviceKey)
                 )
 
             guard 200...299 ~= response.code else {
@@ -482,7 +482,7 @@ extension AppManager {
                 path: "/register",
                 method: .POST,
                 params: params,
-                headers: signature(sign: server.sign) + ["X-USER": server.key]
+                headers: CryptoManager.signature(sign: server.sign, server: server.key)
             )
 
             guard 200...299 ~= response.code else {
@@ -597,6 +597,24 @@ extension AppManager {
             }
         }
     }
+    
+    nonisolated static func syncServer() async {
+        let pushServerDatas =
+            Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
+
+        let datas = pushServerDatas.compactMap { server in
+            server.toCKRecord(recordType: CloudManager.serverName)
+        }
+
+        let records = await CloudManager.shared.synchronousServers(from: datas)
+            .compactMap { record in
+                PushServerModel(from: record)
+            }
+
+        Task { @MainActor in
+            AppManager.shared.servers = records
+        }
+    }
 }
 
 struct SubscribeUser: Codable, Hashable, Identifiable {
@@ -631,30 +649,9 @@ struct SubscribeUser: Codable, Hashable, Identifiable {
     }
 }
 
-extension AppManager {
-    func signature(sign: String?) -> [String: String] {
-        let data = "\(Int(Date().timeIntervalSince1970))"
-        var signInt: String {
-            guard let sign = sign,
-                  let config = CryptoModelConfig(inputText: sign),
-                  let signTem = CryptoManager(config).encrypt(data)
-            else {
-                let signTem = CryptoManager(.data).encrypt(data)
-                return signTem?.safeBase64 ?? ""
-            }
-            return signTem.safeBase64
-        }
 
-        return [
-            "X-Device": Defaults[.id],
-            "Authorization": signInt,
-            "X-Signature": signInt,
-        ]
-    }
-}
-
-extension Dictionary {
-    fileprivate static func + (lhs: Dictionary, rhs: Dictionary) -> Dictionary {
+fileprivate extension Dictionary {
+    static func + (lhs: Dictionary, rhs: Dictionary) -> Dictionary {
         lhs.merging(rhs) { _, new in new }
     }
 }
@@ -666,24 +663,4 @@ enum OutDataType {
     case otherURL(String)
     case assistant(String)
     case cloudIcon
-}
-
-extension AppManager {
-    nonisolated static func syncServer() async {
-        let pushServerDatas =
-            Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
-
-        let datas = pushServerDatas.compactMap { server in
-            server.toCKRecord(recordType: CloudManager.serverName)
-        }
-
-        let records = await CloudManager.shared.synchronousServers(from: datas)
-            .compactMap { record in
-                PushServerModel(from: record)
-            }
-
-        Task { @MainActor in
-            AppManager.shared.servers = records
-        }
-    }
 }

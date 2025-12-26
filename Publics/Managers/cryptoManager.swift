@@ -74,6 +74,7 @@ final class CryptoManager {
         let nonce = try? AES.GCM.Nonce(data: data.prefix(nonceSize))
         let ciphertext = data.dropFirst(nonceSize).dropLast(tagSize)
         let tag = data.suffix(tagSize)
+        
 
         do {
             let sealedBox = try AES.GCM.SealedBox(nonce: nonce!, ciphertext: ciphertext, tag: tag)
@@ -83,6 +84,29 @@ final class CryptoManager {
             return nil
         }
     }
+    
+    static func signature(sign: String?, server key: String?) -> [String: String] {
+        var result: [String: String] = [:]
+        let data = "\(Int(Date().timeIntervalSince1970))"
+        var signInt: String {
+            guard let sign = sign,
+                  let config = CryptoModelConfig(inputText: sign),
+                  let signTem = CryptoManager(config).encrypt(data)
+            else {
+                let signTem = CryptoManager(.data).encrypt(data)
+                return signTem?.safeBase64 ?? ""
+            }
+            return signTem.safeBase64
+        }
+
+        result["X-Device"] = Defaults[.id]
+        result["X-USER"] = key
+        result["Authorization"] = signInt
+        result["X-Signature"] = signInt
+        
+        return result
+    }
+
 }
 
 extension Defaults.Keys {
@@ -122,7 +146,9 @@ enum CryptoAlgorithm: Int, Codable, CaseIterable, RawRepresentable, Defaults.Ser
     }
 }
 
-struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable, @MainActor Defaults.Serializable {
+struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable,
+    @MainActor Defaults.Serializable
+{
     var id: String = UUID().uuidString
     var algorithm: CryptoAlgorithm
     var mode: CryptoMode
@@ -185,6 +211,9 @@ extension CryptoModelConfig {
     func decrypt(inputData: Data) -> Data? {
         CryptoManager(self).decrypt(data: inputData)
     }
+    
+    
+    
 }
 
 ///  pb://crypto?text=eIxk2XSXdVeC3zsMwmlJevVaXGncCTiUHg5lLiK0S2sG3QLuGMU
