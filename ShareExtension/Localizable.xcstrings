@@ -8,6 +8,24 @@
             "state": "translated",
             "value": "iCloud cloud icon"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 云图标"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud クラウドアイコン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 클라우드 아이콘"
+          }
         }
       }
     },
@@ -17,6 +35,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud services are temporarily unavailable, please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服务暂时不可用，请稍后再试"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudサービスが一時的に利用できません。後でもう一度お試しください。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
           }
         }
       }
@@ -28,6 +64,24 @@
             "state": "translated",
             "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud access is restricted, possibly due to parental controls or MDM device management policies."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudへのアクセスが制限されています。これは、ペアレンタルコントロールまたはMDM（モバイルデバイス管理）ポリシーによって引き起こされている可能性があります。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 접근이 제한되었습니다. 이는 부모 제어 또는 MDM 장치 관리 정책으로 인해 발생할 수 있습니다."
+          }
         }
       }
     },
@@ -37,6 +91,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud Account Available"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 账户可用"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudアカウントが利用可能"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 사용 가능"
           }
         }
       }
@@ -48,6 +120,24 @@
             "state": "translated",
             "value": "iCloud Status Check"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud状态检查"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudステータスチェック"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 상태 확인"
+          }
         }
       }
     },
@@ -57,6 +147,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Checking iCloud status..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在检查iCloud状态..."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudステータスをチェック中..."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 상태 확인 중..."
           }
         }
       }
@@ -68,6 +176,24 @@
             "state": "translated",
             "value": "Upload to Cloud"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload to cloud"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クラウドにアップロード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "클라우드에 업로드"
+          }
         }
       }
     },
@@ -77,6 +203,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save Failed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失败"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存に失敗しました"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 실패"
           }
         }
       }
@@ -88,6 +232,24 @@
             "state": "translated",
             "value": "Save Successful"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 성공"
+          }
         }
       }
     },
@@ -97,6 +259,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Insufficient storage space"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余空间不足"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "残りスペースが不足しています"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "남은 공간이 부족합니다"
           }
         }
       }
@@ -108,6 +288,24 @@
             "state": "translated",
             "value": "Missing parameters"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参数不全"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パラメータが不完全です"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매개변수가 불완전합니다"
+          }
         }
       }
     },
@@ -117,6 +315,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンセル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "취소"
           }
         }
       }
@@ -128,6 +344,24 @@
             "state": "translated",
             "value": "Icon quota remaining"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图标额度剩余"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アイコン残り数"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이콘 배지 남은 수량"
+          }
         }
       }
     },
@@ -137,6 +371,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Image Key"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片Key"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像キー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미지 키"
           }
         }
       }
@@ -148,6 +400,24 @@
             "state": "translated",
             "value": "Image key duplicate"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片key重复"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像キー重複"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미지 키 중복"
+          }
         }
       }
     },
@@ -157,6 +427,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コピー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "복사"
           }
         }
       }
@@ -168,6 +456,24 @@
             "state": "translated",
             "value": "Zhang"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "张"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「張」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "장"
+          }
         }
       }
     },
@@ -177,6 +483,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prompt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提示"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヒント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림"
           }
         }
       }
@@ -188,6 +512,24 @@
             "state": "translated",
             "value": "Unable to determine iCloud account status, possibly due to network issues."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法确定 iCloud 账户状态，可能是网络问题"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudアカウントの状態を確認できません。ネットワークの問題の可能性があります"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 상태를 확인할 수 없습니다. 네트워크 문제일 수 있습니다."
+          }
         }
       }
     },
@@ -197,6 +539,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Not logged into iCloud, please log in to your iCloud account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登录 iCloud，请登录 iCloud 账户"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudにログインしていません。iCloudアカウントにログインしてください"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인해 주세요."
           }
         }
       }
@@ -208,6 +568,24 @@
             "state": "translated",
             "value": "Unknown iCloud Status"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 状态"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不明な iCloud ステータス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알 수 없는 iCloud 상태"
+          }
         }
       }
     },
@@ -217,6 +595,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Check iCloud account status error: %@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查 iCloud 账户状态出错: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloudアカウントステータスの確認エラー: %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 계정 상태 확인 오류: %@"
           }
         }
       }
@@ -228,6 +624,24 @@
             "state": "translated",
             "value": "Processing..."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在处理中..."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "処理中..."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "처리 중..."
+          }
         }
       }
     },
@@ -237,6 +651,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "No image"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有图片"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미지 없음"
           }
         }
       }
@@ -248,6 +680,24 @@
             "state": "translated",
             "value": "No files"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有文件"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルがありません"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파일 없음"
+          }
         }
       }
     },
@@ -258,6 +708,24 @@
             "state": "translated",
             "value": "Enter image name"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入图片名称"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "画像名を入力"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미지 이름 입력"
+          }
         }
       }
     },
@@ -267,6 +735,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Silence group for 1 hour"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静音分组1小时"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サイレントグループ1時間"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정음 분할 1시간"
           }
         }
       }
