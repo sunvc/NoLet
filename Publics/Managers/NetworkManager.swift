@@ -116,9 +116,8 @@ class NetworkManager: NSObject, Sendable{
 
         request.assumesHTTP3Capable = true
 
-        NLog.log(request.description, params)
         let (data, response) = try await session.data(for: request)
-        NLog.log(String(data: data, encoding: .utf8))
+        NLog.log(request.description, params, String(data: data, encoding: .utf8))
         return (data, response)
     }
 

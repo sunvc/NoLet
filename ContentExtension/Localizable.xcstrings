@@ -8,24 +8,6 @@
             "state": "translated",
             "value": "[%@] Group Muted Successfully"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@]グループのミュートに成功しました"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@] 그룹 무음 설정 성공"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@]分组静音成功"
-          }
         }
       }
     },
@@ -35,24 +17,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存"
           }
         }
       }
@@ -64,24 +28,6 @@
             "state": "translated",
             "value": "Save Image"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像を保存"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이미지 저장"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存图片"
-          }
         }
       }
     },
@@ -91,24 +37,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Error occurred while saving image: %@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像の保存中にエラーが発生しました：%@"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이미지를 저장하는 중 오류 발생: %@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存图片时出现错误：%@"
           }
         }
       }
@@ -120,24 +48,6 @@
             "state": "translated",
             "value": "Save Failed"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存に失敗しました"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 실패"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失败"
-          }
         }
       }
     },
@@ -147,24 +57,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save successful"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 성공"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
           }
         }
       }
@@ -176,24 +68,6 @@
             "state": "translated",
             "value": "Cancel"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キャンセル"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "취소"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "取消"
-          }
         }
       }
     },
@@ -203,24 +77,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Image successfully saved to album!"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像がアルバムに正常に保存されました！"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진이 성공적으로 앨범에 저장되었습니다!"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image saved to album successfully!"
           }
         }
       }
@@ -232,24 +88,6 @@
             "state": "translated",
             "value": "Copy"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コピー"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "복사"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制"
-          }
         }
       }
     },
@@ -259,24 +97,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy successful"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コピー成功"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "복사 성공"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制成功"
           }
         }
       }
@@ -288,24 +108,6 @@
             "state": "translated",
             "value": "Nothing"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "無"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "없음"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无"
-          }
         }
       }
     },
@@ -315,24 +117,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save the image to the album?"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "写真をアルバムに保存しますか？"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진을 앨범에 저장하시겠습니까?"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "是否将图片保存到相册？"
           }
         }
       }
@@ -344,24 +128,6 @@
             "state": "translated",
             "value": "Confirm"
           }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「確定」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "확인"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "确定"
-          }
         }
       }
     },
@@ -371,24 +137,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Silence group for 1 hour"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「サイレントタイム1時間」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "무음 분할 1시간"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "静音分组1小时"
           }
         }
       }

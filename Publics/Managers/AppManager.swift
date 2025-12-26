@@ -602,8 +602,9 @@ extension AppManager {
         let pushServerDatas =
             Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
 
+        let serverName = await CloudManager.serverName
         let datas = pushServerDatas.compactMap { server in
-            server.toCKRecord(recordType: CloudManager.serverName)
+            server.toCKRecord(recordType: serverName)
         }
 
         let records = await CloudManager.shared.synchronousServers(from: datas)

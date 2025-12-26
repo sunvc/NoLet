@@ -14,7 +14,7 @@ import Defaults
 import Foundation
 import SwiftUI
 
-class CloudManager {
+final class CloudManager {
     static let shared = CloudManager()
 
     private init() {
@@ -28,15 +28,16 @@ class CloudManager {
     private var database: CKDatabase {
         container.publicCloudDatabase
     }
+    
+    private var privateDatabase: CKDatabase {
+        container.privateCloudDatabase
+    }
 
-    nonisolated
-    public static let pushIconName = "PushIcon"
-    nonisolated
-    public static let deviceTokenName = "DeviceToken"
-    nonisolated
-    public static let apnsInfoName = "ApnsInfo"
-    nonisolated
-    public static let serverName = "PushServerModel"
+    
+    static let pushIconName = "PushIcon"
+    static let deviceTokenName = "DeviceToken"
+    static let apnsInfoName = "ApnsInfo"
+    static let serverName = "PushServerModal"
 
     func checkAccount() async -> (Bool, String) {
         var message = (false, String(localized: "未知 iCloud 状态"))
@@ -179,7 +180,8 @@ class CloudManager {
     }
 
     // 删除指定的 PushIcon
-    func delete(_ serverID: String) async -> Bool {
+    func delete(_ serverID: String, pub: Bool = true ) async -> Bool {
+        let database = pub ? database : privateDatabase
         do {
             // 创建 CKRecord.ID 对象
             let recordID = CKRecord.ID(recordName: serverID)
@@ -252,7 +254,7 @@ class CloudManager {
         let cloudRecords = await self.fetchRecords(
             Self.serverName,
             for: NSPredicate(value: true),
-            in: database
+            in: privateDatabase
         )
 
         let cloudIndex: [String: CKRecord] = Dictionary(
@@ -284,18 +286,18 @@ class CloudManager {
             }
         }
 
-        guard !waitRecords.isEmpty else { return [] }
+        guard !waitRecords.isEmpty else { return cloudRecords }
 
         do {
-            let results = try await database.modifyRecords(saving: waitRecords, deleting: [], savePolicy: .ifServerRecordUnchanged)
+            let results = try await privateDatabase.modifyRecords(saving: waitRecords, deleting: [], savePolicy: .ifServerRecordUnchanged)
             let uploadDatas = results.saveResults.values.compactMap({try? $0.get()})
             NLog.log(uploadDatas)
             
             return cloudRecords + uploadDatas
             
         } catch {
-            print("❌ Failed to upload records:", error)
-            return []
+            NLog.error("❌ Failed to upload records:", error)
+            return cloudRecords
         }
         
         
