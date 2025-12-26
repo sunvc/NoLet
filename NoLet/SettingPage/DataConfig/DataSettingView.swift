@@ -395,12 +395,11 @@ struct DataSettingView: View {
                             Text("清空"),
                             action: {
                                 self.showDriveCheckLoading = true
-                                if let cache = ImageManager
-                                    .defaultCache(),
+                                if 
                                     let fileURL = NCONFIG.getDir(.sounds),
                                     let cacheURL = NCONFIG.getDir(.tem)
                                 {
-                                    cache.clearDiskCache()
+                                    ImageManager.customCache.clearDiskCache()
                                     manager
                                         .clearContentsOfDirectory(
                                             at: fileURL

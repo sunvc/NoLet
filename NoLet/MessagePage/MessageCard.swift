@@ -15,6 +15,7 @@ import AVFAudio
 import Defaults
 import SwiftUI
 import UniformTypeIdentifiers
+import Kingfisher
 
 struct MessageCard: View {
     var message: Message

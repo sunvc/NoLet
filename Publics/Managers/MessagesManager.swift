@@ -13,7 +13,7 @@ import Foundation
 import GRDB
 
 
-class MessagesManager: ObservableObject {
+final class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: DatabaseManager = .shared
     private let cache: DiskCache = .shared
@@ -443,7 +443,7 @@ extension MessagesManager {
     }
 }
 
-private class DiskCache {
+private final class DiskCache: Sendable {
     static let shared = DiskCache()
 
     private let cacheDirectory: URL

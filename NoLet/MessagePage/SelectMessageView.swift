@@ -56,6 +56,7 @@ struct SelectMessageView: View {
                 VStack {
                     VStack {
                         if let image = message.image {
+                               
                             AsyncPhotoView(url: image)
                                 .contextMenu {
                                     Button {

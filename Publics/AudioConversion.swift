@@ -13,14 +13,7 @@
 
 import AVFoundation
 
-@globalActor actor AudioProcessing {
-    static let shared = AudioProcessing()
-    private init() {}
-}
-
-
-@AudioProcessing
-final class AudioConversion {
+final class AudioConversion: Sendable {
     
     private var composition = AVMutableComposition()
 

@@ -3391,6 +3391,7 @@
       }
     },
     "加载中…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

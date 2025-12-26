@@ -18,7 +18,7 @@ import Foundation
 import UniformTypeIdentifiers
 import UIKit
 
-class NetworkManager: NSObject{
+class NetworkManager: NSObject, Sendable{
     private var session: URLSession!
 
     enum requestMethod: String {

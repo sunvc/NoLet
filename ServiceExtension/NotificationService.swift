@@ -22,7 +22,7 @@ nonisolated class NotificationService: UNNotificationServiceExtension {
         let processor = self.processor
         let safeHandler = contentHandler
 
-        Task {
+        Task.detached( priority: .medium) {
             await processor.process(request, contentHandler: safeHandler)
         }
     }
@@ -30,7 +30,7 @@ nonisolated class NotificationService: UNNotificationServiceExtension {
     override func serviceExtensionTimeWillExpire() {
         super.serviceExtensionTimeWillExpire()
         let processor = self.processor
-        Task {
+        Task.detached( priority: .userInitiated) {
             await processor.expire()
         }
     }
