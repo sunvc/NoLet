@@ -16,7 +16,7 @@ import Defaults
 import Foundation
 
 
-final class ArchiveMessageHandler: NotificationContentProcessor,Sendable {
+class ArchiveMessageHandler: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

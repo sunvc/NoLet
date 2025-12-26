@@ -18,7 +18,7 @@ import Intents
 import SwiftUI
 @preconcurrency import UserNotifications
 
-final class ActionHandler: NotificationContentProcessor,Sendable {
+class ActionHandler: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

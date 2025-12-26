@@ -10,7 +10,7 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-final class MediaHandler: NotificationContentProcessor, Sendable {
+class MediaHandler: NotificationContentProcessor {
     
     func processor(
         identifier _: String,

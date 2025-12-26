@@ -14,7 +14,7 @@
 import Foundation
 import UserNotifications
 
-final class CiphertextHandler: NotificationContentProcessor, Sendable {
+class CiphertextHandler: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

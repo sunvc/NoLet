@@ -26,8 +26,7 @@ public protocol NotificationContentProcessor: Sendable {
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent
 
-    /// serviceExtension 即将终止，不管 handler 是否处理完成，最好立即调用 contentHandler 交付已完成的部分，否则会原样展示服务器传递过来的推送
-  
+    /// serviceExtension 即将终止，不管 processor 是否处理完成，最好立即调用 contentHandler 交付已完成的部分，否则会原样展示服务器传递过来的推送
     func serviceExtensionTimeWillExpire(contentHandler: (UNNotificationContent) -> Void)
 }
 

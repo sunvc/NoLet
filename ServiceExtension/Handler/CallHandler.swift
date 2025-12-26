@@ -10,7 +10,7 @@ import Foundation
 import LiveCommunicationKit
 import UserNotifications
 
-final class CallHandler: NotificationContentProcessor, Sendable {
+class CallHandler: NotificationContentProcessor {
     /// 铃声文件夹，扩展访问不到主APP中的铃声，需要先共享铃声文件
     let soundsDirectoryURL = NCONFIG.getDir(.sounds)
 

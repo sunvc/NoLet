@@ -12,7 +12,7 @@ import Intents
 import UIKit
 import UserNotifications
 
-final class IconHandler: NotificationContentProcessor,Sendable {
+class IconHandler: NotificationContentProcessor {
     
     func processor(
         identifier _: String,

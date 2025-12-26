@@ -19,12 +19,10 @@ nonisolated class NotificationService: UNNotificationServiceExtension {
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping @Sendable (UNNotificationContent) -> Void
     ) {
-        // 【关键修复】通过局部变量捕获处理器和闭包，消除对 self 的依赖
         let processor = self.processor
         let safeHandler = contentHandler
 
         Task {
-            // 此时闭包只捕获了 Sendable 的 actor 引用和 safeHandler，不再捕获 self
             await processor.process(request, contentHandler: safeHandler)
         }
     }
@@ -69,10 +67,8 @@ actor NotificationProcessor {
                 contentHandler(content)
                 return
             } catch {
-                // 【新增】处理所有其他未定义的错误（必须包含这一块）
-                print("捕获到未定义错误: \(error)")
+                print("其他错误: \(error)")
                 contentHandler(bestAttemptContent)
-                return
             }
         }
         contentHandler(bestAttemptContent)
