@@ -10,9 +10,9 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class MediaHandler: NotificationContentHandler {
+final class MediaHandler: NotificationContentProcessor, Sendable {
     
-    func handler(
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {

@@ -16,8 +16,8 @@ import Defaults
 import Foundation
 
 
-class ArchiveMessageHandler: NotificationContentHandler {
-    func handler(
+final class ArchiveMessageHandler: NotificationContentProcessor,Sendable {
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {

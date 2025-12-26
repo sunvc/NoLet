@@ -12,16 +12,16 @@
 //
 
 import Foundation
-import UserNotifications
+@preconcurrency import UserNotifications
 
-public protocol NotificationContentHandler {
+public protocol NotificationContentProcessor: Sendable {
     /// 处理 UNMutableNotificationContent
     /// - Parameters:
     ///   - identifier: request.identifier
     ///   - bestAttemptContent: 需要处理的 UNMutableNotificationContent
     /// - Returns: 处理成功后的 UNMutableNotificationContent
     /// - Throws: 处理失败后，应该中断处理
-    func handler(
+    func processor(
         identifier: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent
@@ -31,7 +31,7 @@ public protocol NotificationContentHandler {
     func serviceExtensionTimeWillExpire(contentHandler: (UNNotificationContent) -> Void)
 }
 
-extension NotificationContentHandler {
+extension NotificationContentProcessor {
     func serviceExtensionTimeWillExpire(contentHandler _: (UNNotificationContent) -> Void) {}
 }
 
@@ -47,7 +47,7 @@ enum NotificationContentHandlerItem: CaseIterable {
     case action
     case call
 
-    var handler: NotificationContentHandler {
+    var processor: NotificationContentProcessor {
         switch self {
         case .ciphertext:
             return CiphertextHandler()

@@ -9,10 +9,11 @@
 //  History:
 //    Created by Neo on 2025/5/26.
 //
+
 import Foundation
 import GRDB
 
-public class DatabaseManager {
+final class DatabaseManager {
     public static let shared: DatabaseManager = {
         do {
             return try DatabaseManager()
@@ -21,12 +22,12 @@ public class DatabaseManager {
         }
     }()
 
-    public let dbQueue: DatabaseQueue
-    public let localPath: URL
-    private let messageTabelName = "message"
-    private let chatGroupTabelName = "chatGroup"
-    private let chatMessageTabelName = "chatMessage"
-    private let chatPromptTabelName = "chatPrompt"
+    let dbQueue: DatabaseQueue
+    let localPath: URL
+    let messageTabelName = "message"
+    let chatGroupTabelName = "chatGroup"
+    let chatMessageTabelName = "chatMessage"
+    let chatPromptTabelName = "chatPrompt"
 
     private init() throws {
         localPath = CONTAINER.appendingPathComponent(NCONFIG.databaseName, conformingTo: .database)

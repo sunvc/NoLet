@@ -11,8 +11,8 @@ import Foundation
 import UserNotifications
 
 /// 通知中断级别
-class LevelHandler: NotificationContentHandler {
-    func handler(
+final class LevelHandler: NotificationContentProcessor, Sendable {
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
