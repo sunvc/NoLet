@@ -531,17 +531,6 @@ struct SelectMessageView: View {
 
                     TextView(text: urlText)
 
-//                    MarkdownCustomView.highlightedText(searchText: "", text: url)
-//                        .font(.system(size: baseSubtitleSize * scaleFactor))
-//                        .fontWeight(.bold)
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                        .textSelection(.enabled)
-//                        .onTapGesture {
-//                            if let fileURL = URL(string: url) {
-//                                AppManager.openURL(url: fileURL, .safari)
-//                            }
-//                            Haptic.impact()
-//                        }
                 }
             }
             .foregroundStyle(.accent)

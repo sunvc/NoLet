@@ -26,7 +26,6 @@ struct MessagePage: View {
         ZStack {
             if showGroup {
                 GroupMessagesView()
-
             } else {
                 SingleMessagesView()
             }
@@ -57,7 +56,6 @@ struct MessagePage: View {
                 }
             }
         }
-
         .environmentObject(messageManager)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -96,15 +94,7 @@ struct MessagePage: View {
                 }
             }
         }
-        .fullScreenCover(item: $manager.selectMessage) { message in
-            
-            SelectMessageView(message: message) {
-                withAnimation {
-                    manager.selectMessage = nil
-                }
-            }
-            
-        }
+        
     }
 }
 

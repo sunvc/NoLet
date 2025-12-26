@@ -10,6 +10,7 @@
 //    Created by Neo on 2025/4/13.
 //
 
+import Defaults
 import SwiftUI
 
 struct SearchMessageView: View {
@@ -22,10 +23,24 @@ struct SearchMessageView: View {
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
     @State private var searchText: String = ""
+    @Default(.limitMessageLine) var limitMessageLine
+    @Default(.assistantAccouns) var assistantAccouns
+    
+    private var messagePage: Int {
+        messageManager.messagePage
+    }
+
     var body: some View {
         List {
             ForEach(messages, id: \.id) { message in
-                MessageCard(message: message, searchText: manager.searchText, showGroup: true) {
+                MessageCard(
+                    message: message,
+                    searchText: manager.searchText,
+                    showGroup: true,
+                    limitMessageLine: limitMessageLine,
+                    assistantAccounsCount: assistantAccouns.count,
+                    selectID: manager.selectID
+                ) {
                     self.hideKeyboard()
                     withAnimation(.easeInOut) {
                         manager.selectMessage = message
@@ -41,12 +56,13 @@ struct SearchMessageView: View {
                         _ = await messageManager.delete(message)
                     }
                 }
+                .id(message.id)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
                 .listSectionSeparator(.hidden)
                 .onAppear {
                     if messages.last == message {
-                        loadData(item: message)
+                        loadData(limit: messagePage, item: message)
                     }
                 }
             }
@@ -115,11 +131,11 @@ struct SearchMessageView: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                loadData()
+                loadData(limit: messagePage)
             }
         }
         .onChange(of: manager.searchText) { _ in
-            loadData()
+            loadData(limit: messagePage)
         }
     }
 

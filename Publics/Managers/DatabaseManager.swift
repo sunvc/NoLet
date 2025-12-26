@@ -44,7 +44,7 @@ final class DatabaseManager {
 
     func registerMessageMigrations(_ migrator: inout DatabaseMigrator) {
         migrator.registerMigration("create_Message") { db in
-            try db.create(table: self.messageTabelName) { t in
+            try db.create(table: self.messageTabelName, ifNotExists: true) { t in
                 t.primaryKey("id", .text)
                 t.column("group", .text).notNull()
                 t.column("createDate", .datetime).notNull()
@@ -81,7 +81,7 @@ final class DatabaseManager {
 
     func registerChatGroupMigrations(_ migrator: inout DatabaseMigrator) {
         migrator.registerMigration("create_chatGroup") { db in
-            try db.create(table: self.chatGroupTabelName) { t in
+            try db.create(table: self.chatGroupTabelName, ifNotExists: true) { t in
                 t.primaryKey("id", .text)
                 t.column("timestamp", .datetime).notNull()
                 t.column("name", .text).notNull()
@@ -93,7 +93,7 @@ final class DatabaseManager {
 
     func registerChatMessageMigrations(_ migrator: inout DatabaseMigrator) {
         migrator.registerMigration("create_chatMessage") { db in
-            try db.create(table: self.chatMessageTabelName) { t in
+            try db.create(table: self.chatMessageTabelName, ifNotExists: true) { t in
                 t.primaryKey("id", .text)
                 t.column("timestamp", .datetime).notNull()
                 t.column("chat", .text).notNull()
@@ -106,7 +106,7 @@ final class DatabaseManager {
 
     func registerChatPromptMigrations(_ migrator: inout DatabaseMigrator) {
         migrator.registerMigration("create_chatPrompt") { db in
-            try db.create(table: self.chatPromptTabelName) { t in
+            try db.create(table: self.chatPromptTabelName, ifNotExists: true) { t in
                 t.column("id", .text).primaryKey()
                 t.column("timestamp", .datetime).notNull()
                 t.column("title", .text).notNull()

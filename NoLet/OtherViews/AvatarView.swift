@@ -11,10 +11,9 @@
 ////    Created by Neo 2024/10/8.
 ////
 
-
-import SwiftUI
 import Defaults
 import Kingfisher
+import SwiftUI
 
 struct AvatarView: View {
     var icon: String?
@@ -25,42 +24,37 @@ struct AvatarView: View {
     @State private var loadTask: Task<Void, Never>?
 
     var body: some View {
-        contentView
-            .clipped()
+        Group {
+            if let icon, !icon.isEmpty, customIcon.isEmpty {
+                if icon.hasHttp { // 在线头像
+                    KFImage(URL(string: icon))
+                        .targetCache(ImageManager.customCache)
+                        .resizable()
+                        .fade(duration: 0.25)
+                        .loadTransition(.move(edge: .leading))
 
-    }
+                } else if let uiImage = icon.avatarImage() { // 本地头像
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
 
-    // MARK: - 主视图内容
-    @ViewBuilder
-    private var contentView: some View {
-        if let icon, !icon.isEmpty, customIcon.isEmpty {
-            if icon.hasHttp {  // 在线头像
-                KFImage(URL(string: icon))
-                    .targetCache(ImageManager.customCache)
-                    .resizable()
-                    .fade(duration: 0.25)
-                    .loadTransition(.move(edge: .leading))
+                } else {
+                    defaultImage()
+                }
+            }
 
-            } else if let uiImage = icon.avatarImage() {  // 本地头像
-                Image(uiImage: uiImage)
+            // 自定义 icon（资源文件）
+            else if !customIcon.isEmpty {
+                Image(customIcon)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
+            }
 
-            } else {
+            else {
                 defaultImage()
             }
         }
-
-        // 自定义 icon（资源文件）
-        else if !customIcon.isEmpty {
-            Image(customIcon)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-        }
-
-        else {
-            defaultImage()
-        }
+        .clipped()
     }
 
     private func defaultImage() -> some View {
@@ -68,8 +62,6 @@ struct AvatarView: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
     }
-
-  
 }
 
 #Preview {

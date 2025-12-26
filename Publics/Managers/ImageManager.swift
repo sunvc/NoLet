@@ -15,8 +15,8 @@ import Foundation
 import Kingfisher
 import UIKit
 
-enum ImageManager {
-    static func storeImage(
+final class ImageManager {
+    class func storeImage(
         cache: ImageCache? = nil, data: Data, key: String, expiration: StorageExpiration = .never
     ) async {
         return await withCheckedContinuation { continuation in
@@ -26,7 +26,7 @@ enum ImageManager {
         }
     }
 
-    static func downloadImage(
+    class func downloadImage(
         _ imageURL: String,
         expiration: StorageExpiration = .never
     ) async -> String? {
@@ -52,7 +52,7 @@ enum ImageManager {
         return customCache.cachePath(forKey: cacheKey)
     }
 
-    static func downloadImage(
+    class func downloadImage(
         url: URL,
         options: KingfisherOptionsInfo? = nil
     ) async -> Result<ImageLoadingResult, KingfisherError> {
@@ -66,7 +66,7 @@ enum ImageManager {
         }
     }
 
-    static func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
+    class func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
         if let file = await ImageManager.downloadImage(url),
            let thumb = await loadThumbnail(path: file, maxPixel: maxPixel)
         {
@@ -76,7 +76,7 @@ enum ImageManager {
         return nil
     }
 
-    static func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
+    class func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
         let url = URL(fileURLWithPath: path)
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions)
@@ -97,7 +97,8 @@ enum ImageManager {
 
 extension ImageManager {
     static var customCache: ImageCache {
-        (try? ImageCache(name: "shared", cacheDirectoryURL: NCONFIG.FolderType.image.path)) ??
+        let cache = (try? ImageCache(name: "shared", cacheDirectoryURL: NCONFIG.FolderType.image.path)) ??
             ImageCache.default
+        return cache
     }
 }

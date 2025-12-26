@@ -12,7 +12,6 @@
 import Foundation
 import GRDB
 
-
 final class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: DatabaseManager = .shared
@@ -24,12 +23,12 @@ final class MessagesManager: ObservableObject {
     @Published var updateSign: Int = 0
     @Published var groupMessages: [Message] = []
     @Published var showGroupLoading: Bool = false
-
-    private let chunkSize: Int = 8192
+    
+    let messagePage: Int = 50
 
     private init() {
         let messages = DiskCache.shared.get()
-        self.groupMessages = messages
+        groupMessages = messages
         if !Bundle.main.isAppExtension {
             startObservingUnreadCount()
         }
@@ -423,8 +422,8 @@ extension MessagesManager {
     ) async -> Bool {
         do {
             let body = Domap.generateRandomString(textLength)
-            try await shared.DB.dbQueue.write { db in
-                try autoreleasepool {
+            try autoreleasepool {
+                try shared.DB.dbQueue.write { db in
                     for k in 0..<number {
                         let message = Message(
                             id: UUID().uuidString, createDate: .now,
@@ -443,7 +442,7 @@ extension MessagesManager {
     }
 }
 
-private final class DiskCache: Sendable {
+final private class DiskCache: Sendable {
     static let shared = DiskCache()
 
     private let cacheDirectory: URL

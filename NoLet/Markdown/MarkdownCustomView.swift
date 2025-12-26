@@ -55,7 +55,6 @@ struct MarkdownCustomView: View {
                 })
                 .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
                 .markdownTheme(MarkdownTheme.defaultTheme(baseSize, scaleFactor: scaleFactor))
-                .transition(.opacity.animation(.easeInOut(duration: 0.1)))
         }
     }
 

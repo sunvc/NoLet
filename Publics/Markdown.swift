@@ -14,42 +14,31 @@ import cmark_gfm
 import cmark_gfm_extensions
 import Foundation
 
-class PBMarkdown {
+final class PBMarkdown {
     class func plain(_ markdown: String) -> String {
-        // 注册 GFM 扩展
         cmark_gfm_core_extensions_ensure_registered()
 
-        // 创建解析器
         guard let parser = cmark_parser_new(CMARK_OPT_DEFAULT) else { return "" }
-        let extensionNames: Set<String> = [
-            "autolink",
-            "strikethrough",
-            "tagfilter",
-            "tasklist",
-            "table",
-        ]
+        // 确保 parser 最终被释放
+        defer { cmark_parser_free(parser) }
 
+        let extensionNames: Set<String> = ["autolink", "strikethrough", "tagfilter", "tasklist", "table"]
         for extensionName in extensionNames {
-            guard let syntaxExtension = cmark_find_syntax_extension(extensionName) else {
-                continue
+            if let syntaxExtension = cmark_find_syntax_extension(extensionName) {
+                cmark_parser_attach_syntax_extension(parser, syntaxExtension)
             }
-            cmark_parser_attach_syntax_extension(parser, syntaxExtension)
         }
-        // 解析 Markdown
+
         cmark_parser_feed(parser, markdown, markdown.utf8.count)
-
         guard let doc = cmark_parser_finish(parser) else { return "" }
+        // 确保 doc 节点树最终被释放
+        defer { cmark_node_free(doc) }
 
-        // 渲染为 HTML
-
-        if let text = cmark_render_plaintext(doc, 0, 0) {
-            return stripMarkdown(String(cString: text))
-        }
-
-        defer {
-            // 释放资源
-            cmark_node_free(doc)
-            cmark_parser_free(parser)
+        // 渲染
+        if let vPtr = cmark_render_plaintext(doc, 0, 0) {
+            let result = String(cString: vPtr)
+            free(vPtr) // 【关键修复】必须手动释放 cmark 分配的 C 字符串
+            return stripMarkdown(result)
         }
 
         return ""
@@ -182,42 +171,34 @@ class PBMarkdown {
     }
 
     class func markdownToHTML(_ markdown: String) -> String? {
-        // 注册 GFM 扩展
+        // 1. 注册扩展（通常只需全局注册一次，但重复调用无害）
         cmark_gfm_core_extensions_ensure_registered()
 
-        // 创建解析器
-        guard let parser = cmark_parser_new(CMARK_OPT_DEFAULT) else {
-            return nil
-        }
-        let extensionNames: Set<String> = [
-            "autolink",
-            "strikethrough",
-            "tagfilter",
-            "tasklist",
-            "table",
-        ]
+        // 2. 创建解析器
+        guard let parser = cmark_parser_new(CMARK_OPT_DEFAULT) else { return nil }
+        // 【修复】立即注册释放逻辑，确保函数结束时一定执行
+        defer { cmark_parser_free(parser) }
 
-        for extensionName in extensionNames {
-            guard let syntaxExtension = cmark_find_syntax_extension(extensionName) else {
-                continue
+        let extensionNames: [String] = ["autolink", "strikethrough", "tagfilter", "tasklist", "table"]
+        for name in extensionNames {
+            if let syntaxExtension = cmark_find_syntax_extension(name) {
+                cmark_parser_attach_syntax_extension(parser, syntaxExtension)
             }
-            cmark_parser_attach_syntax_extension(parser, syntaxExtension)
         }
-        // 解析 Markdown
+
+        // 3. 解析
         cmark_parser_feed(parser, markdown, markdown.utf8.count)
-
         guard let doc = cmark_parser_finish(parser) else { return nil }
+        // 【修复】立即注册释放逻辑
+        defer { cmark_node_free(doc) }
 
-        // 渲染为 HTML
-
-        if let html = cmark_render_html(doc, 0, nil) {
-            return String(cString: html)
-        }
-
-        defer {
-            // 释放资源
-            cmark_node_free(doc)
-            cmark_parser_free(parser)
+        // 4. 渲染为 HTML
+        // 注意：第三个参数在 GFM 中通常传入已注册的扩展列表，如果只是简单渲染可传 nil
+        if let cStringPtr = cmark_render_html(doc, 0, nil) {
+            let htmlString = String(cString: cStringPtr)
+            // 【核心修复】必须手动释放 C 字符串内存
+            free(cStringPtr) 
+            return htmlString
         }
 
         return nil
