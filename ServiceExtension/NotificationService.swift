@@ -10,54 +10,75 @@
 //    Created by Neo on 2025/4/3.
 //
 
-import UserNotifications
+@preconcurrency import UserNotifications
 
-
-class NotificationService: UNNotificationServiceExtension {
-    /// 当前正在运行的
-    var currentNotificationHandler: NotificationContentHandler?
-    /// 当前 ContentHandler，主要用来 serviceExtensionTimeWillExpire 时，传递给 handler 用来交付推送。
-    var currentContentHandler: ((UNNotificationContent) -> Void)?
+nonisolated class NotificationService: UNNotificationServiceExtension {
+    private let processor = NotificationProcessor()
 
     override func didReceive(
         _ request: UNNotificationRequest,
-        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+        withContentHandler contentHandler: @escaping @Sendable (UNNotificationContent) -> Void
     ) {
-        Task{
-            guard var bestAttemptContent = (request.content
-                .mutableCopy() as? UNMutableNotificationContent)
-            else {
-                contentHandler(request.content)
-                return
-            }
+        let processor = self.processor
+        let safeHandler = contentHandler
 
-            self.currentContentHandler = contentHandler
-            // 各个 handler 依次对推送进行处理
-            for handler in NotificationContentHandlerItem.allCases.map({ $0.handler }) {
-                do {
-                    self.currentNotificationHandler = handler
-                    bestAttemptContent = try await handler.handler(
-                        identifier: request.identifier,
-                        content: bestAttemptContent
-                    )
-                } catch NotificationContentHandlerError.error(let content) {
-                    contentHandler(content)
-                    return
-                }
-            }
-
-            contentHandler(bestAttemptContent)
+        Task.detached( priority: .medium) {
+            await processor.process(request, contentHandler: safeHandler)
         }
     }
-    
+
     override func serviceExtensionTimeWillExpire() {
         super.serviceExtensionTimeWillExpire()
-        
-        if let handler = currentContentHandler {
-            guard let currentNotificationHandler = currentNotificationHandler else{ return }
-            currentNotificationHandler.serviceExtensionTimeWillExpire(contentHandler: handler)
-            
+        let processor = self.processor
+        Task.detached( priority: .userInitiated) {
+            await processor.expire()
         }
     }
+}
 
+// 将处理逻辑封装到 actor 中以解决并发竞争
+actor NotificationProcessor {
+    private var currentNotificationHandler: NotificationContentProcessor?
+    private var currentContentHandler: (@Sendable (UNNotificationContent) -> Void)?
+
+    func process(
+        _ request: UNNotificationRequest,
+        contentHandler: @escaping @Sendable (UNNotificationContent) -> Void
+    ) async {
+        guard var bestAttemptContent = (request.content
+            .mutableCopy() as? UNMutableNotificationContent)
+        else {
+            contentHandler(request.content)
+            return
+        }
+
+        currentContentHandler = contentHandler
+
+        // 依次执行 handler
+        for item in NotificationContentHandlerItem.allCases {
+            let handler = await item.processor
+            currentNotificationHandler = handler
+            do {
+                bestAttemptContent = try await handler.processor(
+                    identifier: request.identifier,
+                    content: bestAttemptContent
+                )
+            } catch NotificationContentHandlerError.error(let content) {
+                contentHandler(content)
+                return
+            } catch {
+                print("其他错误: \(error)")
+                contentHandler(bestAttemptContent)
+            }
+        }
+        contentHandler(bestAttemptContent)
+    }
+
+    func expire() async {
+        if let handler = currentContentHandler,
+           let currentNotificationHandler = currentNotificationHandler
+        {
+            await currentNotificationHandler.serviceExtensionTimeWillExpire(contentHandler: handler)
+        }
+    }
 }

@@ -48,6 +48,8 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     @Published var customServerURL: String = ""
     @Published var VipInfo: SubscribeUser? = nil
+    
+    @Published var servers:[PushServerModel] = []
 
     var router: [RouterPage] = [] {
         didSet {
@@ -92,7 +94,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     }
 
     @MainActor
-    deinit { 
+    deinit {
         self.updates?.cancel()
     }
 
@@ -132,8 +134,9 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
             return nil
         case .server(let url, let key, let group, let sign):
             Task.detached(priority: .userInitiated) {
-                let crypto = await CryptoModelConfig(inputText: sign ?? "", sign: true)?.obfuscator()
-                let server = await PushServerModel(url: url, key: key, group: group, sign: crypto)
+                let crypto = await CryptoModelConfig(inputText: sign ?? "", sign: true)?
+                    .obfuscator()
+                let server = PushServerModel(url: url, key: key, group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
                 if success {
                     await MainActor.run {
@@ -431,8 +434,8 @@ extension AppManager {
             return false
         }
     }
-    
-    func registers() async   {
+
+    func registers() async {
         guard Defaults[.servers].count > 0 else { return }
         let servers = Defaults[.servers]
         let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -458,7 +461,7 @@ extension AppManager {
 
     func register(
         server: PushServerModel,
-        reset: Bool = false,
+        reset: Bool = false
     ) async -> PushServerModel {
         var server = server
 
@@ -490,8 +493,8 @@ extension AppManager {
             if let data = response.data {
                 server.key = data.deviceKey
                 server.status = true
-            } 
-            
+            }
+
             Self.syncLocalToCloud()
             return server
         } catch {
@@ -529,9 +532,8 @@ extension AppManager {
                 }
                 Defaults[.servers].insert(serverNew, at: 0)
             }
-            
-            
-            if let index = Defaults[.servers].firstIndex(where: {$0.id == serverNew.id}){
+
+            if let index = Defaults[.servers].firstIndex(where: { $0.id == serverNew.id }) {
                 Defaults[.servers][index] = serverNew
             }
             Toast.success(title: "添加成功")
@@ -632,15 +634,15 @@ struct SubscribeUser: Codable, Hashable, Identifiable {
 extension AppManager {
     func signature(sign: String?) -> [String: String] {
         var result: [String: String] = [
-            "Authorization": Defaults[.id],
+            "X-Device" : Defaults[.id],
         ]
 
         let data = "\(Int(Date().timeIntervalSince1970))"
         if let sign = sign, sign.count > 10 {
             let config = CryptoModelConfig(inputText: sign) ?? .data
-            result["X-Signature"] = CryptoManager(config).encrypt(data)?.safeBase64
+            result["Authorization"] = CryptoManager(config).encrypt(data)?.safeBase64
         } else {
-            result["X-Signature"] = CryptoManager(.data)
+            result["Authorization"] = CryptoManager(.data)
                 .encrypt(data)?.safeBase64
         }
         return result
@@ -650,5 +652,35 @@ extension AppManager {
 extension Dictionary {
     fileprivate static func + (lhs: Dictionary, rhs: Dictionary) -> Dictionary {
         lhs.merging(rhs) { _, new in new }
+    }
+}
+
+enum OutDataType {
+    case text(String)
+    case crypto(String)
+    case server(url: String, key: String, group: String?, sign: String?)
+    case otherURL(String)
+    case assistant(String)
+    case cloudIcon
+}
+
+extension AppManager {
+    nonisolated
+    static func syncServer() async {
+        
+        let pushServerDatas = Array( await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
+        
+        let datas = pushServerDatas.compactMap { server in
+            server.toCKRecord(recordType: CloudManager.serverName)
+        }
+        
+        let records = await CloudManager.shared.synchronousServers(from: datas).compactMap { record in
+            PushServerModel(from: record)
+        }
+        
+        Task{@MainActor in 
+            AppManager.shared.servers = records    
+        }
+        
     }
 }

@@ -10,18 +10,20 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class MediaHandler: NotificationContentHandler {
+class MediaHandler: NotificationContentProcessor {
     
-    func handler(
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
-
+        
+        let days = await MainActor.run{ Defaults[.imageSaveDays].days }
+        
         if let imageURL: String = userInfo.raw(.image) {
             guard let localPath = await ImageManager.downloadImage(
                 imageURL,
-                expiration: .days(Defaults[.imageSaveDays].days)
+                expiration: .days(days)
             ) else { return bestAttemptContent }
 
             /// 自动保存图片到相册 前提 打开了自动存储，并且缓存内没有的图片

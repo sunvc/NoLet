@@ -23,6 +23,8 @@ struct MessageDetailPage: View {
     @StateObject private var messageManager = MessagesManager.shared
 
     @Default(.showMessageAvatar) var showMessageAvatar
+    @Default(.limitMessageLine) var limitMessageLine
+    @Default(.assistantAccouns) var assistantAccouns
 
     // 分页相关状态
     @State private var messages: [Message] = []
@@ -31,6 +33,10 @@ struct MessageDetailPage: View {
     @State private var isLoading: Bool = false
     @State private var showAllTTL: Bool = false
     @State private var searchText: String = ""
+    
+    private var messagePage:Int {
+        messageManager.messagePage    
+    }
 
     var body: some View {
         Group {
@@ -42,7 +48,10 @@ struct MessageDetailPage: View {
                                 message: message,
                                 searchText: searchText,
                                 showAllTTL: showAllTTL,
-                                showAvatar: showMessageAvatar
+                                showAvatar: showMessageAvatar,
+                                limitMessageLine: limitMessageLine,
+                                assistantAccounsCount: assistantAccouns.count,
+                                selectID: manager.selectID
                             ) {
                                 withAnimation(.easeInOut.speed(10)) {
                                     manager.selectMessage = message
@@ -58,10 +67,10 @@ struct MessageDetailPage: View {
                                     _ = await MessagesManager.shared.delete(message)
                                 }
                             }
+                            .id(message.id)
                             .listRowInsets(EdgeInsets())
                             .listRowBackground(Color.clear)
                             .listSectionSeparator(.hidden)
-                            .id(message.id)
                             .onAppear {
                                 if messages.count < allCount && messages.last == message {
                                     loadData(proxy: proxy, item: message)
@@ -72,9 +81,13 @@ struct MessageDetailPage: View {
                     .listStyle(.grouped)
                     .animation(.easeInOut, value: messages)
                     .environmentObject(messageManager)
-                    .onChange(of: messageManager.updateSign) { _ in
-                        loadData(proxy: proxy, limit: max(messages.count, 150))
+                    .refreshable {
+                        self.loadData(proxy: proxy, limit:  messagePage)
                     }
+                    .onChange(of: messageManager.updateSign) { _ in
+                        loadData(proxy: proxy, limit: max(messages.count, messagePage))
+                    }
+                    
                 }
             } else {
                 SearchMessageView(group: group)
@@ -89,10 +102,7 @@ struct MessageDetailPage: View {
                 manager.searchText = ""
             }
         }
-
-        .refreshable {
-            loadData(limit: min(messages.count, 50))
-        }
+        
         .toolbar {
             if #available(iOS 26.0, *) {
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
@@ -127,18 +137,18 @@ struct MessageDetailPage: View {
                     // 更新指定 group 的未读消息为已读
                     let count = try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
+                        .filter(Message.Columns.isRead == false)
                         .fetchCount(db)
 
                     guard count > 0 else { return }
 
                     try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
-                        .updateAll(db, [Message.Columns.read.set(to: true)])
+                        .filter(Message.Columns.isRead == false)
+                        .updateAll(db, [Message.Columns.isRead.set(to: true)])
 
                     let unRead = try Message
-                        .filter(Message.Columns.read == false)
+                        .filter(Message.Columns.isRead == false)
                         .fetchCount(db)
                     UNUserNotificationCenter.current().setBadgeCount(unRead)
                 }
@@ -146,7 +156,7 @@ struct MessageDetailPage: View {
         }
     }
 
-    private func loadData(proxy: ScrollViewProxy? = nil, limit: Int = 50, item: Message? = nil) {
+    private func loadData(proxy: ScrollViewProxy? = nil, limit: Int = 20, item: Message? = nil) {
         Task{
             let results = await MessagesManager.shared.query(
                 group: self.group,

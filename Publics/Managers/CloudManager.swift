@@ -14,71 +14,6 @@ import Defaults
 import Foundation
 import SwiftUI
 
-struct PushIcon: Identifiable {
-    var id: String = UUID().uuidString
-    var name: String
-    var description: [String]
-    var size: Int
-    var sha256: String
-    var file: URL?
-    var previewImage: UIImage?
-
-    func toRecord(recordType: String) -> CKRecord? {
-        guard let file = file else { return nil }
-
-        let recordID = CKRecord.ID(recordName: id)
-        let record = CKRecord(recordType: recordType, recordID: recordID)
-        record["name"] = name as CKRecordValue
-        record["description"] = description as CKRecordValue
-        record["data"] = CKAsset(fileURL: file)
-        record["size"] = size as CKRecordValue
-        record["sha256"] = sha256 as CKRecordValue
-
-        return record
-    }
-}
-
-enum PushIconCloudError: Error {
-    case notFile(String)
-    case paramsSpace(String)
-    case saveError(String)
-    case nameRepeat(String)
-    case iconRepeat(String)
-    case success(String)
-    case authority(String)
-
-    var tips: String {
-        switch self {
-        case .notFile(let msg), .paramsSpace(let msg), .saveError(let msg), .nameRepeat(let msg),
-             .iconRepeat(let msg), .success(let msg), .authority(let msg):
-            return msg
-        }
-    }
-}
-
-extension CKRecord {
-    func toPushIcon() -> PushIcon? {
-        guard let name = self["name"] as? String,
-              let description = self["description"] as? [String],
-              let asset = self["data"] as? CKAsset,
-              let fileURL = asset.fileURL,
-              let imageData = try? Data(contentsOf: fileURL),
-              let image = UIImage(data: imageData),
-              let size = self["size"] as? Int,
-              let sha256 = self["sha256"] as? String else { return nil }
-
-        return PushIcon(
-            id: recordID.recordName,
-            name: name,
-            description: description,
-            size: size,
-            sha256: sha256,
-            file: fileURL,
-            previewImage: image
-        )
-    }
-}
-
 class CloudManager {
     static let shared = CloudManager()
 
@@ -94,8 +29,14 @@ class CloudManager {
         container.publicCloudDatabase
     }
 
-    private let recordType = "PushIcon"
-    private let deviceToken = "DeviceToken"
+    nonisolated
+    public static let pushIconName = "PushIcon"
+    nonisolated
+    public static let deviceTokenName = "DeviceToken"
+    nonisolated
+    public static let apnsInfoName = "ApnsInfo"
+    nonisolated
+    public static let serverName = "PushServerModel"
 
     func checkAccount() async -> (Bool, String) {
         var message = (false, String(localized: "未知 iCloud 状态"))
@@ -154,7 +95,7 @@ class CloudManager {
         do {
             let userID = try await container.userRecordID()
             let datas = await fetchRecords(
-                recordType,
+                Self.pushIconName,
                 for: NSPredicate(format: "creatorUserRecordID == %@", userID),
                 in: database
             )
@@ -190,7 +131,7 @@ class CloudManager {
         }
 
         // **执行查询**
-        let records = await fetchRecords(recordType, for: predicate, in: database)
+        let records = await fetchRecords(Self.pushIconName, for: predicate, in: database)
 
         // **去重**
         var uniqueRecords: [CKRecord] = []
@@ -209,31 +150,31 @@ class CloudManager {
 
     // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
 
-    func savePushIconModel(_ model: PushIcon) async -> PushIconCloudError {
+    func savePushIconModel(_ record: CKRecord?) async -> (Bool,String) {
+        guard let record = record else { return (false, String(localized: "没有文件")) }
+
         let (success, message) = await checkAccount()
 
-        guard success else { return .authority(message) }
+        guard success else { return (false, message) }
 
-        NLog.log(model.name, model.description)
+        guard let name = record["name"] as? String,
+              !name.isEmpty else { return (false, String(localized: "参数不全")) }
 
-        if model.name.isEmpty {
-            return .paramsSpace(String(localized: "参数不全"))
-        }
+        let description = record["description"] as? [String]
 
-        let records = await queryIcons(name: model.name)
+        NLog.log(name, description)
 
-        guard records.count == 0 else { return .nameRepeat(String(localized: "图片key重复")) }
+        let records = await queryIcons(name: name)
 
-        guard let record = model.toRecord(recordType: recordType)
-        else { return PushIconCloudError.notFile(String(localized: "没有文件")) }
+        guard records.count == 0 else { return (false, String(localized: "图片key重复")) }
 
         do {
             let recordRes = try await database.save(record)
             NLog.error(recordRes)
-            return .success(String(localized: "保存成功"))
+            return (true, String(localized: "保存成功"))
         } catch {
             NLog.error(error.localizedDescription)
-            return .saveError(String(localized: "保存失败") + "：\(error.localizedDescription)")
+            return (false, String(localized: "保存失败") + "：\(error.localizedDescription)")
         }
     }
 
@@ -255,10 +196,11 @@ class CloudManager {
     func queryOrUpdateDeviceToken(_ userID: String, token: String? = nil) async -> String? {
         do {
             let predicate = NSPredicate(format: "device == %@", userID)
-            guard let record = await fetchRecords(deviceToken, for: predicate, in: database).first
+            guard let record = await fetchRecords(Self.deviceTokenName, for: predicate, in: database)
+                .first
             else {
                 if let token {
-                    let record = CKRecord(recordType: deviceToken)
+                    let record = CKRecord(recordType: Self.deviceTokenName)
                     record["device"] = userID as CKRecordValue
                     record["token"] = token as CKRecordValue
                     let recordRes = try await database.save(record)
@@ -282,83 +224,80 @@ class CloudManager {
         }
     }
 
-    func pushToken(update: @escaping (ApnsInfo) throws -> ApnsInfo) async throws -> ApnsInfo {
+    func pushToken(update: @escaping (CKRecord) throws -> CKRecord) async throws -> CKRecord {
         let predicate = NSPredicate(value: true)
 
-        guard let record = await fetchRecords(ApnsInfo.recordType, for: predicate, in: database)
-            .first
+        guard let record = await fetchRecords(Self.apnsInfoName, for: predicate, in: database).first
         else {
             throw "No Data!!!"
         }
 
-        guard let apnsInfoOld = ApnsInfo(record: record) else {
+        guard let timestamp = record["timestamp"] as? Date else {
             throw "No Data!!!"
         }
 
         // 如果未过期且有 token，直接返回
-        if apnsInfoOld.timestamp > Date() {
-            return apnsInfoOld
-        }
+        if timestamp > Date() { return record }
 
         // 调用 update 获取新 token
-        let apnsInfo = try update(apnsInfoOld)
-        
-        record["token"] = apnsInfo.token as CKRecordValue
-        record["timestamp"] = apnsInfo.timestamp as CKRecordValue
+        let apnsInfo = try update(record)
         // 保存到 CloudKit
-        _ = try await database.save(record)
+        _ = try await database.save(apnsInfo)
 
         return apnsInfo
     }
-}
 
-struct ApnsInfo: Codable {
-    static let recordType = "ApnsInfo"
-    var id: String
-    var timestamp: Date
-    var token: String
-    var teamID: String
-    var keyID: String
-    var topic: String
-    var pem: String
+    func synchronousServers(from records: [CKRecord]) async -> [CKRecord] {
 
-    init?(record: CKRecord) {
-        // 如果 recordName 对应 id，就直接用
-        id = record.recordID.recordName
-        
-        guard
-            let teamID = record["teamID"] as? String,
-            let keyID = record["keyID"] as? String,
-            let topic = record["topic"] as? String,
-            let pem = record["pem"] as? String
-        else {
-            return nil
+        let cloudRecords = await self.fetchRecords(
+            Self.serverName,
+            for: NSPredicate(value: true),
+            in: database
+        )
+
+        let cloudIndex: [String: CKRecord] = Dictionary(
+            uniqueKeysWithValues: cloudRecords.compactMap { record in
+                guard
+                    let url = record["url"] as? String,
+                    let key = record["key"] as? String
+                else { return nil }
+
+                return ("\(url)|\(key)", record)
+            }
+        )
+
+  
+        var waitRecords: [CKRecord] = []
+
+        for record in records {
+            guard
+                let url = record["url"] as? String,
+                let key = record["key"] as? String
+            else {
+                continue
+            }
+
+            let compositeKey = "\(url)|\(key)"
+
+            if cloudIndex[compositeKey] == nil {
+                waitRecords.append(record)
+            }
         }
 
-        self.timestamp = record["timestamp"] as? Date ?? Date.distantFuture
+        guard !waitRecords.isEmpty else { return [] }
 
-        self.token = record["token"] as? String ?? ""
-
-        self.teamID = teamID
-        self.keyID = keyID
-        self.topic = topic
-        self.pem = pem
-    }
-
-    // MARK: - 初始化 CKRecord
-
-    func toCKRecord() -> CKRecord {
-        // 使用 id 作为 recordName
-        let recordID = CKRecord.ID(recordName: id)
-        let record = CKRecord(recordType: ApnsInfo.recordType, recordID: recordID)
-
-        record["timestamp"] = timestamp as CKRecordValue
-        record["token"] = token as CKRecordValue
-        record["teamID"] = teamID as CKRecordValue
-        record["keyID"] = keyID as CKRecordValue
-        record["topic"] = topic as CKRecordValue
-        record["pem"] = pem as CKRecordValue
-
-        return record
+        do {
+            let results = try await database.modifyRecords(saving: waitRecords, deleting: [], savePolicy: .ifServerRecordUnchanged)
+            let uploadDatas = results.saveResults.values.compactMap({try? $0.get()})
+            NLog.log(uploadDatas)
+            
+            return cloudRecords + uploadDatas
+            
+        } catch {
+            print("❌ Failed to upload records:", error)
+            return []
+        }
+        
+        
     }
 }

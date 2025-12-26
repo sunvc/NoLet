@@ -10,11 +10,11 @@ import Foundation
 import LiveCommunicationKit
 import UserNotifications
 
-class CallHandler: NotificationContentHandler {
+class CallHandler: NotificationContentProcessor {
     /// 铃声文件夹，扩展访问不到主APP中的铃声，需要先共享铃声文件
     let soundsDirectoryURL = NCONFIG.getDir(.sounds)
 
-    func handler(
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {

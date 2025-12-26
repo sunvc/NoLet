@@ -12,8 +12,7 @@
 import Foundation
 import GRDB
 
-
-class MessagesManager: ObservableObject {
+final class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: DatabaseManager = .shared
     private let cache: DiskCache = .shared
@@ -24,12 +23,12 @@ class MessagesManager: ObservableObject {
     @Published var updateSign: Int = 0
     @Published var groupMessages: [Message] = []
     @Published var showGroupLoading: Bool = false
-
-    private let chunkSize: Int = 8192
+    
+    let messagePage: Int = 50
 
     private init() {
         let messages = DiskCache.shared.get()
-        self.groupMessages = messages
+        groupMessages = messages
         if !Bundle.main.isAppExtension {
             startObservingUnreadCount()
         }
@@ -39,7 +38,7 @@ class MessagesManager: ObservableObject {
 
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (Int, Int) in
-            let unRead = try Message.filter(Message.Columns.read == false).fetchCount(db)
+            let unRead = try Message.filter(Message.Columns.isRead == false).fetchCount(db)
             let count = try Message.fetchCount(db)
             return (unRead, count)
         }
@@ -95,15 +94,15 @@ extension MessagesManager {
         return try? await DB.dbQueue.write { db in
             // 批量更新 read 字段为 true
             try Message
-                .filter(Message.Columns.read == false)
-                .updateAll(db, [Message.Columns.read.set(to: true)])
+                .filter(Message.Columns.isRead == false)
+                .updateAll(db, [Message.Columns.isRead.set(to: true)])
         }
     }
 
     func unreadCount(group: String? = nil) -> Int {
         do {
             return try DB.dbQueue.read { db in
-                var request = Message.filter(Message.Columns.read == false)
+                var request = Message.filter(Message.Columns.isRead == false)
 
                 if let group = group {
                     request = request.filter(Message.Columns.group == group)
@@ -259,7 +258,7 @@ extension MessagesManager {
                     SELECT *
                     FROM (
                         SELECT *,
-                               ROW_NUMBER() OVER (PARTITION BY "group" ORDER BY createdate DESC, id DESC) AS rn
+                               ROW_NUMBER() OVER (PARTITION BY "group" ORDER BY createDate DESC, id DESC) AS rn
                         FROM message
                     )
                     WHERE rn = 1
@@ -267,11 +266,11 @@ extension MessagesManager {
                 LEFT JOIN (
                     SELECT "group", COUNT(*) AS count
                     FROM message
-                    WHERE read = 0
+                    WHERE isRead = 0
                     GROUP BY "group"
                 ) AS unread
                 ON m."group" = unread."group"
-                ORDER BY unread.count DESC NULLS LAST, m.createdate DESC
+                ORDER BY unread.count DESC NULLS LAST, m.createDate DESC
             """)
 
         return try rows.map { try Message(row: $0) }
@@ -301,11 +300,11 @@ extension MessagesManager {
     func markAllRead(group: String? = nil) async {
         do {
             try await DB.dbQueue.write { db in
-                var request = Message.filter(Message.Columns.read == false)
+                var request = Message.filter(Message.Columns.isRead == false)
                 if let group = group {
                     request = request.filter(Message.Columns.group == group)
                 }
-                try request.updateAll(db, [Message.Columns.read.set(to: true)])
+                try request.updateAll(db, [Message.Columns.isRead.set(to: true)])
             }
         } catch {
             NLog.error("markAllRead error")
@@ -320,10 +319,10 @@ extension MessagesManager {
                 // 构建查询条件
                 if allRead, let date = date {
                     request = request
-                        .filter(Message.Columns.read == true)
+                        .filter(Message.Columns.isRead == true)
                         .filter(Message.Columns.createDate < date)
                 } else if allRead {
-                    request = request.filter(Message.Columns.read == true)
+                    request = request.filter(Message.Columns.isRead == true)
                 } else if let date = date {
                     request = request.filter(Message.Columns.createDate < date)
                 } else {
@@ -423,13 +422,13 @@ extension MessagesManager {
     ) async -> Bool {
         do {
             let body = Domap.generateRandomString(textLength)
-            try await shared.DB.dbQueue.write { db in
-                try autoreleasepool {
+            try autoreleasepool {
+                try shared.DB.dbQueue.write { db in
                     for k in 0..<number {
                         let message = Message(
                             id: UUID().uuidString, createDate: .now,
                             group: "\(k % 10)", title: "\(k) Test",
-                            body: "Text Data \(body)", level: 1, ttl: 1, read: true
+                            body: "Text Data \(body)", level: 1, ttl: 1, isRead: true
                         )
                         try message.insert(db)
                     }
@@ -443,7 +442,7 @@ extension MessagesManager {
     }
 }
 
-private class DiskCache {
+final private class DiskCache: Sendable {
     static let shared = DiskCache()
 
     private let cacheDirectory: URL

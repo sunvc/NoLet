@@ -12,6 +12,7 @@
 
 import Defaults
 import SwiftUI
+import Kingfisher
 
 struct AppIconView: View {
     @Environment(\.dismiss) var dismiss

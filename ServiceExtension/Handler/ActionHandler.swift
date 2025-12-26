@@ -16,10 +16,10 @@ import Defaults
 import Foundation
 import Intents
 import SwiftUI
-import UserNotifications
+@preconcurrency import UserNotifications
 
-class ActionHandler: NotificationContentHandler {
-    func handler(
+class ActionHandler: NotificationContentProcessor {
+    func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {

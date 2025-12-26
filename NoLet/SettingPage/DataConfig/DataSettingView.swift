@@ -209,24 +209,6 @@ struct DataSettingView: View {
             }
 
             Section {
-                Picker(selection: $proxyServer) {
-                    ForEach(pickerServers, id: \.id) { server in
-                        Text(server.name).tag(server)
-                    }
-
-                } label: {
-                    Label {
-                        Text("下载代理")
-                    } icon: {
-                        Image(systemName: "network.badge.shield.half.filled")
-                            .scaleEffect(0.9)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(proxyServer.status ? .green : .red, Color.primary)
-                            .symbolEffect(.pulse, delay: 1)
-                    }
-                }
-
-                .pickerStyle(MenuPickerStyle())
 
                 Picker(selection: $messageExpiration) {
                     ForEach(ExpirationTime.allCases, id: \.self) { item in
@@ -269,6 +251,8 @@ struct DataSettingView: View {
                             )
                     }
                 }
+            
+                
             } footer: {
                 Text("当推送请求URL没有指定 isArchive 参数时，将按照此设置来决定是否保存通知消息")
                     .foregroundStyle(.gray)
@@ -411,12 +395,11 @@ struct DataSettingView: View {
                             Text("清空"),
                             action: {
                                 self.showDriveCheckLoading = true
-                                if let cache = ImageManager
-                                    .defaultCache(),
+                                if 
                                     let fileURL = NCONFIG.getDir(.sounds),
                                     let cacheURL = NCONFIG.getDir(.tem)
                                 {
-                                    cache.clearDiskCache()
+                                    ImageManager.customCache.clearDiskCache()
                                     manager
                                         .clearContentsOfDirectory(
                                             at: fileURL
@@ -585,6 +568,17 @@ extension ExpirationTime {
         case .forever: String(localized: "长期")
         }
     }
+}
+
+// MARK: - MessageAction model
+
+enum MessageAction: String, CaseIterable, Equatable {
+    case lastHour
+    case lastDay
+    case lastWeek
+    case lastMonth
+    case allTime
+    case cancel
 }
 
 #Preview {

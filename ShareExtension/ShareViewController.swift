@@ -78,43 +78,42 @@ private struct ShareView: View {
                 }
             }
         }
-        .onAppear {
-            extractItems()
+        .task {
+            await extractItems()
         }
     }
 
-    func extractItems() {
+    func extractItems() async  {
         guard pushIcon == nil else { return }
 
-        DispatchQueue.global(qos: .userInteractive).async {
-            for provider in itemProviders {
-                _ = provider.loadDataRepresentation(for: .data) { data, error in
-                    guard let data = data else { return }
+        for provider in itemProviders {
+            _ = provider.loadDataRepresentation(for: .data) { data, error in
+                guard let data = data else { return }
 
-                    if let image = data.toThumbnail(max: 300) {
-                        let tempDir = FileManager.default.temporaryDirectory
-                        let tempURL = tempDir.appendingPathComponent("cloudIcon.png")
+                if let image = data.toThumbnail(max: 300) {
+                    let tempDir = FileManager.default.temporaryDirectory
+                    let tempURL = tempDir.appendingPathComponent("cloudIcon.png")
 
-                        guard let pngData = image.pngData() else { return }
+                    guard let pngData = image.pngData() else { return }
 
-                        do {
-                            try pngData.write(to: tempURL)
-                        } catch {
-                            NLog.error(error.localizedDescription)
-                            return
-                        }
+                    do {
+                        try pngData.write(to: tempURL)
+                    } catch {
+                        NLog.error(error.localizedDescription)
+                        return
+                    }
 
-                        DispatchQueue.main.async {
-                            self.pushIcon = .init(
-                                id: UUID().uuidString,
-                                name: "",
-                                description: [],
-                                size: pngData.count,
-                                sha256: pngData.sha256(),
-                                file: tempURL,
-                                previewImage: image
-                            )
-                        }
+                    DispatchQueue.main.async {
+                       
+                        self.pushIcon = .init(
+                            id: UUID().uuidString,
+                            name: "",
+                            description: [],
+                            size: pngData.count,
+                            sha256: pngData.sha256(),
+                            file: tempURL,
+                            previewImage: image
+                        )
                     }
                 }
             }

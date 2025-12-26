@@ -17,6 +17,8 @@ import SwiftUI
 
 struct SingleMessagesView: View {
     @Default(.showMessageAvatar) var showMessageAvatar
+    @Default(.limitMessageLine) var limitMessageLine
+    @Default(.assistantAccouns) var assistantAccouns
 
     @State private var isLoading: Bool = false
 
@@ -31,7 +33,13 @@ struct SingleMessagesView: View {
     @State private var selectMessage: Message? = nil
     @State private var messages: [Message] = []
 
-    private let messagePage: Int = 50
+    private var messagesCount: Int {
+        messages.count
+    }
+
+    private var messagePage: Int {
+        messageManager.messagePage
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -41,7 +49,10 @@ struct SingleMessagesView: View {
                         message: message,
                         searchText: "",
                         showAllTTL: showAllTTL,
-                        showAvatar: showMessageAvatar
+                        showAvatar: showMessageAvatar,
+                        limitMessageLine: limitMessageLine,
+                        assistantAccounsCount: assistantAccouns.count,
+                        selectID: manager.selectID
                     ) {
                         withAnimation(.easeInOut) {
                             manager.selectMessage = message
@@ -63,15 +74,13 @@ struct SingleMessagesView: View {
                     .listRowBackground(Color.clear)
                     .listSectionSeparator(.hidden)
                     .onAppear {
-                        if messages.count < messageManager.allCount &&
-                            messages.last == message
-                        {
+                        if messagesCount < messageManager.allCount && messages.last == message {
                             self.loadData(proxy: proxy, item: message)
                         }
                     }
                 }
 
-                if messages.count == 0 && showLoading {
+                if messagesCount == 0 && showLoading {
                     HStack {
                         Spacer()
                         VStack(spacing: 16) {
@@ -96,12 +105,12 @@ struct SingleMessagesView: View {
                 }
             }
             .listStyle(.grouped)
-            .animation(.easeInOut, value: messages)
+            .animation(.easeInOut, value: messagesCount)
             .refreshable {
-                self.loadData(proxy: proxy, limit: min(messages.count, messagePage * 2))
+                self.loadData(proxy: proxy, limit: messagePage)
             }
             .onChange(of: messageManager.updateSign) { _ in
-                loadData(proxy: proxy, limit: max(messages.count, messagePage))
+                loadData(proxy: proxy, limit: max(messagesCount, messagePage))
             }
         }
         .diff { view in
@@ -109,7 +118,7 @@ struct SingleMessagesView: View {
                 if #available(iOS 26.0, *) {
                     view
                         .toolbar {
-                            if !(messages.count == 0 || messages.count == messageManager.allCount) {
+                            if !(messagesCount == 0 || messagesCount == messageManager.allCount) {
                                 ToolbarItem(placement: .subtitle) {
                                     allMessageCount
                                 }
@@ -124,17 +133,17 @@ struct SingleMessagesView: View {
                                     .padding(.horizontal, 10)
                                     .background26(.ultraThinMaterial, radius: 5)
                             }
-                            .opacity((messages.count == 0 || messages.count == messageManager
+                            .opacity((messagesCount == 0 || messagesCount == messageManager
                                     .allCount) ? 0 : 1)
                         }
                 }
             }
         }
-        .task (id: "singleData"){
+        .task(id: "singleData") {
             self.loadData()
             Task.detached(priority: .background) {
-                guard let count = await messageManager.updateRead() else{ return }
-                
+                guard let count = await messageManager.updateRead() else { return }
+
                 // 清除徽章
                 try await UNUserNotificationCenter.current().setBadgeCount(0)
 
@@ -144,7 +153,7 @@ struct SingleMessagesView: View {
     }
 
     private var allMessageCount: some View {
-        Text(verbatim: "\(messages.count) / \(max(messageManager.allCount, messages.count))")
+        Text(verbatim: "\(messagesCount) / \(max(messageManager.allCount, messagesCount))")
             .font(.caption)
             .foregroundStyle(.gray)
     }
@@ -170,13 +179,14 @@ struct SingleMessagesView: View {
         showLoading = true
 
         Task {
+
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
-            
+
             await MainActor.run {
                 if item == nil {
-                    self.messages = results
+                    messages = results
                 } else {
-                    self.messages += results
+                    messages += results
                 }
                 if let selectID = manager.selectID {
                     proxy?.scrollTo(selectID, anchor: .center)
@@ -187,7 +197,6 @@ struct SingleMessagesView: View {
             }
         }
     }
-    
 }
 
 #Preview {

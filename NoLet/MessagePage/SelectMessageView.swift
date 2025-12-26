@@ -56,6 +56,7 @@ struct SelectMessageView: View {
                 VStack {
                     VStack {
                         if let image = message.image {
+                               
                             AsyncPhotoView(url: image)
                                 .contextMenu {
                                     Button {
@@ -530,17 +531,6 @@ struct SelectMessageView: View {
 
                     TextView(text: urlText)
 
-//                    MarkdownCustomView.highlightedText(searchText: "", text: url)
-//                        .font(.system(size: baseSubtitleSize * scaleFactor))
-//                        .fontWeight(.bold)
-//                        .frame(maxWidth: .infinity, alignment: .leading)
-//                        .textSelection(.enabled)
-//                        .onTapGesture {
-//                            if let fileURL = URL(string: url) {
-//                                AppManager.openURL(url: fileURL, .safari)
-//                            }
-//                            Haptic.impact()
-//                        }
                 }
             }
             .foregroundStyle(.accent)
@@ -656,7 +646,7 @@ struct SelectMessageView: View {
         image: "https://s3.wzs.app/og.png",
         level: 1,
         ttl: 7,
-        read: true,
+        isRead: true,
         other: ""
     )) {}
 }

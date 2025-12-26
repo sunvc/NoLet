@@ -65,6 +65,15 @@ struct ContentView: View {
         }
         .sheet(isPresented: manager.sheetShow) { ContentSheetViewPage() }
         .fullScreenCover(isPresented: manager.fullShow) { ContentFullViewPage() }
+        .fullScreenCover(item: $manager.selectMessage) { message in
+            
+            SelectMessageView(message: message) {
+                withAnimation {
+                    manager.selectMessage = nil
+                }
+            }
+            
+        }
     }
 
     @ViewBuilder

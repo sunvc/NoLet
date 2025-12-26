@@ -113,7 +113,7 @@ struct ChatMessageListView: View {
                 }
             }
             .sheet(isPresented: $showHistory) {
-                if let chatgroup = chatManager.chatgroup {
+                if let chatgroup = chatManager.chatGroup {
                     HistoryMessage(showHistory: $showHistory, group: chatgroup.id)
                         .customPresentationCornerRadius(20)
                 } else {

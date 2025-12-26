@@ -15,16 +15,16 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-let CONTAINER = FileManager.default
+nonisolated let CONTAINER = FileManager.default
     .containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
 
 typealias NURL = String
 
 extension NURL {
-    var url: URL { URL(string: self)! }
+    nonisolated var url: URL { URL(string: self)! }
 }
 
-
+nonisolated
 class NCONFIG {
     static let appSymbol = "NoLet"
     static let groupName = "group.pushback"
@@ -64,30 +64,6 @@ class NCONFIG {
 
     static var databasePath: URL {
         CONTAINER.appendingPathComponent(NCONFIG.databaseName)
-    }
-
-    static var customUserAgent: String {
-        let info = Bundle.main.infoDictionary
-
-        let appName = NCONFIG.appSymbol
-        let appVersion = info?["CFBundleShortVersionString"] as? String ?? "0.0"
-        let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
-
-        var systemInfo = utsname()
-        uname(&systemInfo)
-
-        let deviceModel = withUnsafePointer(to: &systemInfo.machine) {
-            $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                String(cString: $0)
-            }
-        }
-
-        let systemVer = UIDevice.current.systemVersion
-        let locale = Locale.current
-        let regionCode = locale.region?.identifier ?? "CN" // e.g. CN
-        let language = locale.language.languageCode?.identifier ?? "en" // e.g. zh
-
-        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
     }
 
     enum FolderType: String, CaseIterable {
@@ -154,15 +130,6 @@ class NCONFIG {
             NLog.error(error.localizedDescription)
             return []
         }
-    }
-
-    static func deviceInfoString() -> String {
-        let deviceName = UIDevice.current.localizedModel
-        let deviceModel = UIDevice.current.model
-        let systemName = UIDevice.current.systemName
-        let systemVersion = UIDevice.current.systemVersion
-
-        return "\(deviceName) (\(deviceModel)-\(systemName)-\(systemVersion))"
     }
 
     static func documentURL(_ fileName: String, fileType: UTType = .image) -> URL? {

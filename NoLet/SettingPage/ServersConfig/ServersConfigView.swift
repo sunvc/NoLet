@@ -96,7 +96,7 @@ struct ServersConfigView: View {
             }
 
             Section {
-                ForEach(cloudServers, id: \.id) { item in
+                ForEach(manager.servers, id: \.id) { item in
                     if !servers.contains(where: { $0 == item }) {
                         ServerCardView(item: item, isCloud: true) {
                             Task {

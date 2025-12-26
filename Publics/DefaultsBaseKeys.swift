@@ -16,10 +16,10 @@ import Foundation
 #if DEBUG
 actor UniqueKeysChecker {
     static let shared = UniqueKeysChecker()
-    private var keys = Set<NoletKey>()
+    private var keys = Set<String>()
 
-    func checkAndInsert(_ key: NoletKey) {
-        assert(!keys.contains(key), "错误：\(key.rawValue) 已经存在！")
+    func checkAndInsert(_ key: String) {
+        assert(!keys.contains(key), "错误：\(key) 已经存在！")
         keys.insert(key)
     }
 }
@@ -32,70 +32,36 @@ func DEFAULTSTORE() -> UserDefaults {
 }
 
 extension Defaults.Key {
-    convenience init(_ name: NoletKey, _ defaultValue: Value, iCloud: Bool = false) {
+    convenience init(_ name: String, _ defaultValue: Value, iCloud: Bool = false) {
         #if DEBUG
         Task {
             await UniqueKeysChecker.shared.checkAndInsert(name)
         }
         #endif
 
-        self.init(name.rawValue, default: defaultValue, suite: DEFAULTSTORE(), iCloud: iCloud)
+        self.init(name, default: defaultValue, suite: DEFAULTSTORE(), iCloud: iCloud)
     }
 }
 
 extension Defaults.Keys {
-    static let deviceToken = Key<String>(.deviceToken, "")
-    static let voipDeviceToken = Key<String>(.voipDeviceToken, "")
-    static let firstStart = Key<Bool>(.firstStartApp, true)
-    static let autoSaveToAlbum = Key<Bool>(.autoSaveImageToPhotoAlbum, false)
-    static let sound = Key<String>(.defaultSound, "nolet")
-    static let showGroup = Key<Bool>(.showGroupMessage, false)
-    static let historyMessageCount = Key<Int>(.historyMessageCount, 10)
-    static let freeCloudImageCount = Key<Int>(.freeCloudImageCount, 30)
-    static let muteSetting = Key<[String: Date]>(.muteSetting, [:])
+    static let deviceToken = Key<String>("deviceToken", "")
+    static let voipDeviceToken = Key<String>("voipDeviceToken", "")
+    static let firstStart = Key<Bool>("firstStartApp", true)
+    static let autoSaveToAlbum = Key<Bool>("autoSaveImageToPhotoAlbum", false)
+    static let sound = Key<String>("defaultSound", "nolet")
+    static let showGroup = Key<Bool>("showGroupMessage", false)
+    static let historyMessageCount = Key<Int>("historyMessageCount", 10)
+    static let freeCloudImageCount = Key<Int>("freeCloudImageCount", 30)
+    static let muteSetting = Key<[String: Date]>("muteSetting", [:])
 
-    static let imageSaves = Key<[String]>(.imageSaves, [])
-    static let showMessageAvatar = Key<Bool>(.showMessageAvatar, false)
-    static let id = Key<String>(.UserDeviceUniqueID, "")
-    static let lang = Key<String>(.LocalePreferredLanguagesFirst, "")
-    static let allMessagecount = Key<Int>(.allMessagecount, 0, iCloud: true)
+    static let imageSaves = Key<[String]>("imageSaves", [])
+    static let showMessageAvatar = Key<Bool>("showMessageAvatar", false)
+    static let id = Key<String>("UserDeviceUniqueID", "")
+    static let lang = Key<String>("LocalePreferredLanguagesFirst", "")
+    static let allMessagecount = Key<Int>("allMessagecount", 0, iCloud: true)
 
-    static let feedbackSound = Key<Bool>(.feedbackSound, false)
-    static let limitScanningArea = Key<Bool>(.limitScanningArea, false)
-    static let limitMessageLine = Key<Int>(.limitMessageLine, 6)
-    static let nearbyShow = Key<Bool>(.nearbyShow, false)
-}
-
-enum NoletKey: String, CaseIterable {
-    case deviceToken
-    case voipDeviceToken
-    case firstStartApp
-    case autoSaveImageToPhotoAlbum
-    case defaultSound
-    case showGroupMessage
-    case historyMessageCount
-    case freeCloudImageCount
-    case muteSetting
-    case imageSaves
-    case showMessageAvatar
-    case UserDeviceUniqueID
-    case LocalePreferredLanguagesFirst
-    case allMessagecount
-    case serverArrayStroage
-    case serverArrayCloudStroage
-    case Meowbadgemode
-    case setting_active_app_icon
-    case messageExpirtionTime
-    case defaultBrowserOpen
-    case imageSaveDays
-    case AssistantAccount
-    case moreMessageCache
-    case CryptoSettingFieldsList
-    case feedbackSound
-    case limitScanningArea
-    case limitMessageLine
-    case scanTypes
-    case proxyDownloadServer
-    case nearbyShow
-    case noServerModel
+    static let feedbackSound = Key<Bool>("feedbackSound", false)
+    static let limitScanningArea = Key<Bool>("limitScanningArea", false)
+    static let limitMessageLine = Key<Int>("limitMessageLine", 6)
+    static let nearbyShow = Key<Bool>("nearbyShow", false)
 }
