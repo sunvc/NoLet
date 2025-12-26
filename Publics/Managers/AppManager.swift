@@ -633,24 +633,23 @@ struct SubscribeUser: Codable, Hashable, Identifiable {
 
 extension AppManager {
     func signature(sign: String?) -> [String: String] {
-        var result: [String: String] = [
-            "X-Device": Defaults[.id],
-        ]
-
         let data = "\(Int(Date().timeIntervalSince1970))"
-        var signInt: String? {
-            if let sign = sign, sign.count > 10 {
-                return CryptoManager(
-                    CryptoModelConfig(inputText: sign) ?? .data
-                ).encrypt(data)?.safeBase64
-            } else {
-                return CryptoManager(.data).encrypt(data)?.safeBase64
+        var signInt: String {
+            guard let sign = sign,
+                  let config = CryptoModelConfig(inputText: sign),
+                  let signTem = CryptoManager(config).encrypt(data)
+            else {
+                let signTem = CryptoManager(.data).encrypt(data)
+                return signTem?.safeBase64 ?? ""
             }
+            return signTem.safeBase64
         }
-        result["Authorization"] = signInt
-        result["X-Signature"] = signInt
 
-        return result
+        return [
+            "X-Device": Defaults[.id],
+            "Authorization": signInt,
+            "X-Signature": signInt,
+        ]
     }
 }
 
