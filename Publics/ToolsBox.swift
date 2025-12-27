@@ -63,7 +63,6 @@ public final class Clipboard {
     }
 }
 
-
 public enum Haptic {
     private static var lastImpactTime: Date?
     private static var minInterval: TimeInterval = 0.2 // 最小震动间隔
@@ -107,8 +106,7 @@ public enum Haptic {
 }
 
 // var Log = os.Logger()
-nonisolated
-public enum NLog {
+public nonisolated enum NLog {
     /// 日志级别
     enum Level: String {
         case LOG
@@ -129,7 +127,6 @@ public enum NLog {
         line: Int = #line,
         _ message: Any?...
     ) {
-       
         #if DEBUG
         let message = message
         let currentDate = Date()

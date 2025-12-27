@@ -25,24 +25,23 @@ struct AsyncPhotoView: View {
     var body: some View {
         GeometryReader { proxy in
             VStack {
-               
                 KFImage(URL(string: url))
                     .targetCache(ImageManager.customCache)
                     .resizable()
                     .cancelOnDisappear(true)
-                    .retry(maxCount: 3, interval: .seconds(5))
+                    .retry(maxCount: 1)
                     .memoryCacheExpiration(.seconds(30))
                     .cacheOriginalImage()
                     .placeholder {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                           
+                        ProgressView($0)
+                            .offset(y: -20)
                     }
+                    .antialiased(true)
                     .onSuccess { result in
                         let aspectRatio = proxy.size.width / result.image.size.width
                         imageHeight = result.image.size.height * aspectRatio
                     }
+                    .onFailureImage(KFCrossPlatformImage(named: "noletter"))
                     .aspectRatio(contentMode: .fill)
                     .frame(
                         width: proxy.size.width,
@@ -51,6 +50,9 @@ struct AsyncPhotoView: View {
                     )
                     .if(zoom) { view in
                         view.zoomable()
+                    }
+                    .contextMenu {
+                        saveToAlbumButton(albumName: nil, imageURL: url, image: nil)
                     }
 
                 Line()

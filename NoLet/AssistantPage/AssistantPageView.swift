@@ -403,42 +403,31 @@ struct CustomAlertWithTextField: View {
 
 struct StreamingLoadingView: View {
     @EnvironmentObject private var chatManager: openChatManager
-    @State private var dots = ""
-    @State private var timer: Timer.TimerPublisher = Timer.publish(
-        every: 0.3,
-        on: .main,
-        in: .common
-    )
-    @State private var timerCancellable: Cancellable?
-
+    
+    // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
     var body: some View {
-        HStack(spacing: 4) {
-            // AI头像或图标
+        HStack(spacing: 8) {
+            // 图标动画：增加一个呼吸效果
             Image(systemName: "brain")
-                .foregroundColor(.blue)
-                .imageScale(.medium)
-
-            // 思考中的动画点
-            Text((chatManager.currentContent.isEmpty ? "思考中" : "正在输入") + "\(dots)")
+                .foregroundColor(.orange)
+                .symbolEffect(.pulse) // iOS 17+ 呼吸感
+            
+            
+            TimelineView(.periodic(from: .now, by: 0.5)) { context in
+                let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
+                let dots = String(repeating: ".", count: dotCount)
+                
+                HStack(alignment: .bottom, spacing: 0) {
+                    Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
+                    // 固定点号的容器，防止文字左右抖动
+                    Text(dots)
+                        .frame(width: 15, alignment: .leading)
+                }
                 .foregroundColor(.secondary)
                 .font(.subheadline)
-                .animation(.bouncy, value: dots)
-        }
-        .onAppear {
-            self.timerCancellable = self.timer.connect()
-        }
-        .onDisappear {
-            self.timerCancellable?.cancel()
-        }
-        .onReceive(timer) { _ in
-            withAnimation {
-                if dots.count >= 3 {
-                    dots = ""
-                } else {
-                    dots += "."
-                }
             }
         }
+        .padding(.vertical, 4)
     }
 }
 

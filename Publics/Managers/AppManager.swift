@@ -18,6 +18,7 @@ import SwiftUI
 import UIKit
 import Zip
 
+
 final class AppManager: NetworkManager, ObservableObject, Sendable {
     static let shared = AppManager()
 

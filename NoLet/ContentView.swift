@@ -40,11 +40,6 @@ struct ContentView: View {
            
         }
         .environmentObject(manager)
-        .overlay {
-            if manager.isLoading && manager.inAssistant {
-                ColoredBorder()
-            }
-        }
         .sheet(isPresented: $firstStart){
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
@@ -74,6 +69,7 @@ struct ContentView: View {
             }
             
         }
+        
     }
 
     @ViewBuilder

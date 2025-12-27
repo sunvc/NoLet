@@ -59,6 +59,8 @@ struct MarkdownCustomView: View {
     }
 
     static func highlightedText(searchText: String, text: String) -> Text {
+        
+        guard !searchText.isEmpty else{ return Text(text) }
         // 拆分关键词 & 小写比较用
         let keywords = searchText
             .lowercased()
@@ -206,26 +208,10 @@ struct WebImageView: View {
             ResizeToFit(idealSize: image.size) {
                 Image(uiImage: image)
                     .resizable()
-                    .contextMenu {
-                        Button {
-                            image.bat_save(intoAlbum: nil) { success, status in
-                                if status == .authorized || status == .limited {
-                                    if success {
-                                        Toast.success(title: "保存成功")
-                                    } else {
-                                        Toast.question(title: "保存失败")
-                                    }
-                                } else {
-                                    Toast.error(title: "没有相册权限")
-                                }
-                            }
-                            Haptic.impact(.light)
-                        } label: {
-                            Label("保存图片", systemImage: "square.and.arrow.down.on.square")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
+                    .contextMenu{
+                        saveToAlbumButton(albumName: nil, imageURL: nil, image: image)
                     }
+                    
             }
         case .failure(let error):
             Text(verbatim: error)

@@ -164,7 +164,7 @@ struct MessageDetailPage: View {
                 item?.createDate
             )
             
-            let count = MessagesManager.shared.count(group: self.group)
+            let count = await MessagesManager.shared.count(group: self.group)
             await MainActor.run {
                 self.allCount = count
                 if item == nil {

@@ -73,7 +73,7 @@ struct UploadIclondIcon: View {
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                         .overlay( // 再添加圆角边框
-                            ColoredBorder(cornerRadius: 10, padding: 0)
+                            ColoredBorder(cornerRadius: 10)
                         )
                 }
                 VStack {
@@ -203,14 +203,14 @@ struct UploadIclondIcon: View {
         DispatchQueue.main.async {
             self.pictureLoading = true
         }
-        
+
         let (success, msg) = await CloudManager.shared
             .savePushIconModel(pushIcon.toRecord(recordType: CloudManager.pushIconName))
-        
-        if success{
+
+        if success {
             saveOk = true
         }
-        
+
         NLog.log(msg)
 
         DispatchQueue.main.async {

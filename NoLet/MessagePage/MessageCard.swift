@@ -55,7 +55,7 @@ struct MessageCard: View {
     @Namespace private var sms
     var body: some View {
         /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
-        VStack{
+        VStack {
             Section {
                 VStack {
                     HStack(alignment: .center) {
@@ -77,10 +77,13 @@ struct MessageCard: View {
                         }
                         VStack {
                             if let title = message.title {
-                                MarkdownCustomView.highlightedText(searchText: searchText, text: title)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                MarkdownCustomView.highlightedText(
+                                    searchText: searchText,
+                                    text: title
+                                )
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
 
                             if let subtitle = message.subtitle {
@@ -169,7 +172,7 @@ struct MessageCard: View {
                         }
 
                         if let body = message.body, !body.isEmpty {
-                            ScrollView(.vertical) {
+                            VStack{
                                 MarkdownCustomView(content: body, searchText: searchText)
                                     .font(.body)
                                     .textSelection(.enabled)
@@ -188,9 +191,8 @@ struct MessageCard: View {
                                         showFull()
                                     }
                             }
+                            .lineLimit(limitMessageLine)
                             .frame(maxWidth: .infinity)
-                            .scrollDisabled(true)
-                            .frame(maxHeight: CGFloat(limitMessageLine) * 30)
                             .clipShape(Rectangle())
                         }
                     }
@@ -229,7 +231,7 @@ struct MessageCard: View {
                 }
                 .frame(minHeight: 50)
                 .mbackground26(.message, radius: 15)
-                .padding( 5)
+                .padding(5)
                 .diff { view in
                     Group {
                         if #available(iOS 18.0, *) {
@@ -253,10 +255,9 @@ struct MessageCard: View {
 
             } header: {
                 MessageViewHeader()
-            } 
+            }
         }
         .padding(.vertical)
-        
     }
 
     func showFull() {
@@ -329,30 +330,7 @@ struct MessageCard: View {
 
                 if let image = message.image {
                     Section {
-                        Button {
-                            Task {
-                                if let file = await ImageManager.downloadImage(image),
-                                   let uiimage = UIImage(contentsOfFile: file)
-                                {
-                                    uiimage.bat_save(intoAlbum: nil) { success, status in
-                                        if status == .authorized || status == .limited {
-                                            if success {
-                                                Toast.success(title: "保存成功")
-                                            } else {
-                                                Toast.question(title: "保存失败")
-                                            }
-                                        } else {
-                                            Toast.error(title: "没有相册权限")
-                                        }
-                                    }
-                                }
-                            }
-                        } label: {
-                            Label(
-                                "保存图片",
-                                systemImage: "square.and.arrow.down.on.square"
-                            )
-                        }
+                        saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
                     }
                 }
 

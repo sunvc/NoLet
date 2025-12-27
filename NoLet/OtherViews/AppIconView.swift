@@ -100,7 +100,7 @@ struct AppIconView: View {
                     .shadow(radius: 3)
                     .tag(item)
                     .overlay( // 再添加圆角边框
-                        ColoredBorder(cornerRadius: 20, padding: 0)
+                        ColoredBorder(cornerRadius: 20)
                             .scaleEffect(item == setting_active_app_icon ? 1 : 0.1)
                             .opacity(item == setting_active_app_icon ? 1 : 0)
                     )

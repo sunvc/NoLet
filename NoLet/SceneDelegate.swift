@@ -72,19 +72,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             manager.isWarmStart = true
             openChatManager.shared.clearunuse()
         }
-        Task.detached(priority: .userInitiated) {
-            await MessagesManager.shared.updateGroup()
-        }
-
+        
         setLangAssistantPrompt()
     }
 
     func sceneWillResignActive(_: UIScene) {}
 
     func sceneWillEnterForeground(_: UIScene) {
-        Task.detached(priority: .userInitiated) {
+        Task.detached(name:"sceneWillEnterForeground",priority: .background) {
             await MessagesManager.shared.deleteExpired()
-            let unread = await MessagesManager.shared.unreadCount()
+            let unread = await MessagesManager.shared.unreadCount
             try await UNUserNotificationCenter.current().setBadgeCount(unread)
         }
     }

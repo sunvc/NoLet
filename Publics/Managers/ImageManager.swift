@@ -13,10 +13,20 @@
 
 import Foundation
 import Kingfisher
+import Photos
 import UIKit
 
-final class ImageManager {
-    class func storeImage(
+enum ImageManager {
+    static let customCache: ImageCache = {
+        let cache = (try? ImageCache(
+            name: "shared",
+            cacheDirectoryURL: NCONFIG.FolderType.image.path
+        )) ??
+            ImageCache.default
+        return cache
+    }()
+
+    static func storeImage(
         cache: ImageCache? = nil, data: Data, key: String, expiration: StorageExpiration = .never
     ) async {
         return await withCheckedContinuation { continuation in
@@ -26,7 +36,7 @@ final class ImageManager {
         }
     }
 
-    class func downloadImage(
+    static func downloadImage(
         _ imageURL: String,
         expiration: StorageExpiration = .never
     ) async -> String? {
@@ -52,21 +62,21 @@ final class ImageManager {
         return customCache.cachePath(forKey: cacheKey)
     }
 
-    class func downloadImage(
+    static func downloadImage(
         url: URL,
         options: KingfisherOptionsInfo? = nil
     ) async -> Result<ImageLoadingResult, KingfisherError> {
         return await withCheckedContinuation { continuation in
             let downloader = Kingfisher.ImageDownloader.default
 
-            downloader.downloadTimeout = 15.0
+            downloader.downloadTimeout = 10.0
             downloader.downloadImage(with: url, options: options) { result in
                 continuation.resume(returning: result)
             }
         }
     }
 
-    class func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
+    static func thumbImage(_ url: String, maxPixel: CGFloat = 800) async -> UIImage? {
         if let file = await ImageManager.downloadImage(url),
            let thumb = await loadThumbnail(path: file, maxPixel: maxPixel)
         {
@@ -76,7 +86,7 @@ final class ImageManager {
         return nil
     }
 
-    class func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
+    static func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
         let url = URL(fileURLWithPath: path)
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
         guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions)
@@ -96,9 +106,97 @@ final class ImageManager {
 }
 
 extension ImageManager {
-    static var customCache: ImageCache {
-        let cache = (try? ImageCache(name: "shared", cacheDirectoryURL: NCONFIG.FolderType.image.path)) ??
-            ImageCache.default
-        return cache
+    /// 保存图片到相册
+    static func saveToAlbum(
+        albumName: String? = nil,
+        imageURL: String? = nil,
+        image: UIImage? = nil
+    ) async -> (Bool, PHAuthorizationStatus) {
+        let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+        guard status == .authorized || status == .limited else {
+            return (false, status)
+        }
+
+        // 1. 准备数据源 (在执行 performChanges 之前完成)
+        let source: SaveSource
+        if let img = image {
+            source = .image(img)
+        } else if let urlStr = imageURL, let localPath = await downloadImage(urlStr) {
+            source = .file(URL(fileURLWithPath: localPath))
+        } else {
+            return (false, status)
+        }
+
+        do {
+            let finalAlbumName = albumName ?? NCONFIG.AppName
+
+            // 2. 获取或创建相册
+            let collection = try await fetchOrCreateAlbum(named: finalAlbumName)
+
+            // 3. 使用原生异步 performChanges (iOS 16+)
+            // 这种写法下，变量 localID 的捕获由编译器自动处理，不会有隔离报错
+            try await PHPhotoLibrary.shared().performChanges {
+                let assetRequest: PHAssetChangeRequest
+                switch source {
+                case .image(let img):
+                    assetRequest = PHAssetChangeRequest.creationRequestForAsset(from: img)
+                case .file(let url):
+                    assetRequest = PHAssetChangeRequest
+                        .creationRequestForAssetFromImage(atFileURL: url)!
+                }
+
+                if let placeholder = assetRequest.placeholderForCreatedAsset {
+                    let albumRequest = PHAssetCollectionChangeRequest(for: collection)
+                    albumRequest?.addAssets([placeholder] as NSArray)
+                }
+            }
+            return (true, status)
+        } catch {
+            NLog.error("Save to album failed: \(error)")
+            return (false, status)
+        }
+    }
+
+    /// 查找或创建相册的核心逻辑
+    private static func fetchOrCreateAlbum(named name: String) async throws -> PHAssetCollection {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.predicate = NSPredicate(format: "title = %@", name)
+        let collections = PHAssetCollection.fetchAssetCollections(
+            with: .album,
+            subtype: .any,
+            options: fetchOptions
+        )
+
+        if let existing = collections.firstObject {
+            return existing
+        }
+
+        // 使用原生异步接口创建相册
+        var localID: String?
+        try await PHPhotoLibrary.shared().performChanges {
+            let request = PHAssetCollectionChangeRequest
+                .creationRequestForAssetCollection(withTitle: name)
+            localID = request.placeholderForCreatedAssetCollection.localIdentifier
+        }
+
+        guard let id = localID,
+              let newCol = PHAssetCollection.fetchAssetCollections(
+                  withLocalIdentifiers: [id],
+                  options: nil
+              ).firstObject
+        else {
+            throw NSError(
+                domain: "ImageManager",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Album creation failed"]
+            )
+        }
+
+        return newCol
+    }
+
+    private enum SaveSource {
+        case image(UIImage)
+        case file(URL)
     }
 }

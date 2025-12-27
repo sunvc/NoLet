@@ -169,6 +169,7 @@ enum ToastSymbol: String {
 
 struct ToastGroup: View {
     @ObservedObject var model = Toast.shared
+    @StateObject private var manager = AppManager.shared
     var body: some View {
         GeometryReader {
             let size = $0.size
@@ -184,6 +185,11 @@ struct ToastGroup: View {
             }
             .padding(.bottom, safeArea.top == .zero ? 15 : 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .overlay {
+                if manager.isLoading && manager.inAssistant {
+                    ColoredBorder()
+                }
+            }
             
         }
     }

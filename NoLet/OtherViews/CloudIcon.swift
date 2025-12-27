@@ -135,7 +135,10 @@ struct CloudIcon: View {
             }
             .overlay {
                 if isTargeted {
-                    ColoredBorder(top: 5, bottom: ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 50)
+                    ColoredBorder(
+                        top: 5,
+                        bottom: ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 50
+                    )
                 }
             }
             .animation(.smooth, value: icons.count)
@@ -240,21 +243,20 @@ struct CloudIcon: View {
                 }
                 Task.detached(priority: .userInitiated) {
                     let icons = await CloudManager.shared.queryIconsForMe()
-                    
-                    var iconsTem:[PushIcon] = []
-                    
-                    for item in icons{
-                        if let icon = await PushIcon(from: item){
+
+                    var iconsTem: [PushIcon] = []
+
+                    for item in icons {
+                        if let icon = await PushIcon(from: item) {
                             iconsTem.append(icon)
                         }
                     }
-                    Task{@MainActor in 
+                    Task { @MainActor in
                         withAnimation {
                             self.icons = iconsTem
                             self.loading = false
-                        }  
+                        }
                     }
-                    
                 }
             }
             .onChange(of: selectItem) { newItem in

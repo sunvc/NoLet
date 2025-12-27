@@ -54,36 +54,9 @@ struct SelectMessageView: View {
                 VStack {
                     VStack {
                         if let image = message.image {
-                               
                             AsyncPhotoView(url: image)
-                                .contextMenu {
-                                    Button {
-                                        Task {
-                                            if let file = await ImageManager.downloadImage(image),
-                                               let uiimage = UIImage(contentsOfFile: file)
-                                            {
-                                                uiimage
-                                                    .bat_save(intoAlbum: nil) { success, status in
-                                                        if status == .authorized || status ==
-                                                            .limited
-                                                        {
-                                                            if success {
-                                                                Toast.success(title: "保存成功")
-                                                            } else {
-                                                                Toast.question(title: "保存失败")
-                                                            }
-                                                        } else {
-                                                            Toast.error(title: "没有相册权限")
-                                                        }
-                                                    }
-                                            }
-                                        }
-                                    } label: {
-                                        Label(
-                                            "保存图片",
-                                            systemImage: "square.and.arrow.down.on.square"
-                                        )
-                                    }
+                                .contextMenu{
+                                    saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
                                 }
                         }
                     }
@@ -384,34 +357,7 @@ struct SelectMessageView: View {
 
                         Section {
                             if let image = message.image {
-                                Button {
-                                    Task {
-                                        if let file = await ImageManager.downloadImage(image),
-                                           let uiimage = UIImage(contentsOfFile: file)
-                                        {
-                                            uiimage
-                                                .bat_save(intoAlbum: nil) { success, status in
-                                                    if status == .authorized || status ==
-                                                        .limited
-                                                    {
-                                                        if success {
-                                                            Toast.success(title: "保存成功")
-                                                        } else {
-                                                            Toast.question(title: "保存失败")
-                                                        }
-                                                    } else {
-                                                        Toast.error(title: "没有相册权限")
-                                                    }
-                                                }
-                                        }
-                                    }
-                                } label: {
-                                    Label(
-                                        "保存图片",
-                                        systemImage: "square.and.arrow.down.on.square"
-                                    )
-                                    .customForegroundStyle(.green, .primary)
-                                }
+                                saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
                             }
                         }
 
@@ -445,7 +391,7 @@ struct SelectMessageView: View {
                         } else {
                             self.messageShowMode = .translate
                             chatManager.cancellableRequest?.cancel()
-                            chatManager.cancellableRequest = Task.detached( priority: .high) { 
+                            chatManager.cancellableRequest = Task.detached(priority: .high) {
                                 await translateMessage()
                             }
                         }
@@ -479,7 +425,7 @@ struct SelectMessageView: View {
                         } else {
                             self.messageShowMode = .abstract
                             chatManager.cancellableRequest?.cancel()
-                            chatManager.cancellableRequest = Task.detached(priority: .high) { 
+                            chatManager.cancellableRequest = Task.detached(priority: .high) {
                                 await abstractMessage(message.search.trimmingSpaceAndNewLines)
                             }
                         }
@@ -534,7 +480,6 @@ struct SelectMessageView: View {
                     ])
 
                     TextView(text: urlText)
-
                 }
             }
             .foregroundStyle(.accent)
@@ -549,7 +494,6 @@ struct SelectMessageView: View {
     }
 
     private func translateMessage() async {
-
         guard translateResult.isEmpty else { return }
 
         var datas = ""
@@ -572,8 +516,8 @@ struct SelectMessageView: View {
 
             return
         }
-        
-        do{
+
+        do {
             let results = chatManager.chatsStream(text: datas, tips: .translate(translateLang.name))
             for try await result in results {
                 for choice in result.choices {
@@ -582,21 +526,18 @@ struct SelectMessageView: View {
                             self.translateResult += outputItem
                             Haptic.selection(limitFrequency: true)
                         }
-                        
                     }
                 }
             }
             Task { @MainActor in
                 translateResult = ""
             }
-        }catch{
+        } catch {
             NLog.error(error.localizedDescription)
             DispatchQueue.main.async {
                 translateResult = ""
             }
         }
-
-        
     }
 
     private func abstractMessage(_ text: String) async {
@@ -607,8 +548,8 @@ struct SelectMessageView: View {
             abstractResult = String(localized: "❗️需要配置大模型")
             return
         }
-        
-        do{
+
+        do {
             let results = chatManager.chatsStream(text: text, tips: .abstract(translateLang.name))
             for try await result in results {
                 for choice in result.choices {
@@ -617,14 +558,13 @@ struct SelectMessageView: View {
                             abstractResult += outputItem
                             Haptic.selection(limitFrequency: true)
                         }
-                        
                     }
                 }
             }
             Task { @MainActor in
                 abstractResult = ""
             }
-        }catch{
+        } catch {
             // Handle chunk error here
             NLog.error(error)
             Toast.error(title: "发生错误\(error.localizedDescription)")

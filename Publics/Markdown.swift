@@ -14,8 +14,8 @@ import cmark_gfm
 import cmark_gfm_extensions
 import Foundation
 
-final class PBMarkdown {
-    class func plain(_ markdown: String) -> String {
+enum PBMarkdown {
+    static func plain(_ markdown: String) -> String {
         cmark_gfm_core_extensions_ensure_registered()
 
         guard let parser = cmark_parser_new(CMARK_OPT_DEFAULT) else { return "" }
@@ -44,7 +44,7 @@ final class PBMarkdown {
         return ""
     }
 
-    class func stripMarkdown(_ markdown: String) -> String {
+    static func stripMarkdown(_ markdown: String) -> String {
         var text = markdown
 
         // 移除HTML标签
@@ -170,7 +170,7 @@ final class PBMarkdown {
         return text.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    class func markdownToHTML(_ markdown: String) -> String? {
+    static func markdownToHTML(_ markdown: String) -> String? {
         // 1. 注册扩展（通常只需全局注册一次，但重复调用无害）
         cmark_gfm_core_extensions_ensure_registered()
 

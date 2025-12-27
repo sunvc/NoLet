@@ -9,7 +9,7 @@
 //  History:
 //    Created by Neo on 2025/5/2.
 //
-import Foundation
+
 import SwiftUI
 
 struct ColoredBorder: View {
@@ -26,7 +26,7 @@ struct ColoredBorder: View {
         topRight: Double,
         bottomLeft: Double,
         bottomRight: Double,
-        padding: Double = 5
+        padding: Double = 1
     ) {
         self.lineWidth = lineWidth
         self.topLeft = topLeft
@@ -36,7 +36,7 @@ struct ColoredBorder: View {
         self.padding = padding
     }
 
-    init(lineWidth: Double = 3, left: Double, right: Double, padding: Double = 5) {
+    init(lineWidth: Double = 3, left: Double, right: Double, padding: Double = 1) {
         self.lineWidth = lineWidth
         topLeft = left
         topRight = right
@@ -45,7 +45,7 @@ struct ColoredBorder: View {
         self.padding = padding
     }
 
-    init(lineWidth: Double = 3, top: Double, bottom: Double, padding: Double = 5) {
+    init(lineWidth: Double = 3, top: Double, bottom: Double, padding: Double = 1) {
         self.lineWidth = lineWidth
         topLeft = top
         topRight = top
@@ -54,7 +54,7 @@ struct ColoredBorder: View {
         self.padding = padding
     }
 
-    init(lineWidth: Double = 3, cornerRadius: Double? = nil, padding: Double = 5) {
+    init(lineWidth: Double = 3, cornerRadius: Double? = nil, padding: Double = 1) {
         self.lineWidth = lineWidth
         self.padding = padding
         if let cornerRadius {
@@ -63,7 +63,7 @@ struct ColoredBorder: View {
             bottomLeft = cornerRadius
             bottomRight = cornerRadius
         } else {
-            let data: Double = ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 50
+            let data: Double = ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 55
             topLeft = data
             topRight = data
             bottomLeft = data

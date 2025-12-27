@@ -75,7 +75,7 @@ struct SingleMessagesView: View {
                     .listSectionSeparator(.hidden)
                     .onAppear {
                         if messagesCount < messageManager.allCount && messages.last == message {
-                            self.loadData(proxy: proxy, item: message)
+                            self.loadData(proxy: proxy, limit: messagePage, item: message)
                         }
                     }
                 }
@@ -140,7 +140,7 @@ struct SingleMessagesView: View {
             }
         }
         .task(id: "singleData") {
-            self.loadData()
+            self.loadData(limit: messagePage)
             Task.detached(priority: .background) {
                 guard let count = await messageManager.updateRead() else { return }
 
@@ -172,7 +172,7 @@ struct SingleMessagesView: View {
 
     private func loadData(
         proxy: ScrollViewProxy? = nil,
-        limit: Int = 50,
+        limit: Int,
         item: Message? = nil
     ) {
         guard !showLoading else { return }

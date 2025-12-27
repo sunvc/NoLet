@@ -23,7 +23,7 @@ final class MessagesManager: ObservableObject {
     @Published var updateSign: Int = 0
     @Published var groupMessages: [Message] = []
     @Published var showGroupLoading: Bool = false
-    
+
     let messagePage: Int = 50
 
     private init() {
@@ -69,9 +69,9 @@ final class MessagesManager: ObservableObject {
         await MainActor.run {
             self.showGroupLoading = true
         }
-        let results = queryGroup()
-        let count = self.count()
-        let unCount = unreadCount()
+        let results = await queryGroup()
+        let count = await self.count()
+        let unCount = await unreadCount()
         await MainActor.run { [weak self] in
             self?.groupMessages = results
             self?.updateSign += 1
@@ -84,13 +84,13 @@ final class MessagesManager: ObservableObject {
 }
 
 extension MessagesManager {
-    func all() async throws -> [Message] {
+    nonisolated func all() async throws -> [Message] {
         try await DB.dbQueue.read { db in
             try Message.order(Message.Columns.createDate.desc).fetchAll(db)
         }
     }
 
-    func updateRead() async -> Int? {
+    nonisolated func updateRead() async -> Int? {
         return try? await DB.dbQueue.write { db in
             // 批量更新 read 字段为 true
             try Message
@@ -99,9 +99,9 @@ extension MessagesManager {
         }
     }
 
-    func unreadCount(group: String? = nil) -> Int {
+    nonisolated  func unreadCount(group: String? = nil) async -> Int {
         do {
-            return try DB.dbQueue.read { db in
+            return try await DB.dbQueue.read { db in
                 var request = Message.filter(Message.Columns.isRead == false)
 
                 if let group = group {
@@ -116,9 +116,9 @@ extension MessagesManager {
         }
     }
 
-    func count(group: String? = nil) -> Int {
+    func count(group: String? = nil) async -> Int {
         do {
-            return try DB.dbQueue.read { db in
+            return try await DB.dbQueue.read { db in
                 if let group = group {
                     return try Message.filter(Message.Columns.group == group).fetchCount(db)
                 } else {
@@ -144,7 +144,7 @@ extension MessagesManager {
         }
     }
 
-    func query(id: String) -> Message? {
+    nonisolated func query(id: String) -> Message? {
         do {
             return try DB.dbQueue.read { db in
                 try Message.fetchOne(db, key: id)
@@ -155,7 +155,7 @@ extension MessagesManager {
         }
     }
 
-    func query(id: String) async -> Message? {
+    nonisolated  func query(id: String) async -> Message? {
         do {
             return try await DB.dbQueue.read { db in
                 try Message.fetchOne(db, key: id)
@@ -166,7 +166,7 @@ extension MessagesManager {
         }
     }
 
-    func searchRequest(
+    nonisolated func searchRequest(
         search: String,
         group: String? = nil,
         date: Date? = nil
@@ -210,7 +210,7 @@ extension MessagesManager {
         return request
     }
 
-    func query(
+    nonisolated  func query(
         search: String,
         group: String? = nil,
         limit lim: Int = 50,
@@ -240,9 +240,9 @@ extension MessagesManager {
         }
     }
 
-    func queryGroup() -> [Message] {
+    nonisolated  func queryGroup() async -> [Message] {
         do {
-            return try DB.dbQueue.read { db in
+            return try await DB.dbQueue.read { db in
                 try self.fetchGroupedMessages(from: db)
             }
         } catch {
@@ -251,7 +251,7 @@ extension MessagesManager {
         }
     }
 
-    private func fetchGroupedMessages(from db: Database) throws -> [Message] {
+    private nonisolated func fetchGroupedMessages(from db: Database) throws -> [Message] {
         let rows = try Row.fetchAll(db, sql: """
                 SELECT m.*, unread.count AS unreadCount
                 FROM (
@@ -276,28 +276,36 @@ extension MessagesManager {
         return try rows.map { try Message(row: $0) }
     }
 
-    func query(group: String? = nil, limit lim: Int = 100, _ date: Date? = nil) async -> [Message] {
+    nonisolated  func query(
+        group: String? = nil,
+        limit lim: Int = 100,
+        _ date: Date? = nil,
+        function: String = #function
+    ) async -> [Message] {
+        let startTime = ContinuousClock.now // 记录开始时间
+
         do {
-            return try await DB.dbQueue.read { db in
+            let results = try await DB.dbQueue.read { db in
                 var request = Message.order(Message.Columns.createDate.desc)
-
-                if let group = group {
-                    request = request.filter(Message.Columns.group == group)
-                }
-
-                if let date = date {
-                    request = request.filter(Message.Columns.createDate < date)
-                }
-
+                if let group = group { request = request.filter(Message.Columns.group == group) }
+                if let date = date { request = request.filter(Message.Columns.createDate < date) }
                 return try request.limit(lim).fetchAll(db)
             }
+
+            let endTime = ContinuousClock.now
+            let duration = startTime.duration(to: endTime)
+
+            // 打印结果，例如：0.015s
+            NLog.log("\(function)🔍 查询组 [\(group ?? "全部")] 耗时: \(duration)")
+
+            return results
         } catch {
             NLog.error("Query failed:", error)
             return []
         }
     }
 
-    func markAllRead(group: String? = nil) async {
+    nonisolated func markAllRead(group: String? = nil) async {
         do {
             try await DB.dbQueue.write { db in
                 var request = Message.filter(Message.Columns.isRead == false)
@@ -311,7 +319,7 @@ extension MessagesManager {
         }
     }
 
-    func delete(allRead: Bool = false, date: Date? = nil) async {
+    nonisolated func delete(allRead: Bool = false, date: Date? = nil) async {
         do {
             try await DB.dbQueue.write { db in
                 var request = Message.all()
@@ -339,7 +347,7 @@ extension MessagesManager {
         }
     }
 
-    func delete(_ message: Message, in group: Bool = false) async -> Int {
+    nonisolated func delete(_ message: Message, in group: Bool = false) async -> Int {
         do {
             if group {
                 return try await DB.dbQueue.write { db in
@@ -362,7 +370,7 @@ extension MessagesManager {
         return -1
     }
 
-    func delete(_ messageID: String) -> String? {
+    nonisolated func delete(_ messageID: String) -> String? {
         do {
             let result: String? = try DB.dbQueue.write { db in
                 if let message = try Message.filter(Message.Columns.id == messageID).fetchOne(db) {
@@ -379,7 +387,7 @@ extension MessagesManager {
         }
     }
 
-    func deleteExpired() async {
+    nonisolated func deleteExpired() async {
         do {
             try await DB.dbQueue.write { db in
                 let now = Date()
@@ -418,12 +426,13 @@ extension MessagesManager {
 
     static func createStressTest(
         max number: Int = 100_000,
-        len textLength: Int = 500
+        len textLength: Int = 4000
     ) async -> Bool {
         do {
-            let body = Domap.generateRandomString(textLength)
-            try autoreleasepool {
-                try shared.DB.dbQueue.write { db in
+            let body = Self.generateRandomChineseText()
+
+            try await shared.DB.dbQueue.write { db in
+                try autoreleasepool {
                     for k in 0..<number {
                         let message = Message(
                             id: UUID().uuidString, createDate: .now,
@@ -439,6 +448,23 @@ extension MessagesManager {
             NLog.error("创建失败")
             return false
         }
+    }
+
+    static func generateRandomChineseText(_ approxBytes: Int = 4096) -> String {
+        // 常用汉字 Unicode 范围：0x4E00 ~ 0x9FA5
+        let minCodePoint = 0x4E00
+        let maxCodePoint = 0x9FA5
+
+        var result = ""
+
+        while result.utf8.count < approxBytes {
+            let codePoint = Int.random(in: minCodePoint...maxCodePoint)
+            if let scalar = UnicodeScalar(codePoint) {
+                result.append(Character(scalar))
+            }
+        }
+
+        return result
     }
 }
 
