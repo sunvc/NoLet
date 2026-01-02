@@ -33,10 +33,15 @@ final class openChatManager: ObservableObject {
     @Published var chatMessages: [ChatMessage] = []
     @Published private(set) var chatGroup: ChatGroup? = nil
 
+    @Published var useFunctionCall: Bool = false
+
     private let DB: DatabaseManager = .shared
 
     private var observationCancellable: AnyDatabaseCancellable?
-    @Published var cancellableRequest: Task<Void, Never>?
+    
+    var cancellableRequest: Task<Void, Never>?
+    
+    
 
     var currentChatMessage: ChatMessage {
         ChatMessage(
@@ -55,12 +60,14 @@ final class openChatManager: ObservableObject {
 
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (Int, [ChatMessage], Int, ChatGroup?) in
-            let id = try? ChatGroup.filter { $0.current }.fetchOne(db)?.id
+            let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
             let groupsCount: Int = try ChatGroup.fetchCount(db)
             let messages: [ChatMessage] = try ChatMessage
-                .filter(ChatMessage.Columns.chat == id).fetchAll(db)
+                .filter(ChatMessage.Columns.chat == current?.id)
+                .order(\.timestamp)
+                .fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
-            let current = try ChatGroup.filter { $0.current }.fetchOne(db)
+
             return (groupsCount, messages, promptCount, current)
         }
 
@@ -75,6 +82,7 @@ final class openChatManager: ObservableObject {
                 self?.chatMessages = datas.1
                 self?.promptCount = datas.2
                 self?.chatGroup = datas.3
+                debugPrint(datas.1.count)
             }
         )
     }
@@ -115,20 +123,16 @@ final class openChatManager: ObservableObject {
         }
     }
 
-    func loadData() {
-        Task.detached(priority: .background) {
-            let results = try await self.DB.dbQueue.read { db in
-                let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
-                let results = try ChatMessage
-                    .filter(ChatMessage.Columns.chat == group?.id)
-                    .order(ChatMessage.Columns.timestamp)
-                    .limit(10)
-                    .fetchAll(db)
+    func delete(groupID: String) async {
+        try? await DB.dbQueue.write { db in
+            if let group = try ChatGroup.fetchOne(db, key: groupID) {
+                // 删除与该 group.id 关联的所有 ChatMessage
+                try ChatMessage
+                    .filter(ChatMessage.Columns.chat == group.id)
+                    .deleteAll(db)
 
-                return results
-            }
-            await MainActor.run {
-                self.chatMessages = results
+                // 删除该 ChatGroup 本身
+                try group.delete(db)
             }
         }
     }
@@ -161,23 +165,43 @@ extension openChatManager {
         }
     }
 
-    func onceParams(text: String, tips: ChatPromptMode) -> ChatQuery? {
+    func getHistoryParams(
+        text: String,
+        messageID: String? = nil,
+        tips: ChatPromptMode? = nil,
+        systemInstruction: String? = nil,
+        functions: [FunctionDefinition] = []
+    ) -> ChatQuery? {
+        
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
         }
-        let params: [ChatQuery.ChatCompletionMessageParam] = [
-            .system(.init(content: .textContent(tips.prompt.content), name: tips.prompt.title)),
-            .user(.init(content: .string(text))),
-        ]
 
-        return ChatQuery(messages: params, model: account.model)
-    }
+        if let tips {
+            let params: [ChatQuery.ChatCompletionMessageParam] = [
+                .system(.init(content: .textContent(tips.prompt.content), name: tips.prompt.title)),
+                .user(.init(content: .string(text))),
+            ]
 
-    func getHistoryParams(text: String, messageID: String? = nil) -> ChatQuery? {
-        guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
-            return nil
+            return ChatQuery(messages: params, model: account.model)
         }
+
         var params: [ChatQuery.ChatCompletionMessageParam] = []
+
+        if let systemInstruction {
+
+            params.append(.system(.init(content: .textContent(systemInstruction))))
+
+            if !functions.isEmpty {
+                params += self.getHistory(3)
+                params.append(.user(.init(content: .string(text))))
+                return ChatQuery(
+                    messages: params,
+                    model: account.model,
+                    tools: functions.map { .init(function: $0) }
+                )
+            }
+        }
 
         ///  增加system的前置参数
         if let promt = try? DB.dbQueue.read({ db in
@@ -190,17 +214,25 @@ extension openChatManager {
             if let messageID = messageID,
                let message = MessagesManager.shared.query(id: messageID)
             {
-                return message.search + "\n" + text
+                return message.search + "\n\n" + text
             }
             return text
         }
 
         let limit = Defaults[.historyMessageCount]
+        params += self.getHistory(limit)
+        params.append(.user(.init(content: .string(inputText))))
+        
+        return ChatQuery(messages: params, model: account.model)
+    }
+    
+    private func getHistory(_ limit: Int) -> [ChatQuery.ChatCompletionMessageParam]{
+        var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
             let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
             return try ChatMessage
                 .filter(ChatMessage.Columns.chat == group?.id)
-                .order(Column("timestamp").desc)
+                .order(\.timestamp.desc)
                 .limit(limit)
                 .fetchAll(db)
         }) {
@@ -208,10 +240,9 @@ extension openChatManager {
                 params.append(.user(.init(content: .string(message.request))))
                 params.append(.assistant(.init(content: .textContent(message.content))))
             }
-            params.append(.user(.init(content: .string(inputText))))
         }
-
-        return ChatQuery(messages: params, model: account.model)
+        
+        return params
     }
 
     func getReady(account: AssistantAccount? = nil) -> OpenAI? {
@@ -237,22 +268,24 @@ extension openChatManager {
         }
     }
 
+    typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
 
     func chatsStream(
         text: String,
-        tips: ChatPromptMode? = nil
+        tips: ChatPromptMode? = nil,
+        messageID: String? = nil,
+        systemInstruction: String? = nil,
+        functions: [FunctionDefinition] = []
     ) -> AsyncThrowingStream<ChatStreamResult, Error> {
-        var query: ChatQuery? {
-            if let tips = tips, let query = onceParams(text: text, tips: tips) {
-                return query
-            } else {
-                return getHistoryParams(
-                    text: text,
-                    messageID: AppManager.shared.askMessageID
-                )
-            }
-        }
-
+        
+        let query: ChatQuery? = getHistoryParams(
+            text: text,
+            messageID: AppManager.shared.askMessageID,
+            tips: tips,
+            systemInstruction: systemInstruction,
+            functions: functions
+        )
+        
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: "No Account Or Query")
@@ -261,7 +294,6 @@ extension openChatManager {
 
         return openchat.chatsStream(query: query)
     }
-
 
     func clearunuse() {
         Task.detached(priority: .background) {

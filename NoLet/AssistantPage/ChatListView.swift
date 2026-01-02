@@ -57,10 +57,11 @@ struct ChatMessageListView: View {
                     }
                 }
 
-                ForEach(chatManager.chatMessages, id: \.id) { message in
+                ForEach(chatManager.chatMessages.suffix(10), id: \.id) { message in
                     ChatMessageView(message: message, isLoading: manager.isLoading)
                         .id(message.id)
                 }
+                
 
                 VStack {
                     if manager.isLoading {
@@ -124,7 +125,6 @@ struct ChatMessageListView: View {
                 }
             }
             .task(id: chatLastMessageID) {
-                chatManager.loadData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
                 }

@@ -10,6 +10,7 @@
 //    Created by Neo on 2025/5/18.
 //
 import SwiftUI
+import Defaults
 
 class Toast: ObservableObject {
     static let shared = Toast()
@@ -170,6 +171,7 @@ enum ToastSymbol: String {
 struct ToastGroup: View {
     @ObservedObject var model = Toast.shared
     @StateObject private var manager = AppManager.shared
+    @Default(.showAssistantAnimation) var showAssistantAnimation
     var body: some View {
         GeometryReader {
             let size = $0.size
@@ -186,7 +188,7 @@ struct ToastGroup: View {
             .padding(.bottom, safeArea.top == .zero ? 15 : 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             .overlay {
-                if manager.isLoading && manager.inAssistant {
+                if manager.isLoading && manager.inAssistant && showAssistantAnimation {
                     ColoredBorder()
                 }
             }

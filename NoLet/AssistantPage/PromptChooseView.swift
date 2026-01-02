@@ -48,7 +48,7 @@ struct PromptChooseView: View {
     var body: some View {
         NavigationStack {
             promptListView
-                .navigationTitle("选择提示词")
+                .navigationTitle("选择功能")
                 .navigationBarTitleDisplayMode(.inline)
                 .searchable(
                     text: $searchText,
@@ -87,6 +87,23 @@ struct PromptChooseView: View {
 
     private var promptListView: some View {
         List {
+            Section {
+                Toggle(isOn: Binding(get: {
+                    chatManager.useFunctionCall
+                }, set: { value in
+                    chatManager.useFunctionCall = value
+                    if value {
+                        chatManager.chatPrompt = nil
+                        self.dismiss()
+                    }
+                })) {
+                    Label("允许智能助手执行操作", systemImage: "bolt.fill")
+                }
+            } header: {
+                Label("智能助手可根据你的指令操作应用功能", systemImage: "gear")
+                    .font(.subheadline)
+            }
+
             if hasSearchResults {
                 if #available(iOS 17.0, *) {
                     ContentUnavailableView("没有找到相关提示词", systemImage: "magnifyingglass")
@@ -173,6 +190,7 @@ struct PromptChooseView: View {
             chatManager.chatPrompt = nil
         } else {
             chatManager.chatPrompt = prompt
+            chatManager.useFunctionCall = false
             dismiss()
         }
     }
@@ -307,7 +325,6 @@ private struct PromptSwipeActions: ViewModifier {
             }
     }
 }
-
 
 // MARK: - 添加Prompt视图
 

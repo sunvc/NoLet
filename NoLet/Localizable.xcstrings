@@ -645,6 +645,34 @@
         }
       }
     },
+    "Function call failed: Invalid JSON" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Function call failed: Invalid JSON"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "関数呼び出しに失敗しました：無効なJSON"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "함수 호출 실패: 잘못된 JSON 형식입니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "函数调用失败：JSON格式无效"
+          }
+        }
+      }
+    },
     "GET方法需要URIConponent编码" : {
       "localizations" : {
         "en" : {
@@ -930,25 +958,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NoletLanguageLocalCode"
+            "value" : "/en"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「Nolet言語ローカルコード」"
+            "value" : "/en"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "노렛언어로컬코드"
+            "value" : "/en"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nolet语言本地化代码"
+            "value" : "/"
           }
         }
       }
@@ -1709,6 +1737,38 @@
         }
       }
     },
+    "你是由 NoLet App 集成的智能助手。你可以使用 'manage_app' 工具来控制应用（设置、导航、数据、缓存、消息管理）。当用户要求执行此工具支持的任何操作（例如“打开设置”、“清除缓存”、“更改图标”、“删除上周的消息”）时，你必须立即调用 'manage_app' 并提供正确的参数。不要仅仅描述你要做什么；你必须执行工具调用。" : {
+
+    },
+    "你是由 NoLet App 集成的智能助手。你可以使用 'manage_app' 工具来控制应用（设置、导航、数据、缓存）。当用户要求执行此工具支持的任何操作（例如“打开设置”、“清除缓存”、“更改图标”）时，你必须立即调用 'manage_app' 并提供正确的参数。不要仅仅描述你要做什么；你必须执行工具调用。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are an intelligent assistant integrated into the NoLet App. You can use the 'manage_app' tool to control the application (settings, navigation, data, cache). When a user requests to perform any operation supported by this tool (such as 'open settings,' 'clear cache,' 'change icon'), you must immediately call 'manage_app' and provide the correct parameters. Do not merely describe what you intend to do; you must execute the tool call."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたはNoLet Appに統合されたスマートアシスタントです。'manage_app'ツールを使用してアプリケーション（設定、ナビゲーション、データ、キャッシュ）を管理できます。ユーザーがこのツールでサポートされている操作（例：「設定を開く」、「キャッシュをクリア」、「アイコンを変更」）を実行するよう要求した場合、すぐに'manage_app'を呼び出し、正しいパラメータを提供する必要があります。単に何をするかを説明するだけでなく、ツール呼び出しを実行しなければなりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "당신은 NoLet 앱에 통합된 AI 어시스턴트입니다. 'manage_app' 도구를 사용하여 앱을 제어(설정, 네비게이션, 데이터, 캐시)할 수 있습니다. 사용자가 이 도구가 지원하는 작업(예: '설정 열기', '캐시 지우기', '아이콘 변경')을 수행하도록 요청할 때, 즉시 'manage_app'을 호출하고 올바른 매개변수를 제공해야 합니다. 단순히 무엇을 할지 설명하지 말고, 도구 호출을 실행해야 합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你是由 NoLet App 集成的智能助手。你可以使用 'manage_app' 工具来控制应用（设置、导航、数据、缓存）。当用户要求执行此工具支持的任何操作（例如“打开设置”、“清除缓存”、“更改图标”）时，你必须立即调用 'manage_app' 并提供正确的参数。不要仅仅描述你要做什么；你必须执行工具调用。"
+          }
+        }
+      }
+    },
     "你看到的，就是你得到的!" : {
       "localizations" : {
         "en" : {
@@ -2237,6 +2297,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "允许应用通过网络接收推送通知"
+          }
+        }
+      }
+    },
+    "允许智能助手执行操作" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow intelligent assistant to perform operations"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スマートアシスタントによる操作の実行を許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지능형 어시스턴트가 작업을 수행하도록 허용"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许智能助手执行操作"
           }
         }
       }
@@ -3053,6 +3141,34 @@
         }
       }
     },
+    "删除对话" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Conversation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "会話を削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대화 삭제"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除对话"
+          }
+        }
+      }
+    },
     "删除成功" : {
       "localizations" : {
         "en" : {
@@ -3108,6 +3224,37 @@
           }
         }
       }
+    },
+    "删除所有静音的分组" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all silent groups"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべてのサイレントグループを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 무음 알림 그룹 삭제"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all silent groups"
+          }
+        }
+      }
+    },
+    "删除指定时间范围内的消息。参数格式为 'start_timestamp,end_timestamp'（秒级时间戳）。例如：删除2025年6月到10月的消息 -> '1748736000,1759276800'。若只删除某时间之前，用 ',end'；某时间之后，用 'start,'。" : {
+
     },
     "删除消息" : {
       "localizations" : {
@@ -3416,6 +3563,9 @@
           }
         }
       }
+    },
+    "动画与振动" : {
+
     },
     "半年前" : {
       "localizations" : {
@@ -5911,7 +6061,11 @@
         }
       }
     },
+    "我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！" : {
+
+    },
     "我可以帮你搜索，答疑，写作，请把你的任务交给我吧！" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5935,6 +6089,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "我可以帮你搜索、答疑、写作，请把你的任务交给我吧！"
+          }
+        }
+      }
+    },
+    "所有对话" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Conversations"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "すべての会話"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모든 대화"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有对话"
           }
         }
       }
@@ -5995,6 +6177,146 @@
         }
       }
     },
+    "打开 AI 助手设置页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open AI Assistant Settings Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIアシスタント設定ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 어시스턴트 설정 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 AI 助手设置页面"
+          }
+        }
+      }
+    },
+    "打开 App 使用文档" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open App Documentation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの使用文書を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 사용 문서 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开 App 使用文档"
+          }
+        }
+      }
+    },
+    "打开云图标上传页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Cloud Icon Upload Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クラウドアイコンアップロードページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라우드 아이콘 업로드 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开云图标上传页面"
+          }
+        }
+      }
+    },
+    "打开关于页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open About Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「について」ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정보 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开关于页面"
+          }
+        }
+      }
+    },
+    "打开加密设置页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Encryption Settings Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暗号化設定ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "암호 설정 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开加密设置页面"
+          }
+        }
+      }
+    },
     "打开地址" : {
       "localizations" : {
         "en" : {
@@ -6019,6 +6341,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开地址"
+          }
+        }
+      }
+    },
+    "打开声音设置页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Voice Settings Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声設定ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 설정 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开语音设置页面"
+          }
+        }
+      }
+    },
+    "打开数据管理页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Data Management Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データ管理ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데이터 관리 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开数据管理页面"
+          }
+        }
+      }
+    },
+    "打开服务器设置页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Server Settings Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバー設定ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서버 설정 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开服务器设置页面"
+          }
+        }
+      }
+    },
+    "打开服务器部署文档" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Server Deployment Documentation"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サーバー展開ドキュメントを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서버 배포 문서 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开服务器部署文档"
+          }
+        }
+      }
+    },
+    "打开系统设置页面" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open System Settings Page"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム設定ページを開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 설정 페이지 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开系统设置页面"
           }
         }
       }
@@ -6469,34 +6931,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提示"
-          }
-        }
-      }
-    },
-    "提示词" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prompt"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロンプト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "프롬프트"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "提示词"
           }
         }
       }
@@ -7369,6 +7803,90 @@
         }
       }
     },
+    "是否在消息列表中显示应用图标" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Display app icon in message list"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メッセージリストにアプリアイコンを表示するかどうか"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메시지 목록에 앱 아이콘을 표시하시겠습니까"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是否在消息列表中显示应用图标"
+          }
+        }
+      }
+    },
+    "是否开启声音反馈" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable voice feedback"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声フィードバックを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 피드백 활성화"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是否开启声音反馈"
+          }
+        }
+      }
+    },
+    "是否开启扫描区域限制" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable scan area restriction"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スキャンエリア制限を有効にするか"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스캔 영역 제한을 활성화하시겠습니까?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是否开启扫描区域限制"
+          }
+        }
+      }
+    },
     "是否收到消息自动保存图片" : {
       "localizations" : {
         "en" : {
@@ -7421,6 +7939,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "确定清空？"
+          }
+        }
+      }
+    },
+    "是否自动保存图片到相册" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically save images to album"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を自動的にアルバムに保存しますか"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 앨범에 자동 저장하시겠습니까?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是否自动保存图片到相册"
           }
         }
       }
@@ -7589,6 +8135,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "智能助手"
+          }
+        }
+      }
+    },
+    "智能助手可根据你的指令操作应用功能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The intelligent assistant can operate app functions based on your instructions."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スマートアシスタントは、あなたの指示に基づいてアプリケーション機能を操作できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지능형 어시스턴트는 사용자의 지시에 따라 애플리케이션 기능을 조작할 수 있습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智能助手可根据你的指令操作应用功能"
           }
         }
       }
@@ -9361,6 +9935,34 @@
         }
       }
     },
+    "消息气泡显示的最大行数，范围 1 到 10" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum number of lines displayed in message bubbles, range 1 to 10"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メッセージバブルの最大表示行数、範囲は1から10"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메시지 말풍선에 표시되는 최대 줄 수, 범위 1에서 10"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "消息气泡显示的最大行数，范围 1 到 10"
+          }
+        }
+      }
+    },
     "添加 Prompt" : {
       "localizations" : {
         "en" : {
@@ -9553,6 +10155,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "清除"
+          }
+        }
+      }
+    },
+    "清除 App 缓存" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear App Cache"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリのキャッシュをクリア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 캐시 지우기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除 App 缓存"
           }
         }
       }
@@ -10172,6 +10802,9 @@
           }
         }
       }
+    },
+    "视觉与触感" : {
+
     },
     "移除" : {
       "localizations" : {
@@ -10847,64 +11480,6 @@
         }
       }
     },
-    "自动更正Iv参数" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto-correct IV parameters"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動補正Ivパラメータ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동 IV 매개변수 수정"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动更正Iv参数"
-          }
-        }
-      }
-    },
-    "自动更正Key参数" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Auto Correct Key Parameter"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動キーパラメータ修正"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동 수정 키 매개변수"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动更正Key参数"
-          }
-        }
-      }
-    },
     "自定义icon" : {
       "localizations" : {
         "en" : {
@@ -11017,7 +11592,11 @@
         }
       }
     },
+    "至少1个字符" : {
+
+    },
     "至少2个字符" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -11213,35 +11792,6 @@
         }
       }
     },
-    "设备ID" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Device ID"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "デバイスID"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기기 ID"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "设备ID"
-          }
-        }
-      }
-    },
     "设置" : {
       "localizations" : {
         "en" : {
@@ -11294,6 +11844,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加 Token 消耗"
+          }
+        }
+      }
+    },
+    "设置默认图片存储天数" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set default image storage days"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルト画像保存日数の設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 이미지 저장 일수 설정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置默认图片存储天数"
+          }
+        }
+      }
+    },
+    "设置默认消息存储天数" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set default message storage days"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトメッセージ保存期間の設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 메시지 저장 기간 설정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置默认消息存储天数"
           }
         }
       }
@@ -12054,6 +12660,34 @@
         }
       }
     },
+    "选择功能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Function"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「機能を選択」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기능 선택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择功能"
+          }
+        }
+      }
+    },
     "选择加密算法" : {
       "localizations" : {
         "en" : {
@@ -12106,34 +12740,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择图片"
-          }
-        }
-      }
-    },
-    "选择提示词" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select prompt words"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "選択プロンプト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "선택 프롬프트 단어"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择提示词"
           }
         }
       }
@@ -13284,6 +13890,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "默认浏览器"
+          }
+        }
+      }
+    },
+    "默认浏览器设置" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default Browser Settings"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デフォルトブラウザ設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 브라우저 설정"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认浏览器设置"
           }
         }
       }

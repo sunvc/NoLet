@@ -14,10 +14,12 @@
 import Combine
 import Defaults
 import GRDB
+import OpenAI
 import SwiftUI
 
 struct AssistantPageView: View {
     @Default(.assistantAccouns) var assistantAccouns
+    @Default(.showAssistantAnimation) var showAssistantAnimation
 
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var manager: AppManager
@@ -74,7 +76,7 @@ struct AssistantPageView: View {
                             .multilineTextAlignment(.center)
                             .padding(.vertical, 10)
 
-                        Text("我可以帮你搜索，答疑，写作，请把你的任务交给我吧！")
+                        Text("我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！")
                             .multilineTextAlignment(.center)
                             .padding(.vertical)
                             .font(.body)
@@ -96,31 +98,6 @@ struct AssistantPageView: View {
             // 底部输入框
             ChatInputView(
                 text: $inputText,
-                rightBtn: {
-                    Section {
-                        Button(action: {
-                            manager.router.append(.assistantSetting(nil))
-                            Haptic.impact()
-                        }) {
-                            Label(String(localized: "设置"), systemImage: "gear.circle")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
-                    }
-
-                    Section {
-                        Button(action: {
-                            chatManager.cancellableRequest?.cancel()
-                            chatManager.setGroup()
-                            Haptic.impact()
-                        }) {
-                            Label(String(localized: "新对话"), systemImage: "plus.message")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
-                    }
-
-                },
                 onSend: { text in
                     chatManager.cancellableRequest?.cancel()
                     chatManager.cancellableRequest = Task.detached(priority: .userInitiated) {
@@ -148,11 +125,8 @@ struct AssistantPageView: View {
             }
         }
         .toolbar {
-            principalToolbarContent
-
-//            if manager.router.count != 0 {
-//                backupMenu
-//            }
+            principalToolbarTitleContent
+            principalToolbarToolContent
         }
         .sheet(isPresented: $showMenu) {
             OpenChatHistoryView(show: $showMenu)
@@ -173,57 +147,72 @@ struct AssistantPageView: View {
         }
     }
 
-    private var principalToolbarContent: some ToolbarContent {
+    private var principalToolbarTitleContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            StreamingLoadingView(showLoading: manager.isLoading, group: chatManager.chatGroup)
+                .transition(.scale)
+        }
+    }
+
+    private var principalToolbarToolContent: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            if manager.isLoading {
-                StreamingLoadingView()
-                    .transition(.scale)
-            } else {
-                Button {
-                    self.showMenu = true
-                    Haptic.impact()
-
-                } label: {
-                    if let chatGroup = chatManager.chatGroup {
-                        HStack {
-                            Text(chatGroup.name.trimmingSpaceAndNewLines)
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .padding(.trailing, 3)
-
-                            Image(systemName: "chevron.down")
-                                .imageScale(.large)
-                                .foregroundStyle(.gray.opacity(0.5))
-                                .imageScale(.small)
-
-                            Spacer()
-                        }
-                        .frame(maxWidth: 150)
-                        .foregroundStyle(.foreground)
-                        .transition(.scale)
-                    } else {
-                        HStack {
-                            Text("新对话")
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .padding(.trailing, 3)
-
-                            Image(systemName: "chevron.down")
-                                .imageScale(.large)
-                                .foregroundStyle(.gray.opacity(0.5))
-                                .imageScale(.small)
-                        }
-                        .frame(maxWidth: 150)
-                        .foregroundStyle(.foreground)
-                        .transition(.scale)
+            Menu {
+                Section {
+                    Button(action: {
+                        chatManager.cancellableRequest?.cancel()
+                        chatManager.setGroup()
+                        Haptic.impact()
+                    }) {
+                        Label(String(localized: "新对话"), systemImage: "plus.message")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, .primary)
                     }
                 }
+
+                Section {
+                    Button {
+                        self.showMenu = true
+                        Haptic.impact()
+
+                    } label: {
+                        Label("所有对话", systemImage: "clock.arrow.circlepath")
+                    }
+                }
+
+                Section {
+                    Button(action: {
+                        manager.router.append(.assistantSetting(nil))
+                        Haptic.impact()
+                    }) {
+                        Label(String(localized: "设置"), systemImage: "gear.circle")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, .primary)
+                    }
+                }
+
+                Section {
+                    Button {
+                        if let id = chatManager.chatGroup?.id {
+                            Task.detached(priority: .background) {
+                                await chatManager.delete(groupID: id)
+                            }
+                        }
+
+                    } label: {
+                        Label("删除对话", systemImage: "trash")
+                    }.tint(.red)
+                }
+
+            } label: {
+                Label("更多", systemImage: "ellipsis")
             }
         }
     }
 
     // 发送消息
     private func sendMessage(_ text: String) async {
+        hideKeyboard()
+
         guard assistantAccouns.first(where: { $0.current }) != nil else {
             manager.router.append(.assistantSetting(nil))
             return
@@ -263,20 +252,69 @@ struct AssistantPageView: View {
                 }
             }()
 
-            guard let newGroup = newGroup else {
-                return
-            }
+            guard let newGroup = newGroup else { return }
 
-            let results = chatManager.chatsStream(text: text)
+            let results = chatManager.chatsStream(
+                text: text,
+                messageID: manager.askMessageID,
+                systemInstruction: chatManager.useFunctionCall ? AppSettingAction
+                    .systemInstruction : nil,
+                functions: chatManager.useFunctionCall ? AppSettingAction.getFuncs() : []
+            )
+
+            // Map to handle parallel tool calls: index -> (name, args)
+            var toolCallsMap: [Int: (name: String, args: String)] = [:]
+
             do {
                 for try await result in results {
                     for choice in result.choices {
                         if let outputItem = choice.delta.content {
                             Task { @MainActor in
                                 chatManager.currentContent = chatManager.currentContent + outputItem
-                                if AppManager.shared.inAssistant {
-                                    Haptic.selection(limitFrequency: true)
+                                if AppManager.shared.inAssistant && showAssistantAnimation {
+                                    Haptic.selection()
                                 }
+                            }
+                        }
+
+                        if let toolCalls = choice.delta.toolCalls {
+                            for toolCall in toolCalls {
+                                
+                                guard let index = toolCall.index else { continue }
+                                var current = toolCallsMap[index] ?? ("", "")
+
+                                if let name = toolCall.function?.name {
+                                    current.name = name
+                                    NLog.log("Tool call name received for index \(index): \(name)")
+                                }
+                                if let args = toolCall.function?.arguments {
+                                    current.args += args
+                                }
+                                toolCallsMap[index] = current
+                            }
+                        }
+                        
+                    }
+                }
+
+                for (index, (name, args)) in toolCallsMap {
+                    if !name.isEmpty, !args.isEmpty {
+                        NLog
+                            .log(
+                                "Attempting to run function [\(index)]: \(name) with args: \(args)"
+                            )
+                        if let data = args.data(using: .utf8),
+                           let json = try? JSONSerialization
+                           .jsonObject(with: data, options: []) as? [String: Any]
+                        {
+                            runFunc(name: name, args: json)
+                        } else {
+                            NLog
+                                .error(
+                                    "Failed to parse tool arguments JSON for [\(index)]: \(args)"
+                                )
+                            Task { @MainActor in
+                                Toast.error(title: "Function call failed: Invalid JSON")
                             }
                         }
                     }
@@ -284,19 +322,24 @@ struct AssistantPageView: View {
 
                 Haptic.impact()
 
-                let responseMessage: ChatMessage = {
-                    var message = openChatManager.shared.currentChatMessage
+                let responseMessage: ChatMessage? = {
+                    if chatManager.currentChatMessage.content.isEmpty {
+                        return nil
+                    }
+                    var message = chatManager.currentChatMessage
                     message.chat = newGroup.id
                     return message
                 }()
 
-                try await DatabaseManager.shared.dbQueue.write { db in
-                    try responseMessage.insert(db)
+                if let responseMessage = responseMessage {
+                    try await DatabaseManager.shared.dbQueue.write { db in
+                        try responseMessage.insert(db)
+                    }
                 }
 
-                openChatManager.shared.currentRequest = ""
+                chatManager.currentRequest = ""
                 AppManager.shared.isLoading = false
-                hideKeyboard()
+                
 
             } catch {
                 // Handle chunk error here
@@ -308,6 +351,24 @@ struct AssistantPageView: View {
                     chatManager.currentContent = ""
                 }
                 return
+            }
+            
+            
+            
+        }
+    }
+}
+
+extension AssistantPageView {
+    func runFunc(name: String, args: [String: Any]) {
+        guard name == "manage_app" || name == "update_settings" else { return }
+
+        Task { @MainActor in
+            for (key, value) in args {
+                if let action = AppSettingAction(rawValue: key) {
+                    let success = action.execute(with: value)
+                    Toast.success(title: success ? "操作成功" : "操作失败")
+                }
             }
         }
     }
@@ -402,45 +463,65 @@ struct CustomAlertWithTextField: View {
 }
 
 struct StreamingLoadingView: View {
+    var showLoading: Bool
+    var group: ChatGroup? = nil
     @EnvironmentObject private var chatManager: openChatManager
-    
+
     // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
     var body: some View {
-        HStack(spacing: 8) {
-            // 图标动画：增加一个呼吸效果
-            Image(systemName: "brain")
-                .foregroundColor(.orange)
-                .symbolEffect(.pulse) // iOS 17+ 呼吸感
-            
-            
-            TimelineView(.periodic(from: .now, by: 0.5)) { context in
-                let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
-                let dots = String(repeating: ".", count: dotCount)
-                
-                HStack(alignment: .bottom, spacing: 0) {
-                    Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
-                    // 固定点号的容器，防止文字左右抖动
-                    Text(dots)
-                        .frame(width: 15, alignment: .leading)
-                }
-                .foregroundColor(.secondary)
-                .font(.subheadline)
-            }
-        }
-        .padding(.vertical, 4)
-    }
-}
+        if showLoading {
+            Button {
+                chatManager.cancellableRequest?.cancel()
+            } label: {
+                HStack(spacing: 8) {
+                    // 图标动画：增加一个呼吸效果
+                    Image(systemName: "brain")
+                        .foregroundColor(.orange)
+                        .symbolEffect(.pulse) // iOS 17+ 呼吸感
 
-func runOnMain(_ block: @escaping () -> Void) {
-    if Thread.isMainThread {
-        block()
-    } else {
-        DispatchQueue.main.async {
-            block()
+                    TimelineView(.periodic(from: .now, by: 0.5)) { context in
+                        let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
+                        let dots = String(repeating: ".", count: dotCount)
+
+                        HStack(alignment: .bottom, spacing: 0) {
+                            Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
+                            // 固定点号的容器，防止文字左右抖动
+                            Text(dots)
+                                .frame(width: 15, alignment: .leading)
+                        }
+                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                    }
+
+                    Image(systemName: "xmark.circle.fill")
+                        .padding(5)
+                        .foregroundStyle(.red)
+                }
+                .padding(.vertical, 4)
+                .frame(maxWidth: 180)
+            }
+
+        } else {
+            Button {} label: {
+                HStack {
+                    Text(group?.name.trimmingSpaceAndNewLines ?? "新建对话")
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.trailing, 3)
+                        .font(.footnote)
+
+                    Image(systemName: "chevron.down")
+                        .imageScale(.large)
+                        .foregroundStyle(.gray.opacity(0.5))
+                        .imageScale(.small)
+                }
+                .frame(maxWidth: 180)
+            }
         }
     }
 }
 
 #Preview {
     AssistantPageView()
+        .environmentObject(AppManager.shared)
 }

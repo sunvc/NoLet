@@ -370,6 +370,12 @@ extension MessagesManager {
         return -1
     }
 
+    nonisolated func delete(_ start: Date, end: Date) -> Bool{
+        debugPrint(start.formatted(), end.formatted())
+        return true
+    }
+    
+    
     nonisolated func delete(_ messageID: String) -> String? {
         do {
             let result: String? = try DB.dbQueue.write { db in

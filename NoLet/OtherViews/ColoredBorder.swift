@@ -75,6 +75,7 @@ struct ColoredBorder: View {
     @State private var lineWidth: Double = 3
 
     var body: some View {
+        
         UnevenRoundedRectangle(
             topLeadingRadius: topLeft,
             bottomLeadingRadius: bottomLeft,

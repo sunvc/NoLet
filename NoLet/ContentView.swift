@@ -83,7 +83,6 @@ struct ContentView: View {
                         }, set: { value in
                             manager.router = value
                         })) {
-                            // MARK: 信息页面
 
                             MessagePage()
                                 .router(manager)
@@ -102,8 +101,6 @@ struct ContentView: View {
                                 manager.router = value
                             })) {
                                
-                                // MARK: 信息页面
-
                                 AssistantPageView()
                                     .router(manager)
                             }
@@ -122,7 +119,6 @@ struct ContentView: View {
                         }, set: { value in
                             manager.router = value
                         })) {
-                            // MARK: 设置页面
 
                             SettingsPage()
                                 .router(manager)
@@ -139,8 +135,7 @@ struct ContentView: View {
                         }, set: { value in
                             manager.router = value
                         })) {
-                            // MARK: 设置页面
-
+                            
                             SearchMessageView()
                                 .router(manager)
                         }
@@ -177,9 +172,6 @@ struct ContentView: View {
                         }, set: { value in
                             manager.router = value
                         })) {
-                           
-                            // MARK: 信息页面
-
                             AssistantPageView()
                                 .router(manager)
                         }
@@ -196,8 +188,7 @@ struct ContentView: View {
                     }, set: { value in
                         manager.router = value
                     })) {
-                        // MARK: 设置页面
-
+                        
                         SettingsPage()
                             .router(manager)
                     }

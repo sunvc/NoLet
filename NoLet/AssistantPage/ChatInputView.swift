@@ -15,16 +15,16 @@ import Defaults
 import GRDB
 import SwiftUI
 
-struct ChatInputView<Content: View>: View {
+struct ChatInputView: View {
     @EnvironmentObject private var chatManager: openChatManager
     @EnvironmentObject private var manager: AppManager
     @Binding var text: String
-    @ViewBuilder var rightBtn: () -> Content
+
     let onSend: (String) -> Void
 
     @State private var showPromptChooseView = false
     @FocusState private var isFocusedInput: Bool
-    
+
     @State private var selectedPromptIndex: Int?
 
     private var quote: Message? {
@@ -36,13 +36,13 @@ struct ChatInputView<Content: View>: View {
         VStack {
             HStack {
                 PromptLabelView(prompt: chatManager.chatPrompt)
-            }.padding(5)
+            }
+            .padding(.horizontal)
 
             HStack(spacing: 10) {
                 inputField
                     .disabled(manager.isLoading)
                     .opacity(manager.isLoading ? 0 : 1)
-                rightActionButton
             }
             .padding(.horizontal)
             .animation(.default, value: text)
@@ -65,59 +65,16 @@ struct ChatInputView<Content: View>: View {
                 .onChange(of: isFocusedInput) { value in
                     chatManager.isFocusedInput = value
                 }
-
-           
-
-            Menu{
-                rightBtn()
-                
-                
-                Button {
-                    showPromptChooseView = true
-                } label: {
-                   Label("提示词", systemImage: "puzzlepiece.extension")
-                }
-            }label:{
-                Image(systemName: "puzzlepiece.extension")
-                    .tint(.gray)
-                    .font(.title2)
-                    .padding(EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 12))
-            }
             
-            .sheet(isPresented: $showPromptChooseView) {
-                PromptChooseView()
-                    .customPresentationCornerRadius(20)
-            }
-        }
-        .background26(Color(.systemGray6), radius: 17)
-    }
-
-    @ViewBuilder
-    private var rightActionButton: some View {
-        if manager.isLoading {
-            
-            Button(action: {
-                chatManager.cancellableRequest?.cancel()
-            }) {
-                
-                Image(systemName: "xmark.circle.fill")
-                    .font(.largeTitle)
-                    .background26(Color.white, radius: 20)
-                    .padding(.horizontal, 30)
-                    .tint(.red)
-            }
-            .transition(.move(edge: .trailing))
-            
-        } else {
             if !text.isEmpty {
                 // 发送按钮
                 Button(action: {
                     self.text = text.trimmingCharacters(in: .whitespaces)
-                    if text.count > 1 {
+                    if text.trimmingSpaceAndNewLines.count > 0 {
                         onSend(text)
                         isFocusedInput = false
                     } else {
-                        Toast.error(title: "至少2个字符")
+                        Toast.error(title: "至少1个字符")
                     }
 
                 }) {
@@ -126,13 +83,31 @@ struct ChatInputView<Content: View>: View {
                         .background26(Color.white, radius: 20)
                 }
                 .transition(.scale)
+            }else{
+                Image(systemName: chatManager
+                    .useFunctionCall ? "bolt.badge.a" : "puzzlepiece.extension")
+                    .foregroundStyle(chatManager.useFunctionCall ? .green : .gray)
+                    .font(.title2)
+                    .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 15))
+                    .onTapGesture {
+                        showPromptChooseView = true
+                        Haptic.impact()
+                    }
             }
+
+            
+        }
+        .background26(Color(.systemGray6), radius: 17)
+        .sheet(isPresented: $showPromptChooseView) {
+            PromptChooseView()
+                .customPresentationCornerRadius(20)
         }
     }
 
+
     @ViewBuilder
     func PromptLabelView(prompt: ChatPrompt?) -> some View {
-        HStack {
+        HStack(spacing: 10) {
             if let prompt {
                 Menu {
                     Button(role: .destructive) {
@@ -202,8 +177,8 @@ struct ChatInputView<Content: View>: View {
                             }
                         }
                         .onDisappear {
-                            Task {@MainActor in
-                                if let group = chatManager.chatGroup  {
+                            Task { @MainActor in
+                                if let group = chatManager.chatGroup {
                                     let messages = try await DatabaseManager.shared.dbQueue
                                         .read { db in
                                             try ChatMessage

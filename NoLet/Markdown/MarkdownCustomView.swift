@@ -41,8 +41,8 @@ struct MarkdownCustomView: View {
 
     var body: some View {
         if !searchText.isEmpty {
-            Self
-                .highlightedText(searchText: searchText, text: PBMarkdown.plain(content))
+    
+            HighlightedText( text: PBMarkdown.plain(content), searchText: searchText)
                 .transition(.opacity.animation(.easeInOut(duration: 0.1)))
 
         } else {
@@ -56,81 +56,6 @@ struct MarkdownCustomView: View {
                 .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
                 .markdownTheme(MarkdownTheme.defaultTheme(baseSize, scaleFactor: scaleFactor))
         }
-    }
-
-    static func highlightedText(searchText: String, text: String) -> Text {
-        
-        guard !searchText.isEmpty else{ return Text(text) }
-        // 拆分关键词 & 小写比较用
-        let keywords = searchText
-            .lowercased()
-            .split(separator: " ")
-            .map { String($0) }
-            .filter { !$0.isEmpty }
-
-        // 没有关键词，直接返回原文
-        guard !keywords.isEmpty else {
-            return Text(text)
-        }
-
-        // 创建匹配范围集合
-        let lowercasedText = text.lowercased()
-        var ranges: [Range<String.Index>] = []
-
-        for keyword in keywords {
-            var searchStart = lowercasedText.startIndex
-            while let range = lowercasedText.range(
-                of: keyword,
-                range: searchStart..<lowercasedText.endIndex
-            ) {
-                ranges.append(range)
-                searchStart = range.upperBound
-            }
-        }
-
-        // 合并重叠区间
-        let mergedRanges = mergeRanges(ranges.sorted { $0.lowerBound < $1.lowerBound })
-
-        // 构造高亮 Text
-        var result = Text(verbatim: "")
-        var currentIndex = text.startIndex
-
-        for range in mergedRanges {
-            // 非匹配部分
-            if currentIndex < range.lowerBound {
-                result = result + Text(String(text[currentIndex..<range.lowerBound]))
-            }
-            // 匹配部分高亮
-            result = result + Text(String(text[range])).bold().foregroundColor(.red)
-            currentIndex = range.upperBound
-        }
-
-        // 剩下尾部
-        if currentIndex < text.endIndex {
-            result = result + Text(String(text[currentIndex..<text.endIndex]))
-        }
-
-        return result
-    }
-
-    private static func mergeRanges(_ ranges: [Range<String.Index>]) -> [Range<String.Index>] {
-        guard !ranges.isEmpty else { return [] }
-
-        var merged: [Range<String.Index>] = []
-        var current = ranges[0]
-
-        for next in ranges.dropFirst() {
-            if current.upperBound >= next.lowerBound {
-                // 合并重叠
-                current = current.lowerBound..<max(current.upperBound, next.upperBound)
-            } else {
-                merged.append(current)
-                current = next
-            }
-        }
-
-        merged.append(current)
-        return merged
     }
 }
 

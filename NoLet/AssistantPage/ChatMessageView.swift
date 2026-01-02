@@ -14,7 +14,7 @@ import Defaults
 import SwiftUI
 
 struct ChatMessageView: View {
-    @EnvironmentObject private var chatManager: openChatManager
+    
     let message: ChatMessage
     let isLoading: Bool
 
@@ -24,41 +24,44 @@ struct ChatMessageView: View {
     }
 
     var body: some View {
+        
         VStack {
-            timestampView
-
-            if message.request.count > 0 || quote != nil {
-                VStack {
-                    if let quote = quote {
-                        HStack {
-                            Spacer()
-                            QuoteView(message: quote)
-                            Spacer()
+            Section{
+                if message.request.count > 0 || quote != nil {
+                    VStack {
+                        if let quote = quote {
+                            HStack {
+                                Spacer()
+                                QuoteView(message: quote)
+                                Spacer()
+                            }
+                            .padding(.bottom, 5)
                         }
-                        .padding(.bottom, 5)
-                    }
-                    if message.request.count > 0 {
-                        HStack {
-                            Spacer()
+                        if message.request.count > 0 {
+                            HStack {
+                                Spacer()
 
-                            userMessageView
-                                .if(isLoading) { $0.lineLimit(2) }
-                                .assistantMenu(message.request)
+                                userMessageView
+                                    .if(isLoading) { $0.lineLimit(2) }
+                                    .assistantMenu(message.request)
+                            }
                         }
                     }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
-            }
 
-            if !message.content.isEmpty {
-                HStack {
-                    assistantMessageView
-                        .assistantMenu(message.content)
-                    Spacer()
+                if !message.content.isEmpty {
+                    HStack {
+                        assistantMessageView
+                            .assistantMenu(message.content)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
+            }header: {
+                timestampView
             }
         }
         .padding(.vertical, 4)

@@ -168,24 +168,7 @@ struct OpenChatHistoryView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button {
                         Task.detached(priority: .background) {
-                            try? await DatabaseManager.shared.dbQueue.write { db in
-                                // 查找 ChatGroup
-                                let groups = try ChatGroup.fetchCount(db)
-                                Task { @MainActor in
-                                    if groups == 1 || chatManager.chatGroup == chatgroup {
-                                        chatManager.setGroup()
-                                    }
-                                }
-                                if let group = try ChatGroup.fetchOne(db, key: chatgroup.id) {
-                                    // 删除与该 group.id 关联的所有 ChatMessage
-                                    try ChatMessage
-                                        .filter(ChatMessage.Columns.chat == group.id)
-                                        .deleteAll(db)
-
-                                    // 删除该 ChatGroup 本身
-                                    try group.delete(db)
-                                }
-                            }
+                            await chatManager.delete(groupID: chatgroup.id)
                             await loadGroups()
                         }
                     } label: {

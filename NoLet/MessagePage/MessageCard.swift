@@ -77,9 +77,9 @@ struct MessageCard: View {
                         }
                         VStack {
                             if let title = message.title {
-                                MarkdownCustomView.highlightedText(
-                                    searchText: searchText,
-                                    text: title
+                                HighlightedText(
+                                    text: title,
+                                    searchText: searchText
                                 )
                                 .font(.headline)
                                 .fontWeight(.bold)
@@ -87,9 +87,9 @@ struct MessageCard: View {
                             }
 
                             if let subtitle = message.subtitle {
-                                MarkdownCustomView.highlightedText(
-                                    searchText: searchText,
-                                    text: subtitle
+                                HighlightedText(
+                                    text: subtitle,
+                                    searchText: searchText
                                 )
                                 .font(.subheadline)
                                 .fontWeight(.bold)
@@ -107,9 +107,9 @@ struct MessageCard: View {
                                 Image(systemName: "network")
                                     .imageScale(.small)
 
-                                MarkdownCustomView.highlightedText(
-                                    searchText: searchText,
-                                    text: urlstr
+                                HighlightedText(
+                                    text: urlstr,
+                                    searchText: searchText
                                 )
                                 .font(.subheadline)
                                 .fontWeight(.bold)
@@ -172,7 +172,7 @@ struct MessageCard: View {
                         }
 
                         if let body = message.body, !body.isEmpty {
-                            VStack{
+                            ScrollView(.vertical) {
                                 MarkdownCustomView(content: body, searchText: searchText)
                                     .font(.body)
                                     .textSelection(.enabled)
@@ -191,9 +191,8 @@ struct MessageCard: View {
                                         showFull()
                                     }
                             }
-                            .lineLimit(limitMessageLine)
-                            .frame(maxWidth: .infinity)
-                            .clipShape(Rectangle())
+                            .scrollDisabled(true)
+                            .frame(maxWidth: .infinity, maxHeight: CGFloat(limitMessageLine * 30))
                         }
                     }
                 }
@@ -294,7 +293,7 @@ struct MessageCard: View {
             Spacer()
 
             if showGroup {
-                MarkdownCustomView.highlightedText(searchText: searchText, text: message.group)
+                HighlightedText(text: message.group, searchText: searchText)
                     .textSelection(.enabled)
                     .accessibilityLabel("群组名")
                     .accessibilityValue(message.group)
@@ -340,12 +339,8 @@ struct MessageCard: View {
                             Haptic.impact()
                             DispatchQueue.main.async {
                                 AppManager.shared.askMessageID = message.id
-
-                                if AppManager.shared.page == .message {
-                                    AppManager.shared.router.append(.assistant)
-                                } else if AppManager.shared.page == .search {
-                                    AppManager.shared.router.append(.assistant)
-                                }
+                                AppManager.shared.page = .assistant
+                                AppManager.shared.router = []
                             }
                         } label: {
                             Label("智能助手", systemImage: "atom")

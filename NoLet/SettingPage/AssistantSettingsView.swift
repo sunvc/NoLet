@@ -19,6 +19,7 @@ struct AssistantSettingsView: View {
 
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.historyMessageCount) var historyMessageCount
+    @Default(.showAssistantAnimation) var showAssistantAnimation
 
     @State private var showDeleteOk: Bool = false
     @State private var isSecured = true
@@ -175,6 +176,12 @@ struct AssistantSettingsView: View {
                 Text("设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加 Token 消耗")
                     .font(.caption)
                     .foregroundColor(.secondary)
+            }
+            
+            Section("视觉与触感"){
+                Toggle(isOn: $showAssistantAnimation) { 
+                    Label("动画与振动", systemImage: "figure.walk.motion")
+                }
             }
 
             Section("数据管理") {

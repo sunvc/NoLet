@@ -479,7 +479,7 @@ struct SelectMessageView: View {
                         .link: url,
                     ])
 
-                    TextView(text: urlText)
+                    TextView(urlText)
                 }
             }
             .foregroundStyle(.accent)
