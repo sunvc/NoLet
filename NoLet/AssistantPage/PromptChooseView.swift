@@ -250,7 +250,7 @@ private struct PromptRowView: View {
                     }
 
                     if prompt.mode == .mcp {
-                        Text("MCP")
+                        Text(prompt.mode.name)
                             .font(.caption)
                             .foregroundColor(.white)
                             .padding(.horizontal, 6)
