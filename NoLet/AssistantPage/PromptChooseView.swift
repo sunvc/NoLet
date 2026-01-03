@@ -30,7 +30,12 @@ struct PromptChooseView: View {
     @State private var searchText = ""
     @State private var selectedPrompt: ChatPrompt? = nil
 
-    private var filteredBuiltInPrompts: [ChatPrompt] { prompts.filter { $0.inside } }
+    private var filteredBuiltInPrompts: [ChatPrompt] {
+        guard !searchText.isEmpty else { return prompts.filter { $0.inside } }
+        return prompts.filter { $0.inside }.filter {
+            $0.title.localizedCaseInsensitiveContains(searchText) 
+        }
+    }
 
     private var filteredCustomPrompts: [ChatPrompt] {
         guard !searchText.isEmpty else { return prompts.filter { !$0.inside } }
@@ -47,24 +52,88 @@ struct PromptChooseView: View {
 
     var body: some View {
         NavigationStack {
-            promptListView
-                .navigationTitle("选择功能")
-                .navigationBarTitleDisplayMode(.inline)
-                .searchable(
-                    text: $searchText,
-                    placement: .navigationBarDrawer,
-                    prompt: "搜索提示词"
-                )
-                .toolbar {
-                    toolbarContent
-                    addPromptButton
+            List {
+                if hasSearchResults {
+                    if #available(iOS 17.0, *) {
+                        ContentUnavailableView("没有找到相关提示词", systemImage: "magnifyingglass")
+                    } else {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "magnifyingglass")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 100)
+                                    .padding()
+                                Spacer()
+                            }
+                            Spacer()
+                            HStack {
+                                Spacer()
+                                Text("没有找到相关提示词")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .padding()
+                                Spacer()
+                            }
+                        }.frame(height: 300)
+                    }
+
+                } else {
+                    Group {
+                        if !filteredBuiltInPrompts.isEmpty {
+                            PromptSection(
+                                selectID: chatManager.chatPrompt?.id,
+                                title: String(localized: "内置扩展功能"),
+                                prompts: filteredBuiltInPrompts,
+                                onPromptTap: handlePromptTap
+                            )
+                        }
+
+                        if !filteredCustomPrompts.isEmpty {
+                            PromptSection(
+                                selectID: chatManager.chatPrompt?.id,
+                                title: String(localized: "自定义扩展"),
+                                prompts: filteredCustomPrompts,
+                                onPromptTap: handlePromptTap
+                            )
+                        }
+                    }
+                    .environmentObject(chatManager)
                 }
-                .task {
-                    loadData()
+            }
+            .sheet(isPresented: $isAddingPrompt) {
+                AddPromptView()
+                    .customPresentationCornerRadius(20)
+            }
+            .navigationTitle("选择功能")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(
+                text: $searchText,
+                placement: .navigationBarDrawer,
+                prompt: "搜索扩展功能"
+            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("取消", role: .cancel) {
+                        dismiss()
+                    }
                 }
-                .onChange(of: chatManager.promptCount) { _ in
-                    loadData()
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        isAddingPrompt = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
+            }
+            .task {
+                loadData()
+            }
+            .onChange(of: chatManager.promptCount) { _ in
+                loadData()
+            }
         }
     }
 
@@ -83,106 +152,6 @@ struct PromptChooseView: View {
         }
     }
 
-    // MARK: - View Components
-
-    private var promptListView: some View {
-        List {
-            Section {
-                Toggle(isOn: Binding(get: {
-                    chatManager.useFunctionCall
-                }, set: { value in
-                    chatManager.useFunctionCall = value
-                    if value {
-                        chatManager.chatPrompt = nil
-                        self.dismiss()
-                    }
-                })) {
-                    Label("允许智能助手执行操作", systemImage: "bolt.fill")
-                }
-            } header: {
-                Label("智能助手可根据你的指令操作应用功能", systemImage: "gear")
-                    .font(.subheadline)
-            }
-
-            if hasSearchResults {
-                if #available(iOS 17.0, *) {
-                    ContentUnavailableView("没有找到相关提示词", systemImage: "magnifyingglass")
-                } else {
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Image("magnifyingglass")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 100)
-                                .padding()
-                            Spacer()
-                        }
-                        Spacer()
-                        HStack {
-                            Spacer()
-                            Text("没有找到相关提示词")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding()
-                            Spacer()
-                        }
-                    }.frame(height: 300)
-                }
-
-            } else {
-                promptSections
-                    .environmentObject(chatManager)
-            }
-        }
-        .sheet(isPresented: $isAddingPrompt) {
-            AddPromptView()
-                .customPresentationCornerRadius(20)
-        }
-    }
-
-    private var promptSections: some View {
-        Group {
-            if !filteredBuiltInPrompts.isEmpty {
-                PromptSection(
-                    selectID: chatManager.chatPrompt?.id,
-                    title: String(localized: "内置提示词"),
-                    prompts: filteredBuiltInPrompts,
-                    onPromptTap: handlePromptTap
-                )
-            }
-
-            if !filteredCustomPrompts.isEmpty {
-                PromptSection(
-                    selectID: chatManager.chatPrompt?.id,
-                    title: String(localized: "自定义提示词"),
-                    prompts: filteredCustomPrompts,
-                    onPromptTap: handlePromptTap
-                )
-            }
-        }
-    }
-
-    private var toolbarContent: some ToolbarContent {
-        Group {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("取消", role: .cancel) {
-                    dismiss()
-                }
-            }
-        }
-    }
-
-    private var addPromptButton: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Button {
-                isAddingPrompt = true
-            } label: {
-                Image(systemName: "plus")
-            }
-        }
-    }
-
     // MARK: - Methods
 
     private func handlePromptTap(_ prompt: ChatPrompt) {
@@ -190,7 +159,6 @@ struct PromptChooseView: View {
             chatManager.chatPrompt = nil
         } else {
             chatManager.chatPrompt = prompt
-            chatManager.useFunctionCall = false
             dismiss()
         }
     }
@@ -280,13 +248,26 @@ private struct PromptRowView: View {
                             .background(Color.blue)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
+
+                    if prompt.mode == .mcp {
+                        Text("MCP")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                    }
+
                     Spacer()
                 }
 
-                Text(prompt.content)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .lineLimit(2)
+                if !prompt.content.isEmpty {
+                    Text(prompt.content)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                }
             }
         }
         .frame(maxWidth: .infinity)

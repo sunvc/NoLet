@@ -33,15 +33,14 @@ final class openChatManager: ObservableObject {
     @Published var chatMessages: [ChatMessage] = []
     @Published private(set) var chatGroup: ChatGroup? = nil
 
-    @Published var useFunctionCall: Bool = false
+    @Published var showPromptChooseView: Bool = false
+    @Published var showAllHistory: Bool = false
 
     private let DB: DatabaseManager = .shared
 
     private var observationCancellable: AnyDatabaseCancellable?
-    
+
     var cancellableRequest: Task<Void, Never>?
-    
-    
 
     var currentChatMessage: ChatMessage {
         ChatMessage(
@@ -168,11 +167,8 @@ extension openChatManager {
     func getHistoryParams(
         text: String,
         messageID: String? = nil,
-        tips: ChatPromptMode? = nil,
-        systemInstruction: String? = nil,
-        functions: [FunctionDefinition] = []
+        tips: ChatPromptMode? = nil
     ) -> ChatQuery? {
-        
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
         }
@@ -188,26 +184,19 @@ extension openChatManager {
 
         var params: [ChatQuery.ChatCompletionMessageParam] = []
 
-        if let systemInstruction {
+        ///  增加system的前置参数
+        if let promt = chatPrompt {
+            params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
 
-            params.append(.system(.init(content: .textContent(systemInstruction))))
-
-            if !functions.isEmpty {
-                params += self.getHistory(3)
+            if promt.mode == .mcp {
+                params += getHistory(3)
                 params.append(.user(.init(content: .string(text))))
                 return ChatQuery(
                     messages: params,
                     model: account.model,
-                    tools: functions.map { .init(function: $0) }
+                    tools: AppSettingAction.getFuncs().map { .init(function: $0) }
                 )
             }
-        }
-
-        ///  增加system的前置参数
-        if let promt = try? DB.dbQueue.read({ db in
-            try ChatPrompt.filter(ChatPrompt.Columns.id == chatPrompt?.id).fetchOne(db)
-        }) {
-            params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
         }
 
         var inputText: String {
@@ -220,13 +209,13 @@ extension openChatManager {
         }
 
         let limit = Defaults[.historyMessageCount]
-        params += self.getHistory(limit)
+        params += getHistory(limit)
         params.append(.user(.init(content: .string(inputText))))
-        
+
         return ChatQuery(messages: params, model: account.model)
     }
-    
-    private func getHistory(_ limit: Int) -> [ChatQuery.ChatCompletionMessageParam]{
+
+    private func getHistory(_ limit: Int) -> [ChatQuery.ChatCompletionMessageParam] {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
             let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
@@ -241,7 +230,7 @@ extension openChatManager {
                 params.append(.assistant(.init(content: .textContent(message.content))))
             }
         }
-        
+
         return params
     }
 
@@ -273,19 +262,14 @@ extension openChatManager {
     func chatsStream(
         text: String,
         tips: ChatPromptMode? = nil,
-        messageID: String? = nil,
-        systemInstruction: String? = nil,
-        functions: [FunctionDefinition] = []
+        messageID: String? = nil
     ) -> AsyncThrowingStream<ChatStreamResult, Error> {
-        
         let query: ChatQuery? = getHistoryParams(
             text: text,
             messageID: AppManager.shared.askMessageID,
-            tips: tips,
-            systemInstruction: systemInstruction,
-            functions: functions
+            tips: tips
         )
-        
+
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: "No Account Or Query")
@@ -326,6 +310,16 @@ extension openChatManager {
 extension ChatPromptMode {
     var prompt: ChatPrompt {
         switch self {
+        case .mcp:
+            ChatPrompt(
+                timestamp: .now,
+                title: String(localized: "APP助手"),
+                content: String(
+                    localized: "你是由 NoLet App 集成的智能助手. 你可以使用 manage_app 工具来控制应用(设置、导航、数据、缓存、消息管理).当用户要求执行此工具支持的任何操作(例如: 打开设置,清除缓存,更改图标,删除上周的消息)时，你必须立即调用 'manage_app' 并提供正确的参数."
+                ),
+                inside: true,
+                mode: .mcp
+            )
         case .summary(let lang):
             ChatPrompt(
                 timestamp: .now,
@@ -339,7 +333,8 @@ extension ChatPromptMode {
                     5. 有效地传达主要观点和情感层面，同时使用简洁清晰的语言
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
                     """),
-                inside: true
+                inside: true,
+                mode: .promt
             )
         case .translate(let lang):
             ChatPrompt(
@@ -352,7 +347,8 @@ extension ChatPromptMode {
                     3. 优先选择自然、通顺的表达方式, 只返回翻译，不要添加任何其他内容。
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 进行翻译.
                     """),
-                inside: true
+                inside: true,
+                mode: .promt
             )
         case .writing(let lang):
             ChatPrompt(
@@ -367,7 +363,8 @@ extension ChatPromptMode {
                     5. 纠正语法、标点和格式错误。
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
                     """),
-                inside: true
+                inside: true,
+                mode: .promt
             )
         case .code(let lang):
             ChatPrompt(
@@ -381,7 +378,8 @@ extension ChatPromptMode {
                     4. 关注代码的可扩展性、安全性和效率。
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
                     """),
-                inside: true
+                inside: true,
+                mode: .promt
             )
         case .abstract(let lang):
             ChatPrompt(
@@ -393,13 +391,15 @@ extension ChatPromptMode {
                     仅输出摘要内容，不添加解释或说明。
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
                     """),
-                inside: true
+                inside: true,
+                mode: .promt
             )
         }
     }
 
     static var prompts: [ChatPrompt] {
         [
+            mcp(lang()).prompt,
             summary(lang()).prompt,
             translate(lang()).prompt,
             writing(lang()).prompt,

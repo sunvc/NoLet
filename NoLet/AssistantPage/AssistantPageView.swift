@@ -29,7 +29,6 @@ struct AssistantPageView: View {
 
     @FocusState private var isInputActive: Bool
 
-    @State private var showMenu: Bool = false
     @State private var rotateWhenExpands: Bool = false
     @State private var disablesInteractions: Bool = true
     @State private var disableCorners: Bool = true
@@ -128,13 +127,12 @@ struct AssistantPageView: View {
             principalToolbarTitleContent
             principalToolbarToolContent
         }
-        .sheet(isPresented: $showMenu) {
-            OpenChatHistoryView(show: $showMenu)
-                .onChange(of: showMenu) { _ in
-                    Task { @MainActor in
-                        self.hideKeyboard()
-                    }
-                }
+        .sheet(isPresented: $chatManager.showAllHistory) {
+            OpenChatHistoryView(show: $chatManager.showAllHistory)
+                .customPresentationCornerRadius(20)
+        }
+        .sheet(isPresented: $chatManager.showPromptChooseView) {
+            PromptChooseView()
                 .customPresentationCornerRadius(20)
         }
         .onAppear {
@@ -149,62 +147,20 @@ struct AssistantPageView: View {
 
     private var principalToolbarTitleContent: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            StreamingLoadingView(showLoading: manager.isLoading, group: chatManager.chatGroup)
+            StreamingLoadingView(showLoading: manager.isLoading)
                 .transition(.scale)
         }
     }
 
     private var principalToolbarToolContent: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                Section {
-                    Button(action: {
-                        chatManager.cancellableRequest?.cancel()
-                        chatManager.setGroup()
-                        Haptic.impact()
-                    }) {
-                        Label(String(localized: "新对话"), systemImage: "plus.message")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                }
-
-                Section {
-                    Button {
-                        self.showMenu = true
-                        Haptic.impact()
-
-                    } label: {
-                        Label("所有对话", systemImage: "clock.arrow.circlepath")
-                    }
-                }
-
-                Section {
-                    Button(action: {
-                        manager.router.append(.assistantSetting(nil))
-                        Haptic.impact()
-                    }) {
-                        Label(String(localized: "设置"), systemImage: "gear.circle")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                }
-
-                Section {
-                    Button {
-                        if let id = chatManager.chatGroup?.id {
-                            Task.detached(priority: .background) {
-                                await chatManager.delete(groupID: id)
-                            }
-                        }
-
-                    } label: {
-                        Label("删除对话", systemImage: "trash")
-                    }.tint(.red)
-                }
-
-            } label: {
+            Button(action: {
+                manager.router.append(.assistantSetting(nil))
+                Haptic.impact()
+            }) {
                 Label("更多", systemImage: "ellipsis")
+                    .symbolRenderingMode(.palette)
+                    .customForegroundStyle(.accent, .primary)
             }
         }
     }
@@ -254,13 +210,7 @@ struct AssistantPageView: View {
 
             guard let newGroup = newGroup else { return }
 
-            let results = chatManager.chatsStream(
-                text: text,
-                messageID: manager.askMessageID,
-                systemInstruction: chatManager.useFunctionCall ? AppSettingAction
-                    .systemInstruction : nil,
-                functions: chatManager.useFunctionCall ? AppSettingAction.getFuncs() : []
-            )
+            let results = chatManager.chatsStream(text: text, messageID: manager.askMessageID)
 
             // Map to handle parallel tool calls: index -> (name, args)
             var toolCallsMap: [Int: (name: String, args: String)] = [:]
@@ -279,7 +229,6 @@ struct AssistantPageView: View {
 
                         if let toolCalls = choice.delta.toolCalls {
                             for toolCall in toolCalls {
-                                
                                 guard let index = toolCall.index else { continue }
                                 var current = toolCallsMap[index] ?? ("", "")
 
@@ -293,7 +242,6 @@ struct AssistantPageView: View {
                                 toolCallsMap[index] = current
                             }
                         }
-                        
                     }
                 }
 
@@ -339,7 +287,6 @@ struct AssistantPageView: View {
 
                 chatManager.currentRequest = ""
                 AppManager.shared.isLoading = false
-                
 
             } catch {
                 // Handle chunk error here
@@ -352,9 +299,6 @@ struct AssistantPageView: View {
                 }
                 return
             }
-            
-            
-            
         }
     }
 }
@@ -464,9 +408,8 @@ struct CustomAlertWithTextField: View {
 
 struct StreamingLoadingView: View {
     var showLoading: Bool
-    var group: ChatGroup? = nil
-    @EnvironmentObject private var chatManager: openChatManager
 
+    @EnvironmentObject private var chatManager: openChatManager
     // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
     var body: some View {
         if showLoading {
@@ -502,20 +445,89 @@ struct StreamingLoadingView: View {
             }
 
         } else {
-            Button {} label: {
+            Menu {
+                if chatManager.chatGroup != nil {
+                    Section {
+                        Button(action: {
+                            chatManager.cancellableRequest?.cancel()
+                            chatManager.setGroup()
+                            Haptic.impact()
+                        }) {
+                            Label(String(localized: "新对话"), systemImage: "plus.message")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.accent, .primary)
+                        }
+                    }
+                }
+
+                Section {
+                    Button {
+                        chatManager.showAllHistory = true
+                        Haptic.impact()
+
+                    } label: {
+                        Label("历史对话", systemImage: "clock.arrow.circlepath")
+                            .customForegroundStyle(.accent, .primary)
+                    }
+                }
+
+                if chatManager.chatGroup != nil {
+                    Section {
+                        Button {
+                            if let id = chatManager.chatGroup?.id {
+                                Task.detached(priority: .background) {
+                                    await chatManager.delete(groupID: id)
+                                }
+                            }
+
+                        } label: {
+                            Label("删除对话", systemImage: "trash")
+                        }.tint(.red)
+                    }
+                }
+
+                if chatManager.chatPrompt != nil {
+                    Section {
+                        Button {
+                            chatManager.chatPrompt = nil
+                        } label: {
+                            Label("取消扩展功能", systemImage: "xmark.circle")
+                        }.tint(.orange)
+                    }
+                }
+
+            } label: {
                 HStack {
-                    Text(group?.name.trimmingSpaceAndNewLines ?? "新建对话")
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .padding(.trailing, 3)
-                        .font(.footnote)
+                    VStack(spacing: 0) {
+                        HStack {
+                            Text(chatManager.chatGroup?.name.trimmingSpaceAndNewLines ?? "新对话")
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .padding(.trailing, 3)
+                                .font(.footnote)
+                        }
+
+                        if  let prompt = chatManager.chatPrompt {
+                            HStack {
+                                Circle()
+                                    .fill(.green)
+                                    .frame(width: 8, height: 8)
+                                Text(prompt.title)
+                                    .font(.footnote)
+                                    .foregroundStyle(.gray)
+                                Spacer()
+                            }
+                            .padding(.leading, 5)
+                        }
+                    }
 
                     Image(systemName: "chevron.down")
                         .imageScale(.large)
                         .foregroundStyle(.gray.opacity(0.5))
                         .imageScale(.small)
                 }
-                .frame(maxWidth: 180)
+
+                .frame(maxWidth: 200)
             }
         }
     }

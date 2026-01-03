@@ -40,12 +40,8 @@ enum AppSettingAction: String, CaseIterable {
     case setDefaultImageStorageDays
 
     case deleteAllMuteGroups
-    
-    case deleteMessagesByTime
-}
 
-extension AppSettingAction {
-    static let systemInstruction = String(localized: "你是由 NoLet App 集成的智能助手。你可以使用 'manage_app' 工具来控制应用（设置、导航、数据、缓存、消息管理）。当用户要求执行此工具支持的任何操作（例如“打开设置”、“清除缓存”、“更改图标”、“删除上周的消息”）时，你必须立即调用 'manage_app' 并提供正确的参数。不要仅仅描述你要做什么；你必须执行工具调用。")
+    case deleteMessagesByTime
 }
 
 extension AppSettingAction {
@@ -60,7 +56,6 @@ extension AppSettingAction {
         case .autoSaveImages:
             guard let val = value as? Bool else { return false }
             Defaults[.autoSaveToAlbum] = val
-           
 
         case .showIcon:
             guard let val = value as? Bool else { return false }
@@ -110,7 +105,6 @@ extension AppSettingAction {
         case .openAppDocs:
             AppManager.openURL(url: NCONFIG.docServer.url, .app)
 
-
         case .openServerDocs:
             AppManager.openURL(url: NCONFIG.serverSource.url, .app)
 
@@ -120,7 +114,7 @@ extension AppSettingAction {
             guard let path = NCONFIG.getDir(.caches) else {
                 return false
             }
-            
+
             manager.clearContentsOfDirectory(at: path)
 
         case .setDefaultMessageStorageDays:
@@ -139,27 +133,27 @@ extension AppSettingAction {
 
         case .deleteAllMuteGroups:
             Defaults[.muteSetting] = [:]
-            
+
         case .deleteMessagesByTime:
-            
             guard let rangeStr = value as? String else { return false }
-            let components = rangeStr.split(separator: ",", omittingEmptySubsequences: false).map { String($0) }
-            
+            let components = rangeStr.split(separator: ",", omittingEmptySubsequences: false)
+                .map { String($0) }
+
             var startTime: Date?
             var endTime: Date?
-            
+
             if components.count >= 1, let start = Double(components[0]) {
                 startTime = Date(timeIntervalSince1970: start)
             }
             if components.count >= 2, let end = Double(components[1]) {
                 endTime = Date(timeIntervalSince1970: end)
             }
-            
+
             guard let startTime, let endTime else { return false }
-            
+
             return MessagesManager.shared.delete(startTime, end: endTime)
         }
-        
+
         return true
     }
 }
@@ -272,6 +266,7 @@ extension AppSettingAction {
         case int(range: ClosedRange<Int>? = nil, enums: [Int]? = nil)
         case string(enums: [String]? = nil)
     }
+
     static func getFuncs() -> [openChatManager.FunctionDefinition] {
         let properties: [String: JSONSchema] =
             Dictionary(uniqueKeysWithValues:
@@ -283,10 +278,9 @@ extension AppSettingAction {
         return [
             openChatManager.FunctionDefinition(
                 name: "manage_app",
-                description: """
-                    CRITICAL: 当用户请求操作应用设置、删除消息、打开页面、查看文档、管理数据或清理缓存时，必须调用此函数。
-                    对于这些请求，不要直接回复文本，必须调用此函数。
-                    """,
+                description: String(
+                    localized: "CRITICAL: 当用户请求操作应用设置、删除消息、打开页面、查看文档、管理数据或清理缓存时，必须调用此函数。"
+                ),
                 parameters: .init(fields: [
                     .type(.object),
                     .properties(properties),
@@ -299,9 +293,8 @@ extension AppSettingAction {
 
 extension AppSettingAction {
     func toParameter() -> JSONSchema {
-        
         let description = String(localized: description)
-        
+
         switch valueType {
         case .bool:
             return .init(fields: [

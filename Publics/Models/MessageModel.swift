@@ -13,10 +13,8 @@
 import Foundation
 import GRDB
 
-
 struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
-    
-    var id: String 
+    var id: String
     var createDate: Date
     var group: String
     var title: String?
@@ -35,21 +33,21 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let group = Column(CodingKeys.group)
-        static let createDate = Column(CodingKeys.createDate )
-        static let title = Column(CodingKeys.title )
-        static let subtitle = Column(CodingKeys.subtitle )
-        static let body = Column(CodingKeys.body )
-        static let icon = Column(CodingKeys.icon )
-        static let url = Column(CodingKeys.url )
+        static let createDate = Column(CodingKeys.createDate)
+        static let title = Column(CodingKeys.title)
+        static let subtitle = Column(CodingKeys.subtitle)
+        static let body = Column(CodingKeys.body)
+        static let icon = Column(CodingKeys.icon)
+        static let url = Column(CodingKeys.url)
         static let image = Column(CodingKeys.image)
         static let from = Column(CodingKeys.from)
         static let host = Column(CodingKeys.host)
         static let level = Column(CodingKeys.level)
         static let ttl = Column(CodingKeys.ttl)
         static let isRead = Column(CodingKeys.isRead)
-        static let other = Column(CodingKeys.other )
+        static let other = Column(CodingKeys.other)
     }
-    
+
     var search: String {
         [group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }
             .joined(separator: ";") + ";"
@@ -72,7 +70,6 @@ struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Has
     }
 }
 
-
 struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var timestamp: Date
@@ -89,7 +86,6 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let content = Column(CodingKeys.content)
         static let message = Column(CodingKeys.message)
     }
-
 }
 
 struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
@@ -98,6 +94,7 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
     var title: String
     var content: String
     var inside: Bool
+    var mode: PromptMode = .promt
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -106,9 +103,22 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
         static let content = Column(CodingKeys.content)
         static let inside = Column(CodingKeys.inside)
     }
+
+    enum PromptMode: String, Codable {
+        case promt
+        case mcp
+        
+        var name:String{
+            switch self {
+            case .promt: String(localized: "提示词")
+            case .mcp: "MCP"
+            }
+        }
+    }
 }
 
 enum ChatPromptMode: Equatable {
+    case mcp(String?)
     case summary(String?)
     case translate(String?)
     case writing(String?)

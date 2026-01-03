@@ -114,5 +114,11 @@ final class DatabaseManager {
                 t.column("inside", .boolean).notNull()
             }
         }
+        
+        migrator.registerMigration("add mode") { db in
+            try db.alter(table: self.chatPromptTabelName) { t in
+                t.add(column: "mode", .text)
+            }
+        }
     }
 }

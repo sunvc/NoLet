@@ -37,7 +37,9 @@ struct PromptDetailView: View {
                     titleSection
                     contentSection
                     promptInfoSection
-                    actionButtonsSection
+                    if prompt?.mode != .mcp {
+                        actionButtonsSection
+                    }
                 }
                 .padding(.vertical)
             }
@@ -66,6 +68,7 @@ struct PromptDetailView: View {
     private var contentSection: some View {
         SectionView(title: String(localized: "内容")) {
             if isEditing {
+                
                 TextEditor(text: $content)
                     .frame(minHeight: 200)
                     .padding(8)
@@ -86,9 +89,12 @@ struct PromptDetailView: View {
                     if prompt.inside {
                         InfoBanner(
                             icon: "info.circle",
-                            title: String(localized: "内置提示词"),
-                            message: String(localized: "这是一个内置提示词，你可以基于它创建一个新的自定义提示词")
+                            title: String(localized: "内置") + prompt.mode.name,
+                            message: prompt
+                                .mode == .mcp ? String(localized: "使用自然语言设置你的App") :
+                                String(localized: "你可以基于它创建一个新的自定义提示词")
                         )
+
                     } else {
                         InfoBanner(
                             icon: "calendar",

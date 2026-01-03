@@ -22,7 +22,6 @@ struct ChatInputView: View {
 
     let onSend: (String) -> Void
 
-    @State private var showPromptChooseView = false
     @FocusState private var isFocusedInput: Bool
 
     @State private var selectedPromptIndex: Int?
@@ -35,7 +34,7 @@ struct ChatInputView: View {
     var body: some View {
         VStack {
             HStack {
-                PromptLabelView(prompt: chatManager.chatPrompt)
+                PromptLabelView()
             }
             .padding(.horizontal)
 
@@ -65,7 +64,7 @@ struct ChatInputView: View {
                 .onChange(of: isFocusedInput) { value in
                     chatManager.isFocusedInput = value
                 }
-            
+
             if !text.isEmpty {
                 // 发送按钮
                 Button(action: {
@@ -83,57 +82,23 @@ struct ChatInputView: View {
                         .background26(Color.white, radius: 20)
                 }
                 .transition(.scale)
-            }else{
-                Image(systemName: chatManager
-                    .useFunctionCall ? "bolt.badge.a" : "puzzlepiece.extension")
-                    .foregroundStyle(chatManager.useFunctionCall ? .green : .gray)
+            } else {
+                Image(systemName: "puzzlepiece.extension")
+                    .foregroundStyle(chatManager.chatPrompt != nil ? .green : .gray)
                     .font(.title2)
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 15))
                     .onTapGesture {
-                        showPromptChooseView = true
+                        chatManager.showPromptChooseView = true
                         Haptic.impact()
                     }
             }
-
-            
         }
         .background26(Color(.systemGray6), radius: 17)
-        .sheet(isPresented: $showPromptChooseView) {
-            PromptChooseView()
-                .customPresentationCornerRadius(20)
-        }
     }
 
-
     @ViewBuilder
-    func PromptLabelView(prompt: ChatPrompt?) -> some View {
+    func PromptLabelView() -> some View {
         HStack(spacing: 10) {
-            if let prompt {
-                Menu {
-                    Button(role: .destructive) {
-                        chatManager.chatPrompt = nil
-                    } label: {
-                        Label("清除", systemImage: "eraser")
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                } label: {
-                    Text(prompt.title)
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(
-                            RoundedRectangle(cornerRadius: 15)
-                                .fill(Color.blue.opacity(0.8))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 15)
-                                .stroke(Color.blue.opacity(0.3), lineWidth: 1)
-                        )
-                        .shadow(color: .blue.opacity(0.2), radius: 3, x: 0, y: 2)
-                }
-            }
-
             Spacer()
 
             if let quote = quote {
@@ -178,21 +143,7 @@ struct ChatInputView: View {
                         }
                         .onDisappear {
                             Task { @MainActor in
-                                if let group = chatManager.chatGroup {
-                                    let messages = try await DatabaseManager.shared.dbQueue
-                                        .read { db in
-                                            try ChatMessage
-                                                .filter(ChatMessage.Columns.chat == group.id)
-                                                .fetchAll(db)
-                                        }
-
-                                    if messages.count == 0 {
-                                        _ = try await DatabaseManager.shared.dbQueue.write { db in
-                                            try group.delete(db)
-                                        }
-                                        chatManager.setGroup()
-                                    }
-                                }
+                                chatManager.setGroup()
                             }
                         }
                 }
