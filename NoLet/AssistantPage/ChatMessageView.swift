@@ -14,7 +14,6 @@ import Defaults
 import SwiftUI
 
 struct ChatMessageView: View {
-    
     let message: ChatMessage
     let isLoading: Bool
 
@@ -24,9 +23,8 @@ struct ChatMessageView: View {
     }
 
     var body: some View {
-        
         VStack {
-            Section{
+            Section {
                 if message.request.count > 0 || quote != nil {
                     VStack {
                         if let quote = quote {
@@ -60,8 +58,32 @@ struct ChatMessageView: View {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                 }
-            }header: {
+            } header: {
                 timestampView
+            } footer: {
+                if let result = message.result, let text = result.text() {
+                    VStack {
+                        DisclosureGroup { 
+                            HStack {
+                                Text(verbatim: text)
+                                Spacer(minLength: 0)
+                            }
+                            .padding(.vertical)
+                            .padding(.horizontal, 10)
+                            .background26(.ultraThinMaterial)
+                            .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 10, bottomTrailingRadius: 10, topTrailingRadius: 0, style: .continuous))
+                        } label: { 
+                            HStack{
+                                Text("工具执行结果")
+                                    .font(.subheadline)
+                        
+                            }
+                            
+                        }
+
+                    }
+                    .padding(.horizontal)
+                }
             }
         }
         .padding(.vertical, 4)

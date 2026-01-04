@@ -370,9 +370,9 @@ extension MessagesManager {
         return -1
     }
 
-    nonisolated func delete(_ start: Date, end: Date) -> Bool{
+    nonisolated func delete(_ start: Date, end: Date) -> String{
         debugPrint(start.formatted(), end.formatted())
-        return true
+        return "success"
     }
     
     

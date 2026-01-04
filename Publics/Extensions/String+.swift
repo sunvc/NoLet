@@ -47,8 +47,7 @@ extension String {
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    nonisolated
-    var trimmingSpaceAndNewLines: String {
+    nonisolated var trimmingSpaceAndNewLines: String {
         replacingOccurrences(of: "\\s+", with: "", options: .regularExpression)
     }
 
@@ -179,5 +178,15 @@ extension String {
                 options: .regularExpression
             )
         }
+    }
+
+    func jsonData() -> [String: Any]? {
+        if let data = data(using: .utf8),
+           let json = try? JSONSerialization
+           .jsonObject(with: data, options: []) as? [String: Any]
+        {
+            return json
+        }
+        return nil
     }
 }

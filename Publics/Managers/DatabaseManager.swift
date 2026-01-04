@@ -89,6 +89,12 @@ final class DatabaseManager {
                 t.column("current", .boolean)
             }
         }
+        
+        migrator.registerMigration("add point") { db in
+            try db.alter(table: self.chatGroupTabelName) { t in
+                t.add(column: "point", .datetime)
+            }
+        }
     }
 
     func registerChatMessageMigrations(_ migrator: inout DatabaseMigrator) {
@@ -100,6 +106,12 @@ final class DatabaseManager {
                 t.column("request", .text).notNull()
                 t.column("content", .text).notNull()
                 t.column("message", .text)
+            }
+        }
+        
+        migrator.registerMigration("add result") { db in
+            try db.alter(table: self.chatMessageTabelName) { t in
+                t.add(column: "result", .jsonText)
             }
         }
     }

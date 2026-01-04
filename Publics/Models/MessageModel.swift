@@ -60,6 +60,7 @@ struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Has
     var name: String
     var host: String
     var current: Bool
+    var point: Date?
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -67,6 +68,7 @@ struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Has
         static let name = Column(CodingKeys.name)
         static let host = Column(CodingKeys.host)
         static let current = Column(CodingKeys.current)
+        static let point = Column(CodingKeys.point)
     }
 }
 
@@ -77,6 +79,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
     var request: String
     var content: String
     var message: String?
+    var result: [String: String]?
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -85,6 +88,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let request = Column(CodingKeys.request)
         static let content = Column(CodingKeys.content)
         static let message = Column(CodingKeys.message)
+        static let result = Column(CodingKeys.result)
     }
 }
 
@@ -107,8 +111,8 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
     enum PromptMode: String, Codable {
         case promt
         case mcp
-        
-        var name:String{
+
+        var name: String {
             switch self {
             case .promt: String(localized: "提示词")
             case .mcp: "MCP"

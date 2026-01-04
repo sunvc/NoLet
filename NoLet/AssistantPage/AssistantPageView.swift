@@ -245,31 +245,6 @@ struct AssistantPageView: View {
                     }
                 }
 
-                for (index, (name, args)) in toolCallsMap {
-                    if !name.isEmpty, !args.isEmpty {
-                        NLog
-                            .log(
-                                "Attempting to run function [\(index)]: \(name) with args: \(args)"
-                            )
-                        if let data = args.data(using: .utf8),
-                           let json = try? JSONSerialization
-                           .jsonObject(with: data, options: []) as? [String: Any]
-                        {
-                            runFunc(name: name, args: json)
-                        } else {
-                            NLog
-                                .error(
-                                    "Failed to parse tool arguments JSON for [\(index)]: \(args)"
-                                )
-                            Task { @MainActor in
-                                Toast.error(title: "Function call failed: Invalid JSON")
-                            }
-                        }
-                    }
-                }
-
-                Haptic.impact()
-
                 let responseMessage: ChatMessage? = {
                     if chatManager.currentChatMessage.content.isEmpty {
                         return nil
@@ -284,8 +259,23 @@ struct AssistantPageView: View {
                         try responseMessage.insert(db)
                     }
                 }
+                Haptic.impact()
 
+                if !toolCallsMap.isEmpty, let responseMessage = responseMessage {
+                    let result = await runChatCall(params: toolCallsMap)
+                    if !result.isEmpty {
+                        try await DatabaseManager.shared.dbQueue.write { db in
+                            if var message = try ChatMessage.fetchOne(db, id: responseMessage.id) {
+                                message.result = result
+                                try message.update(db)
+                            }
+                        }
+                        Haptic.impact()
+                    }
+                }
+               
                 chatManager.currentRequest = ""
+                chatManager.currentContent = ""
                 AppManager.shared.isLoading = false
 
             } catch {
@@ -304,17 +294,33 @@ struct AssistantPageView: View {
 }
 
 extension AssistantPageView {
-    func runFunc(name: String, args: [String: Any]) {
-        guard name == "manage_app" || name == "update_settings" else { return }
-
-        Task { @MainActor in
-            for (key, value) in args {
-                if let action = AppSettingAction(rawValue: key) {
-                    let success = action.execute(with: value)
-                    Toast.success(title: success ? "操作成功" : "操作失败")
+    func runChatCall(params: [Int: (name: String, args: String)]) async -> [String: String] {
+        var results: [String: String] = [:]
+        for (_, (name, args)) in params {
+            if !name.isEmpty, !args.isEmpty {
+                if let json = args.jsonData() {
+                    let result = await _runFunc(name: name, args: json)
+                    results += result
+                } else {
+                    results[name] = "Invalid JSON"
                 }
             }
         }
+        return results
+    }
+
+    private func _runFunc(name: String, args: [String: Any]) async -> [String: String] {
+        guard NoLetChatAction.AllName.contains(where: {
+            $0.localizedCaseInsensitiveContains(name)
+        }) else { return ["error": "没有找到函数"] }
+        var results: [String: String] = [:]
+        for (key, value) in args {
+            if let action = NoLetChatAction(rawValue: key) {
+                let msg = await action.execute(with: value)
+                results[action.rawValue] = msg
+            }
+        }
+        return results
     }
 }
 
@@ -507,7 +513,7 @@ struct StreamingLoadingView: View {
                                 .font(.footnote)
                         }
 
-                        if  let prompt = chatManager.chatPrompt {
+                        if let prompt = chatManager.chatPrompt {
                             HStack {
                                 Circle()
                                     .fill(.green)

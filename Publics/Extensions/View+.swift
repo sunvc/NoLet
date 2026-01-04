@@ -520,4 +520,21 @@ extension View {
     }
 }
 
+extension Dictionary {
+    static func + (lhs: inout Dictionary, rhs: Dictionary) {
+        lhs.merge(rhs) { _, new in new }
+    }
 
+    static func += (lhs: inout Dictionary, rhs: Dictionary) {
+        lhs.merge(rhs) { _, new in new }
+    }
+}
+
+extension Dictionary where Key == String, Value == String {
+    func text() -> String? {
+        if let data = try? JSONEncoder().encode(self) {
+            return String(data: data, encoding: .utf8)
+        }
+        return nil
+    }
+}

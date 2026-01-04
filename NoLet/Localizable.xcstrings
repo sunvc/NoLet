@@ -674,6 +674,7 @@
       }
     },
     "CRITICAL: 当用户请求操作应用设置、删除消息、打开页面、查看文档、管理数据或清理缓存时，必须调用此函数。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -701,7 +702,14 @@
         }
       }
     },
+    "CRITICAL: 管理应用设置、删除消息、打开页面、查看文档等." : {
+
+    },
+    "CRITICAL: 管理当前模型上下文" : {
+
+    },
     "Function call failed: Invalid JSON" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1652,6 +1660,9 @@
           }
         }
       }
+    },
+    "任务执行结果" : {
+
     },
     "你可以基于它创建一个新的自定义提示词" : {
       "localizations" : {
@@ -3306,6 +3317,7 @@
       }
     },
     "删除所有静音的分组" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3334,6 +3346,7 @@
       }
     },
     "删除指定时间范围内的消息。参数格式为 'start_timestamp,end_timestamp'（秒级时间戳）。例如：删除2025年6月到10月的消息 -> '1748736000,1759276800'。若只删除某时间之前，用 ',end'；某时间之后，用 'start,'。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5517,6 +5530,9 @@
         }
       }
     },
+    "工具执行结果" : {
+
+    },
     "已使用" : {
       "localizations" : {
         "en" : {
@@ -6332,6 +6348,7 @@
       }
     },
     "打开 AI 助手设置页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6360,6 +6377,7 @@
       }
     },
     "打开 App 使用文档" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6388,6 +6406,7 @@
       }
     },
     "打开云图标上传页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6416,6 +6435,7 @@
       }
     },
     "打开关于页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6444,6 +6464,7 @@
       }
     },
     "打开加密设置页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6500,6 +6521,7 @@
       }
     },
     "打开声音设置页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6528,6 +6550,7 @@
       }
     },
     "打开数据管理页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6556,6 +6579,7 @@
       }
     },
     "打开服务器设置页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6584,6 +6608,7 @@
       }
     },
     "打开服务器部署文档" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6612,6 +6637,7 @@
       }
     },
     "打开系统设置页面" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7986,6 +8012,7 @@
       }
     },
     "是否在消息列表中显示应用图标" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8014,6 +8041,7 @@
       }
     },
     "是否开启声音反馈" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8042,6 +8070,7 @@
       }
     },
     "是否开启扫描区域限制" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -8126,6 +8155,7 @@
       }
     },
     "是否自动保存图片到相册" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10090,6 +10120,7 @@
       }
     },
     "消息气泡显示的最大行数，范围 1 到 10" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -10314,6 +10345,7 @@
       }
     },
     "清除 App 缓存" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12024,6 +12056,7 @@
       }
     },
     "设置默认图片存储天数" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12052,6 +12085,7 @@
       }
     },
     "设置默认消息存储天数" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -14042,6 +14076,7 @@
       }
     },
     "默认浏览器设置" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

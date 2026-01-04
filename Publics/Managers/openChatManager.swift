@@ -86,6 +86,22 @@ final class openChatManager: ObservableObject {
         )
     }
 
+    func setPoint() async -> Bool {
+        guard let chatGroup else { return false }
+        do {
+            return try await DB.dbQueue.write { db in
+                if var chatgroup = try ChatGroup.filter(id: chatGroup.id).fetchOne(db) {
+                    chatgroup.point = .now
+                    try chatgroup.upsert(db)
+                    return true
+                }
+                return false
+            }
+        } catch {
+            return false
+        }
+    }
+
     func setGroup(group: ChatGroup? = nil) {
         do {
             _ = try DB.dbQueue.write { db in
@@ -194,7 +210,7 @@ extension openChatManager {
                 return ChatQuery(
                     messages: params,
                     model: account.model,
-                    tools: AppSettingAction.getFuncs().map { .init(function: $0) }
+                    tools: NoLetChatAction.getFuncs().map { .init(function: $0) }
                 )
             }
         }
@@ -208,25 +224,45 @@ extension openChatManager {
             return text
         }
 
-        let limit = Defaults[.historyMessageCount]
-        params += getHistory(limit)
+        params += getHistory(Defaults[.historyMessageCount])
         params.append(.user(.init(content: .string(inputText))))
 
-        return ChatQuery(messages: params, model: account.model)
+        return ChatQuery(
+            messages: params,
+            model: account.model,
+            tools: NoLetChatAction.defaultFunc().map { .init(function: $0) }
+        )
     }
 
     private func getHistory(_ limit: Int) -> [ChatQuery.ChatCompletionMessageParam] {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
             let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
-            return try ChatMessage
-                .filter(ChatMessage.Columns.chat == group?.id)
-                .order(\.timestamp.desc)
-                .limit(limit)
-                .fetchAll(db)
+            if let point = group?.point{
+                return try ChatMessage
+                    .filter(ChatMessage.Columns.chat == group?.id)
+                    .filter(ChatMessage.Columns.timestamp > point)
+                    .order(\.timestamp.desc)
+                    .limit(limit)
+                    .fetchAll(db)
+                
+            }else{
+                return try ChatMessage
+                    .filter(ChatMessage.Columns.chat == group?.id)
+                    .order(\.timestamp.desc)
+                    .limit(limit)
+                    .fetchAll(db)
+            }
+            
         }) {
-            for message in messageRaw {
+            for message in messageRaw.reversed() {
                 params.append(.user(.init(content: .string(message.request))))
+                var content: String{
+                    if let result = message.result, let json = result.text(){
+                        return message.content + String(localized: "任务执行结果") + json
+                    }
+                    return message.content
+                }
                 params.append(.assistant(.init(content: .textContent(message.content))))
             }
         }
@@ -256,8 +292,6 @@ extension openChatManager {
             return OpenAI(configuration: config)
         }
     }
-
-    typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
 
     func chatsStream(
         text: String,
