@@ -12,7 +12,7 @@
 //    Created by Neo on 2024/12/10.
 
 import ActivityKit
-import AVFoundation
+import AVKit
 import Defaults
 import Foundation
 import SwiftUI
@@ -52,7 +52,7 @@ final class AudioManager: NetworkManager, ObservableObject {
         if currentURL == url {
             //  如果是同一个文件，则切换播放状态
             if isPlaying {
-                pause()
+                play(pause: true)
             } else {
                 play()
             }
@@ -87,13 +87,12 @@ final class AudioManager: NetworkManager, ObservableObject {
             queue: .main
         ) { [weak self] time in
             guard let self = self else { return }
-            Task{@MainActor in
+            Task { @MainActor in
                 self.currentTime = time.seconds
                 if let dur = self.player?.currentItem?.duration.seconds, dur > 0 {
                     self.duration = dur
                 }
             }
-            
         }
 
         //  监听播放结束
@@ -104,31 +103,30 @@ final class AudioManager: NetworkManager, ObservableObject {
         ) { [weak self] _ in
             guard let self = self else { return }
             // 停止并清理
-            Task{@MainActor in
+            Task { @MainActor in
                 self.cleanup()
             }
         }
     }
 
     /// 播放
-    private func play() {
-        player?.play()
-        isPlaying = true
-    }
-
-    /// 暂停
-    private func pause() {
-        player?.pause()
-        isPlaying = false
+    func play(pause: Bool = false, stop: Bool = false) {
+        if stop {
+            cleanup()
+        } else {
+            if pause {
+                player?.pause()
+                isPlaying = false
+            } else {
+                player?.play()
+                isPlaying = true
+            }
+        }
     }
 
     /// 跳转到指定时间
     func seek(to time: Double) {
         player?.seek(to: CMTime(seconds: time, preferredTimescale: 600))
-    }
-
-    func stop() {
-        cleanup()
     }
 
     /// 清理资源（切歌时）
@@ -144,6 +142,7 @@ final class AudioManager: NetworkManager, ObservableObject {
         currentURL = nil
         isPlaying = false
     }
+
     @MainActor
     deinit {
         cleanup()
@@ -245,38 +244,32 @@ extension AudioManager {
     }
 }
 
-extension AudioManager {
-    // MARK: - OTHER
-
-    static func tips(
-        _ sound: TipsSound,
-        fileExtension: String = "aac",
-        complete: (() -> Void)? = nil
-    ) {
-        tips(sound.rawValue, fileExtension: fileExtension, complete: complete)
+nonisolated enum Tone {
+    
+    static func play(_ sound: TipsSound, fileExtension: String = "aac") async {
+        await play(sound.rawValue, fileExtension: fileExtension)
     }
 
-    static func tips(
+    static func play(
         _ sound: String,
-        fileExtension: String = "aac",
-        complete: (() -> Void)? = nil
-    ) {
-        guard Defaults[.feedbackSound] else { return }
+        fileExtension: String = "aac"
+    ) async {
+        // 1. 检查设置
+        guard await Defaults[.feedbackSound] else { return }
+        var localSoundID: SystemSoundID = 0
 
-        var soundID: SystemSoundID = 0
+        AudioServicesDisposeSystemSoundID(localSoundID)
 
         if let number = Int(sound) {
-            soundID = SystemSoundID(number)
+            localSoundID = SystemSoundID(number)
         } else if let url = Bundle.main.url(forResource: sound, withExtension: fileExtension) {
-            AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+            AudioServicesCreateSystemSoundID(url as CFURL, &localSoundID)
         }
-        if soundID != 0 {
-            AudioServicesPlaySystemSoundWithCompletion(soundID) {
-                AudioServicesDisposeSystemSoundID(soundID)
-                complete?()
+
+        if localSoundID != 0 {
+            AudioServicesPlaySystemSoundWithCompletion(localSoundID) {
+                AudioServicesDisposeSystemSoundID(localSoundID)
             }
-        } else {
-            complete?()
         }
     }
 

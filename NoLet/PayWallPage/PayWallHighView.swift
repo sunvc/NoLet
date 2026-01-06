@@ -75,7 +75,7 @@ struct PayWallHighView: View {
                         if case .verified(let transaction) = result {
                             Task { @MainActor in
                                 await transaction.finish()
-                                manager.sheetPage = .none
+                                manager.open(sheet: nil)
                             }
                             NLog.log("Success and verify purchase using verification result")
                         }

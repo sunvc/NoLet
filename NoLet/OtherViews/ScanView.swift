@@ -45,7 +45,10 @@ struct ScanView: View {
                 torchActive: $isTorchOn,
                 shouldRescan: $shouldRescan,
                 onSuccess: { code in
-                    AudioManager.tips(.qrcode)
+                    Task.detached {
+                        await Tone.play(.qrcode)
+                    }
+
                     Task { @MainActor in
                         try await Task.sleep(for: .seconds(0.5))
                         self.code = code
@@ -60,9 +63,13 @@ struct ScanView: View {
                         }
                     default:
                         Toast.error(title: "扫码失败")
-                        AudioManager.tips("1053")
+                        Task.detached {
+                            await Tone.play("1053")
+                        }
                     }
-                    self.code = nil
+                    Task { @MainActor in
+                        self.code = nil
+                    }
                 },
                 onTorchActiveChange: { isOn in
                     isTorchOn = isOn
@@ -119,11 +126,11 @@ struct ScanView: View {
                                 Section {
                                     Button {
                                         self.dismiss()
-                                        AppManager.shared.sheetPage = .quickResponseCode(
+                                        AppManager.shared.open(sheet: .quickResponseCode(
                                             text: code,
                                             title: String("二维码"),
                                             preview: String("二维码")
-                                        )
+                                        ))
                                     } label: {
                                         Label("生成二维码", systemImage: "qrcode")
                                     }

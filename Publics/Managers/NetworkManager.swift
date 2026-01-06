@@ -15,11 +15,16 @@ import CommonCrypto
 import Compression
 import Defaults
 import Foundation
-import UniformTypeIdentifiers
 import UIKit
+import UniformTypeIdentifiers
 
-class NetworkManager: NSObject, Sendable{
-    private var session: URLSession!
+class NetworkManager: NSObject {
+    private let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.requestCachePolicy = .reloadIgnoringLocalCacheData
+        config.urlCache = nil
+        return URLSession(configuration: config, delegate: nil, delegateQueue: .main)
+    }()
 
     enum requestMethod: String {
         case GET
@@ -72,13 +77,6 @@ class NetworkManager: NSObject, Sendable{
         headers: [String: String] = [:],
         timeout: Double = 30
     ) async throws -> (Data, URLResponse) {
-        if session == nil {
-            let config = URLSessionConfiguration.default
-            config.requestCachePolicy = .reloadIgnoringLocalCacheData
-            config.urlCache = nil
-            session = URLSession(configuration: config, delegate: nil, delegateQueue: .main)
-        }
-
         // 尝试将字符串转换为 URL，如果失败则抛出错误
         let url = (url + path).normalizedURLString()
         guard var requestURL = URL(string: url) else {
@@ -101,7 +99,7 @@ class NetworkManager: NSObject, Sendable{
         var request = URLRequest(url: requestURL)
         request.httpMethod = method.method // .get 或 .post
 
-        request.setValue(await self.customUserAgent(), forHTTPHeaderField: "User-Agent")
+        request.setValue(await customUserAgent(), forHTTPHeaderField: "User-Agent")
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
 
         for (key, value) in headers {
@@ -184,7 +182,7 @@ class NetworkManager: NSObject, Sendable{
 
         return destinationURL
     }
-   
+
     func customUserAgent() async -> String {
         let info = Bundle.main.infoDictionary
 
@@ -201,7 +199,7 @@ class NetworkManager: NSObject, Sendable{
             }
         }
 
-        let systemVer = await MainActor.run{ UIDevice.current.systemVersion }
+        let systemVer = await MainActor.run { UIDevice.current.systemVersion }
         let locale = Locale.current
         let regionCode = locale.region?.identifier ?? "CN" // e.g. CN
         let language = locale.language.languageCode?.identifier ?? "en" // e.g. zh

@@ -33,7 +33,7 @@ struct OpenChatHistoryView: View {
 
     @State private var selectdChatGroup: ChatGroup? = nil
 
-    @EnvironmentObject private var chatManager: openChatManager
+    @EnvironmentObject private var chatManager: NoLetChatManager
     var body: some View {
         NavigationStack {
             VStack {

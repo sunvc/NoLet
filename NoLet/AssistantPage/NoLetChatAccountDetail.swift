@@ -12,9 +12,9 @@
 import Defaults
 import SwiftUI
 
-struct AddOrChangeChatAccount: View {
+struct NoLetChatAccountDetail: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var chatManager: openChatManager
+    @EnvironmentObject var chatManager: NoLetChatManager
     @State private var data: AssistantAccount
     @Default(.assistantAccouns) var assistantAccouns
     @State private var isSecured: Bool = true
@@ -143,7 +143,7 @@ struct AddOrChangeChatAccount: View {
                         .disabled(isTestingAPI)
                 }
 
-                if let config = data.toBase64() {
+                if !isAdd, let config = data.toBase64() {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             Haptic.impact()
@@ -152,12 +152,12 @@ struct AddOrChangeChatAccount: View {
                                 host: .assistant,
                                 params: ["text": config]
                             )
-                            DispatchQueue.main.async {
-                                AppManager.shared.sheetPage = .quickResponseCode(
+                            Task { @MainActor in
+                                AppManager.shared.open(sheet: .quickResponseCode(
                                     text: local.absoluteString,
                                     title: String(localized: "智能助手"),
                                     preview: String(localized: "智能助手")
-                                )
+                                ))
                             }
                         } label: {
                             Label("分享", systemImage: "qrcode")

@@ -78,57 +78,23 @@ struct SearchMessageView: View {
         .if(colorScheme == .light) { view in
             view.background(.ultraThinMaterial)
         }
-        .diff { view in
-            Group {
-                if #available(iOS 26.0, *) {
-                    view
-                        .if(manager.page == .search) { view in
-                            view
-                                .searchable(text: $searchText)
-                                .onChange(of: searchText) { value in
-                                    if value.isEmpty {
-                                        manager.searchText = ""
-                                    }
-                                }
-                                .onSubmit(of: .search) {
-                                    manager.searchText = searchText
-                                }
-                                .navigationTitle("搜索数据")
-                        }
+        .safeAreaInset(edge: .top, content: {
+            HStack {
+                Text("搜索结果")
+                    .foregroundStyle(.gray)
+                    .font(.subheadline)
 
-                        .safeAreaInset(edge: .top) {
-                            HStack {
-                                Spacer()
-                                Text(
-                                    verbatim: "\(messages.count) / \(max(allCount, messages.count))"
-                                )
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-
-                            }.padding(.trailing)
-                        }
-                } else {
-                    view
-                        .safeAreaInset(edge: .top, content: {
-                            HStack {
-                                Text("搜索结果")
-                                    .foregroundStyle(.gray)
-                                    .font(.subheadline)
-
-                                Spacer()
-                                Text(
-                                    verbatim: "\(messages.count) / \(max(allCount, messages.count))"
-                                )
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                            }
-                            .padding(.horizontal)
-                            .padding(.bottom, 3)
-                            .background(.ultraThinMaterial)
-                        })
-                }
+                Spacer()
+                Text(
+                    verbatim: "\(messages.count) / \(max(allCount, messages.count))"
+                )
+                .font(.caption)
+                .foregroundStyle(.gray)
             }
-        }
+            .padding(.horizontal)
+            .padding(.bottom, 3)
+            .background(.ultraThinMaterial)
+        })
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 loadData(limit: messagePage)

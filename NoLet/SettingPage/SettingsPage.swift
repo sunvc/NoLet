@@ -50,18 +50,49 @@ struct SettingsPage: View {
         formatter.maximumFractionDigits = 2
         return formatter
     }
+    
+    @State private var selectView: String? = "message"
 
     var body: some View {
-        List {
+        List(selection: $selectView) {
             if .ISPAD {
-                ListButton {
-                    Label("消息", systemImage: "ellipsis.message")
-                } action: {
-                    Task { @MainActor in
-                        manager.router = []
-                    }
-                    return true
+                if manager.prouter.count > 0{
+                    ListButton {
+                        Label("消息", systemImage: "ellipsis.message")
+                    } action: {
+                        Task { @MainActor in
+                            manager.router = []
+                        }
+                        return true
+                    }.id("message")
                 }
+                
+                if manager.prouter.first != .noletChat{
+                    Section{
+                        
+                        ListButton {
+                            Group{
+                                if #available(iOS 26.0, *){
+                                    Label("智能助手", systemImage: "gear.badge.questionmark")
+                                        .symbolRenderingMode(.palette)
+                                        .customForegroundStyle(.green, .primary)
+                                }else{
+                                    Label("智能助手", systemImage: "atom")
+                                        .symbolRenderingMode(.palette)
+                                        .customForegroundStyle(.green, .primary)
+                                }
+                            }
+                           
+                        } action: {
+                            Task { @MainActor in
+                                manager.router = [.noletChat]
+                            }
+                            return true
+                        }.id("noletchat")
+                        
+                    }
+                }
+                
             }
 
             Section(header: Text("App配置").textCase(.none)) {
@@ -97,7 +128,7 @@ struct SettingsPage: View {
                                 manager.router = [.server]
                             }
                             return true
-                        }
+                        }.id("servers")
                     }
                 }
                 .onChange(of: noServerModel) { _ in
@@ -128,10 +159,10 @@ struct SettingsPage: View {
                     }
                 } action: {
                     Task { @MainActor in
-                        manager.sheetPage = .cloudIcon
+                        manager.open(sheet: .cloudIcon)
                     }
                     return true
-                }
+                }.id("icloudPng")
 
                 ListButton {
                     Label {
@@ -147,10 +178,10 @@ struct SettingsPage: View {
 
                 } action: {
                     Task { @MainActor in
-                        manager.router = [.assistantSetting(nil)]
+                        manager.router = [.noletChatSetting(nil)]
                     }
                     return true
-                }
+                }.id("noletchatsettings")
 
                 ListButton {
                     Label {
@@ -168,7 +199,7 @@ struct SettingsPage: View {
                         manager.router = [.sound]
                     }
                     return true
-                }
+                }.id("sounds")
 
                 ListButton {
                     Label {
@@ -184,7 +215,7 @@ struct SettingsPage: View {
                         manager.router = [.crypto]
                     }
                     return true
-                }
+                }.id("cryptoview")
 
                 ListButton {
                     Label {
@@ -200,7 +231,7 @@ struct SettingsPage: View {
                         manager.router = [.dataSetting]
                     }
                     return true
-                }
+                }.id("datamanager")
 
                 ListButton {
                     Label {
@@ -215,7 +246,7 @@ struct SettingsPage: View {
                         manager.router = [.more]
                     }
                     return true
-                }
+                }.id("moresettings")
             }
 
             Section {
@@ -234,7 +265,7 @@ struct SettingsPage: View {
                         manager.router = [.about]
                     }
                     return true
-                }
+                }.id("aboutsetting")
 
                 if #available(iOS 17.0, *) {
                     ListButton {
@@ -262,11 +293,11 @@ struct SettingsPage: View {
                             AppManager.openURL(url: NCONFIG.telegram, .safari)
                         } else {
                             Task { @MainActor in
-                                manager.sheetPage = .paywall
+                                manager.open(sheet: .paywall)
                             }
                         }
                         return true
-                    }
+                    }.id("store")
                 }
 
             } header: {
@@ -278,7 +309,7 @@ struct SettingsPage: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    manager.fullPage = .scan
+                    manager.open(full: .scan)
                     Haptic.impact()
                 } label: {
                     Image(systemName: "qrcode.viewfinder")

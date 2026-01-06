@@ -105,8 +105,7 @@ struct DataSettingView: View {
                                         try await messageManager.exportToJSONFile(fileURL: filepath)
 
                                         DispatchQueue.main.async {
-                                            AppManager.shared
-                                                .sheetPage = .share(contents: [filepath])
+                                            AppManager.shared.open(sheet: .share(contents: [filepath]))
                                             self.showexportLoading = false
                                             self.calculateSize()
                                         }
@@ -128,7 +127,7 @@ struct DataSettingView: View {
                     Section {
                         Button {
                             if let configPath = AppManager.createDatabaseFileTem() {
-                                AppManager.shared.sheetPage = .share(contents: [configPath])
+                                AppManager.shared.open(sheet: .share(contents: [configPath]))
                                 self.calculateSize()
                             }
 
@@ -141,7 +140,7 @@ struct DataSettingView: View {
 
                     Section {
                         Button {
-                            AppManager.shared.sheetPage = .share(contents: [NCONFIG.databasePath])
+                            AppManager.shared.open(sheet: .share(contents: [NCONFIG.databasePath]))
                             self.calculateSize()
                         } label: {
                             Label("数据库文件", systemImage: "internaldrive")

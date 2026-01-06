@@ -55,12 +55,12 @@ struct AboutNoLetView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                             .accessibilityLabel("点击切换应用图标")
                             .onTapGesture {
-                                manager.sheetPage = .appIcon
+                                manager.open(sheet: .appIcon)
                                 Haptic.impact()
                             }
                             .onLongPressGesture {
                                 if nearbyShow {
-                                    manager.fullPage = .nearby
+                                    manager.open(full: .nearby)
                                 } else {
                                     self.showNearbySetting.toggle()
                                 }

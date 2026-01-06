@@ -70,7 +70,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if !manager.isWarmStart {
             NLog.log("❄️ 冷启动")
             manager.isWarmStart = true
-            openChatManager.shared.clearunuse()
+            NoLetChatManager.shared.clearunuse()
         }
         
         setLangAssistantPrompt()

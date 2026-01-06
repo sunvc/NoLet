@@ -13,11 +13,11 @@ import Foundation
 
 // MARK: - Page model
 
-enum SubPage: Equatable {
+enum SubPage: Equatable, Identifiable {
     static func == (lhs: SubPage, rhs: SubPage) -> Bool {
         switch (lhs, rhs) {
         case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon),
-             (.cloudIcon, .cloudIcon), (.paywall, .paywall), (.none, .none):
+             (.cloudIcon, .cloudIcon), (.paywall, .paywall):
             return true
         case (.web(let a), .web(let b)):
             return a == b
@@ -41,19 +41,33 @@ enum SubPage: Equatable {
     case paywall
     case quickResponseCode(text: String, title: String?, preview: String?)
     case crypto(CryptoModelConfig)
-    case none
     case share(contents: [Any])
     case nearby
+
+    var id: String {
+        switch self {
+        case .customKey: "customKey"
+        case .scan: "scan"
+        case .appIcon: "appIcon"
+        case .web: "web"
+        case .cloudIcon: "cloudIcon"
+        case .paywall: "paywall"
+        case .quickResponseCode: "quickResponseCode"
+        case .crypto: "crypto"
+        case .share: "share"
+        case .nearby: "nearby"
+        }
+    }
 }
 
 enum RouterPage: Hashable {
     case example
     case messageDetail(String)
-    case assistant
     case sound
     case crypto
     case server
-    case assistantSetting(AssistantAccount?)
+    case noletChat
+    case noletChatSetting(AssistantAccount?)
     case more
     case about
     case dataSetting
@@ -66,7 +80,6 @@ extension RouterPage: Equatable {
     static func == (lhs: RouterPage, rhs: RouterPage) -> Bool {
         switch (lhs, rhs) {
         case (.example, .example),
-             (.assistant, .assistant),
              (.sound, .sound),
              (.crypto, .crypto),
              (.server, .server),
@@ -76,7 +89,8 @@ extension RouterPage: Equatable {
             return true
 
         case (.messageDetail, .messageDetail),
-             (.assistantSetting, .assistantSetting),
+             (.noletChatSetting, .noletChatSetting),
+             (.noletChat, .noletChat),
              (.serverInfo, .serverInfo),
              (.files, .files),
              (.web, .web):
@@ -92,5 +106,4 @@ enum TabPage: String, Sendable, CaseIterable {
     case message
     case setting
     case assistant
-    case search
 }

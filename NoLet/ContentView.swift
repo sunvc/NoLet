@@ -29,18 +29,35 @@ struct ContentView: View {
 
     @Namespace private var selectMessageSpace
 
+    private func _page(_ getValue: Binding<[RouterPage]>) -> Binding<[RouterPage]> {
+        Binding { getValue.wrappedValue } set: { manager.router = $0 }
+    }
+
+    @ViewBuilder
+    private func tabLabel(title: String, icon: String) -> some View {
+        Label(title, systemImage: icon)
+            .symbolRenderingMode(.palette)
+            .customForegroundStyle(.green, .primary)
+    }
+
     var body: some View {
         ZStack {
             if .ISPAD {
-                IpadHomeView()
+                NavigationSplitView(columnVisibility: $HomeViewMode) {
+                    SettingsPage()
+                        .environmentObject(manager)
+                } detail: {
+                    NavigationStack(path: _page($manager.prouter)) {
+                        MessagePage()
+                            .router(manager)
+                    }
+                }
             } else {
                 IphoneHomeView()
             }
-
-           
         }
         .environmentObject(manager)
-        .sheet(isPresented: $firstStart){
+        .sheet(isPresented: $firstStart) {
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
 
@@ -58,18 +75,25 @@ struct ContentView: View {
             .presentationDetents([.large])
             .interactiveDismissDisabled(true)
         }
-        .sheet(isPresented: manager.sheetShow) { ContentSheetViewPage() }
-        .fullScreenCover(isPresented: manager.fullShow) { ContentFullViewPage() }
+        .sheet(item: Binding(get: {
+            manager.sheetPage
+        }, set: { value in
+            manager.open(sheet: value)
+        })) {
+            ContentSheetViewPage(value: $0)
+        }
+        .fullScreenCover(item: Binding(get: {
+            manager.fullPage
+        }, set: { value in
+            manager.open(full: value)
+        })) { ContentFullViewPage(value: $0) }
         .fullScreenCover(item: $manager.selectMessage) { message in
-            
             SelectMessageView(message: message) {
                 withAnimation {
                     manager.selectMessage = nil
                 }
             }
-            
         }
-        
     }
 
     @ViewBuilder
@@ -78,125 +102,56 @@ struct ContentView: View {
             if #available(iOS 26.0, *) {
                 TabView(selection: Binding(get: { manager.page }, set: { updateTab(with: $0) })) {
                     Tab(value: .message) {
-                        NavigationStack(path: Binding(get: {
-                            manager.mrouter
-                        }, set: { value in
-                            manager.router = value
-                        })) {
-
-                            MessagePage()
-                                .router(manager)
+                        NavigationStack(path: _page($manager.mrouter)) {
+                            MessagePage().router(manager)
                         }
                     } label: {
-                        Label("消息", systemImage: "ellipsis.message")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.green, .primary)
+                        tabLabel(title: "消息", icon: "ellipsis.message")
                     }.badge(messageManager.unreadCount)
-                    
-                    if assistantAccouns.count > 0 {
-                        Tab(value: .assistant) {
-                            NavigationStack(path: Binding(get: {
-                                manager.arouter
-                            }, set: { value in
-                                manager.router = value
-                            })) {
-                               
-                                AssistantPageView()
-                                    .router(manager)
-                            }
-                        } label: {
-                            Label("无字书", systemImage: "apple.intelligence")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.green, .primary)
-                        }
-                    }
-                    
-                    
 
                     Tab(value: .setting) {
-                        NavigationStack(path: Binding(get: {
-                            manager.srouter
-                        }, set: { value in
-                            manager.router = value
-                        })) {
-
-                            SettingsPage()
-                                .router(manager)
+                        NavigationStack(path: _page($manager.srouter)) {
+                            SettingsPage().router(manager)
                         }
                     } label: {
-                        Label("设置", systemImage: "gear.badge.questionmark")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.green, .primary)
+                        tabLabel(title: "设置", icon: "apple.intelligence")
                     }
 
-                    Tab(value: .search, role: .search) {
-                        NavigationStack(path: Binding(get: {
-                            manager.sorouter
-                        }, set: { value in
-                            manager.router = value
-                        })) {
-                            
-                            SearchMessageView()
-                                .router(manager)
+                    if assistantAccouns.count > 0 {
+                        Tab(value: .assistant, role: .search) {
+                            NavigationStack(path: _page($manager.arouter)) {
+                                NoLetChatHomeView().router(manager)
+                            }
+                        } label: {
+                            tabLabel(title: "无字书", icon: "apple.intelligence")
                         }
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.green, .primary)
                     }
+                }
+                .tabBarMinimizeBehavior(.onScrollDown)
 
-                }.tabBarMinimizeBehavior(.onScrollDown)
             } else {
                 TabView(selection: Binding(get: { manager.page }, set: { updateTab(with: $0) })) {
-                    NavigationStack(path: Binding(get: {
-                        manager.mrouter
-                    }, set: { value in
-                        manager.router = value
-                    })) {
-                        // MARK: 信息页面
-
-                        MessagePage()
-                            .router(manager)
+                    NavigationStack(path: _page($manager.mrouter)) {
+                        MessagePage().router(manager)
                     }
-                    .tabItem {
-                        Label("消息", systemImage: "ellipsis.message")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.green, .primary)
-                    }
+                    .tabItem { tabLabel(title: "消息", icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
-                    
-                    if assistantAccouns.count > 0{
-                        NavigationStack(path: Binding(get: {
-                            manager.arouter
-                        }, set: { value in
-                            manager.router = value
-                        })) {
-                            AssistantPageView()
-                                .router(manager)
+
+                    if assistantAccouns.count > 0 {
+                        NavigationStack(path: _page($manager.arouter)) {
+                            NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
-                            Label("无字书", systemImage: "apple.intelligence")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.green, .primary)
+                            tabLabel(title: "无字书", icon: "atom")
                         }
                         .tag(TabPage.assistant)
                     }
-                    
-                    NavigationStack(path: Binding(get: {
-                        manager.srouter
-                    }, set: { value in
-                        manager.router = value
-                    })) {
-                        
-                        SettingsPage()
-                            .router(manager)
+
+                    NavigationStack(path: _page($manager.srouter)) {
+                        SettingsPage().router(manager)
                     }
-                    .tabItem {
-                        Label("设置", systemImage: "atom")
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.green, .primary)
-                    }
+                    .tabItem { tabLabel(title: "设置", icon: "gear.badge.questionmark") }
                     .tag(TabPage.setting)
                 }
             }
@@ -204,40 +159,29 @@ struct ContentView: View {
     }
 
     func updateTab(with newTab: TabPage) {
-        Haptic.impact()
-        AudioManager.tips(.share)
+        if newTab != manager.page {
+            Task.detached {
+                await Haptic.impact()
+                await Tone.play(.share)
+            }
+        }
+
+        if newTab == .assistant {
+            manager.historyPage = manager.page
+        }
         manager.page = newTab
     }
 
     @ViewBuilder
-    func IpadHomeView() -> some View {
-        NavigationSplitView(columnVisibility: $HomeViewMode) {
-            SettingsPage()
-                .environmentObject(manager)
-        } detail: {
-            NavigationStack(path: Binding(get: {
-                manager.prouter
-            }, set: { value in
-                manager.router = value
-            })) {
-                MessagePage()
-                    .router(manager)
-            }
-        }
-    }
-
-
-
-    @ViewBuilder
-    func ContentFullViewPage() -> some View {
+    func ContentFullViewPage(value: SubPage) -> some View {
         Group {
-            switch manager.fullPage {
+            switch value {
             case .customKey:
                 ChangeKeyView()
             case .scan:
                 ScanView { code in
                     if AppManager.shared.HandlerOpenURL(url: code) == nil {
-                        manager.fullPage = .none
+                        manager.open(full: nil)
                     }
                 }
             case .web(let url):
@@ -247,7 +191,7 @@ struct ContentView: View {
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        manager.fullPage = .none
+                        manager.open(full: nil)
                     }
                 }
             }
@@ -256,9 +200,9 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    func ContentSheetViewPage() -> some View {
+    func ContentSheetViewPage(value: SubPage) -> some View {
         Group {
-            switch manager.sheetPage {
+            switch value {
             case .appIcon:
                 NavigationStack {
                     AppIconView()
@@ -270,7 +214,7 @@ struct ContentView: View {
                     EmptyView()
                         .onAppear {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                manager.sheetPage = .none
+                                manager.open(sheet: nil)
                                 Haptic.impact()
                             }
                         }
@@ -286,7 +230,7 @@ struct ContentView: View {
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        manager.sheetPage = .none
+                        manager.open(sheet: nil)
                         Haptic.impact()
                     }
                 }
@@ -312,11 +256,11 @@ extension View {
                 case .sound:
                     SoundView()
 
-                case .assistant:
-                    AssistantPageView()
+                case .noletChat:
+                    NoLetChatHomeView()
 
-                case .assistantSetting(let account):
-                    AssistantSettingsView(account: account)
+                case .noletChatSetting(let account):
+                    NoLetChatSettingsView(account: account)
 
                 case .crypto:
                     CryptoConfigListView()

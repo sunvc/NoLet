@@ -18,13 +18,12 @@ import SwiftUI
 import UIKit
 import Zip
 
-
 final class AppManager: NetworkManager, ObservableObject, Sendable {
     static let shared = AppManager()
 
     @Published var page: TabPage = .message
-    @Published var sheetPage: SubPage = .none
-    @Published var fullPage: SubPage = .none
+    @Published private(set) var sheetPage: SubPage? = nil
+    @Published private(set) var fullPage: SubPage? = nil
 
     @Published var selectID: String? = nil
     @Published var selectGroup: String? = nil
@@ -33,9 +32,9 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var mrouter: [RouterPage] = []
     @Published var srouter: [RouterPage] = []
     @Published var arouter: [RouterPage] = []
-    @Published var sorouter: [RouterPage] = []
     @Published var prouter: [RouterPage] = []
 
+    @Published var historyPage: TabPage = .message
     @Published var isWarmStart: Bool = false
 
     @Published var selectMessage: Message? = nil
@@ -62,28 +61,10 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
                     mrouter = router
                 case .setting:
                     srouter = router
-                case .search:
-                    sorouter = router
                 case .assistant:
                     arouter = router
                 }
             }
-        }
-    }
-
-    var fullShow: Binding<Bool> {
-        Binding {
-            self.fullPage != .none
-        } set: { _ in
-            self.fullPage = .none
-        }
-    }
-
-    var sheetShow: Binding<Bool> {
-        Binding {
-            self.sheetPage != .none
-        } set: { _ in
-            self.sheetPage = .none
         }
     }
 
@@ -97,6 +78,32 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @MainActor
     deinit {
         self.updates?.cancel()
+    }
+
+    func open(sheet: SubPage?) {
+        Task { @MainActor in
+            guard sheet != sheetPage else { return }
+            if sheetPage == nil || sheet == nil {
+                sheetPage = sheet
+            } else {
+                self.sheetPage = nil
+                try? await Task.sleep(for: .seconds(0.5))
+                self.sheetPage = sheet
+            }
+        }
+    }
+
+    func open(full: SubPage?) {
+        Task { @MainActor in
+            guard full != fullPage else { return }
+            if fullPage == nil || full == nil {
+                fullPage = full
+            } else {
+                self.fullPage = nil
+                try? await Task.sleep(for: .seconds(0.5))
+                self.fullPage = full
+            }
+        }
     }
 
     var updates: Task<Void, Never>?
@@ -151,7 +158,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
             if let account = AssistantAccount(base64: text) {
                 Task { @MainActor in
                     self.page = .setting
-                    self.router = [.assistantSetting(account)]
+                    self.router = [.noletChatSetting(account)]
                 }
             }
             return nil
@@ -396,7 +403,7 @@ extension AppManager {
     static func runQuick(_ action: String) -> Bool {
         switch QuickAction(rawValue: action.lowercased()) {
         case .assistant:
-            shared.router = [.assistant]
+            shared.page = .assistant
         case .scan:
             shared.fullPage = .scan
         default:
@@ -598,7 +605,7 @@ extension AppManager {
             }
         }
     }
-    
+
     nonisolated static func syncServer() async {
         let pushServerDatas =
             Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
@@ -619,10 +626,7 @@ extension AppManager {
     }
 }
 
-
-
-extension AppManager{
-    
+extension AppManager {
     enum OutDataType {
         case text(String)
         case crypto(String)
@@ -631,8 +635,7 @@ extension AppManager{
         case assistant(String)
         case cloudIcon
     }
-    
-    
+
     struct SubscribeUser: Codable, Hashable, Identifiable {
         var id: String = UUID().uuidString
         var expirationDate: Date?
@@ -665,4 +668,3 @@ extension AppManager{
         }
     }
 }
-

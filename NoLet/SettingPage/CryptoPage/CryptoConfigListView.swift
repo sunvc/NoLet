@@ -99,7 +99,7 @@ struct CryptoConfigListView: View {
             Menu {
                 Section {
                     Button {
-                        AppManager.shared.sheetPage = .crypto(item)
+                        AppManager.shared.open(sheet: .crypto(item))
                     } label: {
                         Label("编辑", systemImage: "highlighter")
                     }.tint(.green)
@@ -110,11 +110,11 @@ struct CryptoConfigListView: View {
                         Button {
                             let local = PBScheme.pb.scheme(host: .crypto, params: ["text": config])
                             Task { @MainActor in
-                                AppManager.shared.sheetPage = .quickResponseCode(
+                                AppManager.shared.open(sheet: .quickResponseCode(
                                     text: local.absoluteString,
                                     title: String(localized: "配置文件"),
                                     preview: String(localized: "分享配置")
-                                )
+                                ))
                             }
                         } label: {
                             Label("分享", systemImage: "qrcode")
@@ -172,16 +172,16 @@ struct CryptoConfigListView: View {
             if let config = item.obfuscator() {
                 let local = PBScheme.pb.scheme(host: .crypto, params: ["text": config])
                 DispatchQueue.main.async {
-                    AppManager.shared.sheetPage = .quickResponseCode(
+                    AppManager.shared.open(sheet: .quickResponseCode(
                         text: local.absoluteString,
                         title: String(localized: "配置文件"),
                         preview: String(localized: "分享配置")
-                    )
+                    ))
                 }
             }
         }
         .accessibilityAction(named: "编辑") {
-            AppManager.shared.sheetPage = .crypto(item)
+            AppManager.shared.open(sheet: .crypto(item))
         }
         .accessibilityAction(named: "复制") {
             let data = cryptoExampleHandler(config: item, index: index)

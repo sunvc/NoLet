@@ -16,7 +16,7 @@ import GRDB
 import SwiftUI
 
 struct ChatInputView: View {
-    @EnvironmentObject private var chatManager: openChatManager
+    @EnvironmentObject private var chatManager: NoLetChatManager
     @EnvironmentObject private var manager: AppManager
     @Binding var text: String
 
@@ -39,6 +39,10 @@ struct ChatInputView: View {
             .padding(.horizontal)
 
             HStack(spacing: 10) {
+                if !isFocusedInput {
+                    backupButton()
+                }
+
                 inputField
                     .disabled(manager.isLoading)
                     .opacity(manager.isLoading ? 0 : 1)
@@ -46,6 +50,7 @@ struct ChatInputView: View {
             .padding(.horizontal)
             .animation(.default, value: text)
         }
+        .padding(.bottom, isFocusedInput ? 10 : 30)
         .onTapGesture {
             self.isFocusedInput = !manager.isLoading
             Haptic.impact()
@@ -115,7 +120,7 @@ struct ChatInputView: View {
                             Task.detached(priority: .background) {
                                 try? await DatabaseManager.shared.dbQueue.write { db in
                                     Task { @MainActor in
-                                        openChatManager.shared.setGroup()
+                                        NoLetChatManager.shared.setGroup()
                                     }
 
                                     // 尝试查找 quote.id 对应的 group
@@ -150,5 +155,40 @@ struct ChatInputView: View {
             }
         }
         .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    func backupButton() -> some View {
+        if manager.historyPage == .setting {
+            Button {
+                manager.page = .setting
+                Task.detached {
+                    await Haptic.impact()
+                    await Tone.play(.share)
+                }
+            } label: {
+                Label("设置", systemImage: "gear.badge.questionmark")
+                    .symbolRenderingMode(.palette)
+                    .customForegroundStyle(.green, .primary)
+                    .labelStyle(.iconOnly)
+                    .font(.title)
+                    .transition(.move(edge: .leading))
+            }.button26(.borderless)
+        } else {
+            Button {
+                manager.page = .message
+                Task.detached {
+                    await Haptic.impact()
+                    await Tone.play(.share)
+                }
+            } label: {
+                Label("消息", systemImage: "ellipsis.message")
+                    .symbolRenderingMode(.palette)
+                    .customForegroundStyle(.green, .primary)
+                    .labelStyle(.iconOnly)
+                    .font(.title)
+                    .transition(.move(edge: .leading))
+            }.button26(.borderless)
+        }
     }
 }

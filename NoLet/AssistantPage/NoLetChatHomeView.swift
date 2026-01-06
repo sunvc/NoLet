@@ -17,13 +17,13 @@ import GRDB
 import OpenAI
 import SwiftUI
 
-struct AssistantPageView: View {
+struct NoLetChatHomeView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.showAssistantAnimation) var showAssistantAnimation
 
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var manager: AppManager
-    @StateObject private var chatManager = openChatManager.shared
+    @StateObject private var chatManager = NoLetChatManager.shared
 
     @State private var inputText: String = ""
 
@@ -38,77 +38,75 @@ struct AssistantPageView: View {
     @State private var offsetX: CGFloat = 0
     @State private var offsetHistory: CGFloat = 0
     @State private var fengche: Bool = false
+    @State private var hidenTabar: Bool = false
 
     var body: some View {
-        VStack {
-            if chatManager.chatMessages.count > 0 || manager.isLoading {
-                ChatMessageListView()
+        ZStack {
+            VStack {
+                if chatManager.chatMessages.count > 0 || manager.isLoading {
+                    ChatMessageListView()
+
+                } else {
+                    VStack {
+                        Spacer()
+
+                        VStack {
+                            ChatIcon()
+                                .fill(
+                                    LinearGradient(
+                                        gradient: Gradient(stops: [
+                                            .init(color: .red, location: 0.0),
+                                            .init(color: .yellow, location: 0.5),
+                                            .init(color: .green, location: 1.0),
+                                        ]),
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .scaledToFit()
+                                .frame(width: 200)
+                                .minimumScaleFactor(0.5)
+
+                            Text("嗨! 我是无字书")
+                                .font(.title)
+                                .fontWeight(.medium)
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical, 10)
+
+                            Text("我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！")
+                                .multilineTextAlignment(.center)
+                                .padding(.vertical)
+                                .font(.body)
+                                .foregroundStyle(.gray)
+                        }
+
+                        Spacer()
+                    }
+                    .transition(.slide)
                     .onTapGesture {
                         self.hideKeyboard()
                         Haptic.impact()
                     }
-
-            } else {
-                VStack {
-                    Spacer()
-
-                    VStack {
-                        AssistantIcon()
-                            .fill(
-                                LinearGradient(
-                                    gradient: Gradient(stops: [
-                                        .init(color: .red, location: 0.0),
-                                        .init(color: .yellow, location: 0.5),
-                                        .init(color: .green, location: 1.0),
-                                    ]),
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                            .scaledToFit()
-                            .frame(width: 200)
-                            .minimumScaleFactor(0.5)
-
-                        Text("嗨! 我是无字书")
-                            .font(.title)
-                            .fontWeight(.medium)
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical, 10)
-
-                        Text("我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！")
-                            .multilineTextAlignment(.center)
-                            .padding(.vertical)
-                            .font(.body)
-                            .foregroundStyle(.gray)
-                    }
-
-                    Spacer()
                 }
-                .transition(.slide)
-                .onTapGesture {
-                    self.hideKeyboard()
-                    Haptic.impact()
-                }
+
+                Spacer()
             }
-
-            Spacer()
-        }
-        .safeAreaInset(edge: .bottom) {
-            // 底部输入框
-            ChatInputView(
-                text: $inputText,
-                onSend: { text in
-                    chatManager.cancellableRequest?.cancel()
-                    chatManager.cancellableRequest = Task.detached(priority: .userInitiated) {
-                        await sendMessage(text)
+            VStack {
+                Spacer()
+                // 底部输入框
+                ChatInputView(
+                    text: $inputText,
+                    onSend: { text in
+                        chatManager.cancellableRequest?.cancel()
+                        chatManager.cancellableRequest = Task.detached(priority: .userInitiated) {
+                            await sendMessage(text)
+                        }
                     }
-                }
-            )
-            .padding(.bottom, 10)
-            .onDrag(towards: .bottom, ofAmount: 100..., perform: {
-                self.hideKeyboard()
-            })
+                )
+                .transition(.move(edge: .trailing).animation(.easeInOut))
+            }
         }
+        .ignoresSafeArea(.container, edges: .bottom)
         .popView(isPresented: $showChangeGroupName) {
             showChangeGroupName = false
         } content: {
@@ -124,8 +122,21 @@ struct AssistantPageView: View {
             }
         }
         .toolbar {
-            principalToolbarTitleContent
-            principalToolbarToolContent
+            ToolbarItem(placement: .topBarLeading) {
+                StreamingLoadingView(showLoading: manager.isLoading)
+                    .transition(.scale)
+            }
+
+            ToolbarItem(placement: .secondaryAction) {
+                Button(action: {
+                    manager.router.append(.noletChatSetting(nil))
+                    Haptic.impact()
+                }) {
+                    Label("打开设置", systemImage: "gear")
+                        .symbolRenderingMode(.palette)
+                        .customForegroundStyle(.accent, .primary)
+                }
+            }
         }
         .sheet(isPresented: $chatManager.showAllHistory) {
             OpenChatHistoryView(show: $chatManager.showAllHistory)
@@ -143,26 +154,8 @@ struct AssistantPageView: View {
             manager.askMessageID = nil
             manager.inAssistant = false
         }
-    }
-
-    private var principalToolbarTitleContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            StreamingLoadingView(showLoading: manager.isLoading)
-                .transition(.scale)
-        }
-    }
-
-    private var principalToolbarToolContent: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
-            Button(action: {
-                manager.router.append(.assistantSetting(nil))
-                Haptic.impact()
-            }) {
-                Label("更多", systemImage: "ellipsis")
-                    .symbolRenderingMode(.palette)
-                    .customForegroundStyle(.accent, .primary)
-            }
-        }
+        .toolbar(.hidden, for: .tabBar)
+        .navigationBarBackButtonHidden()
     }
 
     // 发送消息
@@ -170,7 +163,7 @@ struct AssistantPageView: View {
         hideKeyboard()
 
         guard assistantAccouns.first(where: { $0.current }) != nil else {
-            manager.router.append(.assistantSetting(nil))
+            manager.router.append(.noletChatSetting(nil))
             return
         }
 
@@ -229,6 +222,7 @@ struct AssistantPageView: View {
 
                         if let toolCalls = choice.delta.toolCalls {
                             for toolCall in toolCalls {
+                        
                                 guard let index = toolCall.index else { continue }
                                 var current = toolCallsMap[index] ?? ("", "")
 
@@ -246,9 +240,6 @@ struct AssistantPageView: View {
                 }
 
                 let responseMessage: ChatMessage? = {
-                    if chatManager.currentChatMessage.content.isEmpty {
-                        return nil
-                    }
                     var message = chatManager.currentChatMessage
                     message.chat = newGroup.id
                     return message
@@ -261,9 +252,9 @@ struct AssistantPageView: View {
                 }
                 Haptic.impact()
 
-                if !toolCallsMap.isEmpty, let responseMessage = responseMessage {
+                if !toolCallsMap.isEmpty{
                     let result = await runChatCall(params: toolCallsMap)
-                    if !result.isEmpty {
+                    if !result.isEmpty, let responseMessage = responseMessage  {
                         try await DatabaseManager.shared.dbQueue.write { db in
                             if var message = try ChatMessage.fetchOne(db, id: responseMessage.id) {
                                 message.result = result
@@ -273,7 +264,7 @@ struct AssistantPageView: View {
                         Haptic.impact()
                     }
                 }
-               
+
                 chatManager.currentRequest = ""
                 chatManager.currentContent = ""
                 AppManager.shared.isLoading = false
@@ -293,7 +284,7 @@ struct AssistantPageView: View {
     }
 }
 
-extension AssistantPageView {
+extension NoLetChatHomeView {
     func runChatCall(params: [Int: (name: String, args: String)]) async -> [String: String] {
         var results: [String: String] = [:]
         for (_, (name, args)) in params {
@@ -415,7 +406,7 @@ struct CustomAlertWithTextField: View {
 struct StreamingLoadingView: View {
     var showLoading: Bool
 
-    @EnvironmentObject private var chatManager: openChatManager
+    @EnvironmentObject private var chatManager: NoLetChatManager
     // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
     var body: some View {
         if showLoading {
@@ -459,7 +450,7 @@ struct StreamingLoadingView: View {
                             chatManager.setGroup()
                             Haptic.impact()
                         }) {
-                            Label(String(localized: "新对话"), systemImage: "plus.message")
+                            Label("新对话", systemImage: "plus.message")
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(.accent, .primary)
                         }
@@ -502,6 +493,21 @@ struct StreamingLoadingView: View {
                     }
                 }
 
+                if chatManager.chatMessages.count != 0 {
+                    Section {
+                        Button {
+                            Task {
+                                let success = await chatManager.setPoint()
+                                Toast.success(title: success ? "清除成功" : "清除失败")
+                            }
+
+                        } label: {
+                            Label("清除上下文", systemImage: "square.fill.text.grid.1x2")
+                                .customForegroundStyle(.red, .primary)
+                        }
+                    }
+                }
+
             } label: {
                 HStack {
                     VStack(spacing: 0) {
@@ -540,6 +546,6 @@ struct StreamingLoadingView: View {
 }
 
 #Preview {
-    AssistantPageView()
+    NoLetChatHomeView()
         .environmentObject(AppManager.shared)
 }

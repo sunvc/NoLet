@@ -1,5 +1,5 @@
 //
-//  openChatManager.swift
+//  NoLetChatManager.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -17,8 +17,8 @@ import GRDB
 import OpenAI
 import UIKit
 
-final class openChatManager: ObservableObject {
-    static let shared = openChatManager()
+final class NoLetChatManager: ObservableObject {
+    static let shared = NoLetChatManager()
 
     @Published var currentRequest: String = ""
     @Published var currentContent: String = ""
@@ -153,7 +153,7 @@ final class openChatManager: ObservableObject {
     }
 }
 
-extension openChatManager {
+extension NoLetChatManager {
     func test(account: AssistantAccount) async -> Bool {
         do {
             if account.host.isEmpty || account.key.isEmpty || account.basePath.isEmpty || account
@@ -170,8 +170,15 @@ extension openChatManager {
                 model: account.model
             )
 
-            _ = try await openchat.chats(query: query)
-
+            do{
+                let models = try await openchat.models()
+                debugPrint(models)
+            }catch{
+                NLog.error(error)
+            }
+            
+            let data = try await openchat.chats(query: query)
+            NLog.log(data)
             return true
 
         } catch {
@@ -188,6 +195,8 @@ extension openChatManager {
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
         }
+        
+        let temperature =  Double(Defaults[.temperatureChat]) / 10
 
         if let tips {
             let params: [ChatQuery.ChatCompletionMessageParam] = [
@@ -195,7 +204,7 @@ extension openChatManager {
                 .user(.init(content: .string(text))),
             ]
 
-            return ChatQuery(messages: params, model: account.model)
+            return ChatQuery(messages: params, model: account.model, temperature: temperature)
         }
 
         var params: [ChatQuery.ChatCompletionMessageParam] = []
@@ -205,11 +214,11 @@ extension openChatManager {
             params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
 
             if promt.mode == .mcp {
-                params += getHistory(3)
                 params.append(.user(.init(content: .string(text))))
                 return ChatQuery(
                     messages: params,
                     model: account.model,
+                    temperature: temperature,
                     tools: NoLetChatAction.getFuncs().map { .init(function: $0) }
                 )
             }
@@ -238,27 +247,27 @@ extension openChatManager {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
             let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
-            if let point = group?.point{
+            if let point = group?.point {
                 return try ChatMessage
                     .filter(ChatMessage.Columns.chat == group?.id)
                     .filter(ChatMessage.Columns.timestamp > point)
                     .order(\.timestamp.desc)
                     .limit(limit)
                     .fetchAll(db)
-                
-            }else{
+
+            } else {
                 return try ChatMessage
                     .filter(ChatMessage.Columns.chat == group?.id)
                     .order(\.timestamp.desc)
                     .limit(limit)
                     .fetchAll(db)
             }
-            
+
         }) {
             for message in messageRaw.reversed() {
                 params.append(.user(.init(content: .string(message.request))))
-                var content: String{
-                    if let result = message.result, let json = result.text(){
+                var content: String {
+                    if let result = message.result, let json = result.text() {
                         return message.content + String(localized: "任务执行结果") + json
                     }
                     return message.content
@@ -300,7 +309,7 @@ extension openChatManager {
     ) -> AsyncThrowingStream<ChatStreamResult, Error> {
         let query: ChatQuery? = getHistoryParams(
             text: text,
-            messageID: AppManager.shared.askMessageID,
+            messageID: messageID,
             tips: tips
         )
 

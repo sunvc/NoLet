@@ -59,11 +59,11 @@ struct ExampleView: View {
                                 .font(.headline)
                                 .fontWeight(.bold)
                         }.VButton(onRelease: { _ in
-                            AppManager.shared.sheetPage = .quickResponseCode(
+                            AppManager.shared.open(sheet: .quickResponseCode(
                                 text: resultURL,
                                 title: item.title,
                                 preview: item.title
-                            )
+                            ))
                             return true
                         })
 
@@ -188,7 +188,7 @@ extension ExampleView {
                 header:
                 HStack {
                     Button {
-                        manager.sheetPage = .cloudIcon
+                        manager.open(sheet: .cloudIcon)
                     } label: {
                         Text("云图标")
                             .font(.callout)

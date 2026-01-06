@@ -152,7 +152,7 @@ struct SoundView: View {
             }
         }
         .onDisappear {
-            tipsManager.stop()
+            tipsManager.play(stop: true)
         }
     }
 

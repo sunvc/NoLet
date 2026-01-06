@@ -20,7 +20,7 @@ struct ServersConfigView: View {
     @Default(.cloudServers) var cloudServers
     @Default(.noServerModel) var noServerModel
     @EnvironmentObject private var manager: AppManager
-    @StateObject private var chatManager = openChatManager.shared
+    @StateObject private var chatManager = NoLetChatManager.shared
     @State private var showNoServerMode: Bool = false
     var showClose: Bool = false
 
@@ -183,8 +183,8 @@ struct ServersConfigView: View {
             ToolbarItem {
                 withAnimation {
                     Button {
-                        manager.fullPage = .customKey
-                        manager.sheetPage = .none
+                        manager.open(sheet: nil)
+                        manager.open(full: .customKey)
                     } label: {
                         Image(systemName: "externaldrive.badge.plus")
                             .symbolRenderingMode(.palette)

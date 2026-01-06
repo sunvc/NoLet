@@ -23,7 +23,7 @@ enum SelectMessageViewMode: Int, Equatable {
 struct SelectMessageView: View {
     var message: Message
     var dismiss: () -> Void
-    @StateObject private var chatManager = openChatManager.shared
+    @StateObject private var chatManager = NoLetChatManager.shared
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.translateLang) var translateLang
 
@@ -449,7 +449,7 @@ struct SelectMessageView: View {
             .onDisappear { chatManager.cancellableRequest?.cancel() }
             .sheet(isPresented: $showAssistantSetting) {
                 NavigationStack {
-                    AssistantSettingsView()
+                    NoLetChatSettingsView()
                 }
             }
             .ignoresSafeArea()
@@ -529,9 +529,7 @@ struct SelectMessageView: View {
                     }
                 }
             }
-            Task { @MainActor in
-                translateResult = ""
-            }
+
         } catch {
             NLog.error(error.localizedDescription)
             DispatchQueue.main.async {
@@ -561,9 +559,7 @@ struct SelectMessageView: View {
                     }
                 }
             }
-            Task { @MainActor in
-                abstractResult = ""
-            }
+    
         } catch {
             // Handle chunk error here
             NLog.error(error)

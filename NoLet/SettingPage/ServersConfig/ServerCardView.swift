@@ -142,11 +142,11 @@ struct ServerCardView: View {
         .accessibilityLabel(accessText)
         .accessibilityAction(named: "分享") {
             let local = PBScheme.pb.scheme(host: .server, params: ["text": item.server])
-            manager.sheetPage = .quickResponseCode(
+            manager.open(sheet: .quickResponseCode(
                 text: local.absoluteString,
                 title: String(localized: "服务器配置"),
                 preview: nil
-            )
+            ))
         }
         .accessibilityAction(named: isCloud ? "下载云服务器" : "复制") {
             complete()
@@ -164,11 +164,11 @@ struct ServerCardView: View {
             return ["text": item.url]
         }
         let local = PBScheme.pb.scheme(host: .server, params: params)
-        manager.sheetPage = .quickResponseCode(
+        manager.open(sheet: .quickResponseCode(
             text: local.absoluteString,
             title: String(localized: "服务器配置"),
             preview: nil
-        )
+        ))
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  AssistantSettingsView.swift
+//  NoLetChatSettingsView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -14,11 +14,12 @@
 import Defaults
 import SwiftUI
 
-struct AssistantSettingsView: View {
-    @StateObject private var chatManager = openChatManager.shared
+struct NoLetChatSettingsView: View {
+    @StateObject private var chatManager = NoLetChatManager.shared
 
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.historyMessageCount) var historyMessageCount
+    @Default(.temperatureChat) var temperatureChat
     @Default(.showAssistantAnimation) var showAssistantAnimation
 
     @State private var showDeleteOk: Bool = false
@@ -37,7 +38,7 @@ struct AssistantSettingsView: View {
         List {
             Section {
                 Button {
-                    self.selectAccount = AssistantAccount(
+                    self.addAccount = AssistantAccount(
                         name: String(localized: "智能助手"),
                         host: "api.openai.com",
                         basePath: "/v1",
@@ -127,11 +128,11 @@ struct AssistantSettingsView: View {
                         if let code = account.toBase64() {
                             Button {
                                 let code = "pb://assistant?text=\(code)"
-                                AppManager.shared.sheetPage = .quickResponseCode(
+                                AppManager.shared.open(sheet: .quickResponseCode(
                                     text: code,
                                     title: String(localized: "智能配置"),
                                     preview: nil
-                                )
+                                ))
                             } label: {
                                 Label("分享", systemImage: "square.and.arrow.up")
                             }.tint(.orange)
@@ -173,13 +174,26 @@ struct AssistantSettingsView: View {
                     }
                 }
 
+                Stepper(
+                    value: $temperatureChat,
+                    in: 0...20,
+                    step: 1
+                ) {
+                    HStack {
+                        Label("随机性参数", systemImage: "dice")
+                        Spacer()
+                        Text(String(format: "%.1f", Double(temperatureChat) / 10))
+                            .foregroundColor(.secondary)
+                    }
+                }
+
                 Text("设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加 Token 消耗")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
-            Section("视觉与触感"){
-                Toggle(isOn: $showAssistantAnimation) { 
+
+            Section("视觉与触感") {
+                Toggle(isOn: $showAssistantAnimation) {
                     Label("动画与振动", systemImage: "figure.walk.motion")
                 }
             }
@@ -209,12 +223,12 @@ struct AssistantSettingsView: View {
             Text("此操作将删除所有聊天记录和设置数据，且无法恢复。确定要继续吗？")
         }
         .sheet(item: $selectAccount) { account in
-            AddOrChangeChatAccount(assistantAccount: account, isAdd: false)
+            NoLetChatAccountDetail(assistantAccount: account, isAdd: false)
                 .customPresentationCornerRadius(20)
                 .environmentObject(chatManager)
         }
         .sheet(item: $addAccount) { account in
-            AddOrChangeChatAccount(assistantAccount: account, isAdd: true)
+            NoLetChatAccountDetail(assistantAccount: account, isAdd: true)
                 .customPresentationCornerRadius(20)
                 .environmentObject(chatManager)
         }
@@ -222,5 +236,5 @@ struct AssistantSettingsView: View {
 }
 
 #Preview {
-    AssistantSettingsView()
+    NoLetChatSettingsView()
 }

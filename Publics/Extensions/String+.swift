@@ -36,6 +36,7 @@ extension String {
         return replacingOccurrences(of: "^(https?:\\/\\/)?", with: "", options: .regularExpression)
     }
 
+    nonisolated
     var hasHttp: Bool { ["http", "https"].contains { self.lowercased().hasPrefix($0) } }
 
     func sha256() -> String {
@@ -143,7 +144,7 @@ extension Character {
 }
 
 extension String {
-    func normalizedURLString() -> String {
+    nonisolated func normalizedURLString() -> String {
         // 尝试解析
         if let url = URL(string: self),
            let scheme = url.scheme?.lowercased(), scheme.hasHttp

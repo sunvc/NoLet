@@ -19,7 +19,7 @@ public typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.Function
 enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
     case autoSaveImages
-    case showIcon
+    case showMessageIcon
     case messageHeight
     case defaultBrowser
     case scanAreaRestriction
@@ -31,6 +31,7 @@ enum NoLetChatAction: String, CaseIterable {
     case openSoundSettings
     case openEncryptionSettings
     case openDataManagement
+    case openExample
     case openAbout
     case openAppDocs
     case openServerDocs
@@ -39,7 +40,6 @@ enum NoLetChatAction: String, CaseIterable {
     case setDefaultImageStorageDays
 
     case deleteAllMuteGroups
-    case deleteMessagesByTime
     case clearTheContext
 }
 
@@ -47,7 +47,7 @@ extension NoLetChatAction {
     func execute(with value: Any) async -> String {
         let manager = AppManager.shared
 
-        let paramsError = "参数非法"
+        let paramsError = "Invalid parameters"
         switch self {
         case .voiceFeedback:
             guard let val = value as? Bool else { return paramsError }
@@ -57,7 +57,7 @@ extension NoLetChatAction {
             guard let val = value as? Bool else { return paramsError }
             Defaults[.autoSaveToAlbum] = val
 
-        case .showIcon:
+        case .showMessageIcon:
             guard let val = value as? Bool else { return paramsError }
             Defaults[.showMessageAvatar] = val
 
@@ -83,10 +83,10 @@ extension NoLetChatAction {
             manager.router = [.server]
 
         case .openUploadCloudIcon:
-            manager.sheetPage = .cloudIcon
+            manager.open(sheet: .cloudIcon)
 
         case .openAIAssistantSettings:
-            manager.router = [.assistantSetting(nil)]
+            manager.router = [.noletChatSetting(nil)]
 
         case .openSoundSettings:
             manager.router = [.sound]
@@ -99,6 +99,9 @@ extension NoLetChatAction {
 
         case .openAbout:
             manager.router = [.about]
+            
+        case .openExample:
+            manager.router = [.example]
 
         // MARK: - Docs
 
@@ -132,33 +135,14 @@ extension NoLetChatAction {
         case .deleteAllMuteGroups:
             Defaults[.muteSetting] = [:]
 
-        case .deleteMessagesByTime:
-            guard let rangeStr = value as? String else { return paramsError }
-            let components = rangeStr.split(separator: ",", omittingEmptySubsequences: false)
-                .map { String($0) }
-
-            var startTime: Date?
-            var endTime: Date?
-
-            if components.count >= 1, let start = Double(components[0]) {
-                startTime = Date(timeIntervalSince1970: start)
-            }
-            if components.count >= 2, let end = Double(components[1]) {
-                endTime = Date(timeIntervalSince1970: end)
-            }
-
-            guard let startTime, let endTime else { return paramsError }
-
-            return MessagesManager.shared.delete(startTime, end: endTime)
-
         case .clearTheContext:
-            let success = await openChatManager.shared.setPoint()
+            let success = await NoLetChatManager.shared.setPoint()
             if !success {
-                return "执行失败"
+                return "Execution failed"
             }
         }
 
-        return "执行成功"
+        return "OK"
     }
 }
 
@@ -168,147 +152,137 @@ extension NoLetChatAction {
         case .voiceFeedback:
             return JSONSchema(
                 .type(.boolean),
-                .description("是否开启声音反馈")
+                .description("Whether to enable voice feedback")
             )
 
         case .autoSaveImages:
             return JSONSchema(
                 .type(.boolean),
-                .description("是否自动保存图片到相册")
+                .description("Whether to auto-save images to album")
             )
 
-        case .showIcon:
+        case .showMessageIcon:
             return JSONSchema(
                 .type(.boolean),
-                .description("是否在消息列表中显示应用图标")
+                .description("Whether to show app icon in message list")
             )
 
         case .messageHeight:
             return .init(fields: [
                 .type(.integer),
-                .description("消息气泡显示的最大行数，范围 1 到 10"),
+                .description("Maximum lines for message bubble, range 1 to 10"),
             ])
 
         case .defaultBrowser:
             return .init(fields: [
                 .type(.string),
                 .enumValues(["internal", "safari", "auto"]),
-                .description("默认浏览器设置"),
+                .description("Default browser settings"),
             ])
 
         case .scanAreaRestriction:
             return JSONSchema(
                 .type(.boolean),
-                .description("是否开启扫描区域限制")
+                .description("Whether to enable scan area restriction")
             )
 
         case .openSystemSettings:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开系统设置页面")
+                .description("Open system settings page")
             )
 
         case .openServerSettings:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开服务器设置页面")
+                .description("Open server settings page")
             )
 
         case .openUploadCloudIcon:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开云图标上传页面")
+                .description("Open cloud icon upload page")
             )
 
         case .openAIAssistantSettings:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开 AI 助手设置页面")
+                .description("Open AI assistant settings page")
             )
 
         case .openSoundSettings:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开声音设置页面")
+                .description("Open sound settings page")
             )
 
         case .openEncryptionSettings:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开加密设置页面")
+                .description("Open encryption settings page")
             )
 
         case .openDataManagement:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开数据管理页面")
+                .description("Open data management page")
             )
 
         case .openAbout:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开关于页面")
+                .description("Open about page")
             )
 
         case .openAppDocs:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开 App 使用文档")
+                .description("Open App usage documentation")
             )
 
         case .openServerDocs:
             return JSONSchema(
                 .type(.boolean),
-                .description("打开服务器部署文档")
+                .description("Open server deployment documentation")
+            )
+            
+        case .openExample:
+            return JSONSchema(
+                .type(.boolean),
+                .description("Open push messages example")
             )
 
         case .clearAppCache:
             return JSONSchema(
                 .type(.boolean),
-                .description("清除 App 缓存")
+                .description("Clear App cache")
             )
 
         case .setDefaultMessageStorageDays:
             return JSONSchema(
                 .type(.integer),
                 .enumValues([0, 1, 7, 30, 999_999]),
-                .description("设置默认消息存储天数")
+                .description("Set default message storage days")
             )
 
         case .setDefaultImageStorageDays:
             return JSONSchema(
                 .type(.integer),
                 .enumValues([0, 1, 7, 30, 999_999]),
-                .description("设置默认图片存储天数")
+                .description("Set default image storage days")
             )
 
         case .deleteAllMuteGroups:
             return JSONSchema(
                 .type(.boolean),
-                .description("删除所有静音的分组")
+                .description("Delete all muted groups")
             )
 
-        case .deleteMessagesByTime:
-            return JSONSchema(
-                .type(.object),
-                .properties([
-                    "startTime": JSONSchema(
-                        .type(.number),
-                        .description("开始时间戳")
-                    ),
-                    "endTime": JSONSchema(
-                        .type(.number),
-                        .description("结束时间戳")
-                    ),
-                ]),
-                .required(["startTime"]),
-                .description("删除指定时间范围内的消息")
-            )
 
         case .clearTheContext:
             return JSONSchema(
                 .type(.boolean),
-                .description("清除当前上下文")
+                .description("Clear the current context memory")
             )
         }
     }
@@ -326,7 +300,7 @@ extension NoLetChatAction {
             FunctionDefinition(
                 name: ActionName.defaultName.rawValue,
                 description: String(
-                    localized: "CRITICAL: 管理当前模型上下文"
+                    localized: "CRITICAL: Manage current model context"
                 ),
                 parameters: .init(fields: [
                     .type(.object),
@@ -351,7 +325,7 @@ extension NoLetChatAction {
             FunctionDefinition(
                 name: ActionName.appManageName.rawValue,
                 description: String(
-                    localized: "CRITICAL: 管理应用设置、删除消息、打开页面、查看文档等."
+                    localized: "CRITICAL: Manage app settings, delete messages, open pages, view docs, etc."
                 ),
                 parameters: .init(fields: [
                     .type(.object),

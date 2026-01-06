@@ -16,7 +16,7 @@ import GRDB
 import SwiftUI
 
 struct ChatMessageListView: View {
-    @EnvironmentObject private var chatManager: openChatManager
+    @EnvironmentObject private var chatManager: NoLetChatManager
     @EnvironmentObject private var manager: AppManager
 
     @State private var showHistory: Bool = false
@@ -25,14 +25,14 @@ struct ChatMessageListView: View {
 
     let chatLastMessageID = "currentChatMessageId"
 
-    let throttler = Throttler(delay: 0.1)
+    let throttler = Throttler(delay: 0.3)
 
     @State private var offsetY: CGFloat = 0
 
     var suffixCount: Int {
         min(chatManager.chatMessages.count, 10)
     }
-
+    
     // MARK: - Body
 
     var body: some View {
@@ -61,7 +61,6 @@ struct ChatMessageListView: View {
                     ChatMessageView(message: message, isLoading: manager.isLoading)
                         .id(message.id)
                 }
-                
 
                 VStack {
                     if manager.isLoading {
@@ -74,7 +73,8 @@ struct ChatMessageListView: View {
                     RoundedRectangle(cornerRadius: 0)
                         .fill(Color.clear)
                         .opacity(0.001)
-                        .frame(height: 50)
+                        .frame(height: 100)
+                        
                         .background(
                             GeometryReader { proxy in
                                 Color.clear
@@ -90,24 +90,27 @@ struct ChatMessageListView: View {
                         .id(chatLastMessageID)
                 }
             }
-            .onChange(of: chatManager.isFocusedInput) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    withAnimation(.snappy(duration: 0.3)) {
-                        scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
+            .scrollDismissesKeyboard(.interactively)
+            .onChange(of: chatManager.isFocusedInput) { value in
+                if value{
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        withAnimation(.snappy(duration: 0.3)) {
+                            scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
+                        }
                     }
                 }
             }
             .onChange(of: chatManager.currentContent) { _ in
                 throttler.throttle {
-                    if offsetY < 800 {
+                    if offsetY < 900 {
                         withAnimation(.snappy(duration: 0.1)) {
                             scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
                         }
                     }
                 }
             }
-            .onChange(of: chatManager.chatMessages) { _ in
-                if offsetY < 800 {
+            .onChange(of: manager.isLoading) { _ in
+                if offsetY < 900 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
                     }

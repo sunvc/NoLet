@@ -22,7 +22,7 @@ struct PromptChooseView: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject private var chatManager: openChatManager
+    @EnvironmentObject private var chatManager: NoLetChatManager
 
     @State private var prompts: [ChatPrompt] = []
 

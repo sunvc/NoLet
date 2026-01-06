@@ -510,7 +510,7 @@ struct ChangeKeyView: View {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            manager.fullPage = .none
+            manager.open(full: nil)
         }
     }
 }

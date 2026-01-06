@@ -271,7 +271,9 @@ struct ListButton<LEFT: View, Trailing: View>: View {
                         .foregroundStyle(.gray)
                 }
             }
-        }.tint(.primary)
+        }
+        .tint(.primary)
+        .buttonStyle(.borderless)
     }
 }
 

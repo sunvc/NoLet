@@ -51,6 +51,7 @@ extension Defaults.Keys {
     static let sound = Key<String>("defaultSound", "nolet")
     static let showGroup = Key<Bool>("showGroupMessage", false)
     static let historyMessageCount = Key<Int>("historyMessageCount", 5)
+    static let temperatureChat = Key<Int>("temperatureChat", 13)
     static let showAssistantAnimation = Key<Bool>("showAssistantAnimation", false)
     static let freeCloudImageCount = Key<Int>("freeCloudImageCount", 30)
     static let muteSetting = Key<[String: Date]>("muteSetting", [:])
