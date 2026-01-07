@@ -144,7 +144,6 @@ struct NoLetChatHomeView: View {
                 manager.inAssistant = true    
             }
         }
-        .environmentObject(chatManager)
         .onDisappear {
             manager.askMessageID = nil
             manager.inAssistant = false
@@ -165,6 +164,7 @@ struct NoLetChatHomeView: View {
                 .customPresentationCornerRadius(50)
                 .presentationDetents([.medium, .large])
         }
+        .environmentObject(chatManager)
     }
 
     // 发送消息
