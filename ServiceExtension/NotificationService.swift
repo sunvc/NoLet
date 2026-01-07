@@ -10,75 +10,44 @@
 //    Created by Neo on 2025/4/3.
 //
 
+import Foundation
 @preconcurrency import UserNotifications
 
 nonisolated class NotificationService: UNNotificationServiceExtension {
-    private let processor = NotificationProcessor()
+    private var contentActor: NotificationServiceActor?
 
     override func didReceive(
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping @Sendable (UNNotificationContent) -> Void
     ) {
-        let processor = self.processor
-        let safeHandler = contentHandler
-
-        Task.detached( priority: .medium) {
-            await processor.process(request, contentHandler: safeHandler)
-        }
-    }
-
-    override func serviceExtensionTimeWillExpire() {
-        super.serviceExtensionTimeWillExpire()
-        let processor = self.processor
-        Task.detached( priority: .userInitiated) {
-            await processor.expire()
-        }
-    }
-}
-
-// 将处理逻辑封装到 actor 中以解决并发竞争
-actor NotificationProcessor {
-    private var currentNotificationHandler: NotificationContentProcessor?
-    private var currentContentHandler: (@Sendable (UNNotificationContent) -> Void)?
-
-    func process(
-        _ request: UNNotificationRequest,
-        contentHandler: @escaping @Sendable (UNNotificationContent) -> Void
-    ) async {
-        guard var bestAttemptContent = (request.content
-            .mutableCopy() as? UNMutableNotificationContent)
+        guard let bestAttemptContent = request.content
+            .mutableCopy() as? UNMutableNotificationContent
         else {
             contentHandler(request.content)
             return
         }
 
-        currentContentHandler = contentHandler
+        // 使用 Actor 存储 content，确保线程安全
+        contentActor = NotificationServiceActor(bestAttemptContent, contentHandler: contentHandler)
 
-        // 依次执行 handler
-        for item in NotificationContentHandlerItem.allCases {
-            let handler = await item.processor
-            currentNotificationHandler = handler
-            do {
-                bestAttemptContent = try await handler.processor(
-                    identifier: request.identifier,
-                    content: bestAttemptContent
-                )
-            } catch NotificationContentHandlerError.error(let content) {
-                contentHandler(content)
-                return
-            } catch {
-                print("其他错误: \(error)")
-                contentHandler(bestAttemptContent)
-            }
+        let identifier = request.identifier
+
+        guard let contentActor = contentActor else {
+            contentHandler(request.content)
+            return
         }
-        contentHandler(bestAttemptContent)
+
+        Task {
+            await contentActor.process(identifier: identifier)
+        }
     }
 
-    func expire() async {
-        if let handler = currentContentHandler,
-           let currentNotificationHandler = currentNotificationHandler
-        {
-            await currentNotificationHandler.serviceExtensionTimeWillExpire(contentHandler: handler)
+    override func serviceExtensionTimeWillExpire() {
+        super.serviceExtensionTimeWillExpire()
+        guard let contentActor = contentActor else { return }
+
+        Task {
+            await contentActor.completed()
         }
     }
 }

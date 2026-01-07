@@ -14,7 +14,7 @@ import Foundation
 import GRDB
 
 final class DatabaseManager {
-    public static let shared: DatabaseManager = {
+    static let shared: DatabaseManager = {
         do {
             return try DatabaseManager()
         } catch {
@@ -61,12 +61,12 @@ final class DatabaseManager {
                 t.column("read", .boolean).notNull()
                 t.column("other", .text)
             }
-            
+
             try db.execute(sql: """
                     CREATE INDEX IF NOT EXISTS idx_message_createdate
                     ON message(createDate DESC)
                 """)
-            
+
             try db.execute(sql: """
                     CREATE INDEX IF NOT EXISTS idx_message_group_createdate
                     ON message("group", createDate DESC)
@@ -89,7 +89,7 @@ final class DatabaseManager {
                 t.column("current", .boolean)
             }
         }
-        
+
         migrator.registerMigration("add point") { db in
             try db.alter(table: self.chatGroupTabelName) { t in
                 t.add(column: "point", .datetime)
@@ -108,10 +108,16 @@ final class DatabaseManager {
                 t.column("message", .text)
             }
         }
-        
+
         migrator.registerMigration("add result") { db in
             try db.alter(table: self.chatMessageTabelName) { t in
                 t.add(column: "result", .jsonText)
+            }
+        }
+
+        migrator.registerMigration("add reason") { db in
+            try db.alter(table: self.chatMessageTabelName) { t in
+                t.add(column: "reason", .text)
             }
         }
     }
@@ -126,7 +132,7 @@ final class DatabaseManager {
                 t.column("inside", .boolean).notNull()
             }
         }
-        
+
         migrator.registerMigration("add mode") { db in
             try db.alter(table: self.chatPromptTabelName) { t in
                 t.add(column: "mode", .text)

@@ -205,20 +205,20 @@ struct NoLetChatAccountDetail: View {
 
     private var apiKeyField: some View {
         HStack {
-            if isSecured {
-                SecureField(String("API Key"), text: $data.key)
-                    .textContentType(.password)
-                    .autocapitalization(.none)
-                    .customField(
-                        icon: "key.icloud"
-                    )
-            } else {
-                TextField(String("API Key"), text: $data.key)
-                    .textContentType(.none)
-                    .autocapitalization(.none)
-                    .customField(
-                        icon: "key.icloud"
-                    )
+            Group {
+                if isSecured {
+                    SecureField(String("API Key"), text: $data.key)
+                        .textContentType(.password)
+                } else {
+                    TextField(String("API Key"), text: $data.key)
+                        .textContentType(.none)
+                }
+            }
+            .autocapitalization(.none)
+            .customField(icon: "key.icloud") {
+                if let text = Clipboard.getText(), !text.isEmpty {
+                    self.data.key = text
+                }
             }
 
             Image(systemName: isSecured ? "eye.slash" : "eye")
@@ -234,18 +234,26 @@ struct NoLetChatAccountDetail: View {
         TextField(String("Name"), text: $data.name)
             .autocapitalization(.none)
             .keyboardType(.URL)
-            .customField(
-                icon: "atom"
-            )
+            .customField(icon: "atom") {
+                if let text = Clipboard.getText(), !text.isEmpty {
+                    self.data.name = text
+                }
+            }
     }
 
     private var baseHostField: some View {
         TextField(String("Host"), text: $data.host)
             .autocapitalization(.none)
             .keyboardType(.URL)
-            .customField(
-                icon: "network"
-            )
+            .customField(icon: "network") {
+                if let text = Clipboard.getText(), !text.isEmpty {
+                    let (host, path) = parseAPI(from: text)
+                    self.data.host = host
+                    if let path = path, !path.isEmpty {
+                        self.data.basePath = path
+                    }
+                }
+            }
     }
 
     private var basePathField: some View {
@@ -254,13 +262,53 @@ struct NoLetChatAccountDetail: View {
             .keyboardType(.URL)
             .customField(
                 icon: "point.filled.topleft.down.curvedto.point.bottomright.up"
-            )
+            ) {
+                if let text = Clipboard.getText(), !text.isEmpty {
+                    self.data.basePath = text
+                }
+            }
     }
 
     private var baseModelField: some View {
         TextField(String("Model"), text: $data.model)
             .autocapitalization(.none)
             .keyboardType(.URL)
-            .customField(icon: "slider.horizontal.2.square.badge.arrow.down")
+            .customField(icon: "slider.horizontal.2.square.badge.arrow.down") {
+                if let text = Clipboard.getText() {
+                    self.data.model = text
+                }
+            }
+    }
+
+    func parseAPI(from input: String) -> (host: String, basePath: String?) {
+        // 自动补全 scheme
+        let normalizedInput: String
+        if input.contains("://") {
+            normalizedInput = input
+        } else {
+            normalizedInput = "https://" + input
+        }
+
+        guard let url = URL(string: normalizedInput), let host = url.host else {
+            return (input, nil)
+        }
+
+        let path = url.path
+
+        // 必须有有效 path
+        guard !path.isEmpty, path != "/" else {
+            return (input, nil)
+        }
+
+        let marker = "/chat/completions"
+
+        let basePath: String
+        if let range = path.range(of: marker) {
+            basePath = String(path[..<range.lowerBound])
+        } else {
+            basePath = path
+        }
+
+        return (host, basePath)
     }
 }

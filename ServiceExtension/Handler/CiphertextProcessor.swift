@@ -14,7 +14,7 @@
 import Foundation
 import UserNotifications
 
-class CiphertextHandler: NotificationContentProcessor {
+class CiphertextProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
@@ -102,7 +102,7 @@ class CiphertextHandler: NotificationContentProcessor {
                 Params.body.name: bestAttemptContent.body,
                 Params.title.name: bestAttemptContent.title,
             ]]]
-            throw NotificationContentHandlerError.error(content: bestAttemptContent)
+            throw ProcessoError.error(content: bestAttemptContent)
         }
     }
 

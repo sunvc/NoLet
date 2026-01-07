@@ -104,6 +104,20 @@ struct ChatInputView: View {
     @ViewBuilder
     func PromptLabelView() -> some View {
         HStack(spacing: 10) {
+            if !chatManager.reasoningEffort.emptyData{
+                Menu { 
+                    Button(role: .destructive) {
+                        chatManager.reasoningEffort = .minimal
+                    } label: {
+                        Label("清除", systemImage: "eraser")
+                            .customForegroundStyle(.accent, .primary)
+                    }
+                } label: { 
+                    QuoteView(message: String(localized: "深度思考"))
+                }
+
+                
+            }
             Spacer()
 
             if let quote = quote {
@@ -115,7 +129,7 @@ struct ChatInputView: View {
                             .customForegroundStyle(.accent, .primary)
                     }
                 } label: {
-                    QuoteView(message: quote)
+                    QuoteView(message: quote.search)
                         .onAppear {
                             Task.detached(priority: .background) {
                                 try? await DatabaseManager.shared.dbQueue.write { db in

@@ -10,6 +10,7 @@
 //    Created by Neo on 2025/5/28.
 //
 
+import Defaults
 import Foundation
 import GRDB
 import SwiftUI
@@ -30,10 +31,13 @@ struct PromptChooseView: View {
     @State private var searchText = ""
     @State private var selectedPrompt: ChatPrompt? = nil
 
+    @Default(.customReasoningEffort) private var customReasoningEffort
+    
+
     private var filteredBuiltInPrompts: [ChatPrompt] {
         guard !searchText.isEmpty else { return prompts.filter { $0.inside } }
         return prompts.filter { $0.inside }.filter {
-            $0.title.localizedCaseInsensitiveContains(searchText) 
+            $0.title.localizedCaseInsensitiveContains(searchText)
         }
     }
 
@@ -80,6 +84,26 @@ struct PromptChooseView: View {
                     }
 
                 } else {
+                    Section {
+                        Picker(selection: $chatManager.reasoningEffort) {
+                            ForEach(
+                                ReasoningEffort.allCases(customReasoningEffort),
+                                id: \.self
+                            ) { item in
+                                Text(item.rawValue)
+                                    .tag(item)
+                            }
+                        } label: {
+                            Label {
+                                Text("推理能力")
+                            } icon: {
+                                Image(systemName: chatManager.reasoningEffort.symbol)
+                                    .symbolRenderingMode(.palette)
+                                    .foregroundStyle(.tint, Color.primary)
+                            }
+                        }
+                    } 
+
                     Group {
                         if !filteredBuiltInPrompts.isEmpty {
                             PromptSection(

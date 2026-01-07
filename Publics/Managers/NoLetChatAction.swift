@@ -41,6 +41,7 @@ enum NoLetChatAction: String, CaseIterable {
 
     case deleteAllMuteGroups
     case clearTheContext
+    case startNewChat
 }
 
 extension NoLetChatAction {
@@ -99,7 +100,7 @@ extension NoLetChatAction {
 
         case .openAbout:
             manager.router = [.about]
-            
+
         case .openExample:
             manager.router = [.example]
 
@@ -139,6 +140,12 @@ extension NoLetChatAction {
             let success = await NoLetChatManager.shared.setPoint()
             if !success {
                 return "Execution failed"
+            }
+
+        case .startNewChat:
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                NoLetChatManager.shared.cancellableRequest?.cancel()
+                NoLetChatManager.shared.setGroup()
             }
         }
 
@@ -245,7 +252,7 @@ extension NoLetChatAction {
                 .type(.boolean),
                 .description("Open server deployment documentation")
             )
-            
+
         case .openExample:
             return JSONSchema(
                 .type(.boolean),
@@ -278,11 +285,16 @@ extension NoLetChatAction {
                 .description("Delete all muted groups")
             )
 
-
         case .clearTheContext:
             return JSONSchema(
                 .type(.boolean),
                 .description("Clear the current context memory")
+            )
+
+        case .startNewChat:
+            return JSONSchema(
+                .type(.boolean),
+                .description("Start a new conversation")
             )
         }
     }
@@ -296,16 +308,16 @@ extension NoLetChatAction {
 
     static func defaultFunc() -> [FunctionDefinition] {
         let clearTheContext = Self.clearTheContext
+        let startNewChat = Self.startNewChat
         return [
             FunctionDefinition(
                 name: ActionName.defaultName.rawValue,
-                description: String(
-                    localized: "CRITICAL: Manage current model context"
-                ),
+                description: "CRITICAL: Permanently clears the current conversation context. This action should only be triggered when the user explicitly asks to reset or clear the conversation.",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties([
                         clearTheContext.rawValue: clearTheContext.parameter,
+                        startNewChat.rawValue: startNewChat.parameter
                     ]),
                     .additionalProperties(.boolean(false)),
                 ])
@@ -324,9 +336,7 @@ extension NoLetChatAction {
         return [
             FunctionDefinition(
                 name: ActionName.appManageName.rawValue,
-                description: String(
-                    localized: "CRITICAL: Manage app settings, delete messages, open pages, view docs, etc."
-                ),
+                description: "CRITICAL: Manage app settings, delete messages, open pages, view docs, etc.",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties(properties),

@@ -30,7 +30,7 @@ struct ChatMessageView: View {
                         if let quote = quote {
                             HStack {
                                 Spacer()
-                                QuoteView(message: quote)
+                                QuoteView(message: quote.search)
                                 Spacer()
                             }
                             .padding(.bottom, 5)
@@ -49,6 +49,8 @@ struct ChatMessageView: View {
                     .padding(.vertical, 4)
                 }
 
+                ReasonButton(message: message)
+
                 if !message.content.isEmpty {
                     HStack {
                         assistantMessageView
@@ -63,7 +65,7 @@ struct ChatMessageView: View {
             } footer: {
                 if let result = message.result, let text = result.text() {
                     VStack {
-                        DisclosureGroup { 
+                        DisclosureGroup {
                             HStack {
                                 Text(verbatim: text)
                                 Spacer(minLength: 0)
@@ -71,16 +73,19 @@ struct ChatMessageView: View {
                             .padding(.vertical)
                             .padding(.horizontal, 10)
                             .background26(.ultraThinMaterial)
-                            .clipShape(UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 10, bottomTrailingRadius: 10, topTrailingRadius: 0, style: .continuous))
-                        } label: { 
-                            HStack{
+                            .clipShape(UnevenRoundedRectangle(
+                                topLeadingRadius: 0,
+                                bottomLeadingRadius: 10,
+                                bottomTrailingRadius: 10,
+                                topTrailingRadius: 0,
+                                style: .continuous
+                            ))
+                        } label: {
+                            HStack {
                                 Text("工具执行结果")
                                     .font(.subheadline)
-                        
                             }
-                            
                         }
-
                     }
                     .padding(.horizontal)
                 }
@@ -147,11 +152,11 @@ extension View {
 }
 
 struct QuoteView: View {
-    var message: Message
+    var message: String
 
     var body: some View {
         HStack(spacing: 5) {
-            Text(verbatim: "\(message.search.trimmingSpaceAndNewLines)")
+            Text(verbatim: "\(message.trimmingSpaceAndNewLines)")
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .font(.caption2)
@@ -166,6 +171,7 @@ struct QuoteView: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }
+
 
 #Preview {
     ChatMessageView(

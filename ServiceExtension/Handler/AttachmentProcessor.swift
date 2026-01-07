@@ -1,5 +1,5 @@
 //
-//  MediaHandler.swift
+//  AttachmentProcessor.swift
 //  NotificationServiceExtension
 //
 //  History:
@@ -10,7 +10,7 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class MediaHandler: NotificationContentProcessor {
+class AttachmentProcessor: NotificationContentProcessor {
     
     func processor(
         identifier _: String,

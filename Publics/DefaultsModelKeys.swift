@@ -24,6 +24,7 @@ extension Defaults.Keys {
     static let defaultBrowser = Key<DefaultBrowserModel>("defaultBrowserOpen", .auto)
     static let imageSaveDays = Key<ExpirationTime>("imageSaveDays", .forever)
     static let proxyServer = Key<PushServerModel>("proxyDownloadServer", PushServerModel.space)
+    static let customReasoningEffort = Key<String>("customReasoningEffort", "custom")
 }
 
 extension ExpirationTime: @MainActor Defaults.Serializable {}

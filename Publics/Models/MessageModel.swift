@@ -79,6 +79,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
     var request: String
     var content: String
     var message: String?
+    var reason: String?
     var result: [String: String]?
 
     enum Columns {
@@ -88,6 +89,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let request = Column(CodingKeys.request)
         static let content = Column(CodingKeys.content)
         static let message = Column(CodingKeys.message)
+        static let reason = Column(CodingKeys.reason)
         static let result = Column(CodingKeys.result)
     }
 }

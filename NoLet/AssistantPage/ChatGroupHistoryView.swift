@@ -1,5 +1,5 @@
 //
-//  OpenChatHistoryView.swift
+//  ChatGroupHistoryView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -20,7 +20,7 @@ struct ChatMessageSection {
     var messages: [ChatGroup]
 }
 
-struct OpenChatHistoryView: View {
+struct ChatGroupHistoryView: View {
     @State private var chatGroups: [ChatGroup] = []
 
     var chatGroupSection: [ChatMessageSection] {
@@ -329,5 +329,5 @@ struct OpenChatHistoryView: View {
 }
 
 #Preview {
-    OpenChatHistoryView(show: .constant(false))
+    ChatGroupHistoryView(show: .constant(false))
 }

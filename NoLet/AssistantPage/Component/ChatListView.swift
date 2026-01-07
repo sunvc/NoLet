@@ -32,7 +32,7 @@ struct ChatMessageListView: View {
     var suffixCount: Int {
         min(chatManager.chatMessages.count, 10)
     }
-    
+
     // MARK: - Body
 
     var body: some View {
@@ -71,10 +71,9 @@ struct ChatMessageListView: View {
                     }
 
                     RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.clear)
+                        .fill(Color.gray)
                         .opacity(0.001)
-                        .frame(height: 100)
-                        
+                        .frame(height: 120)
                         .background(
                             GeometryReader { proxy in
                                 Color.clear
@@ -91,30 +90,34 @@ struct ChatMessageListView: View {
                 }
             }
             .scrollDismissesKeyboard(.interactively)
-            .onChange(of: chatManager.isFocusedInput) { value in
-                if value{
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        withAnimation(.snappy(duration: 0.3)) {
-                            scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
-                        }
-                    }
+            .onChange(of: chatManager.isFocusedInput) { focused in
+                if focused {
+                    scrollToBottom(
+                        proxy: scrollViewProxy,
+                        delay: 0.3,
+                        duration: 0.3
+                    )
                 }
             }
+
             .onChange(of: chatManager.currentContent) { _ in
                 throttler.throttle {
-                    if offsetY < 900 {
-                        withAnimation(.snappy(duration: 0.1)) {
-                            scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
-                        }
-                    }
+                    scrollToBottom(proxy: scrollViewProxy)
                 }
             }
-            .onChange(of: manager.isLoading) { _ in
-                if offsetY < 900 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
-                    }
+
+            .onChange(of: chatManager.currentReason) { _ in
+                throttler.throttle {
+                    scrollToBottom(proxy: scrollViewProxy)
                 }
+            }
+
+            .onChange(of: manager.isLoading) { _ in
+                scrollToBottom(
+                    proxy: scrollViewProxy,
+                    animated: false,
+                    delay: 0.3
+                )
             }
             .sheet(isPresented: $showHistory) {
                 if let chatgroup = chatManager.chatGroup {
@@ -132,6 +135,36 @@ struct ChatMessageListView: View {
                     scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
                 }
             }
+        }
+    }
+
+    private func scrollToBottom(
+        proxy: ScrollViewProxy,
+        animated: Bool = true,
+        delay: Double = 0,
+        duration: Double = 0.1
+    ) {
+        guard offsetY < 900 else { return }
+
+        let performScroll = {
+            if animated {
+                withAnimation(.snappy(duration: duration)) {
+                    proxy.scrollTo(chatLastMessageID, anchor: .bottom)
+                }
+            } else {
+                proxy.scrollTo(chatLastMessageID, anchor: .bottom)
+            }
+        }
+
+        if delay > 0 {
+            Task {
+                try? await Task.sleep(
+                    nanoseconds: UInt64(delay * 1_000_000_000)
+                )
+                performScroll()
+            }
+        } else {
+            performScroll()
         }
     }
 }

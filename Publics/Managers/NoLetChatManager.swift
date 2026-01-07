@@ -22,6 +22,7 @@ final class NoLetChatManager: ObservableObject {
 
     @Published var currentRequest: String = ""
     @Published var currentContent: String = ""
+    @Published var currentReason: String = ""
 
     @Published var currentMessageID: String = UUID().uuidString
     @Published var isFocusedInput: Bool = false
@@ -35,6 +36,12 @@ final class NoLetChatManager: ObservableObject {
 
     @Published var showPromptChooseView: Bool = false
     @Published var showAllHistory: Bool = false
+    
+    @Published var reasoningEffort: ReasoningEffort = .minimal
+    
+    @Published var startReason: String? = nil
+    
+    @Published var showReason: ChatMessage? = nil
 
     private let DB: DatabaseManager = .shared
 
@@ -49,7 +56,8 @@ final class NoLetChatManager: ObservableObject {
             chat: "",
             request: currentRequest,
             content: currentContent,
-            message: AppManager.shared.askMessageID
+            message: AppManager.shared.askMessageID,
+            reason: currentReason
         )
     }
 
@@ -170,13 +178,6 @@ extension NoLetChatManager {
                 model: account.model
             )
 
-            do{
-                let models = try await openchat.models()
-                debugPrint(models)
-            }catch{
-                NLog.error(error)
-            }
-            
             let data = try await openchat.chats(query: query)
             NLog.log(data)
             return true
@@ -195,8 +196,8 @@ extension NoLetChatManager {
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
         }
-        
-        let temperature =  Double(Defaults[.temperatureChat]) / 10
+
+        let temperature = Double(Defaults[.temperatureChat]) / 10
 
         if let tips {
             let params: [ChatQuery.ChatCompletionMessageParam] = [
@@ -204,7 +205,13 @@ extension NoLetChatManager {
                 .user(.init(content: .string(text))),
             ]
 
-            return ChatQuery(messages: params, model: account.model, temperature: temperature)
+            return ChatQuery(
+                messages: params,
+                model: account.model,
+                reasoningEffort: reasoningEffort,
+                temperature: temperature,
+                tools: NoLetChatAction.defaultFunc().map { .init(function: $0) }
+            )
         }
 
         var params: [ChatQuery.ChatCompletionMessageParam] = []
@@ -218,6 +225,7 @@ extension NoLetChatManager {
                 return ChatQuery(
                     messages: params,
                     model: account.model,
+                    reasoningEffort: reasoningEffort,
                     temperature: temperature,
                     tools: NoLetChatAction.getFuncs().map { .init(function: $0) }
                 )
@@ -239,6 +247,8 @@ extension NoLetChatManager {
         return ChatQuery(
             messages: params,
             model: account.model,
+            reasoningEffort: reasoningEffort,
+            temperature: temperature,
             tools: NoLetChatAction.defaultFunc().map { .init(function: $0) }
         )
     }

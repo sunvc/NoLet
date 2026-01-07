@@ -22,9 +22,10 @@ struct ExampleView: View {
     @Default(.servers) var servers
     @Default(.cryptoConfigs) var cryptoConfigs
 
-    var server: String{
-        pickerSelection?.server ?? "\(NCONFIG.server)/Key" + "/" 
+    var server: String {
+        (pickerSelection?.server ?? "\(NCONFIG.server)/Key") + "/"
     }
+
     var body: some View {
         List {
             if servers.count > 1 {
@@ -90,7 +91,6 @@ struct ExampleView: View {
                                     return true
                                 })
                         }
-                        
                     }
                     Text(verbatim: resultURL).font(.caption)
 

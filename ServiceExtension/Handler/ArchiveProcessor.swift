@@ -11,12 +11,11 @@
 //    Created by Neo 2024/11/23.
 //
 
-import UserNotifications
 import Defaults
 import Foundation
+import UserNotifications
 
-
-class ArchiveMessageHandler: NotificationContentProcessor {
+class ArchiveProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
@@ -32,6 +31,7 @@ class ArchiveMessageHandler: NotificationContentProcessor {
         }()
 
         // MARK: - markdownbody body 显示
+
         if bestAttemptContent.categoryIdentifier == Identifiers.markdown.rawValue {
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
@@ -53,7 +53,7 @@ class ArchiveMessageHandler: NotificationContentProcessor {
         let image: String? = userInfo.raw(.image)
         let host: String? = userInfo.raw(.host)
         let messageID = bestAttemptContent.targetContentIdentifier
-        let level = bestAttemptContent.getLevel()
+        let level = bestAttemptContent.level.rawValue
         let other = userInfo.toJSONString(excluding: Params.allCases.allString())
 
         //  获取保存时间
@@ -71,7 +71,7 @@ class ArchiveMessageHandler: NotificationContentProcessor {
             bestAttemptContent.interruptionLevel = .passive
             return bestAttemptContent
         }
-        
+
         guard saveDays > 0 else { return bestAttemptContent }
 
         //  保存数据到数据库
@@ -92,9 +92,8 @@ class ArchiveMessageHandler: NotificationContentProcessor {
             other: other
         )
 
-        Task.detached(priority: .userInitiated) {
-            await MessagesManager.shared.add(message)
-        }
+        await MessagesManager.shared.add(message)
+        await MessagesManager.shared.deleteExpired()
 
         return bestAttemptContent
     }

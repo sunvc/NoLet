@@ -138,16 +138,11 @@ struct NoLetChatHomeView: View {
                 }
             }
         }
-        .sheet(isPresented: $chatManager.showAllHistory) {
-            OpenChatHistoryView(show: $chatManager.showAllHistory)
-                .customPresentationCornerRadius(20)
-        }
-        .sheet(isPresented: $chatManager.showPromptChooseView) {
-            PromptChooseView()
-                .customPresentationCornerRadius(20)
-        }
+        
         .onAppear {
-            manager.inAssistant = true
+            Task{@MainActor in 
+                manager.inAssistant = true    
+            }
         }
         .environmentObject(chatManager)
         .onDisappear {
@@ -156,6 +151,20 @@ struct NoLetChatHomeView: View {
         }
         .toolbar(.hidden, for: .tabBar)
         .navigationBarBackButtonHidden()
+        .sheet(isPresented: $chatManager.showAllHistory) {
+            ChatGroupHistoryView(show: $chatManager.showAllHistory)
+                .customPresentationCornerRadius(50)
+        }
+        .sheet(isPresented: $chatManager.showPromptChooseView) {
+            PromptChooseView()
+                .customPresentationCornerRadius(50)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(item: $chatManager.showReason) {
+            ReasonMessageView(message: $0)
+                .customPresentationCornerRadius(50)
+                .presentationDetents([.medium, .large])
+        }
     }
 
     // 发送消息
@@ -211,9 +220,21 @@ struct NoLetChatHomeView: View {
             do {
                 for try await result in results {
                     for choice in result.choices {
+                        if let text = choice.delta.reasoning {
+                            Task { @MainActor in
+                                chatManager.currentReason += text
+                                if chatManager.startReason == nil {
+                                    chatManager.startReason = chatManager.currentMessageID
+                                }
+                            }
+                        } else {
+                            if chatManager.startReason != nil {
+                                chatManager.startReason = nil
+                            }
+                        }
                         if let outputItem = choice.delta.content {
                             Task { @MainActor in
-                                chatManager.currentContent = chatManager.currentContent + outputItem
+                                chatManager.currentContent += outputItem
                                 if AppManager.shared.inAssistant && showAssistantAnimation {
                                     Haptic.selection()
                                 }
@@ -222,7 +243,6 @@ struct NoLetChatHomeView: View {
 
                         if let toolCalls = choice.delta.toolCalls {
                             for toolCall in toolCalls {
-                        
                                 guard let index = toolCall.index else { continue }
                                 var current = toolCallsMap[index] ?? ("", "")
 
@@ -252,9 +272,9 @@ struct NoLetChatHomeView: View {
                 }
                 Haptic.impact()
 
-                if !toolCallsMap.isEmpty{
+                if !toolCallsMap.isEmpty {
                     let result = await runChatCall(params: toolCallsMap)
-                    if !result.isEmpty, let responseMessage = responseMessage  {
+                    if !result.isEmpty, let responseMessage = responseMessage {
                         try await DatabaseManager.shared.dbQueue.write { db in
                             if var message = try ChatMessage.fetchOne(db, id: responseMessage.id) {
                                 message.result = result
@@ -267,6 +287,7 @@ struct NoLetChatHomeView: View {
 
                 chatManager.currentRequest = ""
                 chatManager.currentContent = ""
+                chatManager.currentReason = ""
                 AppManager.shared.isLoading = false
 
             } catch {
@@ -277,6 +298,7 @@ struct NoLetChatHomeView: View {
                     manager.isLoading = false
                     chatManager.currentRequest = ""
                     chatManager.currentContent = ""
+                    chatManager.currentReason = ""
                 }
                 return
             }
@@ -312,236 +334,6 @@ extension NoLetChatHomeView {
             }
         }
         return results
-    }
-}
-
-struct CustomAlertWithTextField: View {
-    @State private var text: String = ""
-    @Binding var show: Bool
-    var confirm: (String) -> Void
-    /// View Properties
-    ///
-    init(_ show: Binding<Bool>, text: String, confirm: @escaping (String) -> Void) {
-        self.text = text
-        _show = show
-        self.confirm = confirm
-    }
-
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "person.badge.key.fill")
-                .font(.title)
-                .foregroundStyle(.white)
-                .frame(width: 65, height: 65)
-                .background {
-                    Circle()
-                        .fill(.blue.gradient)
-                        .background {
-                            Circle()
-                                .fill(.background)
-                                .padding(-5)
-                        }
-                }
-
-            Text("修改分组名称")
-                .fontWeight(.semibold)
-
-            Text("此名称用来查找历史分组使用")
-                .multilineTextAlignment(.center)
-                .font(.caption)
-                .foregroundStyle(.gray)
-                .padding(.top, 5)
-
-            TextField("输入分组名称", text: $text, axis: .vertical)
-                .frame(maxHeight: 150)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 15)
-                .background {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.bar)
-                }
-                .padding(.vertical, 10)
-
-            HStack(spacing: 10) {
-                Button {
-                    show = false
-                } label: {
-                    Text("取消")
-                        .foregroundStyle(.white)
-                        .fontWeight(.semibold)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 25)
-                        .background {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(.red.gradient)
-                        }
-                }
-
-                Button {
-                    show = false
-                    confirm(text)
-                } label: {
-                    Text("确认")
-                        .foregroundStyle(.white)
-                        .fontWeight(.semibold)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 25)
-                        .background {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(.blue.gradient)
-                        }
-                }
-            }
-        }
-        .frame(width: windowWidth * 0.8)
-        .padding([.horizontal, .bottom], 20)
-        .background {
-            RoundedRectangle(cornerRadius: 25)
-                .fill(.background)
-                .padding(.top, 25)
-        }
-    }
-}
-
-struct StreamingLoadingView: View {
-    var showLoading: Bool
-
-    @EnvironmentObject private var chatManager: NoLetChatManager
-    // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
-    var body: some View {
-        if showLoading {
-            Button {
-                chatManager.cancellableRequest?.cancel()
-            } label: {
-                HStack(spacing: 8) {
-                    // 图标动画：增加一个呼吸效果
-                    Image(systemName: "brain")
-                        .foregroundColor(.orange)
-                        .symbolEffect(.pulse) // iOS 17+ 呼吸感
-
-                    TimelineView(.periodic(from: .now, by: 0.5)) { context in
-                        let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
-                        let dots = String(repeating: ".", count: dotCount)
-
-                        HStack(alignment: .bottom, spacing: 0) {
-                            Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
-                            // 固定点号的容器，防止文字左右抖动
-                            Text(dots)
-                                .frame(width: 15, alignment: .leading)
-                        }
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
-                    }
-
-                    Image(systemName: "xmark.circle.fill")
-                        .padding(5)
-                        .foregroundStyle(.red)
-                }
-                .padding(.vertical, 4)
-                .frame(maxWidth: 180)
-            }
-
-        } else {
-            Menu {
-                if chatManager.chatGroup != nil {
-                    Section {
-                        Button(action: {
-                            chatManager.cancellableRequest?.cancel()
-                            chatManager.setGroup()
-                            Haptic.impact()
-                        }) {
-                            Label("新对话", systemImage: "plus.message")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
-                    }
-                }
-
-                Section {
-                    Button {
-                        chatManager.showAllHistory = true
-                        Haptic.impact()
-
-                    } label: {
-                        Label("历史对话", systemImage: "clock.arrow.circlepath")
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                }
-
-                if chatManager.chatGroup != nil {
-                    Section {
-                        Button {
-                            if let id = chatManager.chatGroup?.id {
-                                Task.detached(priority: .background) {
-                                    await chatManager.delete(groupID: id)
-                                }
-                            }
-
-                        } label: {
-                            Label("删除对话", systemImage: "trash")
-                        }.tint(.red)
-                    }
-                }
-
-                if chatManager.chatPrompt != nil {
-                    Section {
-                        Button {
-                            chatManager.chatPrompt = nil
-                        } label: {
-                            Label("取消扩展功能", systemImage: "xmark.circle")
-                        }.tint(.orange)
-                    }
-                }
-
-                if chatManager.chatMessages.count != 0 {
-                    Section {
-                        Button {
-                            Task {
-                                let success = await chatManager.setPoint()
-                                Toast.success(title: success ? "清除成功" : "清除失败")
-                            }
-
-                        } label: {
-                            Label("清除上下文", systemImage: "square.fill.text.grid.1x2")
-                                .customForegroundStyle(.red, .primary)
-                        }
-                    }
-                }
-
-            } label: {
-                HStack {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Text(chatManager.chatGroup?.name.trimmingSpaceAndNewLines ?? "新对话")
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .padding(.trailing, 3)
-                                .font(.footnote)
-                        }
-
-                        if let prompt = chatManager.chatPrompt {
-                            HStack {
-                                Circle()
-                                    .fill(.green)
-                                    .frame(width: 8, height: 8)
-                                Text(prompt.title)
-                                    .font(.footnote)
-                                    .foregroundStyle(.gray)
-                                Spacer()
-                            }
-                            .padding(.leading, 5)
-                        }
-                    }
-
-                    Image(systemName: "chevron.down")
-                        .imageScale(.large)
-                        .foregroundStyle(.gray.opacity(0.5))
-                        .imageScale(.small)
-                }
-
-                .frame(maxWidth: 200)
-            }
-        }
     }
 }
 

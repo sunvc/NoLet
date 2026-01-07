@@ -12,47 +12,16 @@ import Intents
 import UIKit
 import UserNotifications
 
-class IconHandler: NotificationContentProcessor {
-    
+class IconProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
 
-        guard let imageURL: String = userInfo.raw(.icon) else { return bestAttemptContent }
-
-        var localPath = await ImageManager.downloadImage(imageURL)
-
-        /// 获取icon 云图标
-        if localPath == nil {
-            let images = await CloudManager.shared.queryIcons(name: imageURL)
-
-            if let image = images.first, let icon = PushIcon(from: image),
-               let previewImage = icon.previewImage, let data = previewImage.pngData()
-            {
-                let days = await MainActor.run{ Defaults[.imageSaveDays].days }
-                await ImageManager.storeImage(
-                    data: data,
-                    key: imageURL,
-                    expiration: .days(days)
-                )
-
-                localPath = await ImageManager.downloadImage(imageURL)
-            }
-        }
-
-        var imageData: Data? {
-            if let localPath = localPath,
-               let localImageData = NSData(contentsOfFile: localPath) as? Data
-            {
-                return localImageData
-            } else {
-                return imageURL.avatarImage()?.pngData()
-            }
-        }
-
-        guard let imageData = imageData else { return bestAttemptContent }
+        guard let imageURLSttr: String = userInfo.raw(.icon),
+              let imageData = await getPngData(pngURL: imageURLSttr)
+        else { return bestAttemptContent }
 
         let avatar = INImage(imageData: imageData)
         var personNameComponents = PersonNameComponents()
@@ -109,6 +78,31 @@ class IconHandler: NotificationContentProcessor {
             return try bestAttemptContent.updating(from: intent) as! UNMutableNotificationContent
         } catch {
             return bestAttemptContent
+        }
+    }
+
+    func getPngData(pngURL: String) async -> Data? {
+        if pngURL.hasHttp {
+            if let localPath = await ImageManager.downloadImage(pngURL) {
+                return NSData(contentsOfFile: localPath) as? Data
+            }
+            return nil
+        }
+
+        if let image = await CloudManager.shared.queryIcons(name: pngURL).first,
+           let icon = PushIcon(from: image),
+           let previewImage = icon.previewImage,
+           let data = previewImage.pngData()
+        {
+            await ImageManager.storeImage(
+                data: data,
+                key: pngURL,
+                expiration: .days(Defaults[.imageSaveDays].days)
+            )
+
+            return data
+        } else {
+            return pngURL.avatarImage()?.pngData()
         }
     }
 }
