@@ -5525,12 +5525,6 @@
             "value": "Thought"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已思考"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -5541,6 +5535,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "생각해봤어요"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已思考"
           }
         }
       }
@@ -6649,12 +6649,6 @@
             "value": "Reasoning ability"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "推理能力"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -6665,6 +6659,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "추리 능력"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "推理能力"
           }
         }
       }
@@ -8921,12 +8921,6 @@
             "value": "Thinking"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "正在思考"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -8937,6 +8931,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "생각 중"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在思考"
           }
         }
       }
@@ -9705,12 +9705,6 @@
             "value": "Deep Thinking"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "深度思考"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -9721,6 +9715,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "깊이 생각하기"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "深度思考"
           }
         }
       }

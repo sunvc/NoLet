@@ -37,21 +37,23 @@ struct ChatGroupHistoryView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                List {
-                    if chatGroups.isEmpty {
-                        emptyView
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                    } else {
-                        ForEach(chatGroupSection, id: \.id) { section in
-                            chatView(section: section)
-                                .listRowInsets(EdgeInsets(
-                                    top: 10,
-                                    leading: 0,
-                                    bottom: 0,
-                                    trailing: 0
-                                ))
+                ScrollView(.vertical){
+                    LazyVStack(alignment: .leading, spacing: 10, pinnedViews: .sectionHeaders) {
+                        if chatGroups.isEmpty {
+                            emptyView
                                 .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                        } else {
+                            ForEach(chatGroupSection, id: \.id) { section in
+                                chatView(section: section)
+                                    .listRowInsets(EdgeInsets(
+                                        top: 10,
+                                        leading: 0,
+                                        bottom: 0,
+                                        trailing: 0
+                                    ))
+                                    .listRowBackground(Color.clear)
+                            }
                         }
                     }
                 }
@@ -95,8 +97,7 @@ struct ChatGroupHistoryView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Label("关闭", systemImage: "xmark.seal")
-                        .foregroundStyle(.red)
+                    Label("关闭", systemImage: "xmark")
                         .VButton(onRelease: { _ in
                             self.show.toggle()
                             return true
@@ -105,7 +106,7 @@ struct ChatGroupHistoryView: View {
 
                 ToolbarItem {
                     Menu {
-                        Button(role: .destructive) {
+                        Button {
                             _ = try? DatabaseManager.shared.dbQueue.write { db in
                                 try ChatGroup.deleteAll(db)
                             }
@@ -113,11 +114,10 @@ struct ChatGroupHistoryView: View {
                             chatGroups = []
                         } label: {
                             Label("删除所有分组", systemImage: "trash")
-                                .customForegroundStyle(.accent, .primary)
+                                .customForegroundStyle(.red, .primary)
                         }
                     } label: {
                         Label("删除", systemImage: "trash")
-                            .customForegroundStyle(.accent, .primary)
                     }
                 }
             }

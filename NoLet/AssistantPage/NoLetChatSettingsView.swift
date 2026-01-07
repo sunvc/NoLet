@@ -38,13 +38,7 @@ struct NoLetChatSettingsView: View {
         List {
             Section {
                 Button {
-                    self.addAccount = AssistantAccount(
-                        name: String(localized: "智能助手"),
-                        host: "api.openai.com",
-                        basePath: "/v1",
-                        key: "",
-                        model: "gpt-4o-mini"
-                    )
+                    self.addAccount = AssistantAccount.data
                 } label: {
                     HStack {
                         Label("增加新账户", systemImage: "person.badge.plus")
@@ -223,12 +217,12 @@ struct NoLetChatSettingsView: View {
             Text("此操作将删除所有聊天记录和设置数据，且无法恢复。确定要继续吗？")
         }
         .sheet(item: $selectAccount) { account in
-            NoLetChatAccountDetail(assistantAccount: account, isAdd: false)
+            NoLetChatAccountDetail(account: $selectAccount, isAdd: false)
                 .customPresentationCornerRadius(20)
                 .environmentObject(chatManager)
         }
         .sheet(item: $addAccount) { account in
-            NoLetChatAccountDetail(assistantAccount: account, isAdd: true)
+            NoLetChatAccountDetail(account: $addAccount, isAdd: true)
                 .customPresentationCornerRadius(20)
                 .environmentObject(chatManager)
         }

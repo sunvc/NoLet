@@ -21,7 +21,6 @@ struct NoLetChatHomeView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.showAssistantAnimation) var showAssistantAnimation
 
-    @Environment(\.dismiss) var dismiss
     @EnvironmentObject private var manager: AppManager
     @StateObject private var chatManager = NoLetChatManager.shared
 
@@ -42,11 +41,9 @@ struct NoLetChatHomeView: View {
 
     var body: some View {
         ZStack {
+            ChatMessageListView()
             VStack {
-                if chatManager.chatMessages.count > 0 || manager.isLoading {
-                    ChatMessageListView()
-
-                } else {
+                if chatManager.chatMessages.count == 0 {
                     VStack {
                         Spacer()
 
@@ -138,10 +135,10 @@ struct NoLetChatHomeView: View {
                 }
             }
         }
-        
+
         .onAppear {
-            Task{@MainActor in 
-                manager.inAssistant = true    
+            Task { @MainActor in
+                manager.inAssistant = true
             }
         }
         .onDisappear {
@@ -155,12 +152,12 @@ struct NoLetChatHomeView: View {
                 .customPresentationCornerRadius(50)
         }
         .sheet(isPresented: $chatManager.showPromptChooseView) {
-            PromptChooseView()
+            PromptChooseView(show: $chatManager.showPromptChooseView)
                 .customPresentationCornerRadius(50)
                 .presentationDetents([.medium, .large])
         }
-        .sheet(item: $chatManager.showReason) {
-            ReasonMessageView(message: $0)
+        .sheet(item: $chatManager.showReason) { _ in
+            ReasonMessageView(message: $chatManager.showReason)
                 .customPresentationCornerRadius(50)
                 .presentationDetents([.medium, .large])
         }

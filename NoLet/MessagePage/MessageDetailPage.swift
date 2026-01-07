@@ -18,7 +18,6 @@ import SwiftUI
 struct MessageDetailPage: View {
     let group: String
 
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var manager: AppManager
     @StateObject private var messageManager = MessagesManager.shared
 

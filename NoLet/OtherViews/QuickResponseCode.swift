@@ -13,7 +13,7 @@
 import SwiftUI
 
 struct QuickResponseCodeview: View {
-    @Environment(\.dismiss) var dismiss
+
     var image: Image?
     var text: String
     var title: String
@@ -79,7 +79,7 @@ struct QuickResponseCodeview: View {
                         .font(.title2)
                         .foregroundStyle(.gray)
                         .VButton(onRelease: { _ in
-                            self.dismiss()
+                            AppManager.shared.open(sheet: nil)
                             return true
                         })
                         .accessibilityLabel("关闭")

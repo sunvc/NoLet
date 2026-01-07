@@ -18,7 +18,7 @@ import UIKit
 import Zip
 
 struct SoundView: View {
-    @Environment(\.dismiss) var dismiss
+    
     @StateObject private var tipsManager = AudioManager.shared
 
     @State private var showUpload: Bool = false

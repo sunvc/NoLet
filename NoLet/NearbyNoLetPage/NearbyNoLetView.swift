@@ -20,7 +20,6 @@ import UniformTypeIdentifiers
 
 struct NearbyNoLetView: View {
     @StateObject private var viewModel = NearbyNoLetViewModel()
-    @Environment(\.dismiss) var dismiss
     @State private var message = ""
     @State private var showingDevices = false
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
@@ -200,14 +199,14 @@ struct NearbyNoLetView: View {
                 }
                 ToolbarItem(placement: .navigation) {
                     Button {
-                        self.dismiss()
+                        AppManager.shared.open(full: nil)
                     } label: {
                         Image(systemName: "xmark")
                     }
                 }
             }
             .sheet(isPresented: $showingDevices) {
-                DevicesView(viewModel: viewModel)
+                DevicesView(viewModel: viewModel, showDevice: $showingDevices)
             }
             .onAppear {
                 viewModel.startDiscovery()
@@ -456,7 +455,8 @@ struct NearbyNoLetView_Previews: PreviewProvider {
 // 设备列表页面（通过右上角按钮弹出）
 struct DevicesView: View {
     @ObservedObject var viewModel: NearbyNoLetViewModel
-    @Environment(\.dismiss) var dismiss
+    
+    @Binding var showDevice: Bool
 
     var body: some View {
         NavigationStack {
@@ -506,7 +506,7 @@ struct DevicesView: View {
                 }
                 ToolbarItem(placement: .navigation) {
                     Button {
-                        self.dismiss()
+                        self.showDevice = false
                     } label: {
                         Image(systemName: "xmark")
                     }

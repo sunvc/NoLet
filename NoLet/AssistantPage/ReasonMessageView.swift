@@ -14,19 +14,20 @@
 import SwiftUI
 
 struct ReasonMessageView: View {
-    var message: ChatMessage
-
+    @Binding var message: ChatMessage?
     var reasons: [String] {
-        message.reason?.split(separator: "\n").compactMap { String($0) } ?? []
+        message?.reason?.split(separator: "\n").compactMap { String($0) } ?? []
     }
 
     var body: some View {
-        if let reason = message.reason, !reason.isEmpty {
+        if let reason = message?.reason, !reason.isEmpty {
             VStack {
-                ReasonButton(message: message, openShow: false)
-                    .padding(.vertical)
-                    .padding(.horizontal)
-                    .contentShape(Rectangle())
+                ReasonButton(message: message, openShow: false) {
+                    self.message = nil
+                }
+                .padding(.vertical)
+                .padding(.horizontal)
+                .contentShape(Rectangle())
 
                 ScrollView(.vertical) {
                     VStack(spacing: 0) {
@@ -87,24 +88,23 @@ struct ReasonMessageView: View {
     }
 }
 
-
-
 struct ReasonButton: View {
-    var message: ChatMessage
+    var message: ChatMessage?
     var openShow: Bool = true
+    var close: (() -> Void)? = nil
     @EnvironmentObject private var chatManager: NoLetChatManager
-    @Environment(\.dismiss) var dismiss
+
     var show: Bool {
-        chatManager.startReason == message.id
+        chatManager.startReason == message?.id
     }
 
     var body: some View {
-        if let reason = message.reason, !reason.isEmpty {
+        if let reason = message?.reason, !reason.isEmpty {
             Button {
                 if openShow {
                     chatManager.showReason = message
-                }else{
-                    self.dismiss()
+                } else {
+                    self.close?()
                 }
             } label: {
                 if show {

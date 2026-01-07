@@ -21,7 +21,7 @@ import SwiftUI
 struct PromptChooseView: View {
     // MARK: - Properties
 
-    @Environment(\.dismiss) private var dismiss
+    @Binding var show: Bool
     @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var chatManager: NoLetChatManager
 
@@ -32,7 +32,6 @@ struct PromptChooseView: View {
     @State private var selectedPrompt: ChatPrompt? = nil
 
     @Default(.customReasoningEffort) private var customReasoningEffort
-    
 
     private var filteredBuiltInPrompts: [ChatPrompt] {
         guard !searchText.isEmpty else { return prompts.filter { $0.inside } }
@@ -102,7 +101,7 @@ struct PromptChooseView: View {
                                     .foregroundStyle(.tint, Color.primary)
                             }
                         }
-                    } 
+                    }
 
                     Group {
                         if !filteredBuiltInPrompts.isEmpty {
@@ -127,8 +126,8 @@ struct PromptChooseView: View {
                 }
             }
             .sheet(isPresented: $isAddingPrompt) {
-                AddPromptView()
-                    .customPresentationCornerRadius(20)
+                AddPromptView(show: $isAddingPrompt)
+                    .customPresentationCornerRadius(50)
             }
             .navigationTitle("选择功能")
             .navigationBarTitleDisplayMode(.inline)
@@ -140,7 +139,7 @@ struct PromptChooseView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("取消", role: .cancel) {
-                        dismiss()
+                        self.show = false
                     }
                 }
 
@@ -183,7 +182,7 @@ struct PromptChooseView: View {
             chatManager.chatPrompt = nil
         } else {
             chatManager.chatPrompt = prompt
-            dismiss()
+            AppManager.shared.open(sheet: nil)
         }
     }
 }
@@ -336,7 +335,8 @@ private struct PromptSwipeActions: ViewModifier {
 struct AddPromptView: View {
     // MARK: - Properties
 
-    @Environment(\.dismiss) private var dismiss
+    @Binding var show: Bool
+
     @State private var title = ""
     @State private var content = ""
     @State private var address = ""
@@ -356,7 +356,7 @@ struct AddPromptView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("取消") {
-                        dismiss()
+                        self.show = false
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -374,7 +374,7 @@ struct AddPromptView: View {
                                     try chatprompt.insert(db)
                                 }
                                 await MainActor.run {
-                                    self.dismiss()
+                                    AppManager.shared.open(sheet: nil)
                                 }
 
                             } catch {
@@ -392,5 +392,5 @@ struct AddPromptView: View {
 // MARK: - Preview
 
 #Preview("提示词选择") {
-    PromptChooseView()
+    PromptChooseView(show: .constant(true))
 }

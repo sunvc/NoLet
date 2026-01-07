@@ -15,7 +15,6 @@ import SwiftUI
 
 struct ChatMessageView: View {
     let message: ChatMessage
-    let isLoading: Bool
 
     private var quote: Message? {
         guard let messageID = AppManager.shared.askMessageID else { return nil }
@@ -39,8 +38,14 @@ struct ChatMessageView: View {
                             HStack {
                                 Spacer()
 
-                                userMessageView
-                                    .if(isLoading) { $0.lineLimit(2) }
+                                MarkdownCustomView(content: message.request)
+                                    .padding()
+                                    .foregroundColor(.primary)
+                                    .background(.ultraThinMaterial)
+                                    .overlay {
+                                        Color.blue.opacity(0.2)
+                                    }
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
                                     .assistantMenu(message.request)
                             }
                         }
@@ -53,7 +58,11 @@ struct ChatMessageView: View {
 
                 if !message.content.isEmpty {
                     HStack {
-                        assistantMessageView
+                        MarkdownCustomView(content: message.content)
+                            .padding()
+                            .foregroundColor(.primary)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
                             .assistantMenu(message.content)
                         Spacer()
                     }
@@ -61,7 +70,15 @@ struct ChatMessageView: View {
                     .padding(.vertical, 4)
                 }
             } header: {
-                timestampView
+                HStack {
+                    Spacer()
+                    Text("\(message.timestamp.formatString())" + "\n")
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                        .padding(.horizontal)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 5)
             } footer: {
                 if let result = message.result, let text = result.text() {
                     VStack {
@@ -92,42 +109,6 @@ struct ChatMessageView: View {
             }
         }
         .padding(.vertical, 4)
-    }
-
-    // MARK: - View Components
-
-    /// 时间戳视图
-    private var timestampView: some View {
-        HStack {
-            Spacer()
-            Text("\(message.timestamp.formatString())" + "\n")
-                .font(.caption2)
-                .foregroundStyle(.gray)
-                .padding(.horizontal)
-        }
-        .padding(.horizontal)
-        .padding(.vertical, 5)
-    }
-
-    /// 用户消息视图
-    private var userMessageView: some View {
-        MarkdownCustomView(content: message.request)
-            .padding()
-            .foregroundColor(.primary)
-            .background(.ultraThinMaterial)
-            .overlay {
-                Color.blue.opacity(0.2)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-    }
-
-    /// AI助手消息视图
-    private var assistantMessageView: some View {
-        MarkdownCustomView(content: message.content)
-            .padding()
-            .foregroundColor(.primary)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 }
 
@@ -172,7 +153,6 @@ struct QuoteView: View {
     }
 }
 
-
 #Preview {
     ChatMessageView(
         message: ChatMessage(
@@ -182,7 +162,6 @@ struct QuoteView: View {
             request: "",
             content: "",
             message: ""
-        ),
-        isLoading: false
+        )
     )
 }

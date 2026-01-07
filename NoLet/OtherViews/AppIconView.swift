@@ -15,7 +15,7 @@ import SwiftUI
 import Kingfisher
 
 struct AppIconView: View {
-    @Environment(\.dismiss) var dismiss
+
     @Default(.appIcon) var setting_active_app_icon
     @EnvironmentObject private var manager: AppManager
     var body: some View {
@@ -129,7 +129,7 @@ struct AppIconView: View {
             }
 
             Toast.success(title: "切换成功")
-            dismiss()
+            AppManager.shared.open(sheet: nil)
         } else {
             Toast.question(title: "暂时不能切换")
         }

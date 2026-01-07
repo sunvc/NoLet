@@ -23,7 +23,7 @@ struct HistoryMessage: View {
             ScrollView {
                 LazyVStack {
                     ForEach(messages, id: \.id) { message in
-                        ChatMessageView(message: message, isLoading: false)
+                        ChatMessageView(message: message)
                             .id(message.id)
                             .onAppear {
                                 if messages.count < allCount && messages.last == message {
@@ -31,11 +31,11 @@ struct HistoryMessage: View {
                                 }
                             }
                     }
-
-                    Text("已加载全部数据")
-                        .font(.caption)
-                        .foregroundStyle(.gray)
                 }
+
+                Text("已加载全部数据")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
             }
 
             .navigationTitle("历史记录")

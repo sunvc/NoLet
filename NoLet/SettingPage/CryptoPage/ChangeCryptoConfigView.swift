@@ -21,7 +21,6 @@ struct ChangeCryptoConfigView: View {
 
     var expectKeyLength: Int { cryptoConfig.algorithm.rawValue }
 
-    @Environment(\.dismiss) var dismiss
     @FocusState private var keyFocus
 
     @State private var sharkText: String = ""
@@ -154,7 +153,8 @@ struct ChangeCryptoConfigView: View {
                             Defaults[.cryptoConfigs].append(cryptoConfig)
                         }
 
-                        self.dismiss()
+                        AppManager.shared.open(sheet: nil)
+                       
                     } label: {
                         HStack {
                             Spacer()
@@ -188,7 +188,7 @@ struct ChangeCryptoConfigView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        self.dismiss()
+                        AppManager.shared.open(sheet: nil)
                     } label: {
                         Label("关闭", systemImage: "xmark")
                     }.tint(.red)

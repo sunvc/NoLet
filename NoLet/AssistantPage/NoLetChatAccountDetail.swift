@@ -13,25 +13,28 @@ import Defaults
 import SwiftUI
 
 struct NoLetChatAccountDetail: View {
-    @Environment(\.dismiss) var dismiss
+    
+    @Binding var account: AssistantAccount?
     @EnvironmentObject var chatManager: NoLetChatManager
     @State private var data: AssistantAccount
     @Default(.assistantAccouns) var assistantAccouns
     @State private var isSecured: Bool = true
     @State private var isTestingAPI = false
     @State private var isAdd: Bool = false
-    var title: String
+
+    let title: String
 
     @State private var buttonState: AnimatedButton.buttonState = .normal
 
-    init(assistantAccount: AssistantAccount, isAdd: Bool = false) {
-        _data = State(wrappedValue: assistantAccount)
+    init(account: Binding<AssistantAccount?>, isAdd: Bool = false) {
+        _account = account
         self.isAdd = isAdd
-        if isAdd {
-            title = String(localized: "增加新资料")
-        } else {
-            title = String(localized: "修改资料")
-        }
+        let accountData = account.wrappedValue ?? AssistantAccount.data
+        _data = State(wrappedValue: accountData)
+
+        title = isAdd
+            ? String(localized: "增加新资料")
+            : String(localized: "修改资料")
     }
 
     var body: some View {
@@ -136,34 +139,13 @@ struct NoLetChatAccountDetail: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        self.dismiss()
+                        self.account = nil
                     } label: {
                         Text("取消")
                     }.tint(.red)
                         .disabled(isTestingAPI)
                 }
 
-                if !isAdd, let config = data.toBase64() {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            Haptic.impact()
-                            self.dismiss()
-                            let local = PBScheme.pb.scheme(
-                                host: .assistant,
-                                params: ["text": config]
-                            )
-                            Task { @MainActor in
-                                AppManager.shared.open(sheet: .quickResponseCode(
-                                    text: local.absoluteString,
-                                    title: String(localized: "智能助手"),
-                                    preview: String(localized: "智能助手")
-                                ))
-                            }
-                        } label: {
-                            Label("分享", systemImage: "qrcode")
-                        }
-                    }
-                }
             }
             .disabled(isTestingAPI)
         }
@@ -184,7 +166,7 @@ struct NoLetChatAccountDetail: View {
         if let index = assistantAccouns.firstIndex(where: { $0.id == data.id }) {
             assistantAccouns[index] = data
             Toast.success(title: "添加成功")
-            dismiss()
+            AppManager.shared.open(sheet: nil)
             return
         } else {
             if assistantAccouns
@@ -199,7 +181,7 @@ struct NoLetChatAccountDetail: View {
 
             assistantAccouns.insert(data, at: 0)
             Toast.success(title: "修改成功")
-            dismiss()
+            AppManager.shared.open(sheet: nil)
         }
     }
 

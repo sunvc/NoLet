@@ -13,9 +13,8 @@
 import SwiftUI
 
 struct PromptDetailView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-
+    @Environment(\.dismiss) var dismiss
     let prompt: ChatPrompt?
 
     @State private var title: String
@@ -25,6 +24,7 @@ struct PromptDetailView: View {
 
     init(prompt: ChatPrompt?) {
         self.prompt = prompt
+
         _title = State(initialValue: prompt?.title ?? "")
         _content = State(initialValue: prompt?.content ?? "")
         _isEditing = State(initialValue: prompt == nil)
@@ -68,7 +68,6 @@ struct PromptDetailView: View {
     private var contentSection: some View {
         SectionView(title: String(localized: "内容")) {
             if isEditing {
-                
                 TextEditor(text: $content)
                     .frame(minHeight: 200)
                     .padding(8)
@@ -176,7 +175,7 @@ struct PromptDetailView: View {
                     try chatPrompt.insert(db)
                 }
                 await MainActor.run {
-                    self.dismiss()
+                    AppManager.shared.open(sheet: nil)
                 }
             } catch {
                 NLog.error("❌ 插入 ChatPrompt 失败:", error)

@@ -17,7 +17,6 @@ import SwiftUI
 import UIKit
 
 struct ScanView: View {
-    @Environment(\.dismiss) var dismiss
     @State private var isScanning = true
     @State private var isTorchOn = false
     @State private var shouldRescan = false
@@ -83,7 +82,7 @@ struct ScanView: View {
                         if let close = close {
                             close()
                         } else {
-                            self.dismiss()
+                            AppManager.shared.open(full: nil)
                         }
                         Haptic.impact()
                     } label: {
@@ -115,7 +114,7 @@ struct ScanView: View {
                                 if let url = URL(string: code), code.contains("://") {
                                     Section {
                                         Button {
-                                            self.dismiss()
+                                            AppManager.shared.open(full: nil)
                                             AppManager.openURL(url: url, .safari)
                                         } label: {
                                             Label("打开地址", systemImage: "link.circle")
@@ -125,7 +124,7 @@ struct ScanView: View {
 
                                 Section {
                                     Button {
-                                        self.dismiss()
+                                        AppManager.shared.open(full: nil)
                                         AppManager.shared.open(sheet: .quickResponseCode(
                                             text: code,
                                             title: String("二维码"),
@@ -188,7 +187,7 @@ struct ScanView: View {
                         }
                         .onEnded { action in
                             if action.translation.height > 100 {
-                                self.dismiss()
+                                AppManager.shared.open(full: nil)
                                 Haptic.impact()
                             }
                         }

@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 struct ServersConfigView: View {
-    @Environment(\.dismiss) var dismiss
+
     @Default(.servers) var servers
     @Default(.cloudServers) var cloudServers
     @Default(.noServerModel) var noServerModel
@@ -197,7 +197,7 @@ struct ServersConfigView: View {
             if showClose {
                 ToolbarItem {
                     Button {
-                        dismiss()
+                        manager.router = []
                     } label: {
                         Image(systemName: "xmark.seal")
                             .accessibilityLabel("关闭")

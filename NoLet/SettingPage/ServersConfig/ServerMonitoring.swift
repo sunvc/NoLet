@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 struct ServerMonitoringView: View {
-    @Environment(\.dismiss) var dismiss
+   
     @StateObject private var manager = AppManager.shared
     // 监控数据模型
     @State private var cpuUsage: CPUUsage = .init(pidPercentage: 0.0, osPercentage: 0)
@@ -94,7 +94,7 @@ struct ServerMonitoringView: View {
         guard errorCount < 2 else {
             timer?.invalidate()
             timer = nil
-            dismiss()
+            manager.router = []
             return
         }
 

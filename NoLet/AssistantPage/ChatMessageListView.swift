@@ -14,6 +14,7 @@ import Combine
 import Defaults
 import GRDB
 import SwiftUI
+import Foundation
 
 struct ChatMessageListView: View {
     @EnvironmentObject private var chatManager: NoLetChatManager
@@ -32,12 +33,13 @@ struct ChatMessageListView: View {
     var suffixCount: Int {
         min(chatManager.chatMessages.count, 10)
     }
+    
 
     // MARK: - Body
 
     var body: some View {
         ScrollViewReader { scrollViewProxy in
-            ScrollView {
+            ScrollView(.vertical) {
                 if chatManager.chatMessages.count > suffixCount {
                     Button {
                         self.showHistory.toggle()
@@ -56,17 +58,17 @@ struct ChatMessageListView: View {
                         .foregroundStyle(.gray)
                     }
                 }
-
-                ForEach(chatManager.chatMessages.suffix(10), id: \.id) { message in
-                    ChatMessageView(message: message, isLoading: manager.isLoading)
-                        .id(message.id)
+                LazyVStack {
+                    ForEach(chatManager.chatMessages.suffix(10), id: \.id) { message in
+                        ChatMessageView(message: message)
+                            .id(message.id)
+                    }
                 }
 
                 VStack {
                     if manager.isLoading {
                         ChatMessageView(
-                            message: chatManager.currentChatMessage,
-                            isLoading: manager.isLoading
+                            message: chatManager.currentChatMessage
                         )
                     }
 
@@ -84,40 +86,29 @@ struct ChatMessageListView: View {
                             }
                         )
                         .onPreferenceChange(OffsetKey.self) { newValue in
-                            offsetY = newValue
+                            Task { @MainActor in
+                                offsetY = newValue
+                            }
                         }
                         .id(chatLastMessageID)
                 }
             }
+            
             .scrollDismissesKeyboard(.interactively)
-            .onChange(of: chatManager.isFocusedInput) { focused in
-                if focused {
-                    scrollToBottom(
-                        proxy: scrollViewProxy,
-                        delay: 0.3,
-                        duration: 0.3
-                    )
-                }
+            .onChange(of: chatManager.isFocusedInput) { _ in
+                proxy(scrollViewProxy)
             }
 
             .onChange(of: chatManager.currentContent) { _ in
-                throttler.throttle {
-                    scrollToBottom(proxy: scrollViewProxy)
-                }
+                proxy(scrollViewProxy)
             }
 
             .onChange(of: chatManager.currentReason) { _ in
-                throttler.throttle {
-                    scrollToBottom(proxy: scrollViewProxy)
-                }
+                proxy(scrollViewProxy)
             }
 
             .onChange(of: manager.isLoading) { _ in
-                scrollToBottom(
-                    proxy: scrollViewProxy,
-                    animated: false,
-                    delay: 0.3
-                )
+                proxy(scrollViewProxy)
             }
             .sheet(isPresented: $showHistory) {
                 if let chatgroup = chatManager.chatGroup {
@@ -131,40 +122,16 @@ struct ChatMessageListView: View {
                 }
             }
             .task(id: chatLastMessageID) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
-                }
+                scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }
         }
     }
 
-    private func scrollToBottom(
-        proxy: ScrollViewProxy,
-        animated: Bool = true,
-        delay: Double = 0,
-        duration: Double = 0.1
-    ) {
-        guard offsetY < 900 else { return }
-
-        let performScroll = {
-            if animated {
-                withAnimation(.snappy(duration: duration)) {
-                    proxy.scrollTo(chatLastMessageID, anchor: .bottom)
-                }
-            } else {
+    func proxy(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation(.snappy(duration: 0.1)) {
                 proxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }
-        }
-
-        if delay > 0 {
-            Task {
-                try? await Task.sleep(
-                    nanoseconds: UInt64(delay * 1_000_000_000)
-                )
-                performScroll()
-            }
-        } else {
-            performScroll()
         }
     }
 }

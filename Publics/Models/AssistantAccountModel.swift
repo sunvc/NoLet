@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - AssistantAccountModel.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,11 +10,9 @@
 
 //  History:
 //    Created by Neo on 2025/12/24 21:34.
-    
 
-import Foundation
 import Defaults
-
+import Foundation
 
 struct AssistantAccount: Codable, Identifiable, Equatable, Hashable {
     var id: String = UUID().uuidString
@@ -57,8 +55,15 @@ struct AssistantAccount: Codable, Identifiable, Equatable, Hashable {
         self = decoded
         id = UUID().uuidString
     }
-}
 
+    static let data = AssistantAccount(
+        name: String(localized: "智能助手"),
+        host: "api.openai.com",
+        basePath: "/v1",
+        key: "",
+        model: "gpt-4o-mini"
+    )
+}
 
 extension AssistantAccount {
     mutating func trimAssistantAccountParameters() {
@@ -71,7 +76,7 @@ extension AssistantAccount {
     }
 }
 
-extension Defaults.Keys{
+extension Defaults.Keys {
     static let assistantAccouns = Key<[AssistantAccount]>("AssistantAccount", [], iCloud: true)
 }
 
