@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "NoletLogo_画板 1.png",
+      "filename" : "NoletLogo_2.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "NoletLogo_0.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +21,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "NoletLogo_画板 1 副本.png",
+      "filename" : "NoletLogo_1.png",
       "idiom" : "universal"
     }
   ],

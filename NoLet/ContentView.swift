@@ -204,9 +204,8 @@ struct ContentView: View {
         Group {
             switch value {
             case .appIcon:
-                NavigationStack {
-                    AppIconView()
-                }.presentationDetents([.height(300)])
+                AppIconView()
+                    .presentationDetents([.height(350), .height(500)])
             case .cloudIcon:
                 CloudIcon().presentationDetents([.medium, .large])
             case .paywall:

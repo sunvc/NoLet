@@ -50,13 +50,13 @@ struct SettingsPage: View {
         formatter.maximumFractionDigits = 2
         return formatter
     }
-    
+
     @State private var selectView: String? = "message"
 
     var body: some View {
         List(selection: $selectView) {
             if .ISPAD {
-                if manager.prouter.count > 0{
+                if manager.prouter.count > 0 {
                     ListButton {
                         Label("消息", systemImage: "ellipsis.message")
                     } action: {
@@ -66,39 +66,36 @@ struct SettingsPage: View {
                         return true
                     }.id("message")
                 }
-                
-                if manager.prouter.first != .noletChat{
-                    Section{
-                        
+
+                if manager.prouter.first != .noletChat {
+                    Section {
                         ListButton {
-                            Group{
-                                if #available(iOS 26.0, *){
+                            Group {
+                                if #available(iOS 26.0, *) {
                                     Label("智能助手", systemImage: "gear.badge.questionmark")
                                         .symbolRenderingMode(.palette)
                                         .customForegroundStyle(.green, .primary)
-                                }else{
+                                } else {
                                     Label("智能助手", systemImage: "atom")
                                         .symbolRenderingMode(.palette)
                                         .customForegroundStyle(.green, .primary)
                                 }
                             }
-                           
+
                         } action: {
                             Task { @MainActor in
                                 manager.router = [.noletChat]
                             }
                             return true
                         }.id("noletchat")
-                        
                     }
                 }
-                
             }
 
             Section(header: Text("App配置").textCase(.none)) {
-                ZStack{
-                    if noServerModel{
-                        Toggle(isOn: $noServerModel) { 
+                ZStack {
+                    if noServerModel {
+                        Toggle(isOn: $noServerModel) {
                             Label {
                                 Text("无服务器模式")
                                     .foregroundStyle(.textBlack)
@@ -108,13 +105,12 @@ struct SettingsPage: View {
                                     .customForegroundStyle(Color.red)
                             }
                         }
-                    }else{
+                    } else {
                         ListButton {
                             Label {
                                 Text("服务器")
                                     .foregroundStyle(.textBlack)
                             } icon: {
-                               
                                 Image(systemName: "externaldrive.badge.wifi")
                                     .symbolRenderingMode(.palette)
                                     .customForegroundStyle(serverTypeColor, Color.primary)
@@ -122,7 +118,7 @@ struct SettingsPage: View {
                                         view.symbolEffect(.variableColor, delay: 0.5)
                                     }
                             }
-                            
+
                         } action: {
                             Task { @MainActor in
                                 manager.router = [.server]
@@ -132,14 +128,13 @@ struct SettingsPage: View {
                     }
                 }
                 .onChange(of: noServerModel) { _ in
-                    if !noServerModel{
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                    if !noServerModel {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             manager.router = [.server]
                             Haptic.impact()
                         }
                     }
                 }
-               
 
                 ListButton {
                     Label {
@@ -168,12 +163,21 @@ struct SettingsPage: View {
                     Label {
                         Text("智能助手")
                     } icon: {
-                        Image("chatgpt")
-                            .resizable()
-                            .renderingMode(.template)
-                            .scaledToFit()
-                            .frame(width: 26)
-                            .customForegroundStyle(.accent, .primary)
+                        Group {
+                            if #available(iOS 18.0, *) {
+                                Image(systemName: "apple.intelligence")
+                                    .resizable()
+                                    .renderingMode(.template)
+                            } else {
+                                Image(systemName: "atom")
+                                    .resizable()
+                                    .renderingMode(.template)
+                            }
+                        }
+                        
+                        .scaledToFit()
+                        .frame(width: 26)
+                        .customForegroundStyle(.accent, .primary)
                     }
 
                 } action: {
