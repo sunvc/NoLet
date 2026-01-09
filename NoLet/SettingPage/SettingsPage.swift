@@ -114,9 +114,6 @@ struct SettingsPage: View {
                                 Image(systemName: "externaldrive.badge.wifi")
                                     .symbolRenderingMode(.palette)
                                     .customForegroundStyle(serverTypeColor, Color.primary)
-                                    .if(serverTypeColor == .red) { view in
-                                        view.symbolEffect(.variableColor, delay: 0.5)
-                                    }
                             }
 
                         } action: {

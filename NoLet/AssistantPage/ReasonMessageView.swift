@@ -58,7 +58,7 @@ struct ReasonMessageView: View {
                                 .frame(width: 24)
                                 .padding(.leading, 16)
                                 .padding(.trailing, 8)
-
+                               
                                 // Right Content
                                 VStack(alignment: .leading, spacing: 0) {
                                     MarkdownCustomView(content: item)
@@ -72,6 +72,7 @@ struct ReasonMessageView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                 }
+                                Spacer(minLength: 0)
                             }
                         }
                     }
@@ -107,45 +108,30 @@ struct ReasonButton: View {
                     self.close?()
                 }
             } label: {
-                if show {
-                    TimelineView(.periodic(from: .now, by: 0.5)) { context in
-                        let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
-                        let dots = String(repeating: ".", count: dotCount)
-
-                        HStack(alignment: .lastTextBaseline, spacing: 0) {
-                            if !openShow {
-                                Image(systemName: "chevron.left")
-                                    .offset(x: dotCount / 2 == 0 ? 5 : 0)
-                            }
-                            Text("正在思考")
-                            Text(dots)
-                                .frame(width: 18, alignment: .leading) // 防抖
-                            if openShow {
-                                Image(systemName: "chevron.right")
-                                    .offset(x: dotCount / 2 == 0 ? 5 : 0)
-                            }
-                            Spacer()
-                        }
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                HStack(alignment: .center, spacing: 5) {
+                    if !openShow {
+                        Image(systemName: "chevron.left")
                     }
-                    .transition(.opacity)
-                } else {
-                    HStack(spacing: 6) {
-                        if !openShow {
-                            Image(systemName: "chevron.left")
-                        }
-
-                        Text("已思考")
-                            .font(.headline)
-
-                        if openShow {
-                            Image(systemName: "chevron.right")
-                        }
-
-                        Spacer()
+                    if show {
+                        Spinner(tint: Color.orange, lineWidth: 3)
+                            .frame(width: 15, height: 15, alignment: .center)
                     }
+
+                    Text(show ? "正在思考" : "已思考")
+
+                    if show {
+                        Text("...")
+                            .frame(width: 18, alignment: .leading) // 防抖
+                    }
+
+                    if openShow {
+                        Image(systemName: "chevron.right")
+                    }
+                    Spacer()
                 }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .transition(.opacity)
             }
             .padding(.horizontal, 20)
         }

@@ -144,7 +144,12 @@ extension Character {
 }
 
 extension String {
+
+    
     nonisolated func normalizedURLString() -> String {
+        if self.isEmpty{
+            return NCONFIG.server
+        }
         // 尝试解析
         if let url = URL(string: self),
            let scheme = url.scheme?.lowercased(), scheme.hasHttp

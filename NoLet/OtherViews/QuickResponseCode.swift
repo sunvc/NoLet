@@ -91,7 +91,7 @@ struct QuickResponseCodeview: View {
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.green, .gray)
                         .fontWeight(.bold)
-                        .symbolEffect(.replace)
+                        .animation(.default, value: raw)
                         .VButton(onRelease: { _ in
                             self.raw.toggle()
                             return true

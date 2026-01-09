@@ -18,31 +18,25 @@ struct StreamingLoadingView: View {
     var showLoading: Bool
 
     @EnvironmentObject private var chatManager: NoLetChatManager
-    // 使用 TimelineView 自动驱动动画，无需手动管理 Timer
+
     var body: some View {
         if showLoading {
             Button {
                 chatManager.cancellableRequest?.cancel()
             } label: {
                 HStack(spacing: 8) {
-                    // 图标动画：增加一个呼吸效果
-                    Image(systemName: "brain")
-                        .foregroundColor(.orange)
-                        .symbolEffect(.pulse) // iOS 17+ 呼吸感
 
-                    TimelineView(.periodic(from: .now, by: 0.5)) { context in
-                        let dotCount = Int(context.date.timeIntervalSinceReferenceDate * 2) % 4
-                        let dots = String(repeating: ".", count: dotCount)
+                    Spinner(tint: Color.orange, lineWidth: 3)
+                        .frame(width: 20, height: 20, alignment: .center)
 
-                        HStack(alignment: .bottom, spacing: 0) {
-                            Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
-                            // 固定点号的容器，防止文字左右抖动
-                            Text(dots)
-                                .frame(width: 15, alignment: .leading)
-                        }
-                        .foregroundColor(.secondary)
-                        .font(.subheadline)
+                    HStack(alignment: .bottom, spacing: 0) {
+                        Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
+                        // 固定点号的容器，防止文字左右抖动
+                        Text(verbatim: "...")
+                            .frame(width: 15, alignment: .leading)
                     }
+                    .foregroundColor(.secondary)
+                    .font(.subheadline)
 
                     Image(systemName: "xmark.circle.fill")
                         .padding(5)

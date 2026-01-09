@@ -545,8 +545,11 @@ extension AppManager {
                 Defaults[.servers][index] = serverNew
             }
             Toast.success(title: "添加成功")
+            Self.syncLocalToCloud()
+        }else{
+            Toast.success(title: "注册失败")
         }
-        Self.syncLocalToCloud()
+       
         appending = false
         return serverNew.status
     }

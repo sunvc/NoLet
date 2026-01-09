@@ -226,6 +226,14 @@ struct ContentView: View {
             case .share(let contents):
                 ActivityViewController(activityItems: contents)
                     .presentationDetents([.medium, .large])
+            case .cloudServer:
+                NavigationStack {
+                    CloudServersView()
+                        .presentationDetents([.medium])
+                        .presentationDragIndicator(.visible)
+                        .environmentObject(manager)
+                        .environmentObject(NoLetChatManager.shared)
+                }
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

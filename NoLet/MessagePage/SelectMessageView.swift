@@ -81,10 +81,13 @@ struct SelectMessageView: View {
                         if messageShowMode == .abstract {
                             VStack {
                                 if abstractResult.isEmpty {
-                                    Label("正在处理中...", systemImage: "rays")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.green, Color.primary)
-                                        .symbolEffect(.rotate)
+                                    HStack{
+                                        Spacer()
+                                        Spinner(tint: Color.green, lineWidth: 3)
+                                            .frame(width: 20, height: 20, alignment: .center)
+                                        Text("正在处理中...")
+                                        Spacer()
+                                    }
                                 } else {
                                     MarkdownCustomView(
                                         content: abstractResult,
@@ -119,10 +122,13 @@ struct SelectMessageView: View {
                         if messageShowMode == .translate {
                             VStack {
                                 if translateResult.isEmpty {
-                                    Label("正在处理中...", systemImage: "rays")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.green, Color.primary)
-                                        .symbolEffect(.rotate)
+                                    HStack{
+                                        Spacer()
+                                        Spinner(tint: Color.green, lineWidth: 3)
+                                            .frame(width: 20, height: 20, alignment: .center)
+                                        Text("正在处理中...")
+                                        Spacer()
+                                    }
                                 } else {
                                     MarkdownCustomView(
                                         content: translateResult,

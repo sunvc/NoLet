@@ -28,12 +28,11 @@ final class CloudManager {
     private var database: CKDatabase {
         container.publicCloudDatabase
     }
-    
+
     private var privateDatabase: CKDatabase {
         container.privateCloudDatabase
     }
 
-    
     static let pushIconName = "PushIcon"
     static let deviceTokenName = "DeviceToken"
     static let apnsInfoName = "ApnsInfo"
@@ -151,7 +150,7 @@ final class CloudManager {
 
     // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
 
-    func savePushIconModel(_ record: CKRecord?) async -> (Bool,String) {
+    func savePushIconModel(_ record: CKRecord?) async -> (Bool, String) {
         guard let record = record else { return (false, String(localized: "没有文件")) }
 
         let (success, message) = await checkAccount()
@@ -180,7 +179,7 @@ final class CloudManager {
     }
 
     // 删除指定的 PushIcon
-    func delete(_ serverID: String, pub: Bool = true ) async -> Bool {
+    func delete(_ serverID: String, pub: Bool = true) async -> Bool {
         let database = pub ? database : privateDatabase
         do {
             // 创建 CKRecord.ID 对象
@@ -198,8 +197,12 @@ final class CloudManager {
     func queryOrUpdateDeviceToken(_ userID: String, token: String? = nil) async -> String? {
         do {
             let predicate = NSPredicate(format: "device == %@", userID)
-            guard let record = await fetchRecords(Self.deviceTokenName, for: predicate, in: database)
-                .first
+            guard let record = await fetchRecords(
+                Self.deviceTokenName,
+                for: predicate,
+                in: database
+            )
+            .first
             else {
                 if let token {
                     let record = CKRecord(recordType: Self.deviceTokenName)
@@ -250,8 +253,7 @@ final class CloudManager {
     }
 
     func synchronousServers(from records: [CKRecord]) async -> [CKRecord] {
-
-        let cloudRecords = await self.fetchRecords(
+        let cloudRecords = await fetchRecords(
             Self.serverName,
             for: NSPredicate(value: true),
             in: privateDatabase
@@ -268,11 +270,11 @@ final class CloudManager {
             }
         )
 
-  
         var waitRecords: [CKRecord] = []
 
         for record in records {
             guard
+                record["group"] == nil,
                 let url = record["url"] as? String,
                 let key = record["key"] as? String
             else {
@@ -289,17 +291,19 @@ final class CloudManager {
         guard !waitRecords.isEmpty else { return cloudRecords }
 
         do {
-            let results = try await privateDatabase.modifyRecords(saving: waitRecords, deleting: [], savePolicy: .ifServerRecordUnchanged)
-            let uploadDatas = results.saveResults.values.compactMap({try? $0.get()})
+            let results = try await privateDatabase.modifyRecords(
+                saving: waitRecords,
+                deleting: [],
+                savePolicy: .ifServerRecordUnchanged
+            )
+            let uploadDatas = results.saveResults.values.compactMap { try? $0.get() }
             NLog.log(uploadDatas)
-            
+
             return cloudRecords + uploadDatas
-            
+
         } catch {
             NLog.error("❌ Failed to upload records:", error)
             return cloudRecords
         }
-        
-        
     }
 }

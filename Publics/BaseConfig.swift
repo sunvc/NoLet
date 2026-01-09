@@ -24,8 +24,7 @@ extension NURL {
     nonisolated var url: URL { URL(string: self)! }
 }
 
-nonisolated
-class NCONFIG {
+nonisolated class NCONFIG {
     static let appSymbol = "NoLet"
     static let groupName = "group.pushback"
     static let icloudName = "iCloud.pushback"
@@ -65,6 +64,8 @@ class NCONFIG {
     static var databasePath: URL {
         CONTAINER.appendingPathComponent(NCONFIG.databaseName)
     }
+
+    static func offServer(_ from: String) -> Bool {  from.hasPrefix(server) }
 
     enum FolderType: String, CaseIterable {
         case ptt

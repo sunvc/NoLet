@@ -45,6 +45,9 @@ struct ChangeKeyCenterView: View {
 
     @State private var selectCrypto: CryptoModelConfig? = nil
 
+    var offServer: Bool{
+        NCONFIG.offServer(keyHost)
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
@@ -59,7 +62,6 @@ struct ChangeKeyCenterView: View {
                         .scaleEffect(0.8)
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.accent, Color.primary)
-                        .symbolEffect(delay: 5)
                         .onTapGesture {
                             self.showScan = true
                             Haptic.impact()
@@ -98,13 +100,14 @@ struct ChangeKeyCenterView: View {
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(.accent, .primary)
 
-                            Text("选择签名")
+                            Text(offServer ? "官方签名" : "自定义签名" )
                         }
                     }
                     .foregroundColor(.primary)
                     .blendMode(.overlay)
                 }
                 .padding(.horizontal)
+                .disabled(offServer)
             }
 
             VStack {
@@ -175,14 +178,16 @@ struct ChangeKeyCenterView: View {
 
     @ViewBuilder
     func InputHost() -> some View {
-        TextField("请输入URL", text: $keyHost)
+        TextField(String(NCONFIG.server), text: $keyHost)
             .keyboardType(.URL)
             .autocapitalization(.none)
             .disableAutocorrection(true)
             .foregroundStyle(.textBlack)
             .customField(
                 icon: "personalhotspot.circle"
-            ) {}
+            ) {
+                self.keyHost = NCONFIG.server
+            }
             .overlay(
                 GeometryReader { proxy in
                     let offset = proxy.frame(in: .named("stack")).minY + 32
@@ -273,12 +278,19 @@ struct ChangeKeyCenterView: View {
                     .init(title: String(localized: "恢复中..."), background: .cyan),
                 ]
             ) { view in
-                DispatchQueue.main.async {
+                await MainActor.run {
+                    if keyHost.isEmpty {
+                        keyHost = NCONFIG.server
+                        self.selectCrypto = nil
+                    } else if NCONFIG.offServer(keyHost) {
+                        self.selectCrypto = nil
+                    }
                     self.disabledPage = true
                 }
+
                 await view.next(.loading(0))
 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.keyName = self.keyName
                         .trimmingSpaceAndNewLines
                         .onlyLettersAndNumbers()
@@ -352,6 +364,12 @@ struct ChangeKeyCenterView: View {
             ) { view in
                 // 检查完善url
                 await MainActor.run {
+                    if keyHost.isEmpty {
+                        keyHost = NCONFIG.server
+                        self.selectCrypto = nil
+                    } else if NCONFIG.offServer(keyHost) {
+                        self.selectCrypto = nil
+                    }
                     self.keyHost = keyHost.normalizedURLString()
                 }
                 self.disabledPage = true

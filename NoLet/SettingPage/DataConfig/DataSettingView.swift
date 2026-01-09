@@ -158,7 +158,6 @@ struct DataSettingView: View {
                                 Label("正在处理数据", systemImage: "slowmo")
                                     .symbolRenderingMode(.palette)
                                     .foregroundStyle(.tint, Color.primary)
-                                    .symbolEffect(.rotate)
                             }
                         Spacer()
                         Text(String(format: String(localized: "%d条消息"), messageManager.allCount))

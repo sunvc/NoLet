@@ -19,6 +19,7 @@ struct ServerCardView: View {
 
     var item: PushServerModel
     var isCloud: Bool = false
+    var loading: Bool = false
     var complete: () -> Void
 
     var accessText: String {
@@ -36,15 +37,18 @@ struct ServerCardView: View {
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(item.status ? .green : .red, Color.primary)
                             .padding(.horizontal, 5)
-                            .if(!item.status) {
-                                $0.symbolEffect(.variableColor, delay: 1)
-                            }
+
                     } else {
-                        Image(systemName: "externaldrive.badge.icloud")
-                            .scaleEffect(1.5)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.accent, Color.primary)
-                            .padding(.horizontal, 5)
+                        if loading {
+                            Spinner(tint: Color.green, lineWidth: 3)
+                                .frame(width: 30, height: 30, alignment: .center)
+                        } else {
+                            Image(systemName: "externaldrive.badge.icloud")
+                                .scaleEffect(1.5)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.accent, Color.primary)
+                                .padding(.horizontal, 5)
+                        }
                     }
                 }
                 .contentShape(Rectangle())
@@ -99,6 +103,7 @@ struct ServerCardView: View {
                         .onTapGesture {
                             complete()
                         }
+
                 } else {
                     Image(systemName: "person.3.sequence.fill")
                         .scaleEffect(1.5)

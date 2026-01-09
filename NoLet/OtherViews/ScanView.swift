@@ -150,7 +150,7 @@ struct ScanView: View {
                                 "flashlight.off.fill")
                                 .font(.system(size: 35))
                                 .symbolRenderingMode(.palette)
-                                .symbolEffect(.replace)
+                                .animation(.default, value: isTorchOn )
                                 .padding()
                                 .contentShape(Rectangle())
                                 .if(true) { view in

@@ -364,53 +364,6 @@ extension View {
             self
         }
     }
-
-    @ViewBuilder
-    func symbolEffect(_ type: sybolEffectType = .bounce, delay: Double? = nil) -> some View {
-        if #available(iOS 18.0, *) {
-            var repeatBehavior1: SymbolEffectOptions.RepeatBehavior {
-                if delay == nil {
-                    return .continuous
-                } else {
-                    return .periodic(delay: delay == 0 ? Double(Int.random(in: 1...10)) : delay)
-                }
-            }
-
-            Group {
-                switch type {
-                case .pulse:
-                    self.symbolEffect(.pulse.byLayer, options: .repeat(repeatBehavior1))
-                case .bounce:
-                    self.symbolEffect(.bounce.down.byLayer, options: .repeat(repeatBehavior1))
-                case .rotate:
-                    self.symbolEffect(.rotate.clockwise.byLayer, options: .repeat(repeatBehavior1))
-                case .breathe:
-                    self.symbolEffect(.breathe.pulse.byLayer, options: .repeat(repeatBehavior1))
-                case .scale:
-                    self.symbolEffect(.scale.up.byLayer, options: .repeat(repeatBehavior1))
-                case .variableColor:
-                    self.symbolEffect(
-                        .variableColor.iterative.dimInactiveLayers.nonReversing,
-                        options: .repeat(repeatBehavior1)
-                    )
-                case .wiggle:
-                    self.symbolEffect(.wiggle.up.byLayer, options: .repeat(repeatBehavior1))
-                case .replace:
-                    self.contentTransition(.symbolEffect(
-                        .replace.magic(fallback: .downUp.byLayer),
-                        options: .repeat(repeatBehavior1)
-                    ))
-                case .replaceblack:
-                    self.contentTransition(.symbolEffect(.replace))
-                case .none:
-                    self
-                }
-            }
-
-        } else {
-            self
-        }
-    }
 }
 
 enum ScrollDirection {

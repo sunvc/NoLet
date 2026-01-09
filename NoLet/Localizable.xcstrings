@@ -29,6 +29,9 @@
         }
       }
     },
+    "..." : {
+
+    },
     "(必选)" : {
       "localizations" : {
         "en" : {
@@ -1878,6 +1881,7 @@
       }
     },
     "使用中的服务器" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5181,6 +5185,9 @@
         }
       }
     },
+    "官方签名" : {
+
+    },
     "密钥" : {
       "localizations" : {
         "en" : {
@@ -7173,6 +7180,9 @@
         }
       }
     },
+    "故障" : {
+
+    },
     "数据不正确" : {
       "localizations" : {
         "en" : {
@@ -8551,6 +8561,9 @@
           }
         }
       }
+    },
+    "查看历史服务器" : {
+
     },
     "查看图标" : {
       "localizations" : {
@@ -11410,6 +11423,9 @@
         }
       }
     },
+    "自定义签名" : {
+
+    },
     "自定义铃声" : {
       "localizations" : {
         "en" : {
@@ -11887,6 +11903,7 @@
       }
     },
     "请输入URL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -12334,6 +12351,9 @@
         }
       }
     },
+    "运行中" : {
+
+    },
     "这是一个加密示例" : {
       "localizations" : {
         "en" : {
@@ -12503,6 +12523,7 @@
       }
     },
     "选择签名" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

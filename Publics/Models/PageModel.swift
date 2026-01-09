@@ -17,7 +17,7 @@ enum SubPage: Equatable, Identifiable {
     static func == (lhs: SubPage, rhs: SubPage) -> Bool {
         switch (lhs, rhs) {
         case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon),
-             (.cloudIcon, .cloudIcon), (.paywall, .paywall):
+             (.cloudIcon, .cloudIcon), (.paywall, .paywall), (.cloudServer, .cloudServer):
             return true
         case (.web(let a), .web(let b)):
             return a == b
@@ -43,6 +43,7 @@ enum SubPage: Equatable, Identifiable {
     case crypto(CryptoModelConfig)
     case share(contents: [Any])
     case nearby
+    case cloudServer
 
     var id: String {
         switch self {
@@ -56,6 +57,7 @@ enum SubPage: Equatable, Identifiable {
         case .crypto: "crypto"
         case .share: "share"
         case .nearby: "nearby"
+        case .cloudServer: "cloudServer"
         }
     }
 }

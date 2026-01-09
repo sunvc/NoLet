@@ -64,27 +64,31 @@ struct AnimatedButton: View {
         } label: {
             HStack(spacing: 10) {
                 if isLoading {
-                    if #available(iOS 17.0, *) {
-                        Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
-                            .frame(width: 20, height: 20)
-                            .transition(.blurReplace)
-                    } else {
-                        // Fallback on earlier versions
-                        Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
-                    }
-                } else {
-                    if let symbolImage = currentConfig.symbolImage {
+                    Group {
                         if #available(iOS 17.0, *) {
-                            Image(systemName: symbolImage)
-                                .font(.title3)
-                                .contentTransition(.symbolEffect)
+                            Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
                                 .transition(.blurReplace)
                         } else {
                             // Fallback on earlier versions
-                            Image(systemName: symbolImage)
-                                .font(.title3)
-                                .contentTransition(.opacity)
+                            Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
                         }
+                    }
+                    .frame(width: 20, height: 20)
+
+                } else {
+                    if let symbolImage = currentConfig.symbolImage {
+                        Group {
+                            if #available(iOS 17.0, *) {
+                                Image(systemName: symbolImage)
+                                    .contentTransition(.symbolEffect)
+                                    .transition(.blurReplace)
+                            } else {
+                                // Fallback on earlier versions
+                                Image(systemName: symbolImage)
+                                    .contentTransition(.opacity)
+                            }
+                        }
+                        .font(.title3)
                     }
                 }
 
