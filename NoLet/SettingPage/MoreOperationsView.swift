@@ -12,7 +12,7 @@
 //    Created by Neo on 2024/12/11.
 
 import Defaults
-import Photos
+
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -81,32 +81,14 @@ struct MoreOperationsView: View {
                     .onChange(of: autoSaveToAlbum) { newValue in
                         if newValue {
                             Task { @MainActor in
-                                PHPhotoLibrary.requestAuthorization { status in
-//                                    switch status {
-//                                    case .notDetermined:
-//                                        
-//                                        
-//                                        self.autoSaveToAlbum = false
-//                                        
-//                                        
-//                                        Toast.info(title: "未选择权限")
-//                                        
-//                                    case .restricted, .limited:
-//                                        Toast.info(title: "有限的访问权限")
-//                                        
-//                                    case .denied:
-//                                        Task { @MainActor in
-//                                            self.autoSaveToAlbum = false
-//                                        }
-//                                        Toast.info(title: "拒绝了访问权限")
-//                                        
-//                                    case .authorized:
-//                                        Toast.success(title: "已授权访问照片库")
-//                                        
-//                                    @unknown default:
-//                                        break
-//                                    }
-                                }
+                                let result = await ImageManager.requestAuthorization(for: .addOnly)
+
+                                self.autoSaveToAlbum = result.0
+
+                                Toast.shared.present(
+                                    title: result.2,
+                                    symbol: result.0 ? .success : .error
+                                )
                             }
                         }
                     }

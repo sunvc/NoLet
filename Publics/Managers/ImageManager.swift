@@ -112,9 +112,9 @@ extension ImageManager {
         imageURL: String? = nil,
         image: UIImage? = nil
     ) async -> (Bool, PHAuthorizationStatus) {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-        guard status == .authorized || status == .limited else {
-            return (false, status)
+        let status = await Self.requestAuthorization(for: .readWrite)
+        guard status.0 else {
+            return (status.0, status.1)
         }
 
         // 1. 准备数据源 (在执行 performChanges 之前完成)
@@ -124,7 +124,7 @@ extension ImageManager {
         } else if let urlStr = imageURL, let localPath = await downloadImage(urlStr) {
             source = .file(URL(fileURLWithPath: localPath))
         } else {
-            return (false, status)
+            return (false, status.1)
         }
 
         do {
@@ -150,10 +150,10 @@ extension ImageManager {
                     albumRequest?.addAssets([placeholder] as NSArray)
                 }
             }
-            return (true, status)
+            return (true, status.1)
         } catch {
             NLog.error("Save to album failed: \(error)")
-            return (false, status)
+            return (false, status.1)
         }
     }
 
@@ -198,5 +198,35 @@ extension ImageManager {
     private enum SaveSource {
         case image(UIImage)
         case file(URL)
+    }
+
+    static func requestAuthorization(for accessLevel: PHAccessLevel) async
+        -> (Bool, PHAuthorizationStatus, String)
+    {
+        let status = await PHPhotoLibrary.requestAuthorization(for: accessLevel)
+        let success: Bool
+        let msg: String
+        switch status {
+        case .notDetermined:
+            success = false
+            msg = String(localized: "未选择权限")
+
+        case .restricted, .limited:
+            msg = String(localized: "有限的访问权限")
+            success = true
+
+        case .denied:
+            success = false
+            msg = String(localized: "拒绝了访问权限")
+
+        case .authorized:
+            msg = String(localized: "已授权访问照片库")
+            success = true
+
+        @unknown default:
+            msg = String(localized: "未知状态")
+            success = false
+        }
+        return (success, status, msg)
     }
 }
