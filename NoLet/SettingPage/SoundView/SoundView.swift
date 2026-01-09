@@ -36,8 +36,6 @@ struct SoundView: View {
                         Label("上传铃声", systemImage: "waveform")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint)
-                            .symbolEffect(.replace)
-                            .symbolEffect(.variableColor, delay: 1)
                             .if(uploadLoading) { _ in
                                 HStack {
                                     Spacer()

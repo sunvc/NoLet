@@ -119,15 +119,6 @@ struct MessageDetailPage: View {
                 }
             }
         }
-        .diff { view in
-            Group {
-                if #available(iOS 26.0, *) {
-                    view.searchToolbarBehavior(.minimize)
-                } else {
-                    view
-                }
-            }
-        }
         .task {
             loadData()
 

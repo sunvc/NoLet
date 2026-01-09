@@ -154,7 +154,6 @@ struct DataSettingView: View {
                         Label("导出", systemImage: "square.and.arrow.up")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
-                            .symbolEffect(.wiggle, delay: 3)
                             .if(showexportLoading) {
                                 Label("正在处理数据", systemImage: "slowmo")
                                     .symbolRenderingMode(.palette)
@@ -177,7 +176,6 @@ struct DataSettingView: View {
                         Label("导入", systemImage: "arrow.down.circle")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(.tint, Color.primary)
-                            .symbolEffect(.wiggle, delay: 6)
                     }
                     Spacer()
                 }
@@ -226,7 +224,6 @@ struct DataSettingView: View {
                                     (messageExpiration == .forever ? .green : .yellow),
                                 Color.primary
                             )
-                            .symbolEffect(.pulse, delay: 1)
                     }
                 }
 
@@ -242,7 +239,6 @@ struct DataSettingView: View {
                         Image(systemName: "externaldrive.badge.timemachine")
                             .scaleEffect(0.9)
                             .symbolRenderingMode(.palette)
-                            .symbolEffect(.pulse, delay: 1)
                             .foregroundStyle(
                                 imageSaveDays == .no ? .red :
                                     (imageSaveDays == .forever ? .green : .yellow),
@@ -269,7 +265,6 @@ struct DataSettingView: View {
                             Image(systemName: "folder.badge.questionmark")
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.green, Color.primary)
-                                .symbolEffect(.pulse, delay: 3)
                         }
 
                         Spacer()
@@ -298,7 +293,6 @@ struct DataSettingView: View {
                                     Label("正在处理数据", systemImage: "slowmo")
                                         .symbolRenderingMode(.palette)
                                         .foregroundStyle(.white, Color.primary)
-                                        .symbolEffect(.rotate)
                                 }
 
                             Spacer()

@@ -203,7 +203,6 @@ struct MessageCard: View {
                         showFull()
                     } label: {
                         Label("全屏查看", systemImage: "arrow.up.backward.and.arrow.down.forward")
-                            .symbolEffect(.rotate, delay: 2)
                     }.tint(.orange)
                 }
                 .swipeActions(edge: .trailing) {
@@ -307,7 +306,6 @@ struct MessageCard: View {
                         Toast.copy(title: "复制成功")
                     } label: {
                         Label("复制", systemImage: "doc.on.clipboard")
-                            .symbolEffect(.bounce, delay: 2)
                             .customForegroundStyle(.yellow, .white)
 
                     }.tint(.accent)
@@ -344,7 +342,6 @@ struct MessageCard: View {
                             }
                         } label: {
                             Label("智能助手", systemImage: "atom")
-                                .symbolEffect(.rotate, delay: 2)
                         }.tint(.green)
                     }
                 }

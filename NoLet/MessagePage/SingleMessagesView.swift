@@ -40,6 +40,10 @@ struct SingleMessagesView: View {
     private var messagePage: Int {
         messageManager.messagePage
     }
+    
+    var lastMessage: Message? {
+        messages.elementFromEnd(5)
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -74,7 +78,7 @@ struct SingleMessagesView: View {
                     .listRowBackground(Color.clear)
                     .listSectionSeparator(.hidden)
                     .onAppear {
-                        if messagesCount < messageManager.allCount && messages.last == message {
+                        if messagesCount < messageManager.allCount && lastMessage == message {
                             self.loadData(proxy: proxy, limit: messagePage, item: message)
                         }
                     }

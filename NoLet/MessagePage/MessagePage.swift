@@ -22,6 +22,7 @@ struct MessagePage: View {
     @State private var showDeleteAction: Bool = false
     @State private var searchText: String = ""
     @State private var selectAction: MessageAction? = nil
+    
 
     var body: some View {
         ZStack {
@@ -31,10 +32,8 @@ struct MessagePage: View {
                 SingleMessagesView()
             }
             
-            if #unavailable(iOS 26.0) {
-                if !manager.searchText.isEmpty {
-                    SearchMessageView()
-                }
+            if !manager.searchText.isEmpty {
+                SearchMessageView()
             }
         }
         .navigationTitle("消息")
@@ -54,27 +53,17 @@ struct MessagePage: View {
                     .symbolRenderingMode(.palette)
                     .customForegroundStyle(.accent, .primary)
                     .animation(.easeInOut, value: showGroup)
-                    .symbolEffect(delay: 0)
                 }
             }
         }
-        .diff { view in
-            Group {
-                if #available(iOS 26.0, *) {
-                    view
-                } else {
-                    view
-                        .searchable(text: $searchText)
-                        .onChange(of: searchText) { value in
-                            if value.isEmpty {
-                                manager.searchText = ""
-                            }
-                        }
-                        .onSubmit(of: .search) {
-                            manager.searchText = searchText
-                        }
-                }
+        .searchable(text: $searchText)
+        .onChange(of: searchText) { value in
+            if value.isEmpty {
+                manager.searchText = ""
             }
+        }
+        .onSubmit(of: .search) {
+            manager.searchText = searchText
         }
         .alert(
             "确认删除",
@@ -144,7 +133,6 @@ struct MessagePage: View {
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.accent, .primary)
                         .animation(.easeInOut, value: showGroup)
-                        .symbolEffect(delay: 0)
                     }
                 }
             }
@@ -185,4 +173,11 @@ struct MessagePage: View {
 
 #Preview {
     ContentView()
+}
+
+extension Array {
+    func elementFromEnd(_ offset: Int) -> Element? {
+        guard offset > 0, count >= offset else { return nil }
+        return self[count - offset]
+    }
 }

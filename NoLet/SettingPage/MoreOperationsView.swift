@@ -80,24 +80,32 @@ struct MoreOperationsView: View {
                     }
                     .onChange(of: autoSaveToAlbum) { newValue in
                         if newValue {
-                            PHPhotoLibrary.requestAuthorization { status in
-                                switch status {
-                                case .notDetermined:
-                                    self.autoSaveToAlbum = false
-                                    Toast.info(title: "未选择权限")
-
-                                case .restricted, .limited:
-                                    Toast.info(title: "有限的访问权限")
-
-                                case .denied:
-                                    self.autoSaveToAlbum = false
-                                    Toast.info(title: "拒绝了访问权限")
-
-                                case .authorized:
-                                    Toast.success(title: "已授权访问照片库")
-
-                                @unknown default:
-                                    break
+                            Task { @MainActor in
+                                PHPhotoLibrary.requestAuthorization { status in
+//                                    switch status {
+//                                    case .notDetermined:
+//                                        
+//                                        
+//                                        self.autoSaveToAlbum = false
+//                                        
+//                                        
+//                                        Toast.info(title: "未选择权限")
+//                                        
+//                                    case .restricted, .limited:
+//                                        Toast.info(title: "有限的访问权限")
+//                                        
+//                                    case .denied:
+//                                        Task { @MainActor in
+//                                            self.autoSaveToAlbum = false
+//                                        }
+//                                        Toast.info(title: "拒绝了访问权限")
+//                                        
+//                                    case .authorized:
+//                                        Toast.success(title: "已授权访问照片库")
+//                                        
+//                                    @unknown default:
+//                                        break
+//                                    }
                                 }
                             }
                         }
@@ -120,7 +128,6 @@ struct MoreOperationsView: View {
                                 showMessageAvatar ? Color.accentColor : Color.red,
                                 Color.primary
                             )
-                            .symbolEffect(.replace)
                     }
                 }
 
@@ -188,7 +195,6 @@ struct MoreOperationsView: View {
 
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.accent, Color.primary)
-                            .symbolEffect(.rotate)
                     }
                 } action: {
                     Task { @MainActor in

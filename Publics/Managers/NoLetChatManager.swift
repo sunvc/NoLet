@@ -28,6 +28,7 @@ final class NoLetChatManager: ObservableObject {
     @Published var isFocusedInput: Bool = false
 
     @Published var groupsCount: Int = 0
+    @Published var currentMessagesCount: Int = 0
     @Published var promptCount: Int = 0
 
     @Published var chatPrompt: ChatPrompt? = nil
@@ -36,11 +37,11 @@ final class NoLetChatManager: ObservableObject {
 
     @Published var showPromptChooseView: Bool = false
     @Published var showAllHistory: Bool = false
-    
+
     @Published var reasoningEffort: ReasoningEffort = .minimal
-    
+
     @Published var startReason: String? = nil
-    
+
     @Published var showReason: ChatMessage? = nil
 
     private let DB: DatabaseManager = .shared
@@ -66,16 +67,28 @@ final class NoLetChatManager: ObservableObject {
     }
 
     private func startObservingUnreadCount() {
-        let observation = ValueObservation.tracking { db -> (Int, [ChatMessage], Int, ChatGroup?) in
+        let observation = ValueObservation.tracking { db -> (
+            Int,
+            [ChatMessage],
+            Int,
+            ChatGroup?,
+            Int
+        ) in
             let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
             let groupsCount: Int = try ChatGroup.fetchCount(db)
+
+            let messageCount: Int = try ChatMessage
+                .filter(ChatMessage.Columns.chat == current?.id)
+                .fetchCount(db)
+
             let messages: [ChatMessage] = try ChatMessage
                 .filter(ChatMessage.Columns.chat == current?.id)
-                .order(\.timestamp)
+                .order(\.timestamp.desc)
+                .limit(10)
                 .fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
 
-            return (groupsCount, messages, promptCount, current)
+            return (groupsCount, messages.reversed(), promptCount, current, messageCount)
         }
 
         observationCancellable = observation.start(
@@ -89,9 +102,24 @@ final class NoLetChatManager: ObservableObject {
                 self?.chatMessages = datas.1
                 self?.promptCount = datas.2
                 self?.chatGroup = datas.3
-                debugPrint(datas.1.count)
+                self?.currentMessagesCount = datas.4
             }
         )
+    }
+
+    func getCurrentMessages() -> [ChatMessage] {
+        do {
+            return try DB.dbQueue.read { db in
+                let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
+                return try ChatMessage
+                    .filter(ChatMessage.Columns.chat == current?.id)
+                    .order(\.timestamp)
+                    .limit(10)
+                    .fetchAll(db)
+            }
+        } catch {
+            return []
+        }
     }
 
     func setPoint() async -> Bool {

@@ -16,7 +16,6 @@ import SwiftUI
 
 struct ServerCardView: View {
     @EnvironmentObject private var manager: AppManager
-    @State private var textAnimation: Bool = false
 
     var item: PushServerModel
     var isCloud: Bool = false
@@ -86,23 +85,9 @@ struct ServerCardView: View {
                         Spacer()
                     }
                 }
-
-                .if(true) { view in
-                    Group {
-                        if #available(iOS 26.0, *) {
-                            view
-                                .onTapGesture {
-                                    sharedSever()
-                                    Haptic.impact()
-                                }
-                        } else {
-                            view
-                                .VButton(onRelease: { _ in
-                                    sharedSever()
-                                    return true
-                                })
-                        }
-                    }
+                .onTapGesture {
+                    sharedSever()
+                    Haptic.impact()
                 }
 
                 Spacer()
@@ -111,7 +96,6 @@ struct ServerCardView: View {
                     Image(systemName: "icloud.and.arrow.down")
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.tint, Color.primary)
-                        .symbolEffect(.bounce, delay: 1)
                         .onTapGesture {
                             complete()
                         }
@@ -120,15 +104,12 @@ struct ServerCardView: View {
                         .scaleEffect(1.5)
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(Color.green, Color.orange)
-                        .symbolEffect(.bounce, delay: 1)
                         .if(item.group == nil) { _ in
                             Image(systemName: "doc.on.doc")
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.tint, Color.primary)
-                                .symbolEffect(.bounce, delay: 1)
                                 .onTapGesture {
                                     complete()
-                                    self.textAnimation.toggle()
                                 }
                         }
                 }

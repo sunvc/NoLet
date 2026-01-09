@@ -26,6 +26,12 @@ final class MessagesManager: ObservableObject {
 
     let messagePage: Int = 50
 
+    private var currentContent: String = ""
+
+    func flush(_ data: String, stop: Bool = false) {
+        
+    }
+
     private init() {
         let messages = DiskCache.shared.get()
         groupMessages = messages
@@ -99,7 +105,7 @@ extension MessagesManager {
         }
     }
 
-    nonisolated  func unreadCount(group: String? = nil) async -> Int {
+    nonisolated func unreadCount(group: String? = nil) async -> Int {
         do {
             return try await DB.dbQueue.read { db in
                 var request = Message.filter(Message.Columns.isRead == false)
@@ -155,7 +161,7 @@ extension MessagesManager {
         }
     }
 
-    nonisolated  func query(id: String) async -> Message? {
+    nonisolated func query(id: String) async -> Message? {
         do {
             return try await DB.dbQueue.read { db in
                 try Message.fetchOne(db, key: id)
@@ -210,7 +216,7 @@ extension MessagesManager {
         return request
     }
 
-    nonisolated  func query(
+    nonisolated func query(
         search: String,
         group: String? = nil,
         limit lim: Int = 50,
@@ -240,7 +246,7 @@ extension MessagesManager {
         }
     }
 
-    nonisolated  func queryGroup() async -> [Message] {
+    nonisolated func queryGroup() async -> [Message] {
         do {
             return try await DB.dbQueue.read { db in
                 try self.fetchGroupedMessages(from: db)
@@ -276,7 +282,7 @@ extension MessagesManager {
         return try rows.map { try Message(row: $0) }
     }
 
-    nonisolated  func query(
+    nonisolated func query(
         group: String? = nil,
         limit lim: Int = 100,
         _ date: Date? = nil,
@@ -370,12 +376,11 @@ extension MessagesManager {
         return -1
     }
 
-    nonisolated func delete(_ start: Date, end: Date) -> String{
+    nonisolated func delete(_ start: Date, end: Date) -> String {
         debugPrint(start.formatted(), end.formatted())
         return "success"
     }
-    
-    
+
     nonisolated func delete(_ messageID: String) -> String? {
         do {
             let result: String? = try DB.dbQueue.write { db in
@@ -432,7 +437,7 @@ extension MessagesManager {
 
     static func createStressTest(
         max number: Int = 100_000,
-        len textLength: Int = 4000
+        len textLength: Int = 600
     ) async -> Bool {
         do {
             let body = Self.generateRandomChineseText()
@@ -456,7 +461,7 @@ extension MessagesManager {
         }
     }
 
-    static func generateRandomChineseText(_ approxBytes: Int = 4096) -> String {
+    static func generateRandomChineseText(_ approxBytes: Int = 500) -> String {
         // 常用汉字 Unicode 范围：0x4E00 ~ 0x9FA5
         let minCodePoint = 0x4E00
         let maxCodePoint = 0x9FA5

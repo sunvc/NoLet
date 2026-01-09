@@ -12,9 +12,9 @@
 
 import Combine
 import Defaults
+import Foundation
 import GRDB
 import SwiftUI
-import Foundation
 
 struct ChatMessageListView: View {
     @EnvironmentObject private var chatManager: NoLetChatManager
@@ -31,9 +31,10 @@ struct ChatMessageListView: View {
     @State private var offsetY: CGFloat = 0
 
     var suffixCount: Int {
-        min(chatManager.chatMessages.count, 10)
+        min(chatManager.currentMessagesCount, 10)
     }
-    
+
+    let height = UIScreen.main.bounds.height
 
     // MARK: - Body
 
@@ -59,7 +60,7 @@ struct ChatMessageListView: View {
                     }
                 }
                 LazyVStack {
-                    ForEach(chatManager.chatMessages.suffix(10), id: \.id) { message in
+                    ForEach(chatManager.chatMessages, id: \.id) { message in
                         ChatMessageView(message: message)
                             .id(message.id)
                     }
@@ -70,11 +71,11 @@ struct ChatMessageListView: View {
                         ChatMessageView(
                             message: chatManager.currentChatMessage
                         )
+                        .animation(.default, value: chatManager.currentChatMessage)
                     }
 
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.gray)
-                        .opacity(0.001)
+                    Rectangle()
+                        .fill(Color.clear)
                         .frame(height: 120)
                         .background(
                             GeometryReader { proxy in
@@ -93,18 +94,26 @@ struct ChatMessageListView: View {
                         .id(chatLastMessageID)
                 }
             }
-            
+
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in
-                proxy(scrollViewProxy)
+                proxy(scrollViewProxy, delay: 0.3)
             }
 
             .onChange(of: chatManager.currentContent) { _ in
-                proxy(scrollViewProxy)
+                if (offsetY - height < 100){
+                    throttler.throttle {
+                        proxy(scrollViewProxy)
+                    }
+                }
             }
 
             .onChange(of: chatManager.currentReason) { _ in
-                proxy(scrollViewProxy)
+                if (offsetY - height < 100){
+                    throttler.throttle {
+                        proxy(scrollViewProxy)
+                    }
+                }
             }
 
             .onChange(of: manager.isLoading) { _ in
@@ -122,13 +131,13 @@ struct ChatMessageListView: View {
                 }
             }
             .task(id: chatLastMessageID) {
-                scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
+                proxy(scrollViewProxy, delay: 0.3)
             }
         }
     }
 
-    func proxy(_ proxy: ScrollViewProxy) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+    func proxy(_ proxy: ScrollViewProxy, delay: Double = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             withAnimation(.snappy(duration: 0.1)) {
                 proxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }

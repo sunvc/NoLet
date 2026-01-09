@@ -15,7 +15,6 @@ import Defaults
 import SwiftUI
 
 struct ServersConfigView: View {
-
     @Default(.servers) var servers
     @Default(.cloudServers) var cloudServers
     @Default(.noServerModel) var noServerModel
@@ -23,6 +22,12 @@ struct ServersConfigView: View {
     @StateObject private var chatManager = NoLetChatManager.shared
     @State private var showNoServerMode: Bool = false
     var showClose: Bool = false
+
+    var cloudServers1: [PushServerModel] {
+        manager.servers.filter({ item in
+            !self.servers.contains(where: {$0.server == item.server})
+        })
+    }
 
     var body: some View {
         List {
@@ -97,52 +102,50 @@ struct ServersConfigView: View {
             }
 
             Section {
-                ForEach(manager.servers, id: \.id) { item in
-                    if !servers.contains(where: { $0 == item }) {
-                        ServerCardView(item: item, isCloud: true) {
-                            Task { @MainActor in
-                                self.servers.append(item)
-                                let server = await manager.register(server: item)
-                                if server.status {
-                                    Toast.success(title: "操作成功")
-                                    if let index = self.servers
-                                        .firstIndex(where: { $0.id == item.id })
-                                    {
-                                        self.servers[index].status = true
-                                    }
-                                } else {
-                                    Toast.question(title: "操作失败")
-                                    self.servers.removeAll(where: { $0.id == item.id })
-                                }
-                            }
-                        }
-                        .padding(.horizontal, 15)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                if let index = cloudServers
+                ForEach(cloudServers1, id: \.id) { item in
+                    ServerCardView(item: item, isCloud: true) {
+                        Task { @MainActor in
+                            self.servers.append(item)
+                            let server = await manager.register(server: item)
+                            if server.status {
+                                Toast.success(title: "操作成功")
+                                if let index = self.servers
                                     .firstIndex(where: { $0.id == item.id })
                                 {
-                                    cloudServers.remove(at: index)
+                                    self.servers[index].status = true
                                 }
-
-                                Task { @MainActor in
-                                    let success = await CloudManager.shared.delete(
-                                        item.id,
-                                        pub: false
-                                    )
-                                    if success {
-                                        manager.servers.removeAll(where: { $0.id == item.id })
-                                        Toast.success(title: "删除成功")
-                                    }
-                                }
-                            } label: {
-                                Label("删除", systemImage: "trash")
-                                    .symbolRenderingMode(.palette)
-                                    .foregroundStyle(.white)
+                            } else {
+                                Toast.question(title: "操作失败")
+                                self.servers.removeAll(where: { $0.id == item.id })
                             }
+                        }
+                    }
+                    .padding(.horizontal, 15)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            if let index = cloudServers
+                                .firstIndex(where: { $0.id == item.id })
+                            {
+                                cloudServers.remove(at: index)
+                            }
+
+                            Task { @MainActor in
+                                let success = await CloudManager.shared.delete(
+                                    item.id,
+                                    pub: false
+                                )
+                                if success {
+                                    manager.servers.removeAll(where: { $0.id == item.id })
+                                    Toast.success(title: "删除成功")
+                                }
+                            }
+                        } label: {
+                            Label("删除", systemImage: "trash")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white)
                         }
                     }
                 }

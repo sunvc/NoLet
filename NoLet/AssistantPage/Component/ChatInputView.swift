@@ -51,10 +51,10 @@ struct ChatInputView: View {
             .animation(.default, value: text)
         }
         .padding(.bottom, isFocusedInput ? 10 : 30)
-        .onTapGesture {
-            self.isFocusedInput = !manager.isLoading
-            Haptic.impact()
+        .overlay(alignment: .bottomTrailing) { 
+            
         }
+        
     }
 
     // MARK: - Subviews
