@@ -114,7 +114,7 @@ struct ContentView: View {
                             SettingsPage().router(manager)
                         }
                     } label: {
-                        tabLabel(title: "设置", icon: "apple.intelligence")
+                        tabLabel(title: "设置", icon: "gear.badge.questionmark")
                     }
 
                     if assistantAccouns.count > 0 {
