@@ -62,6 +62,7 @@ struct ChatMessageView: View {
                             .padding()
                             .foregroundColor(.primary)
                             .background(.ultraThinMaterial)
+                            .foregroundColor(.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                             .assistantMenu(message.content)
                         Spacer()
@@ -79,33 +80,6 @@ struct ChatMessageView: View {
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 5)
-            } footer: {
-                if let result = message.result, let text = result.text() {
-                    VStack {
-                        DisclosureGroup {
-                            HStack {
-                                Text(verbatim: text)
-                                Spacer(minLength: 0)
-                            }
-                            .padding(.vertical)
-                            .padding(.horizontal, 10)
-                            .background26(.ultraThinMaterial)
-                            .clipShape(UnevenRoundedRectangle(
-                                topLeadingRadius: 0,
-                                bottomLeadingRadius: 10,
-                                bottomTrailingRadius: 10,
-                                topTrailingRadius: 0,
-                                style: .continuous
-                            ))
-                        } label: {
-                            HStack {
-                                Text("工具执行结果")
-                                    .font(.subheadline)
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                }
             }
         }
         .padding(.vertical, 4)
@@ -150,6 +124,27 @@ struct QuoteView: View {
         .padding(.vertical, 5)
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+struct MCPResultView: View {
+    var text: String
+
+    var body: some View {
+        HStack {
+            Text(verbatim: text)
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical)
+        .padding(.horizontal, 10)
+        .background26(.ultraThinMaterial)
+        .clipShape(UnevenRoundedRectangle(
+            topLeadingRadius: 0,
+            bottomLeadingRadius: 10,
+            bottomTrailingRadius: 10,
+            topTrailingRadius: 0,
+            style: .continuous
+        ))
     }
 }
 

@@ -183,31 +183,7 @@ struct NoLetChatHomeView: View {
                 chatManager.currentContent = ""
             }
 
-            let newGroup: ChatGroup? = {
-                if let group = chatManager.chatGroup {
-                    return group
-                } else {
-                    let id = manager.askMessageID ?? UUID().uuidString
-                    let name = String(text.trimmingSpaceAndNewLines.prefix(10))
-                    let group = ChatGroup(
-                        id: id,
-                        timestamp: .now,
-                        name: name,
-                        host: "",
-                        current: true
-                    )
-                    do {
-                        try DatabaseManager.shared.dbQueue.write { db in
-                            try group.insert(db)
-                        }
-                        return group
-                    } catch {
-                        return nil
-                    }
-                }
-            }()
-
-            guard let newGroup = newGroup else { return }
+            guard let newGroup = getGroup(text: text) else { return }
 
             let results = chatManager.chatsStream(text: text, messageID: manager.askMessageID)
 
@@ -217,40 +193,27 @@ struct NoLetChatHomeView: View {
             do {
                 for try await result in results {
                     for choice in result.choices {
-                        if let text = choice.delta.reasoning {
-                            Task { @MainActor in
-                                chatManager.currentReason += text
-                                if chatManager.startReason == nil {
-                                    chatManager.startReason = chatManager.currentMessageID
-                                }
-                            }
-                        } else {
-                            if chatManager.startReason != nil {
-                                chatManager.startReason = nil
-                            }
-                        }
-                        if let outputItem = choice.delta.content {
-                            Task { @MainActor in
-                                chatManager.currentContent += outputItem
-                                if AppManager.shared.inAssistant && showAssistantAnimation {
-                                    Haptic.selection()
-                                }
-                            }
-                        }
+                        toolCallsMap = resultHandler(choice: choice, toolCallsMap: toolCallsMap)
+                    }
+                }
 
-                        if let toolCalls = choice.delta.toolCalls {
-                            for toolCall in toolCalls {
-                                guard let index = toolCall.index else { continue }
-                                var current = toolCallsMap[index] ?? ("", "")
+                Haptic.impact()
 
-                                if let name = toolCall.function?.name {
-                                    current.name = name
-                                    NLog.log("Tool call name received for index \(index): \(name)")
-                                }
-                                if let args = toolCall.function?.arguments {
-                                    current.args += args
-                                }
-                                toolCallsMap[index] = current
+                if !toolCallsMap.isEmpty {
+                    chatManager.currentResult = await runChatCall(params: toolCallsMap)
+                    debugPrint(chatManager.currentResult)
+
+                    if !chatManager.currentResult.isEmpty,
+                       let text = chatManager.currentResult.text()
+                    {
+                        let results = chatManager.chatsStream(
+                            text: "FunctionCall Results:\(text)",
+                            messageID: manager.askMessageID,
+                            toolCall: true
+                        )
+                        for try await result in results {
+                            for choice in result.choices {
+                                resultHandler(choice: choice)
                             }
                         }
                     }
@@ -267,37 +230,94 @@ struct NoLetChatHomeView: View {
                         try responseMessage.insert(db)
                     }
                 }
-                Haptic.impact()
 
-                if !toolCallsMap.isEmpty {
-                    let result = await runChatCall(params: toolCallsMap)
-                    if !result.isEmpty, let responseMessage = responseMessage {
-                        try await DatabaseManager.shared.dbQueue.write { db in
-                            if var message = try ChatMessage.fetchOne(db, id: responseMessage.id) {
-                                message.result = result
-                                try message.update(db)
-                            }
-                        }
-                        Haptic.impact()
-                    }
-                }
-
-                chatManager.currentRequest = ""
-                chatManager.currentContent = ""
-                chatManager.currentReason = ""
-                AppManager.shared.isLoading = false
-
+                clearCurrent()
             } catch {
                 // Handle chunk error here
                 NLog.error(error)
                 Task { @MainActor in
                     Toast.error(title: "发生错误\(error.localizedDescription)")
-                    manager.isLoading = false
-                    chatManager.currentRequest = ""
-                    chatManager.currentContent = ""
-                    chatManager.currentReason = ""
+                    self.clearCurrent()
                 }
                 return
+            }
+        }
+    }
+
+    @discardableResult
+    func resultHandler(
+        choice: ChatStreamResult.Choice,
+        toolCallsMap: [Int: (name: String, args: String)] = [:]
+    ) -> [Int: (name: String, args: String)] {
+        var toolCallsMap = toolCallsMap
+        if let text = choice.delta.reasoning {
+            Task { @MainActor in
+                chatManager.currentReason += text
+                if chatManager.startReason == nil {
+                    chatManager.startReason = chatManager.currentMessageID
+                }
+            }
+        } else {
+            if chatManager.startReason != nil {
+                chatManager.startReason = nil
+            }
+        }
+        if let outputItem = choice.delta.content {
+            Task { @MainActor in
+                chatManager.currentContent += outputItem
+                if AppManager.shared.inAssistant && showAssistantAnimation {
+                    Haptic.selection()
+                }
+            }
+        }
+
+        if let toolCalls = choice.delta.toolCalls {
+            for toolCall in toolCalls {
+                guard let index = toolCall.index else { continue }
+                var current = toolCallsMap[index] ?? ("", "")
+
+                if let name = toolCall.function?.name {
+                    current.name = name
+                    NLog.log("Tool call name received for index \(index): \(name)")
+                }
+                if let args = toolCall.function?.arguments {
+                    current.args += args
+                }
+
+                toolCallsMap[index] = current
+            }
+        }
+        return toolCallsMap
+    }
+
+    func clearCurrent() {
+        chatManager.currentRequest = ""
+        chatManager.currentContent = ""
+        chatManager.currentReason = ""
+        chatManager.currentResult = [:]
+        manager.isLoading = false
+    }
+
+    func getGroup(text: String) -> ChatGroup? {
+        if let group = chatManager.chatGroup {
+            return group
+        } else {
+            let id = manager.askMessageID ?? UUID().uuidString
+            let name = String(text.trimmingSpaceAndNewLines.prefix(10))
+            let group = ChatGroup(
+                id: id,
+                timestamp: .now,
+                name: name,
+                host: "",
+                current: true
+            )
+            do {
+                try DatabaseManager.shared.dbQueue.write { db in
+                    try group.insert(db)
+                }
+                return group
+            } catch {
+                return nil
             }
         }
     }

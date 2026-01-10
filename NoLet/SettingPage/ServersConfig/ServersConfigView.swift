@@ -106,7 +106,7 @@ struct ServersConfigView: View {
             }
             if ErrorServer.count > 0 {
                 Section {
-                    ForEach(servers, id: \.id) { item in
+                    ForEach(ErrorServer, id: \.id) { item in
                         ServerCardView(item: item) {
                             Clipboard.set(item.url + "/" + item.key)
                             Toast.copy(title: "复制成功")

@@ -23,6 +23,7 @@ final class NoLetChatManager: ObservableObject {
     @Published var currentRequest: String = ""
     @Published var currentContent: String = ""
     @Published var currentReason: String = ""
+    @Published var currentResult: [String: String] = [:]
 
     @Published var currentMessageID: String = UUID().uuidString
     @Published var isFocusedInput: Bool = false
@@ -48,6 +49,17 @@ final class NoLetChatManager: ObservableObject {
 
     private var observationCancellable: AnyDatabaseCancellable?
 
+    let webSearchConfig = ChatQuery.WebSearchOptions(
+        userLocation: ChatQuery.WebSearchOptions
+            .UserLocation(approximate:
+                Components.Schemas.WebSearchLocation(
+                    country: Locale.current.region?.identifier ?? "",
+                    city: ""
+                )
+            ),
+        searchContextSize: .high
+    )
+
     var cancellableRequest: Task<Void, Never>?
 
     var currentChatMessage: ChatMessage {
@@ -58,7 +70,8 @@ final class NoLetChatManager: ObservableObject {
             request: currentRequest,
             content: currentContent,
             message: AppManager.shared.askMessageID,
-            reason: currentReason
+            reason: currentReason,
+            result: currentResult
         )
     }
 
@@ -219,7 +232,8 @@ extension NoLetChatManager {
     func getHistoryParams(
         text: String,
         messageID: String? = nil,
-        tips: ChatPromptMode? = nil
+        tips: ChatPromptMode? = nil,
+        toolCall: Bool = false
     ) -> ChatQuery? {
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
@@ -228,17 +242,24 @@ extension NoLetChatManager {
         let temperature = Double(Defaults[.temperatureChat]) / 10
 
         if let tips {
-            let params: [ChatQuery.ChatCompletionMessageParam] = [
+            var params: [ChatQuery.ChatCompletionMessageParam] = [
                 .system(.init(content: .textContent(tips.prompt.content), name: tips.prompt.title)),
-                .user(.init(content: .string(text))),
             ]
+
+            if toolCall, !currentRequest.isEmpty {
+                params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
+
+            } else {
+                params.append(.user(.init(content: .string(text))))
+            }
 
             return ChatQuery(
                 messages: params,
                 model: account.model,
                 reasoningEffort: reasoningEffort,
                 temperature: temperature,
-                tools: NoLetChatAction.defaultFunc().map { .init(function: $0) }
+                tools: NoLetChatAction.defaultFunc().map { .init(function: $0) },
+                webSearchOptions: webSearchConfig
             )
         }
 
@@ -249,13 +270,19 @@ extension NoLetChatManager {
             params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
 
             if promt.mode == .mcp {
-                params.append(.user(.init(content: .string(text))))
+                if toolCall , !currentRequest.isEmpty{
+                    params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
+                }else{
+                    params.append(.user(.init(content: .string(text))))
+                }
+               
                 return ChatQuery(
                     messages: params,
                     model: account.model,
                     reasoningEffort: reasoningEffort,
                     temperature: temperature,
-                    tools: NoLetChatAction.getFuncs().map { .init(function: $0) }
+                    tools: NoLetChatAction.getFuncs().map { .init(function: $0) },
+                    webSearchOptions: webSearchConfig
                 )
             }
         }
@@ -269,19 +296,29 @@ extension NoLetChatManager {
             return text
         }
 
-        params += getHistory(Defaults[.historyMessageCount])
-        params.append(.user(.init(content: .string(inputText))))
+        params += getHistory(Defaults[.historyMessageCount], toolCall: toolCall)
+
+        if toolCall, !currentRequest.isEmpty {
+            params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
+        }else{
+            params.append(.user(.init(content: .string(inputText))))
+        }
+        
 
         return ChatQuery(
             messages: params,
             model: account.model,
             reasoningEffort: reasoningEffort,
             temperature: temperature,
-            tools: NoLetChatAction.defaultFunc().map { .init(function: $0) }
+            tools: NoLetChatAction.defaultFunc().map { .init(function: $0) },
+            webSearchOptions: webSearchConfig
         )
     }
 
-    private func getHistory(_ limit: Int) -> [ChatQuery.ChatCompletionMessageParam] {
+    private func getHistory(
+        _ limit: Int,
+        toolCall: Bool = false
+    ) -> [ChatQuery.ChatCompletionMessageParam] {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
             let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
@@ -304,13 +341,21 @@ extension NoLetChatManager {
         }) {
             for message in messageRaw.reversed() {
                 params.append(.user(.init(content: .string(message.request))))
-                var content: String {
-                    if let result = message.result, let json = result.text() {
-                        return message.content + String(localized: "任务执行结果") + json
-                    }
-                    return message.content
+
+                if let result = message.result, !result.isEmpty, let json = result.text() {
+                    params.append(.tool(.init(
+                        content: .textContent(String(localized: "任务执行结果") + json),
+                        toolCallId: ""
+                    )))
                 }
-                params.append(.assistant(.init(content: .textContent(message.content))))
+
+                if !message.content.isEmpty {
+                    params.append(.assistant(.init(content: .textContent(message.content))))
+                }
+            }
+
+            if toolCall, !currentRequest.isEmpty {
+                params.append(.user(.init(content: .string(currentRequest))))
             }
         }
 
@@ -343,12 +388,14 @@ extension NoLetChatManager {
     func chatsStream(
         text: String,
         tips: ChatPromptMode? = nil,
-        messageID: String? = nil
+        messageID: String? = nil,
+        toolCall: Bool = false
     ) -> AsyncThrowingStream<ChatStreamResult, Error> {
         let query: ChatQuery? = getHistoryParams(
             text: text,
             messageID: messageID,
-            tips: tips
+            tips: tips,
+            toolCall: toolCall
         )
 
         guard let openchat = getReady(), let query = query else {
