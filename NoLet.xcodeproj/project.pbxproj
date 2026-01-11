@@ -829,7 +829,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
+				INFOPLIST_KEY_CFBundleDisplayName = BookX;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
@@ -878,7 +878,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NoLet;
+				INFOPLIST_KEY_CFBundleDisplayName = BookX;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
