@@ -39,7 +39,7 @@ struct ChatInputView: View {
             .padding(.horizontal)
 
             HStack(spacing: 10) {
-                if !isFocusedInput {
+                if !isFocusedInput && !.ISPAD {
                     backupButton()
                 }
 

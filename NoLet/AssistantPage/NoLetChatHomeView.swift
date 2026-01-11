@@ -43,7 +43,7 @@ struct NoLetChatHomeView: View {
         ZStack {
             ChatMessageListView()
             VStack {
-                if chatManager.chatMessages.count == 0 {
+                if chatManager.chatMessages.count == 0 && !manager.isLoading {
                     VStack {
                         Spacer()
 
