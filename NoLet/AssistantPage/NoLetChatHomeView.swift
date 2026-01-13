@@ -17,6 +17,10 @@ import GRDB
 import OpenAI
 import SwiftUI
 
+
+
+
+
 struct NoLetChatHomeView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.showAssistantAnimation) var showAssistantAnimation
@@ -41,6 +45,8 @@ struct NoLetChatHomeView: View {
 
     var body: some View {
         ZStack {
+        
+            
             ChatMessageListView()
             VStack {
                 if chatManager.chatMessages.count == 0 && !manager.isLoading {
@@ -77,6 +83,7 @@ struct NoLetChatHomeView: View {
                                 .foregroundStyle(.gray)
                         }
 
+                        Spacer()
                         Spacer()
                     }
                     .transition(.slide)

@@ -75,26 +75,28 @@ struct SearchMessageView: View {
         }
         .listStyle(.grouped)
         .animation(.easeInOut, value: messages)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
         .if(colorScheme == .light) { view in
             view.background(.ultraThinMaterial)
         }
-        .safeAreaInset(edge: .top, content: {
+        .safeAreaInset(edge: .top){
             HStack {
-                Text("搜索结果")
-                    .foregroundStyle(.gray)
-                    .font(.subheadline)
 
                 Spacer()
                 Text(
                     verbatim: "\(messages.count) / \(max(allCount, messages.count))"
                 )
                 .font(.caption)
-                .foregroundStyle(.gray)
+                .padding(3)
+                .foregroundStyle(.red)
+                .background26(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 3))
             }
             .padding(.horizontal)
             .padding(.bottom, 3)
-            .background(.ultraThinMaterial)
-        })
+            
+        }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 loadData(limit: messagePage)

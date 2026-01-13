@@ -93,6 +93,16 @@ struct MessageDetailPage: View {
             }
         }
         .searchable(text: $searchText)
+        .diff { view in
+            Group {
+                if #available(iOS 26.0, *) {
+                    view
+                        .searchToolbarBehavior(.minimize)
+                } else {
+                    view
+                }
+            }
+        }
         .onSubmit(of: .search) {
             manager.searchText = searchText
         }
@@ -103,7 +113,9 @@ struct MessageDetailPage: View {
         }
         
         .toolbar {
+            
             if #available(iOS 26.0, *) {
+                ToolbarSpacer(.flexible, placement: .bottomBar)
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
             }
 

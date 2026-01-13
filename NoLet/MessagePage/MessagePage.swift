@@ -22,23 +22,24 @@ struct MessagePage: View {
     @State private var showDeleteAction: Bool = false
     @State private var searchText: String = ""
     @State private var selectAction: MessageAction? = nil
-    
+    @FocusState private var searchFocused: Bool
 
     var body: some View {
         ZStack {
-            if showGroup {
-                GroupMessagesView()
-            } else {
-                SingleMessagesView()
-            }
-            
-            if !manager.searchText.isEmpty {
+           
+
+            if !manager.searchText.isEmpty ||  searchFocused{
                 SearchMessageView()
+            }else{
+                if showGroup {
+                    GroupMessagesView()
+                } else {
+                    SingleMessagesView()
+                }
             }
         }
-        .navigationTitle("消息")
         .animation(.easeInOut, value: showGroup)
-        .toolbarTitleMenu{
+        .toolbarTitleMenu {
             Section {
                 Button {
                     self.showGroup.toggle()
@@ -57,6 +58,17 @@ struct MessagePage: View {
             }
         }
         .searchable(text: $searchText)
+        .diff { view in
+            Group {
+                if #available(iOS 26.0, *) {
+                    view
+                        .searchToolbarBehavior(.minimize)
+                        .searchFocused($searchFocused)
+                } else {
+                    view
+                }
+            }
+        }
         .onChange(of: searchText) { value in
             if value.isEmpty {
                 manager.searchText = ""
@@ -90,7 +102,9 @@ struct MessagePage: View {
         .environmentObject(messageManager)
         .toolbar {
             if #available(iOS 26.0, *) {
-                ToolbarItem(placement: messageManager.allCount <= 3 ? .topBarLeading : .secondaryAction) {
+                ToolbarItem(placement: messageManager
+                    .allCount <= 3 ? .topBarLeading : .secondaryAction)
+                {
                     Section {
                         Button {
                             manager.router = [.example]
@@ -102,8 +116,8 @@ struct MessagePage: View {
                         }
                     }
                 }
-            }else{
-                ToolbarItem(placement: .secondaryAction) {
+            } else {
+                ToolbarItem(placement: .topBarTrailing) {
                     Section {
                         Button {
                             manager.router = [.example]
@@ -116,8 +130,7 @@ struct MessagePage: View {
                     }
                 }
             }
-            
-            
+
             ToolbarItem(placement: .secondaryAction) {
                 Section {
                     Button {
@@ -138,6 +151,7 @@ struct MessagePage: View {
             }
             
             
+
             ToolbarItem(placement: .secondaryAction) {
                 Menu {
                     ForEach(MessageAction.allCases, id: \.self) { item in
@@ -167,6 +181,7 @@ struct MessagePage: View {
                         .foregroundStyle(.green, Color.primary)
                 }
             }
+            
         }
     }
 }

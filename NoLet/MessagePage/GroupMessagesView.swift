@@ -75,6 +75,7 @@ struct GroupMessagesView: View {
                         .accessibilityHint("点击进入分组列表")
                 }
             }
+            .navigationTitle("消息")
             .listStyle(.grouped)
             .animation(.default, value: messageManager.groupMessages)
             .onChange(of: messageManager.allCount) { _ in

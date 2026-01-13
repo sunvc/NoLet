@@ -108,6 +108,7 @@ struct SingleMessagesView: View {
                     .listSectionSeparator(.hidden)
                 }
             }
+            .navigationTitle("消息")
             .listStyle(.grouped)
             .animation(.easeInOut, value: messagesCount)
             .refreshable {
