@@ -11,6 +11,7 @@
 //
 
 import os
+import OSLog
 import UIKit
 import UniformTypeIdentifiers
 
@@ -105,74 +106,4 @@ public enum Haptic {
     }
 }
 
-// var Log = os.Logger()
-public nonisolated enum NLog {
-    /// 日志级别
-    enum Level: String {
-        case LOG
-        case ERROR
-    }
-
-    /// 基础日志方法
-    /// - Parameters:
-    ///   - level: 日志级别
-    ///   - message: 日志消息
-    ///   - file: 调用日志的文件名（自动捕获）
-    ///   - function: 调用日志的函数名（自动捕获）
-    ///   - line: 调用日志的行号（自动捕获）
-    static func base(
-        level: Level,
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line,
-        _ message: Any?...
-    ) {
-        #if DEBUG
-        let message = message
-        let currentDate = Date()
-        if level == .ERROR {
-            print("\n")
-            print(Array(repeating: "‼️", count: 50).joined())
-            print("[‼️\(level.rawValue)] - \(currentDate.formatString())")
-        } else {
-            print("\n[☘️\(level.rawValue)] - \(currentDate.formatString())")
-        }
-
-        print("🏳️‍🌈: \((file as NSString).lastPathComponent)\(" - \(line) ") 🎖️: \(function) -> ")
-
-        for item in message {
-            if String("\(item ?? "")"
-                .trimmingCharacters(in:
-                    .whitespacesAndNewlines)).count > 0
-            {
-                print("- ", item ?? "")
-            }
-        }
-
-        if level == .ERROR {
-            print(Array(repeating: "‼️", count: 50).joined())
-        }
-
-        #endif
-    }
-
-    /// 打印调试日志
-    static func log(
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line,
-        _ message: Any?...
-    ) {
-        base(level: .LOG, file: file, function: function, line: line, message)
-    }
-
-    /// 打印错误日志
-    static func error(
-        file: String = #file,
-        function: String = #function,
-        line: Int = #line,
-        _ message: Any?...
-    ) {
-        base(level: .ERROR, file: file, function: function, line: line, message)
-    }
-}
+nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "main")

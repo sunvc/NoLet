@@ -99,7 +99,7 @@ private struct ShareView: View {
                     do {
                         try pngData.write(to: tempURL)
                     } catch {
-                        NLog.error(error.localizedDescription)
+                        logger.error("❌ \(error)")
                         return
                     }
 

@@ -57,10 +57,10 @@ final class CloudManager {
             @unknown default:
                 message = (false, String(localized: "未知 iCloud 状态"))
             }
-            NLog.log(message)
+            logger.info("\(message.0),\(message.1)")
         } catch {
-            message = (false, String(localized: "检查 iCloud 账户状态出错: \(error.localizedDescription)"))
-            NLog.error(message)
+            message = (false, String(localized: "检查 iCloud 账户状态出错"))
+            logger.error("❌\(error) - \(message.1)")
         }
 
         return message
@@ -81,12 +81,12 @@ final class CloudManager {
                 case .success(let record):
                     return record
                 case .failure(let error):
-                    NLog.error("获取单个记录失败: \(error.localizedDescription)")
+                    logger.error("❌获取单个记录失败: \(error)")
                     return nil
                 }
             }
         } catch {
-            NLog.error("查询失败: \(error.localizedDescription)")
+            logger.error("❌查询失败: \(error)")
             return [] // 查询失败返回空数组
         }
     }
@@ -102,7 +102,7 @@ final class CloudManager {
 
             return datas
         } catch {
-            NLog.error(error.localizedDescription)
+            logger.error("❌\(error)")
             return []
         }
     }
@@ -143,7 +143,7 @@ final class CloudManager {
             }
         }
 
-        NLog.log("查询到 \(uniqueRecords.count) 条记录")
+        logger.info("查询到 \(uniqueRecords.count) 条记录")
 
         return uniqueRecords
     }
@@ -162,7 +162,7 @@ final class CloudManager {
 
         let description = record["description"] as? [String]
 
-        NLog.log(name, description)
+        logger.info("\(name)-\(String(describing: description))")
 
         let records = await queryIcons(name: name)
 
@@ -170,11 +170,11 @@ final class CloudManager {
 
         do {
             let recordRes = try await database.save(record)
-            NLog.error(recordRes)
+            logger.error("❌\(recordRes)")
             return (true, String(localized: "保存成功"))
         } catch {
-            NLog.error(error.localizedDescription)
-            return (false, String(localized: "保存失败") + "：\(error.localizedDescription)")
+            logger.error("❌\(error)")
+            return (false, String(localized: "保存失败") + "：\(error)")
         }
     }
 
@@ -224,7 +224,7 @@ final class CloudManager {
             return record["token"] as? String
 
         } catch {
-            NLog.error(error.localizedDescription)
+            logger.error("❌\(error)")
             return nil
         }
     }
@@ -297,12 +297,12 @@ final class CloudManager {
                 savePolicy: .ifServerRecordUnchanged
             )
             let uploadDatas = results.saveResults.values.compactMap { try? $0.get() }
-            NLog.log(uploadDatas)
+            logger.info("\(uploadDatas)")
 
             return cloudRecords + uploadDatas
 
         } catch {
-            NLog.error("❌ Failed to upload records:", error)
+            logger.error("❌Failed to upload records:\(error)")
             return cloudRecords
         }
     }

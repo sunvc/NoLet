@@ -78,49 +78,52 @@ struct TextView: UIViewRepresentable {
         return CGSize(width: width, height: ceil(dimensions.height))
     }
 
-    // --- 静态辅助方法：构建高亮逻辑 ---
     private static func buildHighlightText(
         _ text: String,
         highlight: String?,
         color: UIColor
     ) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: text)
+
+        let attributed = NSMutableAttributedString(string: text)
         let fullRange = NSRange(location: 0, length: (text as NSString).length)
 
-        // 默认样式
-        attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: 17), range: fullRange)
-        attributedString.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
+        attributed.addAttribute(.font, value: UIFont.systemFont(ofSize: 17), range: fullRange)
+        attributed.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
 
         guard let highlight = highlight,
               !highlight.trimmingCharacters(in: .whitespaces).isEmpty
         else {
-            return attributedString
+            return attributed
         }
 
-        let keywords = highlight.lowercased().split(separator: " ").map { String($0) }
-        let lowercasedText = text.lowercased() as NSString
+        let keywords = highlight
+            .split(separator: " ")
+            .map { NSRegularExpression.escapedPattern(for: String($0)) }
 
-        attributedString.beginEditing()
-        for keyword in keywords {
-            var searchRange = NSRange(location: 0, length: lowercasedText.length)
-            while searchRange.location < lowercasedText.length {
-                let foundRange = lowercasedText.range(of: keyword, options: [], range: searchRange)
-                if foundRange.location == NSNotFound { break }
+        let pattern = keywords.joined(separator: "|")
 
-                attributedString.addAttribute(.foregroundColor, value: color, range: foundRange)
-                attributedString.addAttribute(
-                    .font,
-                    value: UIFont.boldSystemFont(ofSize: 17),
-                    range: foundRange
-                )
-
-                let nextLoc = foundRange.location + foundRange.length
-                searchRange = NSRange(location: nextLoc, length: lowercasedText.length - nextLoc)
-            }
+        guard let regex = try? NSRegularExpression(
+            pattern: pattern,
+            options: [.caseInsensitive]
+        ) else {
+            return attributed
         }
-        attributedString.endEditing()
-        return attributedString
+
+        attributed.beginEditing()
+        regex.enumerateMatches(in: text, range: fullRange) { match, _, _ in
+            guard let range = match?.range else { return }
+            attributed.addAttribute(.foregroundColor, value: color, range: range)
+            attributed.addAttribute(
+                .font,
+                value: UIFont.boldSystemFont(ofSize: 17),
+                range: range
+            )
+        }
+        attributed.endEditing()
+
+        return attributed
     }
+    
 }
 
 extension TextView {

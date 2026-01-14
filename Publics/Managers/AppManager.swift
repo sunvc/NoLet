@@ -126,7 +126,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     func HandlerOpenURL(url: String) -> String? {
         switch outParamsHandler(address: url) {
         case .crypto(let text):
-            NLog.log(text)
+            logger.info("\(text)")
             if let config = CryptoModelConfig(inputText: text) {
                 Task { @MainActor in
                     self.page = .setting
@@ -264,15 +264,15 @@ extension AppManager {
             for fileURL in contents {
                 do {
                     try fileManager.removeItem(at: fileURL)
-                    NLog.log("✅ 删除: \(fileURL.lastPathComponent)")
+                    logger.info("✅ 删除: \(fileURL.lastPathComponent)")
                 } catch {
-                    NLog.error("❌ 清空失败: \(error.localizedDescription)")
+                    logger.error("❌ 清空失败: \(error)")
                 }
             }
 
-            NLog.log("🧹 清空完成：\(url.path)")
+            logger.info("🧹 清空完成：\(url.path)")
         } catch {
-            NLog.error("❌ 清空失败: \(error.localizedDescription)")
+            logger.error("❌ 清空失败: \(error)")
         }
     }
 
@@ -297,8 +297,8 @@ extension AppManager {
                         }
                     }
                 } catch {
-                    NLog.error(
-                        "❗️获取文件大小失败: \(fileURL.lastPathComponent) - \(error.localizedDescription)"
+                    logger.error(
+                        "❌获取文件大小失败: \(fileURL.lastPathComponent) - \(error)"
                     )
                 }
             }
@@ -354,12 +354,12 @@ extension AppManager {
         var isDir: ObjCBool = false
 
         guard fileManager.fileExists(atPath: path, isDirectory: &isDir) else {
-            NLog.error("\(indent)❌ Path not found: \(path)")
+            logger.error("\(indent)❌ Path not found: \(path)")
             return
         }
 
         if isDir.boolValue {
-            NLog.log("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
+            logger.info("\(indent)📂 \(URL(fileURLWithPath: path).lastPathComponent)")
 
             if let contents = try? fileManager.contentsOfDirectory(atPath: path) {
                 for item in contents {
@@ -372,8 +372,8 @@ extension AppManager {
                let fileSize = attrs[.size] as? UInt64
             {
                 let sizeMB = Double(fileSize) / (1024.0 * 1024.0)
-                NLog
-                    .log(
+                logger
+                    .info(
                         "\(indent)📄 \(URL(fileURLWithPath: path).lastPathComponent) (\(String(format: "%.2f", sizeMB)) MB)"
                     )
             }
@@ -394,7 +394,7 @@ extension AppManager {
                 return pathTem
             }
         } catch {
-            NLog.error("配置文件加密失败")
+            logger.error("❌配置文件加密失败: \(error)")
         }
 
         return nil
@@ -507,7 +507,7 @@ extension AppManager {
             return server
         } catch {
             server.status = false
-            NLog.error(error.localizedDescription)
+            logger.error("❌\(error)")
             return server
         }
     }
@@ -546,10 +546,10 @@ extension AppManager {
             }
             Toast.success(title: "添加成功")
             Self.syncLocalToCloud()
-        }else{
+        } else {
             Toast.success(title: "注册失败")
         }
-       
+
         appending = false
         return serverNew.status
     }
@@ -581,7 +581,7 @@ extension AppManager {
             // Transaction.revocationReason provides details about
             // the revoked transaction.
             if let reason = transaction.revocationReason {
-                NLog.log("Transaction revoked due to: \(revocationDate) - \(reason) ")
+                logger.info("Transaction revoked due to: \(revocationDate) - \(String(describing: reason)) ")
             }
 
             if VipInfo?.productID == transaction.productID {

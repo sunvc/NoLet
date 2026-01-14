@@ -36,6 +36,10 @@ struct MessageDetailPage: View {
     private var messagePage:Int {
         messageManager.messagePage    
     }
+    
+    var lastMessage: Message? {
+        messages.elementFromEnd(5)
+    }
 
     var body: some View {
         Group {
@@ -71,7 +75,7 @@ struct MessageDetailPage: View {
                             .listRowBackground(Color.clear)
                             .listSectionSeparator(.hidden)
                             .onAppear {
-                                if messages.count < allCount && messages.last == message {
+                                if messages.count < allCount && lastMessage == message {
                                     loadData(proxy: proxy, item: message)
                                 }
                             }

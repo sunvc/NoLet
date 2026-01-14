@@ -312,7 +312,7 @@ extension NoLetChatAction {
         return [
             FunctionDefinition(
                 name: ActionName.defaultName.rawValue,
-                description: "CRITICAL: Permanently clears the current conversation context. This action should only be triggered when the user explicitly asks to reset or clear the conversation.",
+                description: "CRITICAL: Clears the current conversation context permanently. Trigger only on explicit Clear Context actions, not on new conversations.",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties([

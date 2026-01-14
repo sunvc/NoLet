@@ -133,6 +133,7 @@ struct NoLetChatHomeView: View {
 
             ToolbarItem(placement: .secondaryAction) {
                 Button(action: {
+                    self.hideKeyboard()
                     manager.router.append(.noletChatSetting(nil))
                     Haptic.impact()
                 }) {
@@ -241,9 +242,9 @@ struct NoLetChatHomeView: View {
                 clearCurrent()
             } catch {
                 // Handle chunk error here
-                NLog.error(error)
+                logger.error("❌ \(error)")
                 Task { @MainActor in
-                    Toast.error(title: "发生错误\(error.localizedDescription)")
+                    Toast.error(title: "发生错误")
                     self.clearCurrent()
                 }
                 return
@@ -285,7 +286,7 @@ struct NoLetChatHomeView: View {
 
                 if let name = toolCall.function?.name {
                     current.name = name
-                    NLog.log("Tool call name received for index \(index): \(name)")
+                    logger.info("Tool call name received for index \(index): \(name)")
                 }
                 if let args = toolCall.function?.arguments {
                     current.args += args

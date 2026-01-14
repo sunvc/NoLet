@@ -170,7 +170,7 @@ struct PromptChooseView: View {
                     self.prompts = results
                 }
             } catch {
-                NLog.error(error.localizedDescription)
+                logger.error("\(error)")
             }
         }
     }
@@ -225,7 +225,7 @@ private struct PromptSection: View {
                                     .deleteAll(db)
                             }
                         } catch {
-                            NLog.error("❌ 删除 ChatPrompt 失败: \(error)")
+                            logger.error("❌ 删除 ChatPrompt 失败: \(error)")
                         }
                     }
                 }
@@ -378,7 +378,7 @@ struct AddPromptView: View {
                                 }
 
                             } catch {
-                                NLog.error("❌ 插入 ChatPrompt 失败: \(error)")
+                                logger.error("❌ 插入 ChatPrompt 失败: \(error)")
                             }
                         }
                     }

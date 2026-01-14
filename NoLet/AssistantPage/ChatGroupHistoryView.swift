@@ -37,7 +37,7 @@ struct ChatGroupHistoryView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                ScrollView(.vertical){
+                ScrollView(.vertical) {
                     LazyVStack(alignment: .leading, spacing: 10, pinnedViews: .sectionHeaders) {
                         if chatGroups.isEmpty {
                             emptyView
@@ -82,7 +82,7 @@ struct ChatGroupHistoryView: View {
                                     }
                                 }
                             } catch {
-                                NLog.error("❌ 更新 group.name 失败: \(error)")
+                                logger.error("❌ 更新 group.name 失败: \(error)")
                             }
                         }
                     }
@@ -251,7 +251,7 @@ struct ChatGroupHistoryView: View {
                     self.chatGroups = groups
                 }
             } catch {
-                NLog.error(error.localizedDescription)
+                logger.error("❌ \(error)")
             }
         }
     }
@@ -269,62 +269,30 @@ struct ChatGroupHistoryView: View {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
 
-        // 定义时间分组规则
-        let timeIntervals: [(title: String, start: Date, end: Date)] = [
-            (String(localized: "今天"), today, calendar.date(byAdding: .day, value: 1, to: today)!),
-            (String(localized: "昨天"), calendar.date(byAdding: .day, value: -1, to: today)!, today),
-            (
-                String(localized: "前天"),
-                calendar.date(byAdding: .day, value: -2, to: today)!,
-                calendar.date(byAdding: .day, value: -1, to: today)!
-            ),
-            (
-                String(localized: "2天前"),
-                calendar.date(byAdding: .day, value: -3, to: today)!,
-                calendar.date(byAdding: .day, value: -2, to: today)!
-            ),
-            (
-                String(localized: "一周前"),
-                calendar.date(byAdding: .day, value: -7, to: today)!,
-                calendar.date(byAdding: .day, value: -3, to: today)!
-            ),
-            (
-                String(localized: "两周前"),
-                calendar.date(byAdding: .day, value: -14, to: today)!,
-                calendar.date(byAdding: .day, value: -7, to: today)!
-            ),
-            (
-                String(localized: "1月前"),
-                calendar.date(byAdding: .month, value: -1, to: today)!,
-                calendar.date(byAdding: .day, value: -14, to: today)!
-            ),
-            (
-                String(localized: "3月前"),
-                calendar.date(byAdding: .month, value: -3, to: today)!,
-                calendar.date(byAdding: .month, value: -1, to: today)!
-            ),
-            (
-                String(localized: "半年前"),
-                calendar.date(byAdding: .month, value: -6, to: today)!,
-                calendar.date(byAdding: .month, value: -3, to: today)!
-            ),
-        ]
-
-        // 按时间分组
-        var groupedMessages: [ChatMessageSection] = []
-
-        for interval in timeIntervals {
-            let messages = allMessages
-                .filter { $0.timestamp >= interval.start && $0.timestamp < interval.end }
-            if !messages.isEmpty {
-                groupedMessages.append(ChatMessageSection(
-                    title: interval.title,
-                    messages: Array(messages)
-                ))
-            }
+        func day(_ value: Int, _ component: Calendar.Component = .day) -> Date {
+            calendar.date(byAdding: .month, value: value, to: today)!
         }
 
-        return groupedMessages
+        let timeIntervals: [(String, Date, Date)] = [
+            (String(localized: "今天"), today, day(1)),
+            (String(localized: "昨天"), day(-1), today),
+            (String(localized: "前天"), day(-2), day(-1)),
+            (String(localized: "2天前"), day(-3), day(-2)),
+            (String(localized: "一周前"), day(-7), day(-3)),
+            (String(localized: "两周前"), day(-14), day(-7)),
+            (String(localized: "1月前"), day(-1, .month), day(-14, .month)),
+            (String(localized: "3月前"), day(-3, .month), day(-1, .month)),
+            (String(localized: "半年前"), day(-6, .month), day(-3, .month)),
+        ]
+
+        return timeIntervals.compactMap { title, start, end in
+            let messages = allMessages.filter {
+                $0.timestamp >= start && $0.timestamp < end
+            }
+            return messages.isEmpty
+                ? nil
+                : ChatMessageSection(title: title, messages: messages)
+        }
     }
 }
 

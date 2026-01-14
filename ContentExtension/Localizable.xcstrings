@@ -1,538 +1,542 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "[%@]分组静音成功": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@] Group Muted Successfully"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "[%@]分组静音成功" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@] Group Muted Successfully"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@]グループのミュートに成功しました"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@]グループのミュートに成功しました"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@] 그룹 무음 설정 성공"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@] 그룹 무음 설정 성공"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "[%@]分组静音成功"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[%@]分组静音成功"
           }
         }
       }
     },
-    "保存": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+    "保存" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
           }
         }
       }
     },
-    "保存图片": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save Image"
+    "保存图片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Image"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像を保存"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像を保存"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이미지 저장"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 저장"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存图片"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存图片"
           }
         }
       }
     },
-    "保存图片时出现错误：%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Error occurred while saving image: %@"
+    "保存图片时出现错误" : {
+
+    },
+    "保存图片时出现错误：%@" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error occurred while saving image: %@"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像の保存中にエラーが発生しました：%@"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像の保存中にエラーが発生しました：%@"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이미지 저장 중 오류 발생: %@"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이미지 저장 중 오류 발생: %@"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存图片时出现错误：%@"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存图片时出现错误：%@"
           }
         }
       }
     },
-    "保存失败": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save Failed"
+    "保存失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save Failed"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存に失敗しました"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存に失敗しました"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 실패"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장 실패"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存失败"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存失败"
           }
         }
       }
     },
-    "保存成功": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save successful"
+    "保存成功" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save successful"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存成功"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "저장 성공"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "저장 성공"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "保存成功"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存成功"
           }
         }
       }
     },
-    "取消": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "取消" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "キャンセル"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャンセル"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "취소"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "取消"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
           }
         }
       }
     },
-    "图片已成功保存到相册！": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image successfully saved to album!"
+    "图片已成功保存到相册！" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image successfully saved to album!"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "画像がアルバムに保存されました！"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画像がアルバムに保存されました！"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진이 성공적으로 앨범에 저장되었습니다!"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진이 성공적으로 앨범에 저장되었습니다!"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图片已成功保存到相册！"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片已成功保存到相册！"
           }
         }
       }
     },
-    "复制": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copy"
+    "复制" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コピー"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "복사"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
           }
         }
       }
     },
-    "复制成功": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copy successful"
+    "复制成功" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy successful"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "コピー成功"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コピー成功"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "복사 성공"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복사 성공"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制成功"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制成功"
           }
         }
       }
     },
-    "已授权访问照片库": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authorized Access to Photo Library"
+    "已授权访问照片库" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Authorized Access to Photo Library"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已授权访问照片库"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「写真ライブラリへのアクセスが許可されました」"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「写真ライブラリへのアクセスが許可されました」"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 라이브러리 접근 권한 부여됨"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 라이브러리 접근 권한 부여됨"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已授权访问照片库"
           }
         }
       }
     },
-    "拒绝了访问权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Access denied"
+    "拒绝了访问权限" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Access denied"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "拒绝了访问权限"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アクセス権限が拒否されました"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "アクセス権限が拒否されました"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "접근 권한이 거부되었습니다"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "접근 권한이 거부되었습니다"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拒绝了访问权限"
           }
         }
       }
     },
-    "无": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing"
+    "无" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nothing"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「無」"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「無」"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "무"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无"
           }
         }
       }
     },
-    "是否将图片保存到相册？": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save the image to the album?"
+    "是否将图片保存到相册？" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save the image to the album?"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "写真をアルバムに保存しますか？"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真をアルバムに保存しますか？"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진을 앨범에 저장하시겠습니까?"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진을 앨범에 저장하시겠습니까?"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "是否将图片保存到相册？"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是否将图片保存到相册？"
           }
         }
       }
     },
-    "有限的访问权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Limited access permissions"
+    "有限的访问权限" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limited access permissions"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有限的访问权限"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "限られたアクセス権限"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "限られたアクセス権限"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제한된 접근 권한"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "제한된 접근 권한"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有限的访问权限"
           }
         }
       }
     },
-    "未知状态": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown Status"
+    "未知状态" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Status"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知状态"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不明な状態"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "不明な状態"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 상태"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "알 수 없는 상태"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知状态"
           }
         }
       }
     },
-    "未选择权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permissions Not Selected"
+    "未选择权限" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permissions Not Selected"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未选择权限"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "権限が選択されていません"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "権限が選択されていません"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "권한이 선택되지 않음"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "권한이 선택되지 않음"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未选择权限"
           }
         }
       }
     },
-    "确定": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm"
+    "确定" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「確定」"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「確定」"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "확인"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "确定"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确定"
           }
         }
       }
     },
-    "静音分组1小时": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silence group for 1 hour"
+    "静音分组1小时" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silence group for 1 hour"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "サイレントグループ1時間"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サイレントグループ1時間"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "정음 분조 1시간"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정음 분조 1시간"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "静音分组1小时"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "静音分组1小时"
           }
         }
       }
     }
   },
-  "version": "1.1"
+  "version" : "1.1"
 }

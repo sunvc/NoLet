@@ -73,9 +73,9 @@ struct SoundView: View {
                             }
 
                         case .failure(let err):
-                            NLog.log(err)
                             self.uploadLoading = false
-                            Toast.shared.present(title: err.localizedDescription, symbol: .error)
+                            Toast.error(title: "添加失败")
+                            logger.error("❌ \(err)")
                         }
                     }
 
@@ -237,7 +237,8 @@ struct SoundView: View {
             tipsManager.updateFileList()
         } catch {
             // 如果保存失败，弹出错误提示
-            Toast.shared.present(title: error.localizedDescription, symbol: .error)
+            Toast.error(title: "保存失败")
+            logger.error("❌ \(error)")
         }
     }
 

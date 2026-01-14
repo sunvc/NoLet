@@ -72,7 +72,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
 
-        NLog.log("获取到设备Token:\(token)")
+        logger.info("获取到设备Token:\(token)")
     }
 
     // MARK: UISceneSession Lifecycle

@@ -147,7 +147,7 @@ struct NearbyNoLetView: View {
                                         viewModel.sendGroupFile(url: url)
                                     }
                                 case .failure(let error):
-                                    print("文件选择失败: \(error.localizedDescription)")
+                                    print("文件选择失败: \(error)")
                                 }
                             }
 
@@ -224,7 +224,7 @@ struct NearbyNoLetView: View {
                 case .success:
                     print("文件已保存: \(exportedFileName)")
                 case .failure(let error):
-                    print("文件保存失败: \(error.localizedDescription)")
+                    print("文件保存失败: \(error)")
                 }
                 exportDocument = nil
             }
@@ -238,7 +238,7 @@ struct NearbyNoLetView: View {
             PHAssetCreationRequest.creationRequestForAsset(from: image)
         }) { _, error in
             if let error = error {
-                print("保存图片失败: \(error.localizedDescription)")
+                print("保存图片失败: \(error)")
             } else {
                 print("图片已保存到相册")
             }

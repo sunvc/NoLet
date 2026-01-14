@@ -134,7 +134,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         do {
             try session.send(data, toPeers: [peer.peerID], with: .reliable)
         } catch {
-            print("发送消息失败: \(error.localizedDescription)")
+            print("发送消息失败: \(error)")
         }
     }
 
@@ -161,7 +161,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         do {
             try session.send(data, toPeers: peers, with: .reliable)
         } catch {
-            print("群发消息失败: \(error.localizedDescription)")
+            print("群发消息失败: \(error)")
         }
     }
 
@@ -171,7 +171,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("nolet-image-\(UUID().uuidString).jpg")
         do { try imageData.write(to: tempURL) } catch {
-            print("写入临时图片失败: \(error.localizedDescription)")
+            print("写入临时图片失败: \(error)")
             return
         }
 
@@ -204,7 +204,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
                 withCompletionHandler: { [weak self] error in
                     guard let self = self else { return }
                     if let error = error {
-                        print("图片发送到 \(peer.displayName) 失败: \(error.localizedDescription)")
+                        print("图片发送到 \(peer.displayName) 失败: \(error)")
                     }
                     // 完成计数
                     DispatchQueue.main.async {
@@ -252,7 +252,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
             }
             try FileManager.default.copyItem(at: fileURL, to: tempURL)
         } catch {
-            print("复制文件到临时目录失败: \(error.localizedDescription)")
+            print("复制文件到临时目录失败: \(error)")
             return
         }
 
@@ -284,7 +284,7 @@ class NearbyNoLetManager: NSObject, ObservableObject {
                 withCompletionHandler: { [weak self] error in
                     guard let self = self else { return }
                     if let error = error {
-                        print("群发文件失败到 \(peer.displayName): \(error.localizedDescription)")
+                        print("群发文件失败到 \(peer.displayName): \(error)")
                     }
                     self.updateMessage(msgID) { m in
                         m.completedPeers += 1
@@ -421,7 +421,7 @@ extension NearbyNoLetManager: MCSessionDelegate {
         withError error: Error?
     ) {
         guard error == nil else {
-            print("接收文件失败: \(error!.localizedDescription)")
+            print("接收文件失败: \(error! )")
             return
         }
 
@@ -513,7 +513,7 @@ extension NearbyNoLetManager: MCNearbyServiceAdvertiserDelegate {
     }
 
     func advertiser(_: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
-        print("广播失败: \(error.localizedDescription)")
+        print("广播失败: \(error)")
     }
 }
 
@@ -550,7 +550,7 @@ extension NearbyNoLetManager: MCNearbyServiceBrowserDelegate {
     }
 
     func browser(_: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
-        print("浏览失败: \(error.localizedDescription)")
+        print("浏览失败: \(error)")
     }
 }
 

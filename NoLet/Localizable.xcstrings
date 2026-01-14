@@ -4089,7 +4089,11 @@
         }
       }
     },
+    "发生错误" : {
+
+    },
     "发生错误%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6921,6 +6925,12 @@
         }
       }
     },
+    "搜索中..." : {
+
+    },
+    "搜索历史消息" : {
+
+    },
     "搜索扩展功能" : {
       "localizations" : {
         "en" : {
@@ -8773,7 +8783,11 @@
         }
       }
     },
+    "检查 iCloud 账户状态出错" : {
+
+    },
     "检查 iCloud 账户状态出错: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9164,6 +9178,9 @@
           }
         }
       }
+    },
+    "没有找到数据" : {
+
     },
     "没有找到文件" : {
       "localizations" : {
@@ -9808,6 +9825,9 @@
           }
         }
       }
+    },
+    "添加失败" : {
+
     },
     "添加成功" : {
       "localizations" : {
@@ -13122,7 +13142,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell Sound"
+            "value" : "Sound"
           }
         },
         "ja" : {
@@ -13140,7 +13160,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "铃铛声"
+            "value" : "铃声"
           }
         }
       }
@@ -13150,7 +13170,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell List"
+            "value" : "Sound List"
           }
         },
         "ja" : {
@@ -13168,7 +13188,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "铃铛列表"
+            "value" : "铃声列表"
           }
         }
       }

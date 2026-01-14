@@ -167,7 +167,8 @@ struct PushToDeviceIntent: AppIntent {
                 group: group,
                 custom: params
             )
-            NLog.log("response:" ,response)
+            
+            logger.info("response: \(String(describing: response))")
             return .result(value: response.statusCode == 200 ? "ok" : response.reason ?? "fail")
         }
     }

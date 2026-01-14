@@ -97,7 +97,7 @@ struct HistoryMessage: View {
                 return try request.limit(lim).fetchAll(db)
             }
         } catch {
-            NLog.error("Query failed:", error)
+            logger.error("❌ Query failed: \(error)")
             return []
         }
     }

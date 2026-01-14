@@ -537,7 +537,7 @@ struct SelectMessageView: View {
             }
 
         } catch {
-            NLog.error(error.localizedDescription)
+            logger.error("❌ \(error)")
             DispatchQueue.main.async {
                 translateResult = ""
             }
@@ -568,8 +568,8 @@ struct SelectMessageView: View {
     
         } catch {
             // Handle chunk error here
-            NLog.error(error)
-            Toast.error(title: "发生错误\(error.localizedDescription)")
+            logger.error("❌ \(error)")
+            Toast.error(title: "发生错误")
         }
     }
 }

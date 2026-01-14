@@ -27,7 +27,7 @@ struct SignInWithApple: View {
             case .success(let authResults):
                 handleAuthorization(authResults)
             case .failure(let error):
-                NLog.error(error.localizedDescription)
+                logger.error("❌ \(error)")
                 Toast.error(title: "Authorization failed")
             }
         }
@@ -45,7 +45,7 @@ struct SignInWithApple: View {
 //
 //            Task.detached(priority: .userInitiated) {
 //                if let user = await CloudManager.shared.queryOrUpdateDeviceToken(user) {
-//                    NLog.error(user)
+//                    logger.error(user)
 //                }
 //            }
 //        }

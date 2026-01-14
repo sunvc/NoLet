@@ -62,7 +62,7 @@ struct PayWallHighView: View {
                 for: .termsOfService
             )
             .onInAppPurchaseStart { product in
-                NLog.log(" Show Loading Screen Purchasing \(product.displayName)")
+                logger.info(" Show Loading Screen Purchasing \(product.displayName)")
             }
             .subscriptionStatusTask(for: StoreProduct.groupIDs) { _ in
                 loadingStatus.1 = true
@@ -77,17 +77,17 @@ struct PayWallHighView: View {
                                 await transaction.finish()
                                 manager.open(sheet: nil)
                             }
-                            NLog.log("Success and verify purchase using verification result")
+                            logger.info("Success and verify purchase using verification result")
                         }
                     case .pending:
-                        NLog.log("Pending Action")
+                        logger.info("Pending Action")
                     case .userCancelled:
-                        NLog.log("User Cancelled")
+                        logger.info("User Cancelled")
                     @unknown default:
                         fatalError()
                     }
                 case .failure(let error):
-                    NLog.error(error.localizedDescription)
+                    logger.error("❌ \(error)")
                 }
             }
         }

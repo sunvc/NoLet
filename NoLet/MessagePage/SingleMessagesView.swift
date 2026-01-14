@@ -31,10 +31,9 @@ struct SingleMessagesView: View {
     @State private var scrollItem: String = ""
 
     @State private var selectMessage: Message? = nil
-    @State private var messages: [Message] = []
 
     private var messagesCount: Int {
-        messages.count
+        messageManager.messages.count
     }
 
     private var messagePage: Int {
@@ -42,13 +41,13 @@ struct SingleMessagesView: View {
     }
     
     var lastMessage: Message? {
-        messages.elementFromEnd(5)
+        messageManager.messages.elementFromEnd(5)
     }
 
     var body: some View {
         ScrollViewReader { proxy in
             List {
-                ForEach(messages, id: \.id) { message in
+                ForEach(messageManager.messages, id: \.id) { message in
                     MessageCard(
                         message: message,
                         searchText: "",
@@ -64,7 +63,7 @@ struct SingleMessagesView: View {
                     } delete: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             withAnimation(.default) {
-                                messages.removeAll(where: { $0.id == message.id })
+                                messageManager.messages.removeAll(where: { $0.id == message.id })
                             }
                         }
 
@@ -152,7 +151,7 @@ struct SingleMessagesView: View {
                 // 清除徽章
                 try await UNUserNotificationCenter.current().setBadgeCount(0)
 
-                NLog.log("更新未读条数: \(count)")
+                logger.info("更新未读条数: \(count)")
             }
         }
     }
@@ -189,9 +188,9 @@ struct SingleMessagesView: View {
 
             await MainActor.run {
                 if item == nil {
-                    messages = results
+                    messageManager.messages = results
                 } else {
-                    messages += results
+                    messageManager.messages += results
                 }
                 if let selectID = manager.selectID {
                     proxy?.scrollTo(selectID, anchor: .center)
@@ -201,6 +200,15 @@ struct SingleMessagesView: View {
                 self.showLoading = false
             }
         }
+    }
+}
+
+
+extension Array {
+    func elementFromEnd(_ index: Int) -> Element? {
+        let targetIndex = count - index
+        guard targetIndex >= 0 else { return nil }
+        return self[targetIndex]
     }
 }
 

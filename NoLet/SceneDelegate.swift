@@ -68,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_: UIScene) {
         let manager = AppManager.shared
         if !manager.isWarmStart {
-            NLog.log("❄️ 冷启动")
+            logger.info("❄️ 冷启动")
             manager.isWarmStart = true
             NoLetChatManager.shared.clearunuse()
         }

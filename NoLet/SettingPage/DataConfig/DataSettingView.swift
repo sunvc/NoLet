@@ -110,7 +110,7 @@ struct DataSettingView: View {
                                             self.calculateSize()
                                         }
                                     } catch {
-                                        NLog.error(error.localizedDescription)
+                                        logger.error("❌ \(error)")
                                         DispatchQueue.main.async {
                                             self.showexportLoading = false
                                         }
@@ -190,7 +190,7 @@ struct DataSettingView: View {
                                 await Toast.shared.present(title: msg, symbol: .info)
                             case .failure(let err):
                                 await Toast.shared.present(
-                                    title: err.localizedDescription,
+                                    title: err.localizedDescription ,
                                     symbol: .error
                                 )
                             }
@@ -506,7 +506,7 @@ struct DataSettingView: View {
             return String(localized: "导入成功")
 
         } catch {
-            NLog.log(error)
+            logger.error("❌ \(error)")
             return error.localizedDescription
         }
     }

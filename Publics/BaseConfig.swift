@@ -110,7 +110,7 @@ nonisolated class NCONFIG {
                     attributes: nil
                 )
             } catch {
-                NLog.error("Failed to create images directory: \(error.localizedDescription)")
+                logger.error("❌ Failed to create images directory: \(error)")
                 return nil
             }
         }
@@ -128,7 +128,7 @@ nonisolated class NCONFIG {
                 (try? $0.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == false
             }
         } catch {
-            NLog.error(error.localizedDescription)
+            logger.error("❌ \(error)")
             return []
         }
     }
@@ -143,7 +143,7 @@ nonisolated class NCONFIG {
             )
             return filePaeh.appendingPathComponent(fileName, conformingTo: fileType)
         } catch {
-            NLog.error(error.localizedDescription)
+            logger.error("❌ \(error)")
             return nil
         }
     }

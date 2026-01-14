@@ -74,7 +74,7 @@ struct FileItem: Identifiable, Hashable {
                         .localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
                 }
         } catch {
-            NLog.error("加载子项失败: \(error.localizedDescription)")
+            logger.error("❌ 加载子项失败: \(error)")
             return []
         }
     }
@@ -125,7 +125,7 @@ class FileTreeManager: ObservableObject {
                 }
             } catch {
                 DispatchQueue.main.async {
-                    self.errorMessage = "加载文件失败: \(error.localizedDescription)"
+                    self.errorMessage = "加载文件失败: \(error)"
                     self.isLoading = false
                 }
             }
@@ -164,7 +164,7 @@ class FileTreeManager: ObservableObject {
             }
         } catch {
             Task { @MainActor in
-                self.errorMessage = "删除失败: \(error.localizedDescription)"
+                self.errorMessage = "删除失败: \(error)"
             }
         }
     }
@@ -302,7 +302,7 @@ struct FileRowContent: View {
 
     func thumbnail(url: URL, size: CGFloat = 100, defaultIcon _: String) async -> Image {
         do {
-            NLog.log(url.absoluteString)
+            logger.info("\(url)")
             if url.path.contains("ImageCache"),!item.isDirectory,
                let uiImage = await ImageManager.loadThumbnail(path: url.path(), maxPixel: 300)
             {

@@ -79,7 +79,7 @@ struct ServerMonitoringView: View {
                         self.updateData()    
                     }
                 }
-                NLog.error("启动定时器")
+                logger.error("❌ 启动定时器")
             }
         }
         .onDisappear {
@@ -136,7 +136,7 @@ struct ServerMonitoringView: View {
                 }
             } catch {
                 errorCount += 1
-                NLog.error(error.localizedDescription)
+                logger.error("❌ \(error)" )
                 Toast.error(title: "服务器连接失败")
             }
         }

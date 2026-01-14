@@ -211,7 +211,7 @@ struct UploadIclondIcon: View {
             saveOk = true
         }
 
-        NLog.log(msg)
+        logger.info("\(msg)")
 
         DispatchQueue.main.async {
             self.tips = msg
