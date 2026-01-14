@@ -87,7 +87,7 @@ struct PayWallHighView: View {
                         fatalError()
                     }
                 case .failure(let error):
-                    logger.error("❌ \(error)")
+                    logger.fault("\(error)")
                 }
             }
         }

@@ -152,7 +152,7 @@ extension ImageManager {
             }
             return (true, status.1)
         } catch {
-            logger.error("❌Save to album failed: \(error)")
+            logger.fault("Save to album failed: \(error)")
             return (false, status.1)
         }
     }

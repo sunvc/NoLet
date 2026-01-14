@@ -266,13 +266,13 @@ extension AppManager {
                     try fileManager.removeItem(at: fileURL)
                     logger.info("✅ 删除: \(fileURL.lastPathComponent)")
                 } catch {
-                    logger.error("❌ 清空失败: \(error)")
+                    logger.fault("清空失败: \(error)")
                 }
             }
 
             logger.info("🧹 清空完成：\(url.path)")
         } catch {
-            logger.error("❌ 清空失败: \(error)")
+            logger.fault("清空失败: \(error)")
         }
     }
 
@@ -394,7 +394,7 @@ extension AppManager {
                 return pathTem
             }
         } catch {
-            logger.error("❌配置文件加密失败: \(error)")
+            logger.fault("配置文件加密失败: \(error)")
         }
 
         return nil
@@ -507,7 +507,7 @@ extension AppManager {
             return server
         } catch {
             server.status = false
-            logger.error("❌\(error)")
+            logger.fault("\(error)")
             return server
         }
     }

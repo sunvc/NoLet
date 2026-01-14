@@ -99,7 +99,7 @@ private struct ShareView: View {
                     do {
                         try pngData.write(to: tempURL)
                     } catch {
-                        logger.error("❌ \(error)")
+                        logger.fault("\(error)")
                         return
                     }
 

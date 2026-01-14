@@ -178,7 +178,7 @@ struct PromptDetailView: View {
                     AppManager.shared.open(sheet: nil)
                 }
             } catch {
-                logger.error("❌ 插入 ChatPrompt 失败: \(error)")
+                logger.fault("插入 ChatPrompt 失败: \(error)")
             }
         }
     }
@@ -196,7 +196,7 @@ struct PromptDetailView: View {
                     }
                 }
             } catch {
-                logger.error("❌ 更新 ChatPrompt 失败: \(error)")
+                logger.fault("更新 ChatPrompt 失败: \(error)")
             }
             await MainActor.run {
                 if prompt == nil {

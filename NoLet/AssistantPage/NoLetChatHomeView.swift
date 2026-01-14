@@ -17,10 +17,6 @@ import GRDB
 import OpenAI
 import SwiftUI
 
-
-
-
-
 struct NoLetChatHomeView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.showAssistantAnimation) var showAssistantAnimation
@@ -45,8 +41,6 @@ struct NoLetChatHomeView: View {
 
     var body: some View {
         ZStack {
-        
-            
             ChatMessageListView()
             VStack {
                 if chatManager.chatMessages.count == 0 && !manager.isLoading {
@@ -240,9 +234,15 @@ struct NoLetChatHomeView: View {
                 }
 
                 clearCurrent()
+            } catch is CancellationError {
+                logger.debug("取消请求")
+                Task { @MainActor in
+                    self.clearCurrent()
+                }
+                return
             } catch {
                 // Handle chunk error here
-                logger.error("❌ \(error)")
+                logger.fault("\(error)")
                 Task { @MainActor in
                     Toast.error(title: "发生错误")
                     self.clearCurrent()
@@ -340,7 +340,7 @@ extension NoLetChatHomeView {
                     let result = await _runFunc(name: name, args: json)
                     results += result
                 } else {
-                    results[name] = "Invalid JSON"
+                    results[name] = "-1"
                 }
             }
         }
@@ -350,12 +350,13 @@ extension NoLetChatHomeView {
     private func _runFunc(name: String, args: [String: Any]) async -> [String: String] {
         guard NoLetChatAction.AllName.contains(where: {
             $0.localizedCaseInsensitiveContains(name)
-        }) else { return ["error": "没有找到函数"] }
+        }) else { return ["error": "-1"] }
         var results: [String: String] = [:]
         for (key, value) in args {
             if let action = NoLetChatAction(rawValue: key) {
                 let msg = await action.execute(with: value)
                 results[action.rawValue] = msg
+                
             }
         }
         return results

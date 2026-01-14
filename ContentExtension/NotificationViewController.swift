@@ -307,7 +307,7 @@ extension NotificationViewController {
                 message: String(localized: "保存图片时出现错误"),
                 preferredStyle: .alert
             )
-            logger.error("❌ \(error)")
+            logger.fault("\(error)")
         } else {
             // 保存成功提示
             alertController = UIAlertController(

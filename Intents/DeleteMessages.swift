@@ -34,7 +34,7 @@ struct DeleteMessageIntent: AppIntent {
                     .deleteAll(db)
             }
         } catch {
-            logger.error("❌ 删除旧消息失败: \(error)")
+            logger.fault("删除旧消息失败: \(error)")
         }
         return .result()
     }

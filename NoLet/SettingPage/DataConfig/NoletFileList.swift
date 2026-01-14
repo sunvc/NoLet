@@ -74,7 +74,7 @@ struct FileItem: Identifiable, Hashable {
                         .localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
                 }
         } catch {
-            logger.error("❌ 加载子项失败: \(error)")
+            logger.fault("加载子项失败: \(error)")
             return []
         }
     }

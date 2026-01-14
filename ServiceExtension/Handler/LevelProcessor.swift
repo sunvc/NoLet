@@ -98,7 +98,7 @@ extension LevelProcessor{
                 targetSeconds: targetDuration
             )
         } catch {
-            logger.error("❌ Error processing CAF file: \(error)")
+            logger.fault("Error processing CAF file: \(error)")
             return inputFile
         }
     }

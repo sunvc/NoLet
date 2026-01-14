@@ -108,7 +108,7 @@ final class NoLetChatManager: ObservableObject {
             in: DB.dbQueue,
             scheduling: .mainActor,
             onError: { error in
-                logger.error("❌ Failed to observe unread count: \(error)")
+                logger.fault("Failed to observe unread count: \(error)")
             },
             onChange: { [weak self] datas in
                 self?.groupsCount = datas.0
@@ -182,7 +182,7 @@ final class NoLetChatManager: ObservableObject {
                     try group?.update(db)
                 }
             } catch {
-                logger.error("❌ 更新失败: \(error)")
+                logger.fault("更新失败: \(error)")
             }
         }
     }
@@ -225,7 +225,7 @@ extension NoLetChatManager {
             return true
 
         } catch {
-            logger.error("❌ \(error)")
+            logger.fault("\(error)")
             return false
         }
     }
@@ -430,7 +430,7 @@ extension NoLetChatManager {
                     }
                 }
             } catch {
-                logger.error("❌ GRDB 错误: \(error)")
+                logger.fault("GRDB 错误: \(error)")
             }
         }
     }

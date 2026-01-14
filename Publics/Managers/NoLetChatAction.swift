@@ -302,7 +302,8 @@ extension NoLetChatAction {
     static let AllName = ActionName.allCases.compactMap { $0.rawValue }
 
     enum ActionName: String, Sendable, CaseIterable {
-        case defaultName = "context_management"
+        case contextName = "context_management"
+        case newChatName = "start_new_chat"
         case appManageName = "manage_app"
     }
 
@@ -311,17 +312,29 @@ extension NoLetChatAction {
         let startNewChat = Self.startNewChat
         return [
             FunctionDefinition(
-                name: ActionName.defaultName.rawValue,
-                description: "CRITICAL: Clears the current conversation context permanently. Trigger only on explicit Clear Context actions, not on new conversations.",
+                name: ActionName.newChatName.rawValue,
+                description: "CRITICAL: start new conversations.",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties([
-                        clearTheContext.rawValue: clearTheContext.parameter,
                         startNewChat.rawValue: startNewChat.parameter
                     ]),
                     .additionalProperties(.boolean(false)),
-                ])
+                ]),
+                strict: true
             ),
+            FunctionDefinition(
+                name: ActionName.contextName.rawValue,
+                description: "CRITICAL: Clears the current conversation context.",
+                parameters: .init(fields: [
+                    .type(.object),
+                    .properties([
+                        clearTheContext.rawValue: clearTheContext.parameter
+                    ]),
+                    .additionalProperties(.boolean(false)),
+                ]),
+                strict: true
+            )
         ]
     }
 
@@ -341,7 +354,8 @@ extension NoLetChatAction {
                     .type(.object),
                     .properties(properties),
                     .additionalProperties(.boolean(false)),
-                ])
+                ]),
+                strict: true
             ),
         ]
     }

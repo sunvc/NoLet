@@ -60,7 +60,7 @@ final class CloudManager {
             logger.info("\(message.0),\(message.1)")
         } catch {
             message = (false, String(localized: "检查 iCloud 账户状态出错"))
-            logger.error("❌\(error) - \(message.1)")
+            logger.fault("\(error) - \(message.1)")
         }
 
         return message
@@ -81,12 +81,12 @@ final class CloudManager {
                 case .success(let record):
                     return record
                 case .failure(let error):
-                    logger.error("❌获取单个记录失败: \(error)")
+                    logger.fault("获取单个记录失败: \(error)")
                     return nil
                 }
             }
         } catch {
-            logger.error("❌查询失败: \(error)")
+            logger.fault("查询失败: \(error)")
             return [] // 查询失败返回空数组
         }
     }
@@ -102,7 +102,7 @@ final class CloudManager {
 
             return datas
         } catch {
-            logger.error("❌\(error)")
+            logger.fault("\(error)")
             return []
         }
     }
@@ -170,10 +170,10 @@ final class CloudManager {
 
         do {
             let recordRes = try await database.save(record)
-            logger.error("❌\(recordRes)")
+            logger.fault("\(recordRes)")
             return (true, String(localized: "保存成功"))
         } catch {
-            logger.error("❌\(error)")
+            logger.fault("\(error)")
             return (false, String(localized: "保存失败") + "：\(error)")
         }
     }
@@ -224,7 +224,7 @@ final class CloudManager {
             return record["token"] as? String
 
         } catch {
-            logger.error("❌\(error)")
+            logger.fault("\(error)")
             return nil
         }
     }
@@ -302,7 +302,7 @@ final class CloudManager {
             return cloudRecords + uploadDatas
 
         } catch {
-            logger.error("❌Failed to upload records:\(error)")
+            logger.fault("Failed to upload records:\(error)")
             return cloudRecords
         }
     }
