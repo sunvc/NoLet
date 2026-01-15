@@ -39,6 +39,8 @@ struct NoLetChatHomeView: View {
     @State private var fengche: Bool = false
     @State private var hidenTabar: Bool = false
 
+    @State private var selectAction: MessageAction? = nil
+
     var body: some View {
         ZStack {
             ChatMessageListView()
@@ -80,6 +82,7 @@ struct NoLetChatHomeView: View {
                         Spacer()
                         Spacer()
                     }
+                    .padding(.horizontal)
                     .transition(.slide)
                     .onTapGesture {
                         self.hideKeyboard()
@@ -125,7 +128,7 @@ struct NoLetChatHomeView: View {
                     .transition(.scale)
             }
 
-            ToolbarItem(placement: .secondaryAction) {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
                     self.hideKeyboard()
                     manager.router.append(.noletChatSetting(nil))
@@ -151,19 +154,21 @@ struct NoLetChatHomeView: View {
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $chatManager.showAllHistory) {
             ChatGroupHistoryView(show: $chatManager.showAllHistory)
-                .customPresentationCornerRadius(50)
+                .customPresentationCornerRadius(30)
+                .presentationDetents([.height(self.windowHeight * 0.7), .large])
         }
         .sheet(isPresented: $chatManager.showPromptChooseView) {
             PromptChooseView(show: $chatManager.showPromptChooseView)
-                .customPresentationCornerRadius(50)
+                .customPresentationCornerRadius(30)
                 .presentationDetents([.medium, .large])
         }
         .sheet(item: $chatManager.showReason) { _ in
             ReasonMessageView(message: $chatManager.showReason)
-                .customPresentationCornerRadius(50)
+                .customPresentationCornerRadius(30)
                 .presentationDetents([.medium, .large])
         }
         .environmentObject(chatManager)
+        .deleteTips($selectAction)
     }
 
     // 发送消息
@@ -203,16 +208,20 @@ struct NoLetChatHomeView: View {
 
                 if !toolCallsMap.isEmpty {
                     chatManager.currentResult = await runChatCall(params: toolCallsMap)
-                    debugPrint(chatManager.currentResult)
 
                     if !chatManager.currentResult.isEmpty,
                        let text = chatManager.currentResult.text()
                     {
+                        Task { @MainActor in
+                            chatManager.currentContent += "\n"
+                        }
+
                         let results = chatManager.chatsStream(
                             text: "FunctionCall Results:\(text)",
                             messageID: manager.askMessageID,
-                            toolCall: true
+                            rounds: 2
                         )
+
                         for try await result in results {
                             for choice in result.choices {
                                 resultHandler(choice: choice)
@@ -243,6 +252,7 @@ struct NoLetChatHomeView: View {
             } catch {
                 // Handle chunk error here
                 logger.fault("\(error)")
+                logger.fault("\(error.localizedDescription)")
                 Task { @MainActor in
                     Toast.error(title: "发生错误")
                     self.clearCurrent()
@@ -270,6 +280,7 @@ struct NoLetChatHomeView: View {
                 chatManager.startReason = nil
             }
         }
+
         if let outputItem = choice.delta.content {
             Task { @MainActor in
                 chatManager.currentContent += outputItem
@@ -340,7 +351,7 @@ extension NoLetChatHomeView {
                     let result = await _runFunc(name: name, args: json)
                     results += result
                 } else {
-                    results[name] = "-1"
+                    results[name] = "Error JSON"
                 }
             }
         }
@@ -348,17 +359,43 @@ extension NoLetChatHomeView {
     }
 
     private func _runFunc(name: String, args: [String: Any]) async -> [String: String] {
-        guard NoLetChatAction.AllName.contains(where: {
-            $0.localizedCaseInsensitiveContains(name)
-        }) else { return ["error": "-1"] }
-        var results: [String: String] = [:]
-        for (key, value) in args {
-            if let action = NoLetChatAction(rawValue: key) {
-                let msg = await action.execute(with: value)
-                results[action.rawValue] = msg
-                
+        var results: [String: String] = ["name": name]
+
+        if name == NoLetChatAction.messageName {}
+        switch name {
+        case NoLetChatAction.actionName:
+            for (key, value) in args {
+                if let action = NoLetChatAction(rawValue: key) {
+                    results[key] = "\(value)"
+                    let msg = await action.execute(with: value)
+                    results["run_result"] = msg
+                }
             }
+        case NoLetChatAction.messageName:
+            guard let count = args["count"] as? Int,
+                  let type = args["type"] as? String
+            else {
+                results = ["error": "Json Error"]
+                return results
+            }
+            if type == "hour" {
+                selectAction = .hour(count)
+            } else if type == "day" {
+                selectAction = .day(count)
+            } else if type == "all" {
+                selectAction = .all
+            } else {
+                results = ["error": "Json Error"]
+                return results
+            }
+            results["type"] = type
+            results["count"] = "\(count)"
+            results["run_result"] = "A confirmation dialog box pops up"
+        default:
+            results = ["error": "Json Error"]
+            return results
         }
+
         return results
     }
 }

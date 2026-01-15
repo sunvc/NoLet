@@ -49,7 +49,7 @@ final class NoLetChatManager: ObservableObject {
 
     private var observationCancellable: AnyDatabaseCancellable?
 
-    let webSearchConfig = ChatQuery.WebSearchOptions(
+    private let webSearchConfig = ChatQuery.WebSearchOptions(
         userLocation: ChatQuery.WebSearchOptions
             .UserLocation(approximate:
                 Components.Schemas.WebSearchLocation(
@@ -168,7 +168,7 @@ final class NoLetChatManager: ObservableObject {
                 }
             }
         } catch {
-            debugPrint(error )
+            debugPrint(error)
         }
     }
 
@@ -208,7 +208,6 @@ extension NoLetChatManager {
             if account.host.isEmpty || account.key.isEmpty || account.basePath.isEmpty || account
                 .model.isEmpty
             {
-                
                 logger.info("\(String(describing: account))")
                 return false
             }
@@ -221,7 +220,7 @@ extension NoLetChatManager {
             )
 
             let data = try await openchat.chats(query: query)
-            logger.info("\(String(describing:data))")
+            logger.info("\(String(describing: data))")
             return true
 
         } catch {
@@ -234,7 +233,7 @@ extension NoLetChatManager {
         text: String,
         messageID: String? = nil,
         tips: ChatPromptMode? = nil,
-        toolCall: Bool = false
+        rounds: Int = 1
     ) -> ChatQuery? {
         guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
             return nil
@@ -242,47 +241,46 @@ extension NoLetChatManager {
 
         let temperature = Double(Defaults[.temperatureChat]) / 10
 
+        var params: [ChatQuery.ChatCompletionMessageParam] = []
+
         if let tips {
-            var params: [ChatQuery.ChatCompletionMessageParam] = [
-                .system(.init(content: .textContent(tips.prompt.content), name: tips.prompt.title)),
-            ]
+            params.append(.system(.init(
+                content: .textContent(tips.prompt.content),
+                name: tips.prompt.title
+            )))
 
-            if toolCall, !currentRequest.isEmpty {
-                params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
-
-            } else {
-                params.append(.user(.init(content: .string(text))))
+            if rounds > 1 {
+                params.append(.user(.init(content: .string(currentRequest))))
             }
+
+            params.append(.user(.init(content: .string(text))))
 
             return ChatQuery(
                 messages: params,
                 model: account.model,
                 reasoningEffort: reasoningEffort,
                 temperature: temperature,
-                tools: NoLetChatAction.defaultFunc().map { .init(function: $0) },
                 webSearchOptions: webSearchConfig
             )
         }
-
-        var params: [ChatQuery.ChatCompletionMessageParam] = []
 
         ///  增加system的前置参数
         if let promt = chatPrompt {
             params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
 
-            if promt.mode == .mcp {
-                if toolCall , !currentRequest.isEmpty{
-                    params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
-                }else{
-                    params.append(.user(.init(content: .string(text))))
+            if promt.mode == .mcp || promt.mode == .call {
+                params += getHistory(2)
+                if rounds > 1 {
+                    params.append(.user(.init(content: .string(currentRequest))))
                 }
-               
+                params.append(.user(.init(content: .string(text))))
+
                 return ChatQuery(
                     messages: params,
                     model: account.model,
                     reasoningEffort: reasoningEffort,
                     temperature: temperature,
-                    tools: NoLetChatAction.getFuncs().map { .init(function: $0) },
+                    tools: NoLetChatAction.funcs().map { .init(function: $0) },
                     webSearchOptions: webSearchConfig
                 )
             }
@@ -297,28 +295,24 @@ extension NoLetChatManager {
             return text
         }
 
-        params += getHistory(Defaults[.historyMessageCount], toolCall: toolCall)
+        params += getHistory(Defaults[.historyMessageCount])
 
-        if toolCall, !currentRequest.isEmpty {
-            params.append(.tool(.init(content: .textContent(text), toolCallId: "")))
-        }else{
-            params.append(.user(.init(content: .string(inputText))))
+        if rounds > 1 {
+            params.append(.user(.init(content: .string(currentRequest))))
         }
-        
+        params.append(.user(.init(content: .string(inputText))))
 
         return ChatQuery(
             messages: params,
             model: account.model,
             reasoningEffort: reasoningEffort,
             temperature: temperature,
-            tools: NoLetChatAction.defaultFunc().map { .init(function: $0) },
             webSearchOptions: webSearchConfig
         )
     }
 
     private func getHistory(
-        _ limit: Int,
-        toolCall: Bool = false
+        _ limit: Int
     ) -> [ChatQuery.ChatCompletionMessageParam] {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
         if let messageRaw = try? DB.dbQueue.read({ db in
@@ -344,19 +338,14 @@ extension NoLetChatManager {
                 params.append(.user(.init(content: .string(message.request))))
 
                 if let result = message.result, !result.isEmpty, let json = result.text() {
-                    params.append(.tool(.init(
-                        content: .textContent(String(localized: "任务执行结果") + json),
-                        toolCallId: ""
+                    params.append(.user(.init(
+                        content: .string(String(localized: "任务执行结果") + json)
                     )))
                 }
 
                 if !message.content.isEmpty {
                     params.append(.assistant(.init(content: .textContent(message.content))))
                 }
-            }
-
-            if toolCall, !currentRequest.isEmpty {
-                params.append(.user(.init(content: .string(currentRequest))))
             }
         }
 
@@ -390,15 +379,12 @@ extension NoLetChatManager {
         text: String,
         tips: ChatPromptMode? = nil,
         messageID: String? = nil,
-        toolCall: Bool = false
+        rounds: Int = 1
     ) -> AsyncThrowingStream<ChatStreamResult, Error> {
-        let query: ChatQuery? = getHistoryParams(
-            text: text,
-            messageID: messageID,
-            tips: tips,
-            toolCall: toolCall
+        let query = getHistoryParams(
+            text: text, messageID: messageID,
+            tips: tips, rounds: rounds
         )
-
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: "No Account Or Query")
@@ -447,23 +433,7 @@ extension ChatPromptMode {
                     localized: "你是由 NoLet App 集成的智能助手. 你可以使用 manage_app 工具来控制应用(设置、导航、数据、缓存、消息管理).当用户要求执行此工具支持的任何操作(例如: 打开设置,清除缓存,更改图标,删除上周的消息)时，你必须立即调用 'manage_app' 并提供正确的参数."
                 ),
                 inside: true,
-                mode: .mcp
-            )
-        case .summary(let lang):
-            ChatPrompt(
-                timestamp: .now,
-                title: String(localized: "总结助手"),
-                content: String(localized: """
-                    你是一名专业总结助手，擅长从大量信息中提炼关键内容。总结时请遵循以下原则：
-                    1. 提取核心观点，排除冗余信息。
-                    2. 保持逻辑清晰，结构紧凑, 确定文章的中心主题，理解作者的论点和观点。
-                    3. 列出关键点来传达文章的信息和细节。确保总结保持一致性，语言简洁明了
-                    4. 可根据需要生成段落式或要点式总结, 遵循原文结构以提升阅读体验。
-                    5. 有效地传达主要观点和情感层面，同时使用简洁清晰的语言
-                    下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
-                    """),
-                inside: true,
-                mode: .promt
+                mode: .call
             )
         case .translate(let lang):
             ChatPrompt(
@@ -475,37 +445,6 @@ extension ChatPromptMode {
                     2. 合理调整以符合目标语言习惯与文化。
                     3. 优先选择自然、通顺的表达方式, 只返回翻译，不要添加任何其他内容。
                     下面我给你内容，直接按照 \(lang ?? Self.lang()) 进行翻译.
-                    """),
-                inside: true,
-                mode: .promt
-            )
-        case .writing(let lang):
-            ChatPrompt(
-                timestamp: .now,
-                title: String(localized: "写作助手"),
-                content: String(localized: """
-                    你是一名专业写作助手，擅长各类文体的写作与润色。请根据以下要求优化文本：
-                    1. 明确文章结构，增强逻辑连贯性。
-                    2. 优化用词，使语言更准确流畅。
-                    3. 强调重点，突出核心信息。
-                    4. 使风格贴合目标读者的阅读习惯。
-                    5. 纠正语法、标点和格式错误。
-                    下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
-                    """),
-                inside: true,
-                mode: .promt
-            )
-        case .code(let lang):
-            ChatPrompt(
-                timestamp: .now,
-                title: String(localized: "代码助手"),
-                content: String(localized: """
-                    你是一位经验丰富的程序员，擅长编写清晰、简洁、易于维护的代码。请根据以下原则回答问题：
-                    1. 提供完整、可运行的代码示例。
-                    2. 简明解释关键实现细节。
-                    3. 指出潜在的性能或结构优化点。
-                    4. 关注代码的可扩展性、安全性和效率。
-                    下面我给你内容，直接按照 \(lang ?? Self.lang()) 语言给我回复
                     """),
                 inside: true,
                 mode: .promt
@@ -529,10 +468,8 @@ extension ChatPromptMode {
     static var prompts: [ChatPrompt] {
         [
             mcp(lang()).prompt,
-            summary(lang()).prompt,
             translate(lang()).prompt,
-            writing(lang()).prompt,
-            code(lang()).prompt,
+            abstract(lang()).prompt
         ]
     }
 

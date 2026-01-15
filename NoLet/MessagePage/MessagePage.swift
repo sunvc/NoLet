@@ -23,7 +23,7 @@ struct MessagePage: View {
     @State private var searchText: String = ""
     @State private var selectAction: MessageAction? = nil
     @FocusState private var searchFocused: Bool
-
+   
     var body: some View {
         ZStack {
             if !manager.searchText.isEmpty || searchFocused {
@@ -65,28 +65,7 @@ struct MessagePage: View {
         .onSubmit(of: .search) {
             manager.searchText = searchText
         }
-        .alert(
-            "确认删除",
-            isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })
-        ) {
-            Button("取消", role: .cancel) {
-                self.selectAction = nil
-            }
-            Button("删除", role: .destructive) {
-                if let mode = selectAction {
-                    Task.detached(priority: .userInitiated) {
-                        await messageManager.delete(date: mode.date)
-                        await MainActor.run {
-                            self.selectAction = nil
-                        }
-                    }
-                }
-            }
-        } message: {
-            if let selectAction {
-                Text("此操作将删除 \(selectAction.title) 数据，且无法恢复。确定要继续吗？")
-            }
-        }
+        .deleteTips($selectAction)
         .toolbar {
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: messageManager
@@ -164,12 +143,44 @@ struct MessagePage: View {
                 }
             }
         } label: {
-            Label("按条件删除消息", systemImage: "trash")
+            Label("删除消息", systemImage: "trash")
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.green, Color.primary)
         }
     }
 }
+
+extension View {
+    @ViewBuilder
+    func deleteTips(_ selectAction: Binding<MessageAction?>) -> some View {
+        alert(
+            "确认删除",
+            isPresented: Binding(
+                get: { selectAction.wrappedValue != nil },
+                set: { _ in selectAction.wrappedValue = nil }
+            )
+        ) {
+            Button("取消", role: .cancel) {
+                selectAction.wrappedValue = nil
+            }
+            Button("删除", role: .destructive) {
+                if let mode = selectAction.wrappedValue {
+                    Task.detached(priority: .userInitiated) {
+                        await MessagesManager.shared.delete(date: mode.date)
+                        await MainActor.run {
+                            selectAction.wrappedValue = nil
+                        }
+                    }
+                }
+            }
+        } message: {
+            if let selectAction = selectAction.wrappedValue {
+                Text("此操作将删除 \(selectAction.title) 数据，且无法恢复。确定要继续吗？")
+            }
+        }
+    }
+}
+
 
 #Preview {
     ContentView()

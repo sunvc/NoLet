@@ -567,6 +567,6 @@ struct PermissionOptionCard: View {
             PermissionsStartView()
                 .presentationDetents([.large])
                 .interactiveDismissDisabled(true)
-                .customPresentationCornerRadius(50)
+                .customPresentationCornerRadius(30)
         }
 }

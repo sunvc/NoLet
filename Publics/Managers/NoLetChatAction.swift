@@ -16,7 +16,14 @@ import OpenAI
 
 public typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
 
-enum NoLetChatAction: String, CaseIterable {
+protocol NoletChatProtocol: CaseIterable {
+    static var actionName: String { get }
+    var parameter: JSONSchema { get }
+    func execute(with value: Any) async -> String
+    static func funcs() -> [FunctionDefinition]
+}
+
+enum NoLetChatAction: String, NoletChatProtocol {
     case voiceFeedback
     case autoSaveImages
     case showMessageIcon
@@ -46,12 +53,14 @@ enum NoLetChatAction: String, CaseIterable {
 
 extension NoLetChatAction {
     func execute(with value: Any) async -> String {
+
         let manager = AppManager.shared
 
         let paramsError = "Invalid parameters"
         switch self {
         case .voiceFeedback:
             guard let val = value as? Bool else { return paramsError }
+            
             Defaults[.feedbackSound] = val
 
         case .autoSaveImages:
@@ -104,7 +113,7 @@ extension NoLetChatAction {
         case .openExample:
             manager.router = [.example]
 
-        // MARK: - Docs
+            // MARK: - Docs
 
         case .openAppDocs:
             AppManager.openURL(url: NCONFIG.docServer.url, .app)
@@ -112,7 +121,7 @@ extension NoLetChatAction {
         case .openServerDocs:
             AppManager.openURL(url: NCONFIG.serverSource.url, .app)
 
-        // MARK: - Data
+            // MARK: - Data
 
         case .clearAppCache:
             guard let path = NCONFIG.getDir(.caches) else { return paramsError }
@@ -143,12 +152,12 @@ extension NoLetChatAction {
             }
 
         case .startNewChat:
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NoLetChatManager.shared.cancellableRequest?.cancel()
                 NoLetChatManager.shared.setGroup()
             }
         }
-
+        
         return "OK"
     }
 }
@@ -299,60 +308,46 @@ extension NoLetChatAction {
         }
     }
 
-    static let AllName = ActionName.allCases.compactMap { $0.rawValue }
+    static let actionName = "manage_app"
+    static let messageName = "manage_message"
 
-    enum ActionName: String, Sendable, CaseIterable {
-        case contextName = "context_management"
-        case newChatName = "start_new_chat"
-        case appManageName = "manage_app"
-    }
 
-    static func defaultFunc() -> [FunctionDefinition] {
-        let clearTheContext = Self.clearTheContext
-        let startNewChat = Self.startNewChat
-        return [
-            FunctionDefinition(
-                name: ActionName.newChatName.rawValue,
-                description: "CRITICAL: start new conversations.",
-                parameters: .init(fields: [
-                    .type(.object),
-                    .properties([
-                        startNewChat.rawValue: startNewChat.parameter
-                    ]),
-                    .additionalProperties(.boolean(false)),
-                ]),
-                strict: true
-            ),
-            FunctionDefinition(
-                name: ActionName.contextName.rawValue,
-                description: "CRITICAL: Clears the current conversation context.",
-                parameters: .init(fields: [
-                    .type(.object),
-                    .properties([
-                        clearTheContext.rawValue: clearTheContext.parameter
-                    ]),
-                    .additionalProperties(.boolean(false)),
-                ]),
-                strict: true
-            )
-        ]
-    }
-
-    static func getFuncs() -> [FunctionDefinition] {
+    static func funcs() -> [FunctionDefinition] {
         let properties: [String: JSONSchema] =
             Dictionary(uniqueKeysWithValues:
                 Self.allCases.map { action in
                     (action.rawValue, action.parameter)
                 }
             )
-
         return [
             FunctionDefinition(
-                name: ActionName.appManageName.rawValue,
+                name: actionName,
                 description: "CRITICAL: Manage app settings, delete messages, open pages, view docs, etc.",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties(properties),
+                    .additionalProperties(.boolean(false)),
+                ]),
+                strict: true
+            ),
+
+            FunctionDefinition(
+                name: messageName,
+                description: "CRITICAL: delete x before messages",
+                parameters: .init(fields: [
+                    .type(.object),
+                    .properties([
+                        "type": JSONSchema(
+                            .type(.string),
+                            .description("type"),
+                            .enumValues(["hour", "day", "all"])
+                        ),
+                        "count": JSONSchema(
+                            .type(.integer),
+                            .description("Quantity")
+                        ),
+                    ]),
+                    .required(["type", "count"]),
                     .additionalProperties(.boolean(false)),
                 ]),
                 strict: true

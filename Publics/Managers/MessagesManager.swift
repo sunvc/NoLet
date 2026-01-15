@@ -24,7 +24,6 @@ final class MessagesManager: ObservableObject {
     @Published var groupMessages: [Message] = []
     @Published var messages: [Message] = []
     @Published var showGroupLoading: Bool = false
-
     let messagePage: Int = 50
 
     private var currentContent: String = ""

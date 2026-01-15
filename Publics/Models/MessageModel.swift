@@ -113,11 +113,13 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
     enum PromptMode: String, Codable {
         case promt
         case mcp
+        case call
 
         var name: String {
             switch self {
             case .promt: String(localized: "提示词")
             case .mcp: "MCP"
+            case .call: "CALL"
             }
         }
     }
@@ -125,9 +127,6 @@ struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Ha
 
 enum ChatPromptMode: Equatable {
     case mcp(String?)
-    case summary(String?)
     case translate(String?)
-    case writing(String?)
-    case code(String?)
     case abstract(String?)
 }

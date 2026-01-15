@@ -36,30 +36,27 @@ struct ChatGroupHistoryView: View {
     @EnvironmentObject private var chatManager: NoLetChatManager
     var body: some View {
         NavigationStack {
-            VStack {
-                ScrollView(.vertical) {
-                    LazyVStack(alignment: .leading, spacing: 10, pinnedViews: .sectionHeaders) {
-                        if chatGroups.isEmpty {
-                            emptyView
-                                .listRowBackground(Color.clear)
-                                .listRowSeparator(.hidden)
-                        } else {
-                            ForEach(chatGroupSection, id: \.id) { section in
-                                chatView(section: section)
-                                    .listRowInsets(EdgeInsets(
-                                        top: 10,
-                                        leading: 0,
-                                        bottom: 0,
-                                        trailing: 0
-                                    ))
-                                    .listRowBackground(Color.clear)
-                            }
-                        }
+            List {
+                if chatGroups.isEmpty {
+                    emptyView
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                } else {
+                    ForEach(chatGroupSection, id: \.id) { section in
+                        chatView(section: section)
+                            .listRowInsets(EdgeInsets(
+                                top: 10,
+                                leading: 0,
+                                bottom: 0,
+                                trailing: 0
+                            ))
+                            .listRowBackground(Color.clear)
+                           
                     }
                 }
-                .scrollIndicators(.hidden)
-                .listStyle(.grouped)
             }
+            .scrollIndicators(.hidden)
+            .listStyle(.grouped)
             .navigationTitle("最近使用")
             .searchable(text: $text)
             .popView(isPresented: $showChangeGroupName) {
@@ -96,13 +93,6 @@ struct ChatGroupHistoryView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Label("关闭", systemImage: "xmark")
-                        .VButton(onRelease: { _ in
-                            self.show.toggle()
-                            return true
-                        })
-                }
 
                 ToolbarItem {
                     Menu {

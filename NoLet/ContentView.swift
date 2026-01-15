@@ -71,7 +71,7 @@ struct ContentView: View {
                     Defaults[.cryptoConfigs] = [CryptoModelConfig.creteNewModel()]
                 }
             }
-            .customPresentationCornerRadius(50)
+            .customPresentationCornerRadius(30)
             .presentationDetents([.large])
             .interactiveDismissDisabled(true)
         }

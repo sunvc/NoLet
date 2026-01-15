@@ -105,7 +105,8 @@ struct DataSettingView: View {
                                         try await messageManager.exportToJSONFile(fileURL: filepath)
 
                                         DispatchQueue.main.async {
-                                            AppManager.shared.open(sheet: .share(contents: [filepath]))
+                                            AppManager.shared
+                                                .open(sheet: .share(contents: [filepath]))
                                             self.showexportLoading = false
                                             self.calculateSize()
                                         }
@@ -190,7 +191,7 @@ struct DataSettingView: View {
                                 await Toast.shared.present(title: msg, symbol: .info)
                             case .failure(let err):
                                 await Toast.shared.present(
-                                    title: err.localizedDescription ,
+                                    title: err.localizedDescription,
                                     symbol: .error
                                 )
                             }
@@ -205,7 +206,6 @@ struct DataSettingView: View {
             }
 
             Section {
-
                 Picker(selection: $messageExpiration) {
                     ForEach(ExpirationTime.allCases, id: \.self) { item in
                         Text(item.title)
@@ -245,18 +245,16 @@ struct DataSettingView: View {
                             )
                     }
                 }
-            
-                
+
             } footer: {
                 Text("当推送请求URL没有指定 isArchive 参数时，将按照此设置来决定是否保存通知消息")
                     .foregroundStyle(.gray)
             }
 
             Section(header: Text(verbatim: "")) {
-                
-                NavigationLink { 
+                NavigationLink {
                     NoletFileList(rootURL: CONTAINER)
-                } label: { 
+                } label: {
                     HStack {
                         Label {
                             Text("文件管理")
@@ -331,29 +329,7 @@ struct DataSettingView: View {
         }
         .navigationTitle("数据管理")
         .if(selectAction != nil) { view in
-            view.alert(
-                "确认删除",
-                isPresented: Binding(get: { selectAction != nil }, set: { _ in selectAction = nil })
-            ) {
-                Button("取消", role: .cancel) {
-                    self.selectAction = nil
-                }
-                Button("删除", role: .destructive) {
-                    if let mode = selectAction {
-                        Task.detached(priority: .userInitiated) {
-                            await messageManager.delete(date: mode.date)
-                            await MainActor.run {
-                                self.selectAction = nil
-                                self.calculateSize()
-                            }
-                        }
-                    }
-                }
-            } message: {
-                if let selectAction {
-                    Text("此操作将删除 \(selectAction.title) 数据，且无法恢复。确定要继续吗？")
-                }
-            }
+            view.deleteTips($selectAction)
         }
         .if(restartAppShow) { view in
             view
@@ -387,7 +363,7 @@ struct DataSettingView: View {
                             Text("清空"),
                             action: {
                                 self.showDriveCheckLoading = true
-                                if 
+                                if
                                     let fileURL = NCONFIG.getDir(.sounds),
                                     let cacheURL = NCONFIG.getDir(.tem)
                                 {
@@ -526,25 +502,40 @@ extension UInt64 {
     }
 }
 
+// MARK: - MessageAction model
+
+enum MessageAction: CaseIterable, Equatable, Hashable {
+    static var allCases: [MessageAction] {
+        [.hour(1), .day(1), .week(1), .month(1), .all, .cancel]
+    }
+
+    case hour(Int)
+    case day(Int)
+    case week(Int)
+    case month(Int)
+    case all
+    case cancel
+}
+
 extension MessageAction {
     var title: String {
         switch self {
-        case .lastHour: String(localized: "一小时前") + String(localized: "的消息")
-        case .lastDay: String(localized: "一天前") + String(localized: "的消息")
-        case .lastWeek: String(localized: "一周前") + String(localized: "的消息")
-        case .lastMonth: String(localized: "一月前") + String(localized: "的消息")
-        case .allTime: String(localized: "所有消息")
+        case .hour(let hour): String(localized: "\(hour)小时前")
+        case .day(let day): String(localized: "\(day)天前")
+        case .week(let week): String(localized: "\(week)周前")
+        case .month(let month): String(localized: "\(month)月前")
+        case .all: String(localized: "所有消息")
         case .cancel: String(localized: "取消")
         }
     }
 
     var date: Date {
         switch self {
-        case .lastHour: Date().someHourBefore(1)
-        case .lastDay: Date().someDayBefore(0)
-        case .lastWeek: Date().someDayBefore(7)
-        case .lastMonth: Date().someDayBefore(30)
-        case .allTime: Date()
+        case .hour(let hour): Date().someHourBefore(hour)
+        case .day(let day): Date().someDayBefore(day)
+        case .week(let week): Date().someDayBefore(week * 7)
+        case .month(let month): Date().someDayBefore(month * 30)
+        case .all: Date()
         default: Date().s1970
         }
     }
@@ -560,17 +551,6 @@ extension ExpirationTime {
         case .forever: String(localized: "长期")
         }
     }
-}
-
-// MARK: - MessageAction model
-
-enum MessageAction: String, CaseIterable, Equatable {
-    case lastHour
-    case lastDay
-    case lastWeek
-    case lastMonth
-    case allTime
-    case cancel
 }
 
 #Preview {

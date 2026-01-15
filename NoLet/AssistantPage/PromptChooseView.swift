@@ -127,22 +127,16 @@ struct PromptChooseView: View {
             }
             .sheet(isPresented: $isAddingPrompt) {
                 AddPromptView(show: $isAddingPrompt)
-                    .customPresentationCornerRadius(50)
+                    .customPresentationCornerRadius(30)
             }
             .navigationTitle("选择功能")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(
                 text: $searchText,
-                placement: .navigationBarDrawer,
+                placement: .automatic,
                 prompt: "搜索扩展功能"
             )
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("取消", role: .cancel) {
-                        self.show = false
-                    }
-                }
-
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         isAddingPrompt = true
@@ -151,9 +145,7 @@ struct PromptChooseView: View {
                     }
                 }
             }
-            .task {
-                loadData()
-            }
+            .task {  loadData() }
             .onChange(of: chatManager.promptCount) { _ in
                 loadData()
             }
@@ -268,7 +260,7 @@ private struct PromptRowView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.blue)
+                            .background(prompt.id == selectID ? Color.red : Color.blue)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
