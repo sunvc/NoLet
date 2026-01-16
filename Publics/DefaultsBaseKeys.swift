@@ -63,7 +63,6 @@ extension Defaults.Keys {
     static let allMessagecount = Key<Int>("allMessagecount", 0, iCloud: true)
 
     static let feedbackSound = Key<Bool>("feedbackSound", false)
-    static let limitScanningArea = Key<Bool>("limitScanningArea", false)
     static let limitMessageLine = Key<Int>("limitMessageLine", 6)
     static let nearbyShow = Key<Bool>("nearbyShow", false)
 }

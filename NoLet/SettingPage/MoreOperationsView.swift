@@ -25,7 +25,6 @@ struct MoreOperationsView: View {
     @Default(.defaultBrowser) var defaultBrowser
     @Default(.muteSetting) var muteSetting
     @Default(.feedbackSound) var feedbackSound
-    @Default(.limitScanningArea) var limitScanningArea
     @Default(.limitMessageLine) var limitMessageLine
 
     var body: some View {
@@ -159,14 +158,6 @@ struct MoreOperationsView: View {
                     }
                 }
 
-                Toggle(isOn: $limitScanningArea) {
-                    Label {
-                        Text("扫码区域限制")
-                    } icon: {
-                        Image(systemName: "qrcode.viewfinder")
-                            .foregroundStyle(limitScanningArea ? .accent : .red, .primary)
-                    }
-                }
 
                 ListButton {
                     Label {

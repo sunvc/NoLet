@@ -161,12 +161,17 @@ struct ChangeKeyCenterView: View {
         .overlay {
             if showScan {
                 ScanView { code in
-                    if let data = AppManager.shared.HandlerOpenURL(url: code),
-                       data.hasHttp, let url = URL(string: data)
-                    {
-                        (self.keyHost, self.keyName) = url.findNameAndKey()
-
+                    
+                    let result = AppManager.shared.outParamsHandler(address: code)
+                    switch result {
+                    case .server(let url, let key, _, _):
+                        (self.keyHost, self.keyName) = (url, key)
                         self.showScan = false
+                    default:
+                        if code.hasHttp, let url = URL(string: code){
+                            (self.keyHost, self.keyName) = url.findNameAndKey()
+                            self.showScan = false
+                        }
                     }
                 } close: {
                     self.showScan = false

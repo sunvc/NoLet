@@ -29,8 +29,6 @@ enum NoLetChatAction: String, NoletChatProtocol {
     case showMessageIcon
     case messageHeight
     case defaultBrowser
-    case scanAreaRestriction
-
     case openSystemSettings
     case openServerSettings
     case openUploadCloudIcon
@@ -45,7 +43,6 @@ enum NoLetChatAction: String, NoletChatProtocol {
     case clearAppCache
     case setDefaultMessageStorageDays
     case setDefaultImageStorageDays
-
     case deleteAllMuteGroups
     case clearTheContext
     case startNewChat
@@ -81,11 +78,6 @@ extension NoLetChatAction {
                 let mode = DefaultBrowserModel(rawValue: val)
             else { return paramsError }
             Defaults[.defaultBrowser] = mode
-
-        case .scanAreaRestriction:
-            guard let val = value as? Bool else { return paramsError }
-            Defaults[.limitScanningArea] = val
-
         case .openSystemSettings:
             AppManager.openSetting()
 
@@ -195,12 +187,6 @@ extension NoLetChatAction {
                 .enumValues(["internal", "safari", "auto"]),
                 .description("Default browser settings"),
             ])
-
-        case .scanAreaRestriction:
-            return JSONSchema(
-                .type(.boolean),
-                .description("Whether to enable scan area restriction")
-            )
 
         case .openSystemSettings:
             return JSONSchema(

@@ -1318,7 +1318,7 @@
 			repositoryURL = "https://github.com/sunvc/QRScanner.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = 1.0.1;
 			};
 		};
 		B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */ = {
@@ -1339,7 +1339,7 @@
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			repositoryURL = "https://github.com/sunvc/Zip.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.2;
