@@ -75,18 +75,15 @@ struct ContentView: View {
             .presentationDetents([.large])
             .interactiveDismissDisabled(true)
         }
-        .sheet(item: Binding(get: {
-            manager.sheetPage
-        }, set: { value in
-            manager.open(sheet: value)
-        })) {
+        .sheet(item: Binding(get: { manager.sheetPage }, set: { manager.open(sheet: $0) })) {
             ContentSheetViewPage(value: $0)
         }
-        .fullScreenCover(item: Binding(get: {
-            manager.fullPage
-        }, set: { value in
-            manager.open(full: value)
-        })) { ContentFullViewPage(value: $0) }
+        .fullScreenCover(item: Binding(
+            get: { manager.fullPage },
+            set: { manager.open(full: $0) }
+        )) {
+            ContentFullViewPage(value: $0)
+        }
         .fullScreenCover(item: $manager.selectMessage) { message in
             SelectMessageView(message: message) {
                 withAnimation {
@@ -183,6 +180,14 @@ struct ContentView: View {
                     if AppManager.shared.HandlerOpenURL(url: code) == nil {
                         manager.open(full: nil)
                     }
+                } track: { codes in
+                    for code in codes {
+                        let result = AppManager.shared.outParamsHandler(address: code)
+                        if result != .text("") || result != .otherURL("") {
+                            return code
+                        }
+                    }
+                    return nil
                 }
             case .web(let url):
                 SFSafariView(url: url).ignoresSafeArea()

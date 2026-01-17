@@ -45,9 +45,10 @@ struct ChangeKeyCenterView: View {
 
     @State private var selectCrypto: CryptoModelConfig? = nil
 
-    var offServer: Bool{
+    var offServer: Bool {
         NCONFIG.offServer(keyHost)
     }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
@@ -100,7 +101,7 @@ struct ChangeKeyCenterView: View {
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(.accent, .primary)
 
-                            Text(offServer ? "官方签名" : "自定义签名" )
+                            Text(offServer ? "官方签名" : "自定义签名")
                         }
                     }
                     .foregroundColor(.primary)
@@ -161,18 +162,25 @@ struct ChangeKeyCenterView: View {
         .overlay {
             if showScan {
                 ScanView { code in
-                    
                     let result = AppManager.shared.outParamsHandler(address: code)
                     switch result {
                     case .server(let url, let key, _, _):
                         (self.keyHost, self.keyName) = (url, key)
                         self.showScan = false
                     default:
-                        if code.hasHttp, let url = URL(string: code){
+                        if code.hasHttp, let url = URL(string: code) {
                             (self.keyHost, self.keyName) = url.findNameAndKey()
                             self.showScan = false
                         }
                     }
+                } track: { codes in
+                    for code in codes {
+                        let result = AppManager.shared.outParamsHandler(address: code)
+                        if result != .text("") || result != .otherURL("") {
+                            return code
+                        }
+                    }
+                    return nil
                 } close: {
                     self.showScan = false
                 }

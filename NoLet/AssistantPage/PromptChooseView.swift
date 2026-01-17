@@ -264,7 +264,7 @@ private struct PromptRowView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
 
-                    if prompt.mode == .mcp {
+                    if prompt.mode == .mcp || prompt.mode == .call {
                         Text(prompt.mode.name)
                             .font(.caption)
                             .foregroundColor(.white)

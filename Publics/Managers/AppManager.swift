@@ -580,7 +580,10 @@ extension AppManager {
             // Transaction.revocationReason provides details about
             // the revoked transaction.
             if let reason = transaction.revocationReason {
-                logger.info("Transaction revoked due to: \(revocationDate) - \(String(describing: reason)) ")
+                logger
+                    .info(
+                        "Transaction revoked due to: \(revocationDate) - \(String(describing: reason)) "
+                    )
             }
 
             if VipInfo?.productID == transaction.productID {
@@ -629,13 +632,27 @@ extension AppManager {
 }
 
 extension AppManager {
-    enum OutDataType {
+    enum OutDataType: Hashable, Equatable {
         case text(String)
         case crypto(String)
         case server(url: String, key: String, group: String?, sign: String?)
         case otherURL(String)
         case assistant(String)
         case cloudIcon
+
+        static func == (lhs: OutDataType, rhs: OutDataType) -> Bool {
+            switch (lhs, rhs) {
+            case (.text, .text),
+                 (.crypto, .crypto),
+                 (.server, .server),
+                 (.otherURL, .otherURL),
+                 (.assistant, .assistant),
+                 (.cloudIcon, .cloudIcon):
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     struct SubscribeUser: Codable, Hashable, Identifiable {

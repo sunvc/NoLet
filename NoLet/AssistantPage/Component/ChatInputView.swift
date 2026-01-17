@@ -62,6 +62,7 @@ struct ChatInputView: View {
     private var inputField: some View {
         HStack {
             TextField("给智能助手发消息", text: $text, axis: .vertical)
+                .lineLimit(3)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .focused($isFocusedInput)

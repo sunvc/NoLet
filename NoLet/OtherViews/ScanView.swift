@@ -22,11 +22,13 @@ struct ScanView: View {
 
     @State private var code: String? = nil
     @EnvironmentObject private var manager: AppManager
-    @State private var scale: Double = 1
+    @State private var scale: Double = 2.0
     @GestureState private var gestureScale: CGFloat = 1.0
 
     var response: (String) async -> Void
+    var track: (([String]) -> String?)? = nil
     var close: (() -> Void)? = nil
+    
     var config: QRScannerSwiftUIView.Configuration {
         .init(
             focusImage: nil,
@@ -71,7 +73,8 @@ struct ScanView: View {
                 },
                 onTorchActiveChange: { isOn in
                     isTorchOn = isOn
-                }
+                },
+                pickCodeToTrack: track
             )
 
             VStack {
