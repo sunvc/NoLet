@@ -38,10 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
-        Task.detached(priority: .background) {
-            await AppManager.syncServer()
-        }
-        
         return true
     }
 

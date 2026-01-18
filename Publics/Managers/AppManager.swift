@@ -34,7 +34,6 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var prouter: [RouterPage] = []
 
     @Published var historyPage: TabPage = .message
-    @Published var isWarmStart: Bool = false
 
     @Published var selectMessage: Message? = nil
     @Published var selectPoint: CGPoint = .zero

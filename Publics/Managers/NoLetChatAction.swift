@@ -1,6 +1,6 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - AppActionManager.swift
+//  SWIFT: 6.0 - MACOS: 15.7 
+//  NoLet - NoLetChatAction.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -9,21 +9,12 @@
 //  Description:
 
 //  History:
-//    Created by Neo on 2026/1/2 13:53.
+//    Created by Neo on 2026/1/18 16:25.
 
 import Foundation
 import OpenAI
 
-public typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
-
-protocol NoletChatProtocol: CaseIterable {
-    static var actionName: String { get }
-    var parameter: JSONSchema { get }
-    func execute(with value: Any) async -> String
-    static func funcs() -> [FunctionDefinition]
-}
-
-enum NoLetChatAction: String, NoletChatProtocol {
+enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
     case autoSaveImages
     case showMessageIcon
@@ -46,18 +37,53 @@ enum NoLetChatAction: String, NoletChatProtocol {
     case deleteAllMuteGroups
     case clearTheContext
     case startNewChat
-}
 
-extension NoLetChatAction {
+   static func runFunc(
+        name: String,
+        args: [String: Any]
+    ) async -> ((String, Int)?, [String: String]) {
+        var results: [String: String] = ["name": name]
+        let name = ActionName(rawValue: name)
+        switch name {
+        case .action:
+            for (key, value) in args {
+                if let action = Self(rawValue: key) {
+                    results[key] = "\(value)"
+                    let msg = await action.execute(with: value)
+                    results["run_result"] = msg
+                }
+            }
+            return (nil, results)
+        case .message:
+            guard let count = args["count"] as? Int,
+                  let type = args["type"] as? String
+            else {
+                results = ["error": "Json Error"]
+                return (nil, results)
+            }
+            if type == "hour" || type == "day" || type == "all" {
+                results["type"] = type
+                results["count"] = "\(count)"
+                results["run_result"] = "A confirmation dialog box pops up"
+            } else {
+                results = ["error": "Json Error"]
+            }
+
+            return ((type, count), results)
+        default:
+            results = ["error": "Json Error"]
+            return (nil, results)
+        }
+    }
+
     func execute(with value: Any) async -> String {
-
         let manager = AppManager.shared
 
         let paramsError = "Invalid parameters"
         switch self {
         case .voiceFeedback:
             guard let val = value as? Bool else { return paramsError }
-            
+
             Defaults[.feedbackSound] = val
 
         case .autoSaveImages:
@@ -78,6 +104,7 @@ extension NoLetChatAction {
                 let mode = DefaultBrowserModel(rawValue: val)
             else { return paramsError }
             Defaults[.defaultBrowser] = mode
+
         case .openSystemSettings:
             AppManager.openSetting()
 
@@ -149,12 +176,10 @@ extension NoLetChatAction {
                 NoLetChatManager.shared.setGroup()
             }
         }
-        
+
         return "OK"
     }
-}
 
-extension NoLetChatAction {
     var parameter: JSONSchema {
         switch self {
         case .voiceFeedback:
@@ -294,9 +319,12 @@ extension NoLetChatAction {
         }
     }
 
-    static let actionName = "manage_app"
-    static let messageName = "manage_message"
+    enum ActionName: String {
+        case action = "manage_app"
+        case message = "manage_message"
+    }
 
+    typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
 
     static func funcs() -> [FunctionDefinition] {
         let properties: [String: JSONSchema] =
@@ -307,7 +335,7 @@ extension NoLetChatAction {
             )
         return [
             FunctionDefinition(
-                name: actionName,
+                name: ActionName.action.rawValue,
                 description: "CRITICAL: Manage app settings, delete messages, open pages, view docs, etc.",
                 parameters: .init(fields: [
                     .type(.object),
@@ -318,7 +346,7 @@ extension NoLetChatAction {
             ),
 
             FunctionDefinition(
-                name: messageName,
+                name: ActionName.message.rawValue,
                 description: "CRITICAL: delete x before messages",
                 parameters: .init(fields: [
                     .type(.object),
@@ -341,3 +369,4 @@ extension NoLetChatAction {
         ]
     }
 }
+

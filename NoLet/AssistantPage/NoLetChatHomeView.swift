@@ -199,7 +199,7 @@ struct NoLetChatHomeView: View {
 
             do {
                 for try await result in results {
-                    for choice in result.choices {
+                    if let choice = result.choices.first {
                         toolCallsMap = resultHandler(choice: choice, toolCallsMap: toolCallsMap)
                     }
                 }
@@ -223,7 +223,7 @@ struct NoLetChatHomeView: View {
                         )
 
                         for try await result in results {
-                            for choice in result.choices {
+                            if let choice = result.choices.first {
                                 resultHandler(choice: choice)
                             }
                         }
@@ -340,62 +340,32 @@ struct NoLetChatHomeView: View {
             }
         }
     }
-}
 
-extension NoLetChatHomeView {
     func runChatCall(params: [Int: (name: String, args: String)]) async -> [String: String] {
         var results: [String: String] = [:]
         for (_, (name, args)) in params {
             if !name.isEmpty, !args.isEmpty {
                 if let json = args.jsonData() {
-                    let result = await _runFunc(name: name, args: json)
-                    results += result
+                    let result = await NoLetChatAction.runFunc(
+                        name: name,
+                        args: json
+                    )
+
+                    if let type = result.0?.0, let count = result.0?.1 {
+                        switch type {
+                        case "hour": selectAction = .hour(count)
+                        case "day": selectAction = .day(count)
+                        case "all": selectAction = .all
+                        default: break
+                        }
+                    }
+
+                    results += result.1
                 } else {
                     results[name] = "Error JSON"
                 }
             }
         }
-        return results
-    }
-
-    private func _runFunc(name: String, args: [String: Any]) async -> [String: String] {
-        var results: [String: String] = ["name": name]
-
-        if name == NoLetChatAction.messageName {}
-        switch name {
-        case NoLetChatAction.actionName:
-            for (key, value) in args {
-                if let action = NoLetChatAction(rawValue: key) {
-                    results[key] = "\(value)"
-                    let msg = await action.execute(with: value)
-                    results["run_result"] = msg
-                }
-            }
-        case NoLetChatAction.messageName:
-            guard let count = args["count"] as? Int,
-                  let type = args["type"] as? String
-            else {
-                results = ["error": "Json Error"]
-                return results
-            }
-            if type == "hour" {
-                selectAction = .hour(count)
-            } else if type == "day" {
-                selectAction = .day(count)
-            } else if type == "all" {
-                selectAction = .all
-            } else {
-                results = ["error": "Json Error"]
-                return results
-            }
-            results["type"] = type
-            results["count"] = "\(count)"
-            results["run_result"] = "A confirmation dialog box pops up"
-        default:
-            results = ["error": "Json Error"]
-            return results
-        }
-
         return results
     }
 }

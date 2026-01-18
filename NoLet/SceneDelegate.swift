@@ -44,7 +44,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             overlay.isHidden = false
             overlay.isUserInteractionEnabled = true
             overlayWindow = overlay
-            
         }
 
         if let urlContext = connectionOptions.urlContexts.first {
@@ -63,43 +62,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return AppManager.runQuick(shortcutItem.type)
     }
 
-    func sceneDidDisconnect(_: UIScene) {}
-
     func sceneDidBecomeActive(_: UIScene) {
-        let manager = AppManager.shared
-        if !manager.isWarmStart {
-            logger.info("❄️ 冷启动")
-            manager.isWarmStart = true
-            NoLetChatManager.shared.clearunuse()
-        }
-        
         setLangAssistantPrompt()
     }
 
     func sceneWillResignActive(_: UIScene) {}
 
     func sceneWillEnterForeground(_: UIScene) {
-        Task.detached(name:"sceneWillEnterForeground",priority: .background) {
-            await MessagesManager.shared.deleteExpired()
-            let unread = await MessagesManager.shared.unreadCount
-            try await UNUserNotificationCenter.current().setBadgeCount(unread)
-        }
+        _syncAppInfo()
     }
 
     func sceneDidEnterBackground(_: UIScene) {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-        
-        Task.detached(priority: .background) {
+        _syncAppInfo()
+    }
+
+    private var syncTask: Task<Void, Never>?
+    func _syncAppInfo() {
+        syncTask?.cancel()
+        syncTask = Task.detached(name: "sceneWillEnterForeground", priority: .background) {
+            await MessagesManager.shared.deleteExpired()
             await AppManager.syncServer()
+            await NoLetChatManager.shared.clearunuse()
+            let unread = await MessagesManager.shared.unreadCount
+            DispatchQueue.main.async {
+                UNUserNotificationCenter.current().setBadgeCount(unread)
+            }
         }
     }
 
     func setLangAssistantPrompt() {
         if let currentLang = Locale.preferredLanguages.first {
             if Defaults[.lang] != currentLang {
-                let prompts =  ChatPromptMode.prompts
+                let prompts = ChatPromptMode.prompts
                 Task.detached(priority: .background) {
                     try await DatabaseManager.shared.dbQueue.write { db in
                         // 删除 inside == true 的项
@@ -149,13 +145,11 @@ extension QuickAction {
     }
 }
 
-
 class PassthroughWindow: UIWindow {
-    
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event),
               let rootView = rootViewController?.view else { return nil }
-        
+
         if #available(iOS 18, *) {
             for subview in rootView.subviews.reversed() {
                 /// Finding if any of rootview's is receving hit test

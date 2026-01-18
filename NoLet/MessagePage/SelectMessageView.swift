@@ -55,7 +55,7 @@ struct SelectMessageView: View {
                     VStack {
                         if let image = message.image {
                             AsyncPhotoView(url: image)
-                                .contextMenu{
+                                .contextMenu {
                                     saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
                                 }
                         }
@@ -81,7 +81,7 @@ struct SelectMessageView: View {
                         if messageShowMode == .abstract {
                             VStack {
                                 if abstractResult.isEmpty {
-                                    HStack{
+                                    HStack {
                                         Spacer()
                                         Spinner(tint: Color.green, lineWidth: 3)
                                             .frame(width: 20, height: 20, alignment: .center)
@@ -122,7 +122,7 @@ struct SelectMessageView: View {
                         if messageShowMode == .translate {
                             VStack {
                                 if translateResult.isEmpty {
-                                    HStack{
+                                    HStack {
                                         Spacer()
                                         Spinner(tint: Color.green, lineWidth: 3)
                                             .frame(width: 20, height: 20, alignment: .center)
@@ -526,12 +526,10 @@ struct SelectMessageView: View {
         do {
             let results = chatManager.chatsStream(text: datas, tips: .translate(translateLang.name))
             for try await result in results {
-                for choice in result.choices {
-                    if let outputItem = choice.delta.content {
-                        Task { @MainActor in
-                            self.translateResult += outputItem
-                            Haptic.selection(limitFrequency: true)
-                        }
+                if let outputItem = result.choices.first?.delta.content {
+                    Task { @MainActor in
+                        self.translateResult += outputItem
+                        Haptic.selection(limitFrequency: true)
                     }
                 }
             }
@@ -556,16 +554,14 @@ struct SelectMessageView: View {
         do {
             let results = chatManager.chatsStream(text: text, tips: .abstract(translateLang.name))
             for try await result in results {
-                for choice in result.choices {
-                    if let outputItem = choice.delta.content {
-                        Task { @MainActor in
-                            abstractResult += outputItem
-                            Haptic.selection(limitFrequency: true)
-                        }
+                if let outputItem = result.choices.first?.delta.content{
+                    Task { @MainActor in
+                        abstractResult += outputItem
+                        Haptic.selection(limitFrequency: true)
                     }
                 }
             }
-    
+
         } catch {
             // Handle chunk error here
             logger.fault("\(error)")

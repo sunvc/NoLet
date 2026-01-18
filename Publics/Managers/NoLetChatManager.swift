@@ -469,7 +469,7 @@ extension ChatPromptMode {
         [
             mcp(lang()).prompt,
             translate(lang()).prompt,
-            abstract(lang()).prompt
+            abstract(lang()).prompt,
         ]
     }
 

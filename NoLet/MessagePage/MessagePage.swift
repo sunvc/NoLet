@@ -170,6 +170,7 @@ extension View {
                         await MainActor.run {
                             selectAction.wrappedValue = nil
                         }
+                        Toast.success(title: "删除成功")
                     }
                 }
             }
