@@ -217,7 +217,7 @@ private struct PromptSection: View {
                                     .deleteAll(db)
                             }
                         } catch {
-                            logger.fault("删除 ChatPrompt 失败: \(error)")
+                            logger.error("删除 ChatPrompt 失败: \(error)")
                         }
                     }
                 }
@@ -370,7 +370,7 @@ struct AddPromptView: View {
                                 }
 
                             } catch {
-                                logger.fault("插入 ChatPrompt 失败: \(error)")
+                                logger.error("插入 ChatPrompt 失败: \(error)")
                             }
                         }
                     }

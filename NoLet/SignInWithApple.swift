@@ -27,7 +27,7 @@ struct SignInWithApple: View {
             case .success(let authResults):
                 handleAuthorization(authResults)
             case .failure(let error):
-                logger.fault("\(error)")
+                logger.error("\(error)")
                 Toast.error(title: "Authorization failed")
             }
         }

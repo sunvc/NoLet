@@ -53,7 +53,7 @@ final class MessagesManager: ObservableObject {
             in: DB.dbQueue,
             scheduling: .async(onQueue: .global()),
             onError: { error in
-                logger.fault("Failed to observe unread count:\(error)")
+                logger.error("Failed to observe unread count:\(error)")
             },
             onChange: { [weak self] newUnreadCount in
                 logger.info("🧲: 监听 Message: \(newUnreadCount.0)-\(newUnreadCount.1)")
@@ -117,7 +117,7 @@ extension MessagesManager {
                 return try request.fetchCount(db)
             }
         } catch {
-            logger.fault("查询失败")
+            logger.error("查询失败")
             return 0
         }
     }
@@ -132,7 +132,7 @@ extension MessagesManager {
                 }
             }
         } catch {
-            logger.fault("\(error)")
+            logger.error("\(error)")
             return 0
         }
     }
@@ -146,7 +146,7 @@ extension MessagesManager {
             messages.insert(message, at: 0)
             cache.set(messages)
         } catch {
-            logger.fault("Add or update message failed: \(error)")
+            logger.error("Add or update message failed: \(error)")
         }
     }
 
@@ -156,7 +156,7 @@ extension MessagesManager {
                 try Message.fetchOne(db, key: id)
             }
         } catch {
-            logger.fault("Failed to query message by id: \(error)")
+            logger.error("Failed to query message by id: \(error)")
             return nil
         }
     }
@@ -167,7 +167,7 @@ extension MessagesManager {
                 try Message.fetchOne(db, key: id)
             }
         } catch {
-            logger.fault("Failed to query message by id: \(error)")
+            logger.error("Failed to query message by id: \(error)")
             return nil
         }
     }
@@ -241,7 +241,7 @@ extension MessagesManager {
             logger.info("⏱️ \(search)-用时: \(diff)s")
             return (results, total)
         } catch {
-            logger.fault("Query error: \(error)")
+            logger.error("Query error: \(error)")
             return ([], 0)
         }
     }
@@ -252,7 +252,7 @@ extension MessagesManager {
                 try self.fetchGroupedMessages(from: db)
             }
         } catch {
-            logger.fault("Failed to query messages: \(error)")
+            logger.error("Failed to query messages: \(error)")
             return []
         }
     }
@@ -306,7 +306,7 @@ extension MessagesManager {
 
             return results
         } catch {
-            logger.fault("Query failed: \(error)")
+            logger.error("Query failed: \(error)")
             return []
         }
     }
@@ -321,7 +321,7 @@ extension MessagesManager {
                 try request.updateAll(db, [Message.Columns.isRead.set(to: true)])
             }
         } catch {
-            logger.fault("markAllRead error")
+            logger.error("markAllRead error")
         }
     }
 
@@ -349,7 +349,7 @@ extension MessagesManager {
             try await DB.dbQueue.vacuum()
 
         } catch {
-            logger.fault("删除消息失败: \(error)")
+            logger.error("删除消息失败: \(error)")
         }
     }
 
@@ -371,7 +371,7 @@ extension MessagesManager {
             try? await DB.dbQueue.vacuum()
             return result
         } catch {
-            logger.fault("删除消息失败：\(error)")
+            logger.error("删除消息失败：\(error)")
         }
         return -1
     }
@@ -393,7 +393,7 @@ extension MessagesManager {
             try? DB.dbQueue.vacuum()
             return result
         } catch {
-            logger.fault("删除消息失败：\(error)")
+            logger.error("删除消息失败：\(error)")
             return nil
         }
     }
@@ -414,7 +414,7 @@ extension MessagesManager {
             }
             try? await DB.dbQueue.vacuum()
         } catch {
-            logger.fault("删除失败: \(error)")
+            logger.error("删除失败: \(error)")
         }
     }
 
@@ -456,7 +456,7 @@ extension MessagesManager {
             }
             return true
         } catch {
-            logger.fault("创建失败")
+            logger.error("创建失败")
             return false
         }
     }

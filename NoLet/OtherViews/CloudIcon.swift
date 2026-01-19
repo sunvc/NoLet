@@ -271,7 +271,7 @@ struct CloudIcon: View {
                         }
 
                     } catch {
-                        logger.fault("\(error)")
+                        logger.error("\(error)")
                     }
                     await MainActor.run {
                         self.selectItem = nil
@@ -300,7 +300,7 @@ struct CloudIcon: View {
                     previewImage: image
                 )
             } catch {
-                logger.fault("\(error)")
+                logger.error("\(error)")
             }
         }
         return nil

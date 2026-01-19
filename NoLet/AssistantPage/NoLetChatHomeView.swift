@@ -261,8 +261,8 @@ struct NoLetChatHomeView: View {
                 return
             } catch {
                 // Handle chunk error here
-                logger.fault("\(error)")
-                logger.fault("\(error.localizedDescription)")
+                logger.error("\(error)")
+                logger.error("\(error.localizedDescription)")
                 Task { @MainActor in
                     Toast.error(title: "发生错误")
                     self.clearCurrent()

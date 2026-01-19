@@ -79,7 +79,7 @@ struct ChatGroupHistoryView: View {
                                     }
                                 }
                             } catch {
-                                logger.fault("更新 group.name 失败: \(error)")
+                                logger.error("更新 group.name 失败: \(error)")
                             }
                         }
                     }
@@ -241,7 +241,7 @@ struct ChatGroupHistoryView: View {
                     self.chatGroups = groups
                 }
             } catch {
-                logger.fault("\(error)")
+                logger.error("\(error)")
             }
         }
     }

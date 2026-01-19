@@ -103,7 +103,7 @@ struct SoundItemView: View {
                 self.duration = try await tipsManager.loadVideoDuration(fromURL: self.audio)
             } catch {
                 #if DEBUG
-                logger.fault("Error loading aideo duration: \(error)")
+                logger.error("Error loading aideo duration: \(error)")
                 #endif
             }
         }

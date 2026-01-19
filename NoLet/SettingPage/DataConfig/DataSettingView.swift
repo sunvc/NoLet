@@ -111,7 +111,7 @@ struct DataSettingView: View {
                                             self.calculateSize()
                                         }
                                     } catch {
-                                        logger.fault("\(error)")
+                                        logger.error("\(error)")
                                         DispatchQueue.main.async {
                                             self.showexportLoading = false
                                         }
@@ -482,7 +482,7 @@ struct DataSettingView: View {
             return String(localized: "导入成功")
 
         } catch {
-            logger.fault("\(error)")
+            logger.error("\(error)")
             return error.localizedDescription
         }
     }

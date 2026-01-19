@@ -131,7 +131,7 @@ extension WaveformScrubber {
                     self.info(audioInfo)
                 }
             } catch {
-                logger.fault("\(error)")
+                logger.error("\(error)")
             }
         }
     }

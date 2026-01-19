@@ -219,7 +219,7 @@ class APNs {
             )
             logger.info("response: \(String(describing: response))")
         } catch {
-            logger.fault("\(error)")
+            logger.error("\(error)")
         }
     }
 }
