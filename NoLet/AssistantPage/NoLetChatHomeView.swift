@@ -40,15 +40,19 @@ struct NoLetChatHomeView: View {
     @State private var hidenTabar: Bool = false
 
     @State private var selectAction: MessageAction? = nil
+    
+    
 
     var body: some View {
         ZStack {
             ChatMessageListView()
             
+            
+
             if chatManager.chatMessages.count == 0 {
                 spaceHome
             }
-            
+
             VStack {
                 Spacer()
                 // 底部输入框
@@ -127,8 +131,8 @@ struct NoLetChatHomeView: View {
         .environmentObject(chatManager)
         .deleteTips($selectAction)
     }
-    
-    private var spaceHome: some View{
+
+    private var spaceHome: some View {
         VStack {
             Spacer()
             VStack {
@@ -191,7 +195,7 @@ struct NoLetChatHomeView: View {
 
                 self.inputText = ""
                 chatManager.currentContent = ""
-                self.updateTemMessage()
+                chatManager.updateTemMessage()
             }
 
             guard let newGroup = getGroup(text: text) else { return }
@@ -205,12 +209,10 @@ struct NoLetChatHomeView: View {
                 for try await result in results {
                     if let choice = result.choices.first {
                         toolCallsMap = resultHandler(choice: choice, toolCallsMap: toolCallsMap)
-                        Task { @MainActor in
-                            self.updateTemMessage()
-                        }
                     }
                 }
-
+                await chatManager.contentActor.finish()
+                await chatManager.reasonActor.finish()
                 Haptic.impact()
 
                 if !toolCallsMap.isEmpty {
@@ -232,11 +234,11 @@ struct NoLetChatHomeView: View {
                         for try await result in results {
                             if let choice = result.choices.first {
                                 resultHandler(choice: choice)
-                                Task { @MainActor in
-                                    self.updateTemMessage()
-                                }
                             }
                         }
+                        
+                        await chatManager.contentActor.finish()
+                        await chatManager.reasonActor.finish()
                     }
                 }
 
@@ -252,7 +254,9 @@ struct NoLetChatHomeView: View {
                     }
                 }
 
-                clearCurrent()
+                Task { @MainActor in
+                    self.clearCurrent()
+                }
             } catch is CancellationError {
                 logger.debug("取消请求")
                 Task { @MainActor in
@@ -280,8 +284,7 @@ struct NoLetChatHomeView: View {
         var toolCallsMap = toolCallsMap
         if let text = choice.delta.reasoning {
             Task { @MainActor in
-                chatManager.currentReason += text
-
+                await chatManager.reasonActor.append(text)
                 if chatManager.startReason == nil {
                     chatManager.startReason = chatManager.currentMessageID
                 }
@@ -294,8 +297,7 @@ struct NoLetChatHomeView: View {
 
         if let outputItem = choice.delta.content {
             Task { @MainActor in
-                chatManager.currentContent += outputItem
-
+                await chatManager.contentActor.append(outputItem)
                 if AppManager.shared.inAssistant && showAssistantAnimation {
                     Haptic.selection()
                 }
@@ -321,23 +323,14 @@ struct NoLetChatHomeView: View {
         return toolCallsMap
     }
 
-    func updateTemMessage() {
-        let id = chatManager.currentChatMessage.id
-        if let index = chatManager.chatMessages.firstIndex(where: { $0.id == id }) {
-            chatManager.chatMessages[index] = chatManager.currentChatMessage
-        } else {
-            chatManager.chatMessages.append(chatManager.currentChatMessage)
-        }
-    }
+    
 
     func clearCurrent() {
         chatManager.currentRequest = ""
         chatManager.currentContent = ""
         chatManager.currentReason = ""
         chatManager.currentResult = [:]
-        withAnimation {
-            manager.isLoading = false
-        }
+        manager.isLoading = false
     }
 
     func getGroup(text: String) -> ChatGroup? {
@@ -357,7 +350,7 @@ struct NoLetChatHomeView: View {
                 try DatabaseManager.shared.dbQueue.write { db in
                     try group.insert(db)
                 }
-                self.updateTemMessage()
+
                 return group
             } catch {
                 return nil

@@ -41,8 +41,7 @@ struct MarkdownCustomView: View {
 
     var body: some View {
         if !searchText.isEmpty {
-    
-            HighlightedText( text: PBMarkdown.plain(content), searchText: searchText)
+            HighlightedText(text: PBMarkdown.plain(content), searchText: searchText)
                 .transition(.opacity.animation(.easeInOut(duration: 0.1)))
 
         } else {
@@ -133,10 +132,9 @@ struct WebImageView: View {
             ResizeToFit(idealSize: image.size) {
                 Image(uiImage: image)
                     .resizable()
-                    .contextMenu{
+                    .contextMenu {
                         saveToAlbumButton(albumName: nil, imageURL: nil, image: image)
                     }
-                    
             }
         case .failure(let error):
             Text(verbatim: error)

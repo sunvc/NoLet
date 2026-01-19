@@ -25,12 +25,13 @@ struct MessageCard: View {
     var limitMessageLine: Int
     var assistantAccounsCount: Int
     var selectID: String? = nil
-    var complete: () -> Void
     var delete: () -> Void
 
     @State private var showLoading: Bool = false
 
     @State private var timeMode: Int = 0
+
+    @EnvironmentObject private var manager: AppManager
 
     var dateTime: String {
         if showAllTTL {
@@ -51,7 +52,6 @@ struct MessageCard: View {
         return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
     }
 
-    @State private var showDetail: Bool = false
     @Namespace private var sms
     var body: some View {
         /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
@@ -153,21 +153,8 @@ struct MessageCard: View {
                         if let url = message.image {
                             AsyncPhotoView(url: url, zoom: false, height: 230)
                                 .padding(5)
-                                .diff { view in
-                                    Group {
-                                        if #available(iOS 18.0, *) {
-                                            view.onTapGesture {
-                                                self.showDetail.toggle()
-                                                Haptic.impact()
-                                            }
-                                        } else {
-                                            view
-                                                .VButton { _ in
-                                                    self.complete()
-                                                    return true
-                                                }
-                                        }
-                                    }
+                                .onTapGesture {
+                                    self.showFull()
                                 }
                         }
 
@@ -199,7 +186,6 @@ struct MessageCard: View {
                 .padding(8)
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     Button {
-                        Haptic.impact()
                         showFull()
                     } label: {
                         Label("全屏查看", systemImage: "arrow.up.backward.and.arrow.down.forward")
@@ -235,15 +221,20 @@ struct MessageCard: View {
                         if #available(iOS 18.0, *) {
                             view
                                 .matchedTransitionSource(id: message.id, in: sms)
-                                .fullScreenCover(isPresented: $showDetail) {
+                                .fullScreenCover(isPresented: Binding(get: {
+                                    manager.selectMessage?.id == message.id
+                                }, set: { _ in
+                                    manager.selectMessage = nil
+                                })) {
                                     VStack {
                                         SelectMessageView(message: message) {
-                                            self.showDetail = false
+                                            manager.selectMessage = nil
                                         }
                                     }
                                     .navigationTransition(
                                         .zoom(sourceID: message.id, in: sms)
                                     )
+                                    .interactiveDismissDisabled(true)
                                 }
                         } else {
                             view
@@ -256,14 +247,16 @@ struct MessageCard: View {
             }
         }
         .padding(.vertical)
+        .simultaneousGesture(
+            MagnificationGesture()
+                .onEnded { _ in
+                    showFull()
+                }
+        )
     }
 
     func showFull() {
-        if #available(iOS 18.0, *) {
-            self.showDetail.toggle()
-        } else {
-            complete()
-        }
+        manager.selectMessage = message
 
         Haptic.impact(.light)
     }
@@ -367,7 +360,7 @@ struct MessageCard: View {
             message: MessagesManager.examples().first!,
             limitMessageLine: 10,
             assistantAccounsCount: 0
-        ) {} delete: {}
+        ){}
             .listRowBackground(Color.clear)
             .listSectionSeparator(.hidden)
             .listRowInsets(EdgeInsets())

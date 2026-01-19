@@ -37,6 +37,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
+        Task.detached { 
+            await AppManager.shared.setMarkdownConfig()
+        }
+        
         return true
     }
 

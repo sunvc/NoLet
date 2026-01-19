@@ -13,6 +13,7 @@
 
 import Defaults
 import Foundation
+import MarkdownUI
 import StoreKit
 import SwiftUI
 import UIKit
@@ -85,6 +86,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
                 sheetPage = sheet
             } else {
                 self.sheetPage = nil
+                self.fullPage = nil
                 try? await Task.sleep(for: .seconds(0.5))
                 self.sheetPage = sheet
             }
@@ -98,6 +100,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
                 fullPage = full
             } else {
                 self.fullPage = nil
+                self.sheetPage = nil
                 try? await Task.sleep(for: .seconds(0.5))
                 self.fullPage = full
             }
@@ -167,6 +170,24 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
         default:
             return url
         }
+    }
+
+    func setMarkdownConfig() {
+        MarkdownConfig.shared.menus = [
+            MarkdownConfig.MenuItem(title: "复制", action: { text in
+                if !text.isEmpty {
+                    Clipboard.set(text)
+                    Haptic.impact()
+                    Toast.success(title: "复制成功")
+                }
+                return true
+            }),
+            MarkdownConfig.MenuItem(title: "二维码", action: { [weak self] text in
+                self?.selectMessage = nil
+                self?.open(sheet: .quickResponseCode(text: text, title: nil, preview: nil))
+                return true
+            }),
+        ]
     }
 }
 

@@ -103,7 +103,8 @@ struct ServerMonitoringView: View {
                 let data: ServerData = try await network.fetch(
                     url: server.url,
                     path: "/monitor",
-                    method: .GET
+                    method: .GET,
+                    headers: CryptoManager.signature(sign: server.sign, server: server.key)
                 )
 
                 await MainActor.run {

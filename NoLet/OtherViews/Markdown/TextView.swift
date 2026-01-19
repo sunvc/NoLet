@@ -15,6 +15,8 @@ import SwiftUI
 import UIKit
 
 struct TextView: UIViewRepresentable {
+    @Environment(\.font) private var font
+    
     // 内部存储：统一使用富文本处理
     private var attributedText: NSAttributedString
 
@@ -83,7 +85,6 @@ struct TextView: UIViewRepresentable {
         highlight: String?,
         color: UIColor
     ) -> NSAttributedString {
-
         let attributed = NSMutableAttributedString(string: text)
         let fullRange = NSRange(location: 0, length: (text as NSString).length)
 
@@ -123,7 +124,6 @@ struct TextView: UIViewRepresentable {
 
         return attributed
     }
-    
 }
 
 extension TextView {
@@ -148,6 +148,47 @@ struct HighlightedText: View {
             TextView(text, highlight: searchText, color: .red)
         } else {
             Text(text)
+        }
+    }
+}
+
+extension UIFont {
+    convenience init?(_ font: Font) {
+        switch font {
+        case .largeTitle: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .largeTitle),
+                size: 0
+            )
+        case .title: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .title1),
+                size: 0
+            )
+        case .title2: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .title2),
+                size: 0
+            )
+        case .title3: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .title3),
+                size: 0
+            )
+        case .headline: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .headline),
+                size: 0
+            )
+        case .body: self.init(descriptor: .preferredFontDescriptor(withTextStyle: .body), size: 0)
+        case .callout: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .callout),
+                size: 0
+            )
+        case .footnote: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .footnote),
+                size: 0
+            )
+        case .caption: self.init(
+                descriptor: .preferredFontDescriptor(withTextStyle: .caption1),
+                size: 0
+            )
+        default: return nil
         }
     }
 }

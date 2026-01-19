@@ -18,7 +18,6 @@ import UIKit
 import Zip
 
 struct SoundView: View {
-    
     @StateObject private var tipsManager = AudioManager.shared
 
     @State private var showUpload: Bool = false
@@ -126,7 +125,7 @@ struct SoundView: View {
                                     Toast.success(title: "下载成功")
 
                                 } catch {
-                                    debugPrint(error)
+                                    logger.error("\(error)")
                                     Toast.error(title: "下载失败")
                                 }
                                 self.downLoading = false

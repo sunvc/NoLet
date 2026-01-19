@@ -45,6 +45,20 @@ final class NoLetChatManager: ObservableObject {
 
     @Published var showReason: ChatMessage? = nil
 
+    lazy var contentActor = StreamTextAggregator { [weak self] chunk in
+        Task { @MainActor in
+            self?.currentContent.append(chunk)
+            self?.updateTemMessage()
+        }
+    }
+
+    lazy var reasonActor = StreamTextAggregator { [weak self] chunk in
+        Task { @MainActor in
+            self?.currentReason.append(chunk)
+            self?.updateTemMessage()
+        }
+    }
+
     private let DB: DatabaseManager = .shared
 
     private var observationCancellable: AnyDatabaseCancellable?
@@ -79,6 +93,15 @@ final class NoLetChatManager: ObservableObject {
         startObservingUnreadCount()
     }
 
+    func updateTemMessage() {
+        let id = currentChatMessage.id
+        if let index = chatMessages.firstIndex(where: { $0.id == id }) {
+            chatMessages[index] = currentChatMessage
+        } else {
+            chatMessages.append(currentChatMessage)
+        }
+    }
+
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (
             Int,
@@ -97,7 +120,7 @@ final class NoLetChatManager: ObservableObject {
             let messages: [ChatMessage] = try ChatMessage
                 .filter(ChatMessage.Columns.chat == current?.id)
                 .order(\.timestamp.desc)
-                .limit(10)
+                .limit(6)
                 .fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
             return (groupsCount, messages.reversed(), promptCount, current, messageCount)
@@ -110,11 +133,15 @@ final class NoLetChatManager: ObservableObject {
                 logger.error("Failed to observe unread count: \(error)")
             },
             onChange: { [weak self] datas in
-                self?.groupsCount = datas.0
-                self?.chatMessages = datas.1
-                self?.promptCount = datas.2
-                self?.chatGroup = datas.3
-                self?.currentMessagesCount = datas.4
+                guard let self else { return }
+                self.groupsCount = datas.0
+
+                if self.chatMessages.count == 0 || datas.1.count == 0 {
+                    self.chatMessages = datas.1
+                }
+                self.promptCount = datas.2
+                self.chatGroup = datas.3
+                self.currentMessagesCount = datas.4
             }
         )
     }
@@ -169,7 +196,7 @@ final class NoLetChatManager: ObservableObject {
                 }
             }
         } catch {
-            debugPrint(error)
+            logger.error("\(error)")
         }
     }
 
@@ -250,7 +277,9 @@ extension NoLetChatManager {
 
         let temperature = Double(Defaults[.temperatureChat]) / 10
 
-        var params: [ChatQuery.ChatCompletionMessageParam] = []
+        var params: [ChatQuery.ChatCompletionMessageParam] = [
+            .system(.init(content: .textContent("如果有数学公式请使用$$ ... $$ 格式"))),
+        ]
 
         if let tips {
             params.append(.system(.init(
@@ -427,6 +456,85 @@ extension NoLetChatManager {
             } catch {
                 logger.error("GRDB 错误: \(error)")
             }
+        }
+    }
+}
+
+extension NoLetChatManager {
+    actor StreamTextAggregator {
+        // MARK: - Configuration
+
+        private let minCharsToFlush: Int
+        private let maxDelay: UInt64 // nanoseconds
+        private let onFlush: @Sendable (String) -> Void
+
+        // MARK: - State
+
+        private var buffer: String = ""
+        private var lastFlushTime: UInt64 = 0
+        private var flushTask: Task<Void, Never>?
+
+        // MARK: - Init
+
+        init(
+            minCharsToFlush: Int = 30,
+            maxDelayMilliseconds: UInt64 = 150,
+            onFlush: @escaping @Sendable (String) -> Void
+        ) {
+            self.minCharsToFlush = minCharsToFlush
+            maxDelay = maxDelayMilliseconds * 1_000_000
+            self.onFlush = onFlush
+        }
+
+        // MARK: - Public API
+
+        func append(_ newText: String) {
+            buffer.append(newText)
+            scheduleFlushIfNeeded()
+        }
+
+        /// 在流结束时调用，确保最后一段内容被刷新
+        func finish() {
+            flush()
+        }
+
+        // MARK: - Private
+
+        private func scheduleFlushIfNeeded() {
+            let now = DispatchTime.now().uptimeNanoseconds
+
+            // 条件 1：字符数量足够
+            if buffer.count >= minCharsToFlush {
+                flush()
+                return
+            }
+
+            // 条件 2：时间到了
+            if now - lastFlushTime >= maxDelay {
+                flush()
+                return
+            }
+
+            // 启动一个延迟任务（只允许一个）
+            if flushTask == nil {
+                flushTask = Task {
+                    try? await Task.sleep(nanoseconds: maxDelay)
+                    flush()
+                }
+            }
+        }
+
+        private func flush() {
+            guard !buffer.isEmpty else { return }
+
+            let textToSend = buffer
+            buffer = ""
+            lastFlushTime = DispatchTime.now().uptimeNanoseconds
+
+            flushTask?.cancel()
+            flushTask = nil
+
+            onFlush(textToSend)
         }
     }
 }

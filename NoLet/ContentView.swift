@@ -84,10 +84,19 @@ struct ContentView: View {
         )) {
             ContentFullViewPage(value: $0)
         }
-        .fullScreenCover(item: $manager.selectMessage) { message in
-            SelectMessageView(message: message) {
-                withAnimation {
-                    manager.selectMessage = nil
+        .diff { view in
+            Group {
+                if #available(iOS 18.0, *) {
+                    view
+                } else {
+                    view
+                        .fullScreenCover(item: $manager.selectMessage) { message in
+                            SelectMessageView(message: message) {
+                                withAnimation {
+                                    manager.selectMessage = nil
+                                }
+                            }
+                        }
                 }
             }
         }

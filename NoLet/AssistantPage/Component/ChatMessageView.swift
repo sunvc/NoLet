@@ -22,7 +22,7 @@ struct ChatMessageView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack{
             Section {
                 if message.request.count > 0 || quote != nil {
                     VStack {
@@ -41,12 +41,13 @@ struct ChatMessageView: View {
                                 MarkdownCustomView(content: message.request)
                                     .padding()
                                     .foregroundColor(.primary)
-                                    .background(.ultraThinMaterial)
-                                    .overlay {
-                                        Color.blue.opacity(0.2)
+                                    .background(Color.blue.opacity(0.2))
+                                    .onTapGesture(count: 2) {
+                                        Clipboard.set(message.request)
+                                        Toast.success(title: "复制成功")
                                     }
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    .assistantMenu(message.request)
+                                    
                             }
                         }
                     }
@@ -61,19 +62,26 @@ struct ChatMessageView: View {
                         MarkdownCustomView(content: message.content)
                             .padding()
                             .foregroundColor(.primary)
-                            .background(.ultraThinMaterial)
+                            .background(.message)
                             .foregroundColor(.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
-                            .assistantMenu(message.content)
+                            .onTapGesture(count: 2) {
+                                Clipboard.set(message.content)
+                                Toast.success(title: "复制成功")
+                            }
                         Spacer()
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                 }
-            } footer: {
+            }footer: {
                 HStack {
+                    Text("字符计数: \(message.content.count)")
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                        .padding(.horizontal)
                     Spacer()
-                    Text("\(message.timestamp.formatString())" + "\n")
+                    Text("\(message.timestamp.formatString())")
                         .font(.caption2)
                         .foregroundStyle(.gray)
                         .padding(.horizontal)
@@ -82,7 +90,6 @@ struct ChatMessageView: View {
                 .padding(.vertical, 5)
             }
         }
-        .padding(.vertical, 4)
     }
 }
 

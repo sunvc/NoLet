@@ -250,7 +250,7 @@ struct SelectMessageView: View {
                     }
                     .padding()
                     .contentShape(Rectangle())
-                    .gesture(
+                    .simultaneousGesture(
                         MagnificationGesture()
                             .onChanged { value in
                                 let delta = value / lastScaleValue

@@ -24,14 +24,16 @@ struct ChatMessageListView: View {
 
     @State private var messageCount: Int = 10
 
-    let chatLastMessageID = "currentChatMessageId"
+    var chatLastMessageID: String {
+        "chatManager.chatMessages.last?.id ?? "
+    }
 
     let throttler = Throttler(delay: 0.3)
 
     @State private var offsetY: CGFloat = 0
 
     var suffixCount: Int {
-        min(chatManager.currentMessagesCount, 10)
+        min(chatManager.currentMessagesCount, 6)
     }
 
     let height = UIScreen.main.bounds.height
@@ -39,15 +41,16 @@ struct ChatMessageListView: View {
     // MARK: - Body
 
     var body: some View {
+
         ScrollViewReader { scrollViewProxy in
             ScrollView(.vertical) {
-                if chatManager.chatMessages.count > suffixCount {
+                if chatManager.currentMessagesCount > suffixCount {
                     Button {
                         self.showHistory.toggle()
                     } label: {
                         HStack {
                             Spacer()
-                            Text(verbatim: "\(suffixCount)/\(chatManager.chatMessages.count)")
+                            Text(verbatim: "\(suffixCount)/\(chatManager.currentMessagesCount)")
                                 .padding(.trailing, 10)
                             Text("点击查看更多")
 
@@ -59,12 +62,9 @@ struct ChatMessageListView: View {
                         .foregroundStyle(.gray)
                     }
                 }
-
-                LazyVStack {
-                    ForEach(chatManager.chatMessages, id: \.id) { message in
-                        ChatMessageView(message: message)
-                            .id(message.id)
-                    }
+                ForEach(chatManager.chatMessages, id: \.id) { message in
+                    ChatMessageView(message: message)
+                        .id(message.id)
                 }
 
                 Rectangle()
@@ -86,24 +86,23 @@ struct ChatMessageListView: View {
                     }
                     .id(chatLastMessageID)
             }
-
+            .background(.gray.opacity(0.1))
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in
-                proxy(scrollViewProxy)
-            }
-
-            .onChange(of: chatManager.currentContent) { _ in
-                if offsetY - height < 100 {
-                    throttler.throttle {
-                        proxy(scrollViewProxy)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    withAnimation {
+                        scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
                     }
                 }
             }
-            .onChange(of: chatManager.chatGroup) { _ in
-                proxy(scrollViewProxy)
+            .onChange(of: chatManager.chatMessages) { _ in
+                guard offsetY - height < 30 else { return }
+                scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }
-            .onChange(of: manager.isLoading) { _ in
-                proxy(scrollViewProxy)
+            .task(id: chatLastMessageID) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    scrollViewProxy.scrollTo(chatLastMessageID, anchor: .bottom)
+                }
             }
             .sheet(isPresented: $showHistory) {
                 if let chatgroup = chatManager.chatGroup {
@@ -115,17 +114,6 @@ struct ChatMessageListView: View {
                             self.showHistory.toggle()
                         }
                 }
-            }
-            .task(id: chatLastMessageID) {
-                proxy(scrollViewProxy)
-            }
-        }
-    }
-
-    func proxy(_ proxy: ScrollViewProxy) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            withAnimation {
-                proxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }
         }
     }

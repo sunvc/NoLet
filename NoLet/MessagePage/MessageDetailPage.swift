@@ -55,11 +55,7 @@ struct MessageDetailPage: View {
                                 limitMessageLine: limitMessageLine,
                                 assistantAccounsCount: assistantAccouns.count,
                                 selectID: manager.selectID
-                            ) {
-                                withAnimation(.easeInOut.speed(10)) {
-                                    manager.selectMessage = message
-                                }
-                            } delete: {
+                            ){
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     withAnimation(.default) {
                                         messages.removeAll(where: { $0.id == message.id })

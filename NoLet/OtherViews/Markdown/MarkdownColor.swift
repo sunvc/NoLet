@@ -77,7 +77,6 @@ extension View {
 enum MarkdownTheme {
     static func defaultTheme(_ defaultSize: CGFloat = 16, scaleFactor: CGFloat = 1.0) -> Theme {
         Theme()
-
             .text { FontSize(defaultSize * scaleFactor) }
             .code {
                 FontFamilyVariant(.monospaced)

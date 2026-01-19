@@ -57,10 +57,6 @@ struct SingleMessagesView: View {
                         assistantAccounsCount: assistantAccouns.count,
                         selectID: manager.selectID
                     ) {
-                        withAnimation(.easeInOut) {
-                            manager.selectMessage = message
-                        }
-                    } delete: {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             withAnimation(.default) {
                                 messageManager.messages.removeAll(where: { $0.id == message.id })

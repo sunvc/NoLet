@@ -82,12 +82,7 @@ struct SearchMessageView: View {
                         limitMessageLine: limitMessageLine,
                         assistantAccounsCount: assistantAccouns.count,
                         selectID: manager.selectID
-                    ) {
-                        self.hideKeyboard()
-                        withAnimation(.easeInOut) {
-                            manager.selectMessage = message
-                        }
-                    } delete: {
+                    ){
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             withAnimation(.default) {
                                 messages.removeAll(where: { $0.id == message.id })

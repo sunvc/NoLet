@@ -192,7 +192,6 @@ struct ToastGroup: View {
                     ColoredBorder()
                 }
             }
-            
         }
     }
 
