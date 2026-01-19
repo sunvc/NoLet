@@ -115,7 +115,7 @@ class NetworkManager: NSObject {
         request.assumesHTTP3Capable = true
 
         let (data, response) = try await session.data(for: request)
-        logger.info("\(request.description)\(params)\(String(data: data, encoding: .utf8))")
+//        logger.debug("\(request.description)\(params)\(String(data: data, encoding: .utf8))")
         return (data, response)
     }
 

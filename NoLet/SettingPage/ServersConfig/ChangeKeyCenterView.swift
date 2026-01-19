@@ -305,9 +305,9 @@ struct ChangeKeyCenterView: View {
 
                 await MainActor.run {
                     self.keyName = self.keyName
-                        .trimmingSpaceAndNewLines
+                        .removingAllWhitespace
                         .onlyLettersAndNumbers()
-                    self.keyHost = self.keyHost.trimmingSpaceAndNewLines
+                    self.keyHost = self.keyHost.removingAllWhitespace
                 }
 
                 try? await Task.sleep(for: .seconds(0.5))

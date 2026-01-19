@@ -44,54 +44,11 @@ struct NoLetChatHomeView: View {
     var body: some View {
         ZStack {
             ChatMessageListView()
-            VStack {
-                if chatManager.chatMessages.count == 0 && !manager.isLoading {
-                    VStack {
-                        Spacer()
-
-                        VStack {
-                            ChatIcon()
-                                .fill(
-                                    LinearGradient(
-                                        gradient: Gradient(stops: [
-                                            .init(color: .red, location: 0.0),
-                                            .init(color: .yellow, location: 0.5),
-                                            .init(color: .green, location: 1.0),
-                                        ]),
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                )
-                                .scaledToFit()
-                                .frame(width: 200)
-                                .minimumScaleFactor(0.5)
-
-                            Text("嗨! 我是无字书")
-                                .font(.title)
-                                .fontWeight(.medium)
-                                .multilineTextAlignment(.center)
-                                .padding(.vertical, 10)
-
-                            Text("我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！")
-                                .multilineTextAlignment(.center)
-                                .padding(.vertical)
-                                .font(.body)
-                                .foregroundStyle(.gray)
-                        }
-
-                        Spacer()
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .transition(.slide)
-                    .onTapGesture {
-                        self.hideKeyboard()
-                        Haptic.impact()
-                    }
-                }
-
-                Spacer()
+            
+            if chatManager.chatMessages.count == 0 {
+                spaceHome
             }
+            
             VStack {
                 Spacer()
                 // 底部输入框
@@ -170,6 +127,50 @@ struct NoLetChatHomeView: View {
         .environmentObject(chatManager)
         .deleteTips($selectAction)
     }
+    
+    private var spaceHome: some View{
+        VStack {
+            Spacer()
+            VStack {
+                ChatIcon()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: .red, location: 0.0),
+                                .init(color: .yellow, location: 0.5),
+                                .init(color: .green, location: 1.0),
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .scaledToFit()
+                    .frame(width: 200)
+                    .minimumScaleFactor(0.5)
+
+                Text("嗨! 我是无字书")
+                    .font(.title)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical, 10)
+
+                Text("我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！")
+                    .multilineTextAlignment(.center)
+                    .padding(.vertical)
+                    .font(.body)
+                    .foregroundStyle(.gray)
+            }
+
+            Spacer()
+            Spacer()
+        }
+        .padding(.horizontal)
+        .transition(.opacity)
+        .onTapGesture {
+            self.hideKeyboard()
+            Haptic.impact()
+        }
+    }
 
     // 发送消息
     private func sendMessage(_ text: String) async {
@@ -183,11 +184,14 @@ struct NoLetChatHomeView: View {
         if !text.isEmpty {
             Task { @MainActor in
                 chatManager.currentMessageID = UUID().uuidString
-                manager.isLoading = true
+                withAnimation {
+                    manager.isLoading = true
+                }
                 chatManager.currentRequest = text
 
                 self.inputText = ""
                 chatManager.currentContent = ""
+                self.updateTemMessage()
             }
 
             guard let newGroup = getGroup(text: text) else { return }
@@ -201,6 +205,9 @@ struct NoLetChatHomeView: View {
                 for try await result in results {
                     if let choice = result.choices.first {
                         toolCallsMap = resultHandler(choice: choice, toolCallsMap: toolCallsMap)
+                        Task { @MainActor in
+                            self.updateTemMessage()
+                        }
                     }
                 }
 
@@ -225,6 +232,9 @@ struct NoLetChatHomeView: View {
                         for try await result in results {
                             if let choice = result.choices.first {
                                 resultHandler(choice: choice)
+                                Task { @MainActor in
+                                    self.updateTemMessage()
+                                }
                             }
                         }
                     }
@@ -271,6 +281,7 @@ struct NoLetChatHomeView: View {
         if let text = choice.delta.reasoning {
             Task { @MainActor in
                 chatManager.currentReason += text
+
                 if chatManager.startReason == nil {
                     chatManager.startReason = chatManager.currentMessageID
                 }
@@ -284,6 +295,7 @@ struct NoLetChatHomeView: View {
         if let outputItem = choice.delta.content {
             Task { @MainActor in
                 chatManager.currentContent += outputItem
+
                 if AppManager.shared.inAssistant && showAssistantAnimation {
                     Haptic.selection()
                 }
@@ -309,12 +321,23 @@ struct NoLetChatHomeView: View {
         return toolCallsMap
     }
 
+    func updateTemMessage() {
+        let id = chatManager.currentChatMessage.id
+        if let index = chatManager.chatMessages.firstIndex(where: { $0.id == id }) {
+            chatManager.chatMessages[index] = chatManager.currentChatMessage
+        } else {
+            chatManager.chatMessages.append(chatManager.currentChatMessage)
+        }
+    }
+
     func clearCurrent() {
         chatManager.currentRequest = ""
         chatManager.currentContent = ""
         chatManager.currentReason = ""
         chatManager.currentResult = [:]
-        manager.isLoading = false
+        withAnimation {
+            manager.isLoading = false
+        }
     }
 
     func getGroup(text: String) -> ChatGroup? {
@@ -322,7 +345,7 @@ struct NoLetChatHomeView: View {
             return group
         } else {
             let id = manager.askMessageID ?? UUID().uuidString
-            let name = String(text.trimmingSpaceAndNewLines.prefix(10))
+            let name = String(text.removingAllWhitespace.prefix(10))
             let group = ChatGroup(
                 id: id,
                 timestamp: .now,
@@ -334,6 +357,7 @@ struct NoLetChatHomeView: View {
                 try DatabaseManager.shared.dbQueue.write { db in
                     try group.insert(db)
                 }
+                self.updateTemMessage()
                 return group
             } catch {
                 return nil

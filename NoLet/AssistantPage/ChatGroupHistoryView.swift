@@ -123,7 +123,7 @@ struct ChatGroupHistoryView: View {
             ForEach(section.messages, id: \.id) { chatgroup in
                 HStack {
                     Label(
-                        chatgroup.name.trimmingSpaceAndNewLines,
+                        chatgroup.name.removingAllWhitespace,
                         systemImage: getleftIconName(group: chatgroup.id)
                     )
                     .fontWeight(.medium)

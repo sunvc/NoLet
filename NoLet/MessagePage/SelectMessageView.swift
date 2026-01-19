@@ -432,7 +432,7 @@ struct SelectMessageView: View {
                             self.messageShowMode = .abstract
                             chatManager.cancellableRequest?.cancel()
                             chatManager.cancellableRequest = Task.detached(priority: .high) {
-                                await abstractMessage(message.search.trimmingSpaceAndNewLines)
+                                await abstractMessage(message.search.removingAllWhitespace)
                             }
                         }
                         Haptic.impact()

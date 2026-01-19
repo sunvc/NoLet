@@ -217,14 +217,18 @@ struct NoLetChatSettingsView: View {
             Text("此操作将删除所有聊天记录和设置数据，且无法恢复。确定要继续吗？")
         }
         .sheet(item: $selectAccount) { account in
-            NoLetChatAccountDetail(account: $selectAccount, isAdd: false)
-                .customPresentationCornerRadius(20)
-                .environmentObject(chatManager)
+            NoLetChatAccountDetail(account: account, isAdd: false) {
+                self.selectAccount = nil
+            }
+            .customPresentationCornerRadius(20)
+            .environmentObject(chatManager)
         }
         .sheet(item: $addAccount) { account in
-            NoLetChatAccountDetail(account: $addAccount, isAdd: true)
-                .customPresentationCornerRadius(20)
-                .environmentObject(chatManager)
+            NoLetChatAccountDetail(account: account, isAdd: true) {
+                self.addAccount = nil
+            }
+            .customPresentationCornerRadius(20)
+            .environmentObject(chatManager)
         }
     }
 }

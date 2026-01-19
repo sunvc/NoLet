@@ -100,7 +100,6 @@ final class NoLetChatManager: ObservableObject {
                 .limit(10)
                 .fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
-
             return (groupsCount, messages.reversed(), promptCount, current, messageCount)
         }
 
@@ -153,7 +152,7 @@ final class NoLetChatManager: ObservableObject {
 
     func setGroup(group: ChatGroup? = nil) {
         do {
-            _ = try DB.dbQueue.write { db in
+            _ = try DB.dbQueue.write { [weak self] db in
                 if let group = group {
                     try ChatGroup
                         .filter { $0.id != group.id }
@@ -161,10 +160,12 @@ final class NoLetChatManager: ObservableObject {
                     try ChatGroup
                         .filter { $0.id == group.id }
                         .updateAll(db, ChatGroup.Columns.current.set(to: true))
+                    self?.chatGroup = group
                 } else {
                     try ChatGroup
                         .filter { $0.current }
                         .updateAll(db, ChatGroup.Columns.current.set(to: false))
+                    self?.chatGroup = nil
                 }
             }
         } catch {
@@ -187,9 +188,17 @@ final class NoLetChatManager: ObservableObject {
         }
     }
 
-    func delete(groupID: String) async {
+    func delete(groupID: String? = nil) async {
         try? await DB.dbQueue.write { db in
-            if let group = try ChatGroup.fetchOne(db, key: groupID) {
+            var group: ChatGroup? {
+                if let groupID {
+                    return try? ChatGroup.fetchOne(db, key: groupID)
+                } else {
+                    return try? ChatGroup.filter { $0.current }.fetchOne(db)
+                }
+            }
+
+            if let group = try ChatGroup.filter({ $0.id == group?.id }).fetchOne(db) {
                 // 删除与该 group.id 关联的所有 ChatMessage
                 try ChatMessage
                     .filter(ChatMessage.Columns.chat == group.id)

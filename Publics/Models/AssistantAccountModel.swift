@@ -67,12 +67,12 @@ struct AssistantAccount: Codable, Identifiable, Equatable, Hashable {
 
 extension AssistantAccount {
     mutating func trimAssistantAccountParameters() {
-        name = name.trimmingSpaceAndNewLines
-        host = host.trimmingSpaceAndNewLines
+        name = name.removingAllWhitespace
+        host = host.removingAllWhitespace
         host = host.removeHTTPPrefix()
-        basePath = basePath.trimmingSpaceAndNewLines
-        key = key.trimmingSpaceAndNewLines
-        model = model.trimmingSpaceAndNewLines
+        basePath = basePath.removingAllWhitespace
+        key = key.removingAllWhitespace
+        model = model.removingAllWhitespace
     }
 }
 

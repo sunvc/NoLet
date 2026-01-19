@@ -135,7 +135,6 @@
 		B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AssistantPage/Component/Untitled.swift,
 				Info.plist,
 			);
 			target = B58357F62DEDD3B10066B32E /* NoLet */;

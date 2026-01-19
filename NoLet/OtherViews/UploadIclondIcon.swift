@@ -21,7 +21,7 @@ struct UploadIclondIcon: View {
     @State private var tags: [TagModel] = []
 
     var tsgsTem: [String] {
-        tags.compactMap { $0.value }.filter { !$0.trimmingSpaceAndNewLines.isEmpty }
+        tags.compactMap { $0.value }.filter { !$0.removingAllWhitespace.isEmpty }
     }
 
     @FocusState private var nameFocus

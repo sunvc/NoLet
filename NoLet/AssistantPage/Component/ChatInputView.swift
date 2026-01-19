@@ -25,6 +25,7 @@ struct ChatInputView: View {
     @FocusState private var isFocusedInput: Bool
 
     @State private var selectedPromptIndex: Int?
+    @State private var focused:Bool = false
 
     private var quote: Message? {
         guard let messageID = manager.askMessageID else { return nil }
@@ -39,21 +40,22 @@ struct ChatInputView: View {
             .padding(.horizontal)
 
             HStack(spacing: 10) {
-                if !isFocusedInput && !.ISPAD {
+                if !chatManager.isFocusedInput && !.ISPAD {
                     backupButton()
+                        .transition(.move(edge: .leading))
                 }
-
-                inputField
-                    .disabled(manager.isLoading)
-                    .opacity(manager.isLoading ? 0 : 1)
+                if !manager.isLoading{
+                    inputField
+                        .transition(.move(edge: .trailing))
+                }else{
+                    Spacer()
+                }
+               
             }
             .padding(.horizontal)
             .animation(.default, value: text)
         }
         .padding(.bottom, isFocusedInput ? 10 : 30)
-        .overlay(alignment: .bottomTrailing) { 
-            
-        }
         
     }
 
@@ -68,14 +70,16 @@ struct ChatInputView: View {
                 .focused($isFocusedInput)
                 .frame(minHeight: 50)
                 .onChange(of: isFocusedInput) { value in
-                    chatManager.isFocusedInput = value
+                    withAnimation { 
+                        chatManager.isFocusedInput = value
+                    }
                 }
 
             if !text.isEmpty {
                 // 发送按钮
                 Button(action: {
                     self.text = text.trimmingCharacters(in: .whitespaces)
-                    if text.trimmingSpaceAndNewLines.count > 0 {
+                    if text.removingAllWhitespace.count > 0 {
                         onSend(text)
                         isFocusedInput = false
                     } else {
@@ -149,7 +153,7 @@ struct ChatInputView: View {
                                         let group = ChatGroup(
                                             id: quote.id,
                                             timestamp: .now,
-                                            name: quote.search.trimmingSpaceAndNewLines,
+                                            name: quote.search.removingAllWhitespace,
                                             host: "",
                                             current: true
                                         )

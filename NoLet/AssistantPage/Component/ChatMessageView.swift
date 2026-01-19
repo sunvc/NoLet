@@ -56,7 +56,7 @@ struct ChatMessageView: View {
 
                 ReasonButton(message: message)
 
-                if !message.content.isEmpty {
+                if !message.content.removingAllWhitespace.isEmpty {
                     HStack {
                         MarkdownCustomView(content: message.content)
                             .padding()
@@ -70,7 +70,7 @@ struct ChatMessageView: View {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                 }
-            } header: {
+            } footer: {
                 HStack {
                     Spacer()
                     Text("\(message.timestamp.formatString())" + "\n")
@@ -111,7 +111,7 @@ struct QuoteView: View {
 
     var body: some View {
         HStack(spacing: 5) {
-            Text(verbatim: "\(message.trimmingSpaceAndNewLines)")
+            Text(verbatim: "\(message.removingAllWhitespace)")
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .font(.caption2)

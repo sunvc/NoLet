@@ -13,8 +13,6 @@ import Defaults
 import SwiftUI
 
 struct NoLetChatAccountDetail: View {
-    
-    @Binding var account: AssistantAccount?
     @EnvironmentObject var chatManager: NoLetChatManager
     @State private var data: AssistantAccount
     @Default(.assistantAccouns) var assistantAccouns
@@ -22,19 +20,12 @@ struct NoLetChatAccountDetail: View {
     @State private var isTestingAPI = false
     @State private var isAdd: Bool = false
 
-    let title: String
-
     @State private var buttonState: AnimatedButton.buttonState = .normal
-
-    init(account: Binding<AssistantAccount?>, isAdd: Bool = false) {
-        _account = account
+    let close: () -> Void
+    init(account: AssistantAccount, isAdd: Bool = false, close: @escaping () -> Void) {
         self.isAdd = isAdd
-        let accountData = account.wrappedValue ?? AssistantAccount.data
-        _data = State(wrappedValue: accountData)
-
-        title = isAdd
-            ? String(localized: "增加新资料")
-            : String(localized: "修改资料")
+        self.close = close
+        _data = State(wrappedValue: account)
     }
 
     var body: some View {
@@ -107,9 +98,7 @@ struct NoLetChatAccountDetail: View {
                             ]
                         ) { view in
                             await view.next(.loading(1))
-
                             data.trimAssistantAccountParameters()
-
                             if data.key.isEmpty || data.host.isEmpty || isTestingAPI {
                                 try? await Task.sleep(for: .seconds(1))
                                 await view.next(.fail)
@@ -118,14 +107,15 @@ struct NoLetChatAccountDetail: View {
 
                             self.isTestingAPI = true
                             let success = await chatManager.test(account: data)
-
                             await view.next(success ? .success : .fail)
                             await MainActor.run {
                                 self.isTestingAPI = false
                             }
                             if success {
                                 await MainActor.run {
-                                    self.saveOrChangeData()
+                                    if self.saveOrChangeData() {
+                                        close()
+                                    }
                                 }
                             }
                         }
@@ -135,28 +125,25 @@ struct NoLetChatAccountDetail: View {
                 .listRowBackground(Color.clear)
             }
 
-            .navigationTitle(title)
+            .navigationTitle(isAdd ? "增加新资料" : "修改资料")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-                        self.account = nil
+                        self.close()
                     } label: {
                         Text("取消")
                     }.tint(.red)
                         .disabled(isTestingAPI)
                 }
-
             }
             .disabled(isTestingAPI)
         }
     }
 
-    private func saveOrChangeData() {
-        data.trimAssistantAccountParameters()
-
+    private func saveOrChangeData() -> Bool {
         if data.host.isEmpty || data.key.isEmpty || data.model.isEmpty {
             Toast.info(title: "参数不能为空")
-            return
+            return false
         }
 
         if assistantAccouns.count == 0 {
@@ -166,8 +153,7 @@ struct NoLetChatAccountDetail: View {
         if let index = assistantAccouns.firstIndex(where: { $0.id == data.id }) {
             assistantAccouns[index] = data
             Toast.success(title: "添加成功")
-            AppManager.shared.open(sheet: nil)
-            return
+            return true
         } else {
             if assistantAccouns
                 .filter({
@@ -176,12 +162,12 @@ struct NoLetChatAccountDetail: View {
                         .key == data.key }).count > 0
             {
                 Toast.error(title: "重复数据")
-                return
+                return false
             }
 
             assistantAccouns.insert(data, at: 0)
             Toast.success(title: "修改成功")
-            AppManager.shared.open(sheet: nil)
+            return true
         }
     }
 

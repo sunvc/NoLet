@@ -59,63 +59,47 @@ struct ChatMessageListView: View {
                         .foregroundStyle(.gray)
                     }
                 }
-                LazyVStack {
-                    ForEach(chatManager.chatMessages, id: \.id) { message in
-                        ChatMessageView(message: message)
-                            .id(message.id)
-                    }
+
+                ForEach(chatManager.chatMessages, id: \.id) { message in
+                    ChatMessageView(message: message)
+                        .id(message.id)
                 }
 
-                VStack {
-                    if manager.isLoading {
-                        ChatMessageView(
-                            message: chatManager.currentChatMessage
-                        )
-                        .animation(.default, value: chatManager.currentChatMessage)
-                    }
-
-                    Rectangle()
-                        .fill(Color.clear)
-                        .frame(height: 120)
-                        .background(
-                            GeometryReader { proxy in
-                                Color.clear
-                                    .preference(
-                                        key: OffsetKey.self,
-                                        value: proxy.frame(in: .global).maxY
-                                    )
-                            }
-                        )
-                        .onPreferenceChange(OffsetKey.self) { newValue in
-                            Task { @MainActor in
-                                offsetY = newValue
-                            }
+                Rectangle()
+                    .fill(Color.clear)
+                    .frame(height: 120)
+                    .background(
+                        GeometryReader { proxy in
+                            Color.clear
+                                .preference(
+                                    key: OffsetKey.self,
+                                    value: proxy.frame(in: .global).maxY
+                                )
                         }
-                        .id(chatLastMessageID)
-                }
+                    )
+                    .onPreferenceChange(OffsetKey.self) { newValue in
+                        Task { @MainActor in
+                            offsetY = newValue
+                        }
+                    }
+                    .id(chatLastMessageID)
             }
 
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in
-                proxy(scrollViewProxy, delay: 0.3)
+                proxy(scrollViewProxy)
             }
 
             .onChange(of: chatManager.currentContent) { _ in
-                if (offsetY - height < 100){
+                if offsetY - height < 100 {
                     throttler.throttle {
                         proxy(scrollViewProxy)
                     }
                 }
             }
-
-            .onChange(of: chatManager.currentReason) { _ in
-                if (offsetY - height < 100){
-                    throttler.throttle {
-                        proxy(scrollViewProxy)
-                    }
-                }
+            .onChange(of: chatManager.chatGroup) { _ in
+                proxy(scrollViewProxy)
             }
-
             .onChange(of: manager.isLoading) { _ in
                 proxy(scrollViewProxy)
             }
@@ -131,14 +115,14 @@ struct ChatMessageListView: View {
                 }
             }
             .task(id: chatLastMessageID) {
-                proxy(scrollViewProxy, delay: 0.3)
+                proxy(scrollViewProxy)
             }
         }
     }
 
-    func proxy(_ proxy: ScrollViewProxy, delay: Double = 0) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            withAnimation(.snappy(duration: 0.1)) {
+    func proxy(_ proxy: ScrollViewProxy) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
                 proxy.scrollTo(chatLastMessageID, anchor: .bottom)
             }
         }

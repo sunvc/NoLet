@@ -48,12 +48,12 @@ extension String {
         return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    nonisolated var trimmingSpaceAndNewLines: String {
-        replacingOccurrences(of: "\\s+", with: "", options: .regularExpression)
+    nonisolated var removingAllWhitespace: String {
+        self.filter({!$0.isWhitespace})
     }
 
     func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
-        guard let textColor = trimmingSpaceAndNewLines.decomposeTextAndColor() else { return nil }
+        guard let textColor = removingAllWhitespace.decomposeTextAndColor() else { return nil }
 
         let singleEmoji = textColor.text.first?.isEmoji ?? false
         let renderer = UIGraphicsImageRenderer(size: CGSize(width: size, height: size))

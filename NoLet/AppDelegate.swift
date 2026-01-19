@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().delegate = self
 
         Identifiers.setCategories()
-        // 预防用户切换系统语言导致语言不匹配
         Multilingual.resetTransLang()
 
         if !Defaults[.firstStart] {
@@ -71,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
 
-        logger.info("获取到设备Token:\(token)")
+        logger.info("获取到设备Token: \(token)")
     }
 
     // MARK: UISceneSession Lifecycle
