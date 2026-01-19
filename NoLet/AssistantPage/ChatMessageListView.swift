@@ -60,9 +60,11 @@ struct ChatMessageListView: View {
                     }
                 }
 
-                ForEach(chatManager.chatMessages, id: \.id) { message in
-                    ChatMessageView(message: message)
-                        .id(message.id)
+                LazyVStack {
+                    ForEach(chatManager.chatMessages, id: \.id) { message in
+                        ChatMessageView(message: message)
+                            .id(message.id)
+                    }
                 }
 
                 Rectangle()
