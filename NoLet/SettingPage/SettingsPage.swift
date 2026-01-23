@@ -253,7 +253,7 @@ struct SettingsPage: View {
             Section {
                 ListButton {
                     Label {
-                        Text("关于无字书")
+                        Text("关于\(NCONFIG.AppName)")
                             .foregroundStyle(.textBlack)
                     } icon: {
                         Image(systemName: "exclamationmark.octagon")
@@ -318,6 +318,7 @@ struct SettingsPage: View {
                         .customForegroundStyle(.accent, Color.primary)
                 }
             }
+            
         }
     }
 }

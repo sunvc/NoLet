@@ -74,6 +74,7 @@ enum RouterPage: Hashable {
     case about
     case dataSetting
     case serverInfo(server: PushServerModel)
+    case appleServerInfo
     case files(url: URL)
     case web(url: URL)
 }

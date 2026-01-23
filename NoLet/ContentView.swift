@@ -129,7 +129,7 @@ struct ContentView: View {
                                 NoLetChatHomeView().router(manager)
                             }
                         } label: {
-                            tabLabel(title: "无字书", icon: "apple.intelligence")
+                            tabLabel(title: NCONFIG.AppName, icon: "apple.intelligence")
                         }
                     }
                 }
@@ -149,7 +149,7 @@ struct ContentView: View {
                             NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
-                            tabLabel(title: "无字书", icon: "atom")
+                            tabLabel(title: NCONFIG.AppName, icon: "atom")
                         }
                         .tag(TabPage.assistant)
                     }
@@ -311,6 +311,8 @@ extension View {
                     }
                     .ignoresSafeArea()
                     .navigationBarBackButtonHidden()
+                case .appleServerInfo:
+                    AppleStatusView()
                 }
             }
             .toolbar(.hidden, for: .tabBar)

@@ -16,33 +16,37 @@ import os
 import re
 import argparse
 
+
 class Translate:
-    mode:int = 0
+    mode: int = 0
     semaphore_number: int = 10
     deepseek_key: str = ""
     host: str = ""
     model: str = ""
+    copy_lang: str = "zh"
     root_dir: str = "../"
-    local_file:str = "Localizable.xcstrings"
+    local_file: str = "Localizable.xcstrings"
     info_file: str = "InfoPlist.strings"
     lang_file: str = "project.pbxproj"
     screen_file: str = "LaunchScreen.strings"
-    lang_keys:list[str] = []
+    lang_keys: list[str] = []
     client: AsyncOpenAI = {}
 
-    def __init__(self, host:str=None, model:str=None, key:str=None, root_dir:str=None, mode:int=0):
+    def __init__(self, host: str = None, model: str = None, key: str = None, root_dir: str = None,
+                 copy_lang: str = None, mode: int = 0):
         parser = argparse.ArgumentParser(description="params parser")
-        parser.add_argument("--path", type=str, default="../", help="pth")
+        parser.add_argument("--path", type=str, default="../", help="path")
         parser.add_argument("--key", type=str, default=None, help="key")
         parser.add_argument("--host", type=str, default="https://api.deepseek.com", help="host")
         parser.add_argument("--model", type=str, default="deepseek-chat", help="mode")
         parser.add_argument("--mode", type=int, default=0, help="mode")
+        parser.add_argument("--copy_lang", type=str, default=None, help="language code to use key as value")
         args = parser.parse_args()
 
         self.deepseek_key = (
-            (args.key if args.key else None)
-            or (key if key else None)
-            or os.getenv("DEEPSEEK_KEY")
+                (args.key if args.key else None)
+                or (key if key else None)
+                or os.getenv("DEEPSEEK_KEY")
         )
 
         if not self.deepseek_key or len(self.deepseek_key) < 10:
@@ -68,8 +72,12 @@ class Translate:
         else:
             self.mode = args.mode
 
-        self.client = AsyncOpenAI(base_url=self.host, api_key=self.deepseek_key)
+        if copy_lang is None:
+            self.copy_lang = args.copy_lang
+        else:
+            self.copy_lang = copy_lang
 
+        self.client = AsyncOpenAI(base_url=self.host, api_key=self.deepseek_key)
 
     async def translate_deepseek(self, datas, system_message, semaphore: Semaphore, is_json=False):
         messages = [
@@ -96,26 +104,32 @@ class Translate:
 
         results = data.get("strings", {})
         all_count = len(results)
-        print(f"{target_language}/{all_count}", "pending processing were found")
 
         tasks = []
         skip_count = 0
         delete_keys = []
 
         for key in results:
-            if results.get(key,{}).get("extractionState") == "stale":
+            if results.get(key, {}).get("extractionState") == "stale":
                 delete_keys.append(key)
                 continue
             result_tem = results.get(key, {}).get("localizations", {}).get(target_language, None)
 
             if result_tem is None or result_tem.get("stringUnit", {}).get("value", "").strip() == "":
+                if self.copy_lang and self.copy_lang in target_language:
+                    if results[key].get("localizations", None) is None:
+                        results[key]["localizations"] = {}
+                    results[key]["localizations"][target_language] = {
+                        'stringUnit': {'state': 'translated', 'value': key}}
+                    print(f" Copy: {target_language} - {key[:10]} -> {key}")
+                    continue
+
                 task = asyncio.create_task(self.translate_deepseek(key, system_message, semaphore, is_json))
                 tasks.append((key, task))
             else:
-                result_value = result_tem.get("stringUnit", {}).get("value", "")
                 skip_count += 1
                 print(
-                    f"\r Skip:{target_language} - {skip_count}/{all_count} - {key.split("\n")[0]} -> {result_value.split("\n")[0]}",
+                    f"\r Skip:{target_language} - {skip_count}/{all_count} - {key[:5]}",
                     end="", flush=True)
 
         for count, (key, task) in enumerate(tasks, start=1):
@@ -131,7 +145,6 @@ class Translate:
         for key in delete_keys:
             del results[key]
             print(f" {key} deleted")
-
 
         for key in results:
             localizations = results[key].get("localizations", {})
@@ -153,11 +166,19 @@ class Translate:
                 results[json_file] = {
                     "text": fs.read(),
                     "tips": tips,
+                    "lang": lang
                 }
         tasks = []
         for key in results:
-            task = asyncio.create_task(
-                self.translate_deepseek(results[key]["text"], results[key]["tips"], semaphore, is_json=False))
+            if self.copy_lang and self.copy_lang in results[key]["lang"]:
+                async def return_text():
+                    return results[key]["text"]
+
+                task = asyncio.create_task(return_text())
+                print(f" Copy: {results[key]['lang']} - {key} (Skipped Translation)")
+            else:
+                task = asyncio.create_task(
+                    self.translate_deepseek(results[key]["text"], results[key]["tips"], semaphore, is_json=False))
             tasks.append((key, task))
 
         for count, (key, task) in enumerate(tasks, start=1):
@@ -199,11 +220,23 @@ class Translate:
         return []
 
     @staticmethod
-    def get_local_tips(lang_code = "en"):
-       return f"You are an app localization translation assistant. After receiving the text, return the translation directly without extra words. If the text contains URL parameters (such as title, body, group, badge, default or parameter names like title=), do not translate them. The translation language code is: {lang_code}, and do not translate ‘无字书’, ‘無字書’ or ‘NoLet’."
+    def get_local_tips(lang_code="en"):
+        return f"""
+        Role: App Localization Expert (Technical & UI)
+        Target Language: {lang_code}
+        
+        Rules:
+        1. Output ONLY the translation. No extra text.
+        2. Technical Conciseness: Use professional shorthand for technical terms (e.g., "Algo Config" instead of "Algorithm Configuration"). Prioritize UI-friendly, industry-standard abbreviations.
+        3. Protected Terms: Do NOT translate URL parameters (e.g., title=), variables, or: "无字书", "無字書", "NoLet".
+       """
+
     @staticmethod
     def get_other_tips(file_type, lang_code="en"):
-        return f"Translate this Xcode {file_type} into {lang_code}, keep the format, return only the translation, and do not translate ‘无字书’, ‘無字書’ or ‘NoLet’."
+        return f"""
+            Please provide the content of the Xcode {file_type} you would like me to translate.
+            Once you paste the text, I will return the localized version in {lang_code} immediately, following all your constraints regarding URL parameters, brand names, and UI conciseness.
+            """
 
     def localizable_handler(self):
         print("start handler:")
@@ -212,8 +245,7 @@ class Translate:
         for lang_code in langs:
             paths = self.find_localizable_files(file_name=self.local_file)
             for path in paths:
-                asyncio.run(self.trans_main( lang_code, json_file=path, is_json=True))
-
+                asyncio.run(self.trans_main(lang_code, json_file=path, is_json=True))
 
     def info_file_handler(self):
         print("start info_file handler:")
@@ -226,7 +258,6 @@ class Translate:
         # ------- LaunchScreen.strings  ------
         paths = self.find_localizable_files(file_name=self.screen_file)
         asyncio.run(self.translate_other(paths, file_type=self.screen_file))
-
 
     def run(self):
         # 0: Localizable.xcstrings  -------
@@ -250,6 +281,4 @@ class Translate:
 
 
 if __name__ == '__main__':
-
-    Translate().run()
-
+    Translate(copy_lang="zh", mode=0).run()

@@ -81,7 +81,7 @@ struct ChatMessageView: View {
                         .foregroundStyle(.gray)
                         .padding(.horizontal)
                     Spacer()
-                    Text("\(message.timestamp.formatString())")
+                    Text(verbatim: "\(message.timestamp.formatString())")
                         .font(.caption2)
                         .foregroundStyle(.gray)
                         .padding(.horizontal)

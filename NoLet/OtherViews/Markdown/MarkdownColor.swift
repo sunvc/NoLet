@@ -89,7 +89,7 @@ enum MarkdownTheme {
                 VStack(alignment: .leading, spacing: 0) {
                     configuration.label
                         .relativePadding(.bottom, length: .em(0.3))
-                        .markdownHeadingStyle(fontSize: 2)
+                        .markdownHeadingStyle(fontSize: 1.5)
                     Divider().overlay(MarkdownColors.divider)
                 }
             }
@@ -97,25 +97,25 @@ enum MarkdownTheme {
                 VStack(alignment: .leading, spacing: 0) {
                     configuration.label
                         .relativePadding(.bottom, length: .em(0.3))
-                        .markdownHeadingStyle(fontSize: 1.5)
+                        .markdownHeadingStyle(fontSize: 1.25)
                     Divider().overlay(MarkdownColors.divider)
                 }
             }
             .heading3 { configuration in
                 configuration.label
-                    .markdownHeadingStyle(fontSize: 1.25)
+                    .markdownHeadingStyle(fontSize: 1.0)
             }
             .heading4 { configuration in
                 configuration.label
-                    .markdownHeadingStyle(fontSize: 1)
+                    .markdownHeadingStyle(fontSize: 0.875)
             }
             .heading5 { configuration in
                 configuration.label
-                    .markdownHeadingStyle(fontSize: 0.875)
+                    .markdownHeadingStyle(fontSize: 0.85)
             }
             .heading6 { configuration in
                 configuration.label
-                    .markdownHeadingStyle(fontSize: 0.85)
+                    .markdownHeadingStyle(fontSize: 0.82)
                     .markdownTextStyle {
                         ForegroundColor(MarkdownColors.tertiaryText)
                     }

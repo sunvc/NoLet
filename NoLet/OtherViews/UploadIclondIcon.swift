@@ -89,9 +89,6 @@ struct UploadIclondIcon: View {
                             .font(.headline)
                             .fontWeight(.bold)
 
-                        Text("张")
-                            .foregroundStyle(.gray)
-                            .font(.footnote)
                     }
                     .padding(.bottom, 10)
                     Spacer()

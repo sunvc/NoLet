@@ -31,13 +31,11 @@
 		B5835D782DEDFFF90066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		B5835D7A2DEDFFF90066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
-		BA6B971E2F1E8CEF00F42D0C /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA6B971D2F1E8CEF00F42D0C /* MarkdownUI */; };
-		BA6B97202F1E8CEF00F42D0C /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA6B971F2F1E8CEF00F42D0C /* Splash */; };
+		BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863D2F2311AC00CEBC4F /* MarkdownUI */; };
+		BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
+		BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767C2F233E4900D1BF03 /* MarkdownUI */; };
+		BA71767F2F233E4900D1BF03 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767E2F233E4900D1BF03 /* Splash */; };
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
-		BAE61E492ED55B55009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA62EC5AC030003F7A3 /* Splash */; };
-		BAE6200C2ED5B42D009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */; };
-		BAE6200D2ED5B42D009DABA1 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA12EC5A9F10003F7A3 /* Splash */; };
-		BAE6200E2ED5B42D009DABA1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB20EA42EC5AC030003F7A3 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -404,21 +402,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BAE6200E2ED5B42D009DABA1 /* MarkdownUI in Frameworks */,
-				BA6B971E2F1E8CEF00F42D0C /* MarkdownUI in Frameworks */,
-				BAE6200D2ED5B42D009DABA1 /* Splash in Frameworks */,
-				BAE6200C2ED5B42D009DABA1 /* MarkdownUI in Frameworks */,
-				BAE61E492ED55B55009DABA1 /* Splash in Frameworks */,
-				BA6B97202F1E8CEF00F42D0C /* Splash in Frameworks */,
+				BA71767F2F233E4900D1BF03 /* Splash in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
+				BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
+				BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */,
+				BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -542,13 +538,11 @@
 				B583589D2DEDD5B80066B32E /* QRScanner */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
-				BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */,
-				BAB20EA12EC5A9F10003F7A3 /* Splash */,
-				BAB20EA42EC5AC030003F7A3 /* MarkdownUI */,
-				BAB20EA62EC5AC030003F7A3 /* Splash */,
 				BAB479802ED2392C00EE84AC /* Zip */,
-				BA6B971D2F1E8CEF00F42D0C /* MarkdownUI */,
-				BA6B971F2F1E8CEF00F42D0C /* Splash */,
+				BA2F863D2F2311AC00CEBC4F /* MarkdownUI */,
+				BA2F863F2F2311AC00CEBC4F /* Splash */,
+				BA71767C2F233E4900D1BF03 /* MarkdownUI */,
+				BA71767E2F233E4900D1BF03 /* Splash */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -675,7 +669,7 @@
 				B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
-				BA6B971C2F1E8CEF00F42D0C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				BA71767B2F233E4900D1BF03 /* XCLocalSwiftPackageReference "../swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1235,6 +1229,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		BA71767B2F233E4900D1BF03 /* XCLocalSwiftPackageReference "../swift-markdown-ui" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../swift-markdown-ui";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1282,14 +1283,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.7.1;
-			};
-		};
-		BA6B971C2F1E8CEF00F42D0C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.2;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
@@ -1388,29 +1381,19 @@
 			package = B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */;
 			productName = "cmark-gfm-extensions";
 		};
-		BA6B971D2F1E8CEF00F42D0C /* MarkdownUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA6B971C2F1E8CEF00F42D0C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = MarkdownUI;
-		};
-		BA6B971F2F1E8CEF00F42D0C /* Splash */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA6B971C2F1E8CEF00F42D0C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = Splash;
-		};
-		BAB20E9F2EC5A9F10003F7A3 /* MarkdownUI */ = {
+		BA2F863D2F2311AC00CEBC4F /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MarkdownUI;
 		};
-		BAB20EA12EC5A9F10003F7A3 /* Splash */ = {
+		BA2F863F2F2311AC00CEBC4F /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};
-		BAB20EA42EC5AC030003F7A3 /* MarkdownUI */ = {
+		BA71767C2F233E4900D1BF03 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MarkdownUI;
 		};
-		BAB20EA62EC5AC030003F7A3 /* Splash */ = {
+		BA71767E2F233E4900D1BF03 /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};

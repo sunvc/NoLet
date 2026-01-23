@@ -449,34 +449,6 @@
         }
       }
     },
-    "张": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zhang"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "「張」"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "장"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "张"
-          }
-        }
-      }
-    },
     "提示": {
       "localizations": {
         "en": {
@@ -597,12 +569,6 @@
             "value": "Error checking iCloud account status"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "检查 iCloud 账户状态出错"
-          }
-        },
         "ja": {
           "stringUnit": {
             "state": "translated",
@@ -613,6 +579,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud 계정 상태 확인 오류"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查 iCloud 账户状态出错"
           }
         }
       }

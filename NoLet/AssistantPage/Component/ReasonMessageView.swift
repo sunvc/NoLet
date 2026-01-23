@@ -152,7 +152,7 @@ struct ReasonButton: View {
                                     .frame(width: 15, height: 15, alignment: .center)
                             }
 
-                            Text(show ? "正在思考" : "已思考")
+                            Text(show ? "思考中" : "已思考")
 
                             if show {
                                 Text("...")

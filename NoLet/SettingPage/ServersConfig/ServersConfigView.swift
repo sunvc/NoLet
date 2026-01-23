@@ -58,7 +58,7 @@ struct ServersConfigView: View {
                         } label: {
                             Label("重置", systemImage: "arrow.clockwise")
                                 .fontWeight(.bold)
-                                .accessibilityLabel("崇置")
+                                .accessibilityLabel("重新生成 Key")
 
                         }.tint(.accentColor)
                     }
@@ -125,7 +125,7 @@ struct ServersConfigView: View {
                             } label: {
                                 Label("重置", systemImage: "arrow.clockwise")
                                     .fontWeight(.bold)
-                                    .accessibilityLabel("崇置")
+                                    .accessibilityLabel("重新生成 Key")
 
                             }.tint(.accentColor)
                         }

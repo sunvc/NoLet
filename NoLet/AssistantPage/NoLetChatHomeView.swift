@@ -152,7 +152,7 @@ struct NoLetChatHomeView: View {
                     .frame(width: 200)
                     .minimumScaleFactor(0.5)
 
-                Text("嗨! 我是无字书")
+                Text("嗨! 我是\(NCONFIG.AppName)" )
                     .font(.title)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)

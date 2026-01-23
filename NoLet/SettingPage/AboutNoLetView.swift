@@ -252,6 +252,17 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.yellow, Color.primary)
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    manager.router = [.about, .appleServerInfo]
+                    Haptic.impact()
+                } label: {
+                    Image(systemName: "apple.logo")
+                        .symbolRenderingMode(.palette)
+                        .customForegroundStyle(.accent, Color.primary)
+                }
+            }
+            
         }
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -292,8 +303,11 @@ extension NCONFIG {
     static let pushHelp: NURL = docServer + "tutorial"
 
     static var docServer: NURL {
-        wikiServer + String(localized: "NoletLanguageLocalCode")
-    }
+        if Locale.current.language.languageCode?.identifier == "zh"{
+            return wikiServer + "/"
+        }
+        return wikiServer + "/en"
+    } 
 }
 
 #Preview {

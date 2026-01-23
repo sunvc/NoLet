@@ -15,7 +15,6 @@ import Defaults
 import SwiftUI
 
 struct ServerMonitoringView: View {
-   
     @StateObject private var manager = AppManager.shared
     // 监控数据模型
     @State private var cpuUsage: CPUUsage = .init(pidPercentage: 0.0, osPercentage: 0)
@@ -75,8 +74,8 @@ struct ServerMonitoringView: View {
             if self.timer == nil {
                 updateData()
                 self.timer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                    Task{@MainActor in 
-                        self.updateData()    
+                    Task { @MainActor in
+                        self.updateData()
                     }
                 }
                 logger.error("启动定时器")
@@ -91,13 +90,6 @@ struct ServerMonitoringView: View {
 
     // 数据更新
     private func updateData() {
-        guard errorCount < 2 else {
-            timer?.invalidate()
-            timer = nil
-            manager.router = []
-            return
-        }
-
         Task {
             do {
                 let data: ServerData = try await network.fetch(
@@ -137,7 +129,7 @@ struct ServerMonitoringView: View {
                 }
             } catch {
                 errorCount += 1
-                logger.error("\(error)" )
+                logger.error("\(error)")
                 Toast.error(title: "服务器连接失败")
             }
         }
@@ -474,3 +466,5 @@ private struct ConnectionsInfo {
 #Preview {
     ServerMonitoringView(server: PushServerModel(url: "https://example.com"))
 }
+
+

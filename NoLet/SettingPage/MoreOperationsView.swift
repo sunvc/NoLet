@@ -12,7 +12,6 @@
 //    Created by Neo on 2024/12/11.
 
 import Defaults
-
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -157,7 +156,6 @@ struct MoreOperationsView: View {
                             .scaleEffect(0.9)
                     }
                 }
-
 
                 ListButton {
                     Label {
