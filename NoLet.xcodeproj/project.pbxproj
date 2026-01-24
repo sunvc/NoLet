@@ -30,6 +30,8 @@
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
 		B5835D782DEDFFF90066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		B5835D7A2DEDFFF90066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
+		BA0712682F24D9FC005DABE5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA0712672F24D9FC005DABE5 /* MarkdownUI */; };
+		BA07126A2F24D9FC005DABE5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA0712692F24D9FC005DABE5 /* Splash */; };
 		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863D2F2311AC00CEBC4F /* MarkdownUI */; };
 		BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
@@ -403,9 +405,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				BA71767F2F233E4900D1BF03 /* Splash in Frameworks */,
+				BA0712682F24D9FC005DABE5 /* MarkdownUI in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
+				BA07126A2F24D9FC005DABE5 /* Splash in Frameworks */,
 				BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
@@ -543,6 +547,8 @@
 				BA2F863F2F2311AC00CEBC4F /* Splash */,
 				BA71767C2F233E4900D1BF03 /* MarkdownUI */,
 				BA71767E2F233E4900D1BF03 /* Splash */,
+				BA0712672F24D9FC005DABE5 /* MarkdownUI */,
+				BA0712692F24D9FC005DABE5 /* Splash */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -669,7 +675,7 @@
 				B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
-				BA71767B2F233E4900D1BF03 /* XCLocalSwiftPackageReference "../swift-markdown-ui" */,
+				BA0712662F24D9FC005DABE5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1229,13 +1235,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		BA71767B2F233E4900D1BF03 /* XCLocalSwiftPackageReference "../swift-markdown-ui" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../swift-markdown-ui";
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1283,6 +1282,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.7.1;
+			};
+		};
+		BA0712662F24D9FC005DABE5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.2;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
@@ -1380,6 +1387,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */;
 			productName = "cmark-gfm-extensions";
+		};
+		BA0712672F24D9FC005DABE5 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA0712662F24D9FC005DABE5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		BA0712692F24D9FC005DABE5 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA0712662F24D9FC005DABE5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = Splash;
 		};
 		BA2F863D2F2311AC00CEBC4F /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
