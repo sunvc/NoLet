@@ -155,7 +155,7 @@ struct ReasonButton: View {
                             Text(show ? "思考中" : "已思考")
 
                             if show {
-                                Text("...")
+                                Text(verbatim: "...")
                                     .frame(width: 18, alignment: .leading) // 防抖
                             }
 

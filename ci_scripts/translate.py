@@ -94,6 +94,7 @@ class Translate:
             return response
 
     async def trans_main(self, target_language, json_file=None, is_json=False):
+        print(f"Checking language: {target_language} with copy_lang: {self.copy_lang}")
         semaphore = asyncio.Semaphore(self.semaphore_number)
         system_message = self.get_local_tips(target_language)
         if json_file is None:
@@ -169,12 +170,12 @@ class Translate:
                     "lang": lang
                 }
         tasks = []
-        for key in results:
-            if self.copy_lang and self.copy_lang in results[key]["lang"]:
-                async def return_text():
-                    return results[key]["text"]
+        async def return_text_task(text):
+            return text
 
-                task = asyncio.create_task(return_text())
+        for key in results:
+            if self.copy_lang and self.copy_lang.lower() in results[key]["lang"].lower():
+                task = asyncio.create_task(return_text_task(results[key]["text"]))
                 print(f" Copy: {results[key]['lang']} - {key} (Skipped Translation)")
             else:
                 task = asyncio.create_task(
@@ -222,14 +223,17 @@ class Translate:
     @staticmethod
     def get_local_tips(lang_code="en"):
         return f"""
-        Role: App Localization Expert (Technical & UI)
-        Target Language: {lang_code}
-        
-        Rules:
-        1. Output ONLY the translation. No extra text.
-        2. Technical Conciseness: Use professional shorthand for technical terms (e.g., "Algo Config" instead of "Algorithm Configuration"). Prioritize UI-friendly, industry-standard abbreviations.
-        3. Protected Terms: Do NOT translate URL parameters (e.g., title=), variables, or: "无字书", "無字書", "NoLet".
-       """
+            Role: App Localization Expert (Technical & UI)
+            Target Language: {lang_code}
+            
+            Rules:
+            1. Output ONLY the translation. No extra text.
+            2. DataHub Aesthetic: For system-level or structural components, use modern, modular nomenclature instead of literal translation.
+               - Example: "Data Manager" -> "DataHub", "Message Center" -> "MsgNode", "Settings" -> "Config".
+            3. Balanced UI Text: Use professional technical terms for functional labels. Only use shorthand (e.g., "Auth", "Sync") when standard text exceeds typical UI space or for developer-facing interfaces. Do NOT over-abbreviate common user actions.
+            4. Protected Terms: Do NOT translate URL parameters (e.g., title=), variables, or: "无字书", "無字書", "NoLet".
+            5. Style: Professional, clean, and industry-standard.
+            """
 
     @staticmethod
     def get_other_tips(file_type, lang_code="en"):
@@ -281,4 +285,4 @@ class Translate:
 
 
 if __name__ == '__main__':
-    Translate(copy_lang="zh", mode=0).run()
+    Translate(mode=0).run()

@@ -34,7 +34,7 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    private func tabLabel(title: String, icon: String) -> some View {
+    private func tabLabel(title: LocalizedStringKey, icon: String) -> some View {
         Label(title, systemImage: icon)
             .symbolRenderingMode(.palette)
             .customForegroundStyle(.green, .primary)
@@ -129,7 +129,7 @@ struct ContentView: View {
                                 NoLetChatHomeView().router(manager)
                             }
                         } label: {
-                            tabLabel(title: NCONFIG.AppName, icon: "apple.intelligence")
+                            tabLabel(title: "\(NCONFIG.AppName)", icon: "apple.intelligence")
                         }
                     }
                 }
@@ -149,7 +149,7 @@ struct ContentView: View {
                             NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
-                            tabLabel(title: NCONFIG.AppName, icon: "atom")
+                            tabLabel(title: "\(NCONFIG.AppName)", icon: "atom")
                         }
                         .tag(TabPage.assistant)
                     }

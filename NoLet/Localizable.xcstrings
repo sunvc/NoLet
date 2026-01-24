@@ -6,53 +6,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ Parameters can be used individually\n* /content or /title/content\n* group: group name, default is `default` if not specified\n* badge: custom badge, optional value -1...\n* ttl: message retention time, optional value 0..."
+            "value" : "⚠️ Parameters can be used independently\n* /content or /title/content\n* group: Group name, omit to show `Default`\n* badge: Custom badge, optional value -1...\n* ttl: Message retention time, optional value 0..."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️パラメータは個別に使用可能\n* /内容 または /タイトル/内容\n* group: グループ名、未指定時は「デフォルト」を表示\n* badge: カスタムバッジ オプション値 -1...\n* ttl: メッセージ保持時間 オプション値 0..."
+            "value" : "⚠️ パラメータは個別に使用可能\n* /内容 または /タイトル/内容\n* group: グループ名、未指定時は「デフォルト」を表示\n* badge: カスタムバッジ オプション値 -1...\n* ttl: メッセージ保存期間 オプション値 0..."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️ 매개변수는 독립적으로 사용 가능\n* /내용 또는 /제목/내용\n* group: 그룹명, 미입력 시 `기본`으로 표시 안 함\n* badge: 커스텀 뱃지 선택값 -1...\n* ttl: 메시지 유지 시간 선택값 0..."
+            "value" : "⚠️ 매개변수는 개별적으로 사용 가능\n* /내용 또는 /제목/내용\n* group: 그룹명, 미전송 시 `기본`으로 표시\n* badge: 커스텀 뱃지 옵션값 -1...\n* ttl: 메시지 보존 시간 옵션값 0..."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "‼️参数可单独使用\n* /内容 或者 /标题/内容\n* group: 分组名，不传显示 `默认`\n* badge： 自定义角标 可选值 -1...\n* ttl: 消息保存时间 可选值 0..."
-          }
-        }
-      }
-    },
-    "..." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "..."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "..."
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "..."
+            "value" : "⚠️参数可单独使用\n* /内容 或者 /标题/内容\n* group: 分组名，不传显示 `默认`\n* badge： 自定义角标 可选值 -1...\n* ttl: 消息保存时间 可选值 0..."
           }
         }
       }
@@ -90,25 +62,53 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* Top-right menu: examples, grouping\n* Click image / Double-click message for fullscreen view\n* Fullscreen: translate, summarize, read aloud\n* Left-swipe delete, right-swipe copy & AI answer."
+            "value" : "* Top-right menu: Demo, Grouping\n* Click image / Double-click message for full-screen view\n* Full-screen view, translation, summary, TTS\n* Swipe left to delete, swipe right to copy & AI answer."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* 右上角機能メニュー、使用例、グループ分け\n* 画像をシングルクリック/メッセージをダブルクリックで全画面表示\n* 全画面表示、翻訳、要約、朗読\n* 左スワイプで削除、右スワイプでコピーとAI回答"
+            "value" : "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "* 우측 상단 기능 메뉴, 예시 사용, 그룹화\n* 이미지 클릭/더블클릭 메시지 전체화면 보기\n* 전체화면 보기, 번역, 요약, 낭독\n* 왼쪽 슬라이드 삭제, 오른쪽 슬라이드 복사 및 AI 답변"
+            "value" : "* 우측 상단 기능 메뉴, 예시 사용, 그룹화\n* 이미지 클릭/메시지 더블클릭 전체화면 보기\n* 전체화면 보기, 번역, 요약, 낭독\n* 왼쪽 슬라이드 삭제, 오른쪽 슬라이드 복사 및 AI 응답"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
           }
         }
       }
@@ -124,7 +124,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@号秘密鍵"
+            "value" : "%@号キー"
           }
         },
         "ko" : {
@@ -248,7 +248,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%d条消息"
+            "value" : "%d 条消息"
           }
         }
       }
@@ -444,13 +444,38 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld月前"
+            "value" : "%lld个月前"
           }
         }
       }
     },
     "⚠️ %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ %@"
+          }
+        }
+      }
     },
     "❗️需要配置大模型" : {
       "localizations" : {
@@ -469,13 +494,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "⚠️대형 모델 설정 필요"
+            "value" : "⚠️ 대형 모델 구성 필요"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "❗️需要配置大模型"
+            "value" : "⚠️ 需配置大模型"
           }
         }
       }
@@ -485,7 +510,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1w"
+            "value" : "1 week"
           }
         },
         "ja" : {
@@ -513,7 +538,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1d"
+            "value" : "1 day"
           }
         },
         "ja" : {
@@ -541,7 +566,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jan"
+            "value" : "1 month"
           }
         },
         "ja" : {
@@ -587,7 +612,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1月前"
+            "value" : "1个月前"
           }
         }
       }
@@ -643,35 +668,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3月前"
-          }
-        }
-      }
-    },
-    "123" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
+            "value" : "3个月前"
           }
         }
       }
@@ -709,13 +706,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "APP Assistant"
+            "value" : "App Assistant"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "APPアシスタント"
+            "value" : "Appアシスタント"
           }
         },
         "ko" : {
@@ -727,7 +724,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "APP助手"
+            "value" : "App助手"
           }
         }
       }
@@ -737,13 +734,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Open Source Address"
+            "value" : "App Source"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリのソースコード"
+            "value" : "Appソースコードリポジトリ"
           }
         },
         "ko" : {
@@ -765,25 +762,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Config"
+            "value" : "Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリ設定"
+            "value" : "App設定"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 설정"
+            "value" : "App Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App配置"
+            "value" : "App Config"
           }
         }
       }
@@ -793,7 +790,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authorization failed"
+            "value" : "Auth Failed"
           }
         },
         "ja" : {
@@ -811,7 +808,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authorization failed"
+            "value" : "授权失败"
           }
         }
       }
@@ -845,7 +842,32 @@
       }
     },
     "Fetching status..." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetching status..."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステータス取得中..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상태 확인 중..."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在获取状态..."
+          }
+        }
+      }
     },
     "GET方法需要URIConponent编码" : {
       "localizations" : {
@@ -858,7 +880,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GETメソッドはURIComponentエンコードが必要です"
+            "value" : "GETメソッドはURIコンポーネントのエンコードが必要です"
           }
         },
         "ko" : {
@@ -870,7 +892,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GET方法需要URIConponent编码"
+            "value" : "GET方法需要URI编码"
           }
         }
       }
@@ -880,19 +902,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud service temporarily unavailable, please try again later"
+            "value" : "iCloud service is temporarily unavailable, please try again later"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudサービスは一時的に利用できません。後でもう一度お試しください。"
+            "value" : "iCloudサービスは一時的に利用できません。後ほどもう一度お試しください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도해 주세요."
+            "value" : "iCloud 서비스를 일시적으로 사용할 수 없습니다. 잠시 후 다시 시도해 주세요."
           }
         },
         "zh-Hans" : {
@@ -908,19 +930,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud access restricted, possibly due to parental controls or MDM policy"
+            "value" : "iCloud access restricted, possibly due to parental controls or MDM device management policies."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudアクセス制限、ペアレンタルコントロールまたはMDMポリシーによる可能性があります"
+            "value" : "iCloudアクセス制限、保護者による制限またはMDMデバイス管理ポリシーが原因の可能性があります"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud 접근 제한됨, 가족 제어 또는 MDM 장치 관리 정책으로 인한 가능성 있음"
+            "value" : "iCloud 접근 제한됨. 가족 제어 또는 MDM 장치 관리 정책으로 인한 것일 수 있습니다."
           }
         },
         "zh-Hans" : {
@@ -942,7 +964,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudアカウント利用可能"
+            "value" : "iCloudアカウントが利用可能"
           }
         },
         "ko" : {
@@ -970,7 +992,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudステータス確認"
+            "value" : "iCloudステータスチェック"
           }
         },
         "ko" : {
@@ -998,7 +1020,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud状態確認中..."
+            "value" : "iCloudステータス確認中..."
           }
         },
         "ko" : {
@@ -1020,25 +1042,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IV can be randomly generated, but if it's random, it needs to be passed in the iv parameter."
+            "value" : "IV can be randomly generated, but if it's random, it must be passed via the iv parameter."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IVはランダム生成可能ですが、ランダムの場合はivパラメータで渡す必要があります。"
+            "value" : "IVはランダム生成可能ですが、ランダムの場合はivパラメータとして渡す必要があります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IV는 무작위로 생성될 수 있지만, 무작위일 경우 iv 파라미터를 통해 전달해야 합니다."
+            "value" : "IV는 무작위로 생성될 수 있지만, 무작위인 경우 IV 매개변수로 전달해야 합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IV可以是随机生成的，但如果是随机的就需要放在 iv 参数里传递。"
+            "value" : "IV可以是随机生成的，但如果是随机的就需要放在iv参数里传递。"
           }
         }
       }
@@ -1094,7 +1116,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KEY长度:"
+            "value" : "密钥长度："
           }
         }
       }
@@ -1128,7 +1150,32 @@
       }
     },
     "Retry" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再試行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재시도"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
+        }
+      }
     },
     "URL" : {
       "localizations" : {
@@ -1181,7 +1228,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URLScheme或者网址"
+            "value" : "URLScheme 或 网址"
           }
         }
       }
@@ -1191,25 +1238,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "URL attributes can open URLScheme. Clicking a notification message triggers automatic redirection; foreground receipt of a message triggers automatic redirection."
+            "value" : "The `url` attribute enables URLScheme functionality. Clicking a notification message triggers automatic redirection; foreground message reception also triggers automatic redirection."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "url属性可以打开URLScheme，点击通知消息自动跳转，前台收到消息自动跳转"
+            "value" : "URL属性可以打开URLScheme，点击通知消息自动跳转，前台收到消息自动跳转"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "url 속성으로 URLScheme를 열 수 있으며, 알림 메시지 클릭 시 자동 전환, 프론트엔드에서 메시지 수신 시 자동 전환"
+            "value" : "url 속성은 URLScheme을 열 수 있으며, 알림 메시지를 클릭하면 자동으로 전환됩니다. 포그라운드에서 메시지를 수신하면 자동으로 전환됩니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转"
+            "value" : "url属性可打开URLScheme，点击通知消息自动跳转，前台收到消息自动跳转"
           }
         }
       }
@@ -1225,7 +1272,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1週間前"
+            "value" : "1週前"
           }
         },
         "ko" : {
@@ -1253,13 +1300,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "クラウドにアップロード"
+            "value" : "クラウドへアップロード"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클라우드에 업로드"
+            "value" : "클라우드 업로드"
           }
         },
         "zh-Hans" : {
@@ -1275,13 +1322,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload Ringtone"
+            "value" : "Upload Alert Tone"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アップロード音声"
+            "value" : "アップロード通知音"
           }
         },
         "ko" : {
@@ -1309,19 +1356,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ドロップダウン画像表示"
+            "value" : "プルダウンで画像を表示"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "드롭다운 메시지에 이미지 표시"
+            "value" : "드래그하여 메시지 이미지 표시"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下拉消息会显示图片"
+            "value" : "下拉刷新显示图片"
           }
         }
       }
@@ -1331,19 +1378,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download Cloud Server"
+            "value" : "CloudSync"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "クラウドサーバーをダウンロード"
+            "value" : "クラウドサーバー"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클라우드 서버 다운로드"
+            "value" : "CloudSync"
           }
         },
         "zh-Hans" : {
@@ -1393,13 +1440,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ダウンロード成功"
+            "value" : "ダウンロード完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다운로드 성공"
+            "value" : "다운로드 완료"
           }
         },
         "zh-Hans" : {
@@ -1439,7 +1486,32 @@
       }
     },
     "不可用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unavailable"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用不可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 불가"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不可用"
+          }
+        }
+      }
     },
     "两周前" : {
       "localizations" : {
@@ -1474,19 +1546,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中文"
+            "value" : "Chinese"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中国語"
+            "value" : "日本語"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "중국어"
+            "value" : "한국어"
           }
         },
         "zh-Hans" : {
@@ -1502,25 +1574,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuring"
+            "value" : "Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中進設定"
+            "value" : "構成設定"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알고리즘 설정"
+            "value" : "Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中进行配置"
+            "value" : "配置中"
           }
         }
       }
@@ -1530,13 +1602,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Why Network Permissions?"
+            "value" : "Why is network permission required?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "なぜネットワーク権限が必要ですか？"
+            "value" : "ネットワーク権限が必要な理由は？"
           }
         },
         "ko" : {
@@ -1548,7 +1620,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "为什么需要网络权限？"
+            "value" : "为何需要网络权限？"
           }
         }
       }
@@ -1586,7 +1658,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cloud Icon"
+            "value" : "CloudIcon"
           }
         },
         "ja" : {
@@ -1654,7 +1726,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 실행 결과"
+            "value" : "Task Result"
           }
         },
         "zh-Hans" : {
@@ -1670,7 +1742,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You can create a new custom prompt based on it"
+            "value" : "You can create a new custom prompt based on it."
           }
         },
         "ja" : {
@@ -1682,7 +1754,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이를 기반으로 새 사용자 지정 프롬프트를 생성할 수 있습니다."
+            "value" : "이를 기반으로 새로운 사용자 지정 프롬프트를 생성할 수 있습니다"
           }
         },
         "zh-Hans" : {
@@ -1698,19 +1770,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You are a professional summarization assistant, skilled at extracting key information with concise and accurate language.\n\nBased on the following content, please distill 2-3 sentences that clearly outline the core viewpoint and emotional tone.\n\nOutput only the summarized content, without any explanation or commentary.\n\nHere is the content, please reply directly in %@ language."
+            "value" : "You are a professional summarization assistant, skilled at extracting key information with concise and precise language.\nBased on the following content, provide a 2~3 sentence summary that clearly outlines the core viewpoints and emotional tone.\nOutput only the summary content, without any explanation or commentary.\nHere is the content, please reply directly in %@ language."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "あなたはプロの要約アシスタントで、簡潔かつ正確な言葉でキー情報を抽出するのが得意です。\n以下の内容に基づき、核心的な観点と感情の基調を明確に概括した2〜3文を抽出してください。\n要約内容のみを出力し、説明や解説は追加しないでください。\n以下に内容を提供しますので、直接 %@ 言語で返答してください。"
+            "value" : "あなたはプロフェッショナルな要約アシスタントであり、簡潔で正確な言語でキー情報を抽出することが得意です。\n以下の内容に基づいて、2〜3文で核心的な視点と感情の基調を明確に要約してください。\n要約内容のみを出力し、説明や注釈は追加しないでください。\n以下に内容を提供しますので、直接 %@ 言語で返信してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전문 요약 도우미로, 핵심 정보를 간결하고 정확하게 추출합니다. 아래 내용을 바탕으로 2~3문장으로 핵심 관점과 감정적 기조를 명확히 요약해 주세요. 설명 없이 요약 내용만 출력합니다."
+            "value" : "전문적인 요약 도우미로서, 핵심 정보를 간결하고 정확하게 추출하는 데 능숙합니다. 아래 내용을 바탕으로 2~3문장으로 핵심 관점과 감정적 기조를 명확히 요약해 주세요. 요약 내용만 출력하고, 설명이나 해설은 추가하지 마세요. 지금부터 내용을 드리겠습니다, 직접 %@ 언어로 답변해 주세요."
           }
         },
         "zh-Hans" : {
@@ -1726,25 +1798,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You are a professional translator, proficient in multiple languages, capable of accurately conveying the original meaning and style. Please follow these guidelines when translating:\n1. Maintain consistent tone and faithfully reproduce the original style.\n2. Make reasonable adjustments to align with the target language's usage habits and culture.\n3. Prioritize natural and fluent expression; return only the translation without adding any other content.\nBelow is the content I provide; please translate directly according to %@."
+            "value" : "You are a professional translator, proficient in multiple languages, capable of accurately conveying the original meaning and style. Please adhere to the following points when translating:\n1. Maintain consistent tone and faithfully preserve the original style.\n2. Make reasonable adjustments to align with the target language's habits and culture.\n3. Prioritize natural, fluent expression. Return only the translation without adding any other content.\nBelow is the content I will provide; please translate it directly according to %@."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "あなたはプロの翻訳者であり、多言語に精通し、原文の意味とスタイルを正確に伝えることができます。翻訳時は以下のポイントに従ってください：\n1. 一貫した口調を保ち、原文のスタイルを忠実に再現すること。\n2. 目標言語の習慣と文化に合うよう適切に調整すること。\n3. 自然で流暢な表現を優先し、翻訳のみを返し、追加の内容は一切含めないこと。\n以下に内容を提供しますので、%@ に従って直接翻訳してください。"
+            "value" : "あなたはプロの翻訳者であり、複数の言語に精通し、原文の意味とスタイルを正確に伝えることができます。翻訳時には以下のポイントに従ってください：\n1. 一貫した口調を保ち、原文のスタイルを忠実に再現すること。\n2. 目標言語の習慣と文化に合わせて適切に調整すること。\n3. 自然で流暢な表現を優先し、翻訳のみを返し、他の内容を追加しないこと。\n以下の内容を、%@ に従って直接翻訳してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신은 전문 번역가로서, 다국어에 능통하며 원문의 의미와 스타일을 정확히 전달할 수 있습니다. 번역 시 다음 사항을 준수해 주세요:\n1. 어조를 일관되게 유지하고, 원문의 스타일을 충실히 반영하세요.\n2. 목표 언어의 사용 습관과 문화에 맞게 적절히 조정하세요.\n3. 자연스럽고 유창한 표현을 우선하며, 번역 결과만 반환하고 다른 내용은 추가하지 마세요.\n이제 내용을 드리겠으니, %@에 따라 직접 번역해 주세요."
+            "value" : "당신은 전문 번역가로, 다국어에 능통하며 원문의 의미와 스타일을 정확히 전달할 수 있습니다. 번역 시 다음 사항을 준수해 주세요:\n1. 어조를 일관되게 유지하고, 원문의 스타일을 충실히 재현합니다.\n2. 목표 언어의 사용 습관과 문화에 맞게 적절히 조정합니다.\n3. 자연스럽고 유창한 표현을 우선하며, 번역만 반환하고 다른 내용은 추가하지 않습니다.\n아래 내용을 %@에 따라 직접 번역해 주세요."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你是一名专业翻译，精通多国语言，能够准确传达原文含义与风格。翻译时请遵循以下要点：\n1. 保持语气一致，忠实还原原文风格。\n2. 合理调整以符合目标语言习惯与文化。\n3. 优先选择自然、通顺的表达方式, 只返回翻译，不要添加任何其他内容。\n下面我给你内容，直接按照 %@ 进行翻译."
+            "value" : "你是一名专业翻译，精通多国语言，能够准确传达原文含义与风格。翻译时请遵循以下要点：\n1. 保持语气一致，忠实还原原文风格。\n2. 合理调整以符合目标语言习惯与文化。\n3. 优先选择自然、通顺的表达方式，只返回翻译，不要添加任何其他内容。\n下面我给你内容，直接按照 %@ 进行翻译。"
           }
         }
       }
@@ -1754,25 +1826,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You are an intelligent assistant integrated into the NoLet App. You can use the `manage_app` tool to control the application (settings, navigation, data, cache, message management). When a user requests to perform any operation supported by this tool (e.g., open settings, clear cache, change icon, delete last week's messages), you must immediately call 'manage_app' and provide the correct parameters."
+            "value" : "You are an intelligent assistant integrated into the NoLet App. You can use the `manage_app` tool to control the application (configuration, navigation, data, cache, message management). When a user requests to perform any operation supported by this tool (e.g., open settings, clear cache, change icon, delete last week's messages), you must immediately call 'manage_app' and provide the correct parameters."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "あなたはNoLet Appに統合されたAIアシスタントです。manage_appツールを使用してアプリを制御（設定、ナビゲーション、データ、キャッシュ、メッセージ管理）できます。ユーザーがこのツールでサポートされる操作（例：設定を開く、キャッシュをクリア、アイコンを変更、先週のメッセージを削除）を要求した場合、直ちに'manage_app'を呼び出し、適切なパラメータを提供する必要があります。"
+            "value" : "あなたはNoLet Appに統合されたAIアシスタントです。manage_appツールを使用してアプリケーションの制御（設定、ナビゲーション、データ、キャッシュ、メッセージ管理）が可能です。ユーザーがこのツールでサポートされる操作（例：設定を開く、キャッシュをクリア、アイコンを変更、先週のメッセージを削除）を要求した場合、直ちに'manage_app'を呼び出し、適切なパラメータを提供する必要があります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신은 NoLet App에 통합된 AI 어시스턴트입니다. manage_app 도구를 사용하여 앱을 제어(설정, 네비게이션, 데이터, 캐시, 메시지 관리)할 수 있습니다. 사용자가 이 도구가 지원하는 작업(예: 설정 열기, 캐시 지우기, 아이콘 변경, 지난 주 메시지 삭제)을 요청할 때, 즉시 'manage_app'을 호출하고 올바른 파라미터를 제공해야 합니다."
+            "value" : "당신은 NoLet App에 통합된 AI 어시스턴트입니다. manage_app 도구를 사용하여 애플리케이션(설정, 네비게이션, 데이터, 캐시, 메시지 관리)을 제어할 수 있습니다. 사용자가 이 도구가 지원하는 작업(예: 설정 열기, 캐시 지우기, 아이콘 변경, 지난주 메시지 삭제)을 실행하도록 요청할 때, 당신은 즉시 'manage_app'을 호출하고 올바른 매개변수를 제공해야 합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你是由 NoLet App 集成的智能助手. 你可以使用 manage_app 工具来控制应用(设置、导航、数据、缓存、消息管理).当用户要求执行此工具支持的任何操作(例如: 打开设置,清除缓存,更改图标,删除上周的消息)时，你必须立即调用 'manage_app' 并提供正确的参数."
+            "value" : "你是由 NoLet App 集成的智能助手。你可以使用 manage_app 工具来控制应用（设置、导航、数据、缓存、消息管理）。当用户要求执行此工具支持的任何操作（例如：打开设置、清除缓存、更改图标、删除上周的消息）时，你必须立即调用 'manage_app' 并提供正确的参数。"
           }
         }
       }
@@ -1788,19 +1860,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "あなたが見ているものこそ、あなたが得たものだ！"
+            "value" : "見たものが、あなたの手に入るものだ！"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네가 본 것이 네가 얻는 것이다!"
+            "value" : "보는 것이 곧 얻는 것이다!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你看到的，就是你得到的!"
+            "value" : "所见即所得！"
           }
         }
       }
@@ -1816,13 +1888,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AES暗号化データを使用し、サーバーに送信"
+            "value" : "AES暗号化データを使用し、サーバーに送信します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AES 암호화 데이터를 서버로 전송"
+            "value" : "AES 암호화 데이터를 사용하여 서버로 전송"
           }
         },
         "zh-Hans" : {
@@ -1838,13 +1910,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use Docs"
+            "value" : "Docs"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ドキュメントの使用"
+            "value" : "ドキュメント使用"
           }
         },
         "ko" : {
@@ -1866,7 +1938,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usage"
+            "value" : "Usage Guide"
           }
         },
         "ja" : {
@@ -1894,19 +1966,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use this prompt to create a new prompt"
+            "value" : "Create new prompt using this prompt"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このプロンプトを使用して新しいプロンプトを作成"
+            "value" : "このプロンプトで新規プロンプトを作成"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 프롬프트를 사용하여 새 프롬프트 생성"
+            "value" : "이 프롬프트로 새 프롬프트 생성"
           }
         },
         "zh-Hans" : {
@@ -1922,7 +1994,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Example"
+            "value" : "Example Usage"
           }
         },
         "ja" : {
@@ -1978,7 +2050,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set up your App using natural language"
+            "value" : "Customize your App using natural language"
           }
         },
         "ja" : {
@@ -2118,19 +2190,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saved"
+            "value" : "Saved successfully"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存成功"
+            "value" : "保存完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장 성공"
+            "value" : "저장 완료"
           }
         },
         "zh-Hans" : {
@@ -2152,13 +2224,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存ファイル"
+            "value" : "ファイルを保存"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장 파일"
+            "value" : "파일 저장"
           }
         },
         "zh-Hans" : {
@@ -2186,7 +2258,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그룹 이름 수정"
+            "value" : "그룹명 수정"
           }
         },
         "zh-Hans" : {
@@ -2202,13 +2274,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modified successfully"
+            "value" : "Update Successful"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "変更成功"
+            "value" : "変更完了"
           }
         },
         "ko" : {
@@ -2258,25 +2330,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Edit Config"
+            "value" : "Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定変更"
+            "value" : "Config"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 수정"
+            "value" : "Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "修改配置"
+            "value" : "Config"
           }
         }
       }
@@ -2286,19 +2358,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allow app to receive push notifications via network"
+            "value" : "Allow app to receive push notifications over network"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリがネットワーク経由でプッシュ通知を受信することを許可"
+            "value" : "ネットワーク経由でのプッシュ通知受信を許可"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱이 네트워크를 통해 푸시 알림 수신 허용"
+            "value" : "네트워크 푸시 알림 수신 허용"
           }
         },
         "zh-Hans" : {
@@ -2314,7 +2386,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Full Screen"
+            "value" : "Full Screen View"
           }
         },
         "ja" : {
@@ -2326,7 +2398,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전체 화면"
+            "value" : "전체 화면 보기"
           }
         },
         "zh-Hans" : {
@@ -2572,7 +2644,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ビルトインアラート"
+            "value" : "内蔵アラート"
           }
         },
         "ko" : {
@@ -2690,7 +2762,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유 구성"
+            "value" : "Share Config"
           }
         },
         "zh-Hans" : {
@@ -2774,7 +2846,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공식 서버 또는 사용자 지정 서버로 전환"
+            "value" : "공식 서버 또는 사용자 지정 서버 전환"
           }
         },
         "zh-Hans" : {
@@ -2790,7 +2862,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switch successful"
+            "value" : "Switched Successfully"
           }
         },
         "ja" : {
@@ -2802,7 +2874,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전환 성공"
+            "value" : "전환 완료"
           }
         },
         "zh-Hans" : {
@@ -2818,7 +2890,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switch Display"
+            "value" : "Toggle Display"
           }
         },
         "ja" : {
@@ -2908,7 +2980,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「さっき」"
+            "value" : "さっき"
           }
         },
         "ko" : {
@@ -2930,7 +3002,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Created"
+            "value" : "Creation Time"
           }
         },
         "ja" : {
@@ -2964,13 +3036,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリ初期化"
+            "value" : "App初期化"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 초기화"
+            "value" : "App 초기화"
           }
         },
         "zh-Hans" : {
@@ -3020,7 +3092,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${date} 以前のメッセージを削除"
+            "value" : "${date}以前のメッセージを削除"
           }
         },
         "ko" : {
@@ -3088,7 +3160,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "删除后不能还原!!!"
+            "value" : "删除后无法恢复！！！"
           }
         }
       }
@@ -3098,13 +3170,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Chat"
+            "value" : "Delete Conversation"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "会話を削除"
+            "value" : "チャット削除"
           }
         },
         "ko" : {
@@ -3126,13 +3198,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Successful"
+            "value" : "Deleted successfully"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "削除成功"
+            "value" : "削除完了"
           }
         },
         "ko" : {
@@ -3160,7 +3232,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべてのグループを削除"
+            "value" : "全グループ削除"
           }
         },
         "ko" : {
@@ -3188,7 +3260,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メッセージを削除"
+            "value" : "メッセージ削除"
           }
         },
         "ko" : {
@@ -3210,7 +3282,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete Mute Group"
+            "value" : "Delete Silent Group"
           }
         },
         "ja" : {
@@ -3278,7 +3350,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "부제목"
+            "value" : "서브타이틀"
           }
         },
         "zh-Hans" : {
@@ -3294,7 +3366,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Insufficient Space"
+            "value" : "Insufficient Storage"
           }
         },
         "ja" : {
@@ -3306,7 +3378,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "남은 공간 부족"
+            "value" : "저장 공간 부족"
           }
         },
         "zh-Hans" : {
@@ -3356,7 +3428,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暗号化後のデータ（Base64エンコード）"
+            "value" : "暗号化済みデータ（Base64エンコード）"
           }
         },
         "ko" : {
@@ -3368,7 +3440,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "加密后的数据（Base64编码"
+            "value" : "加密后数据（Base64编码）"
           }
         }
       }
@@ -3378,19 +3450,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Encrypted requests require special character handling."
+            "value" : "Encrypted requests require special character handling"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暗号化後リクエストは特殊文字の処理に注意が必要"
+            "value" : "暗号化後のリクエストにおける特殊文字の処理について"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "암호화 후 요청 시 특수 문자 처리 주의"
+            "value" : "암호화 후 요청 시 특수 문자 처리에 유의하세요."
           }
         },
         "zh-Hans" : {
@@ -3418,7 +3490,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "로딩 중"
+            "value" : "로드 중"
           }
         },
         "zh-Hans" : {
@@ -3468,7 +3540,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ファイルを読み込んでいます..."
+            "value" : "ファイルを読み込み中..."
           }
         },
         "ko" : {
@@ -3546,19 +3618,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hindi"
+            "value" : "Indonesian"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ヒンディー語"
+            "value" : "インドネシア語"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "힌디어"
+            "value" : "인도네시아어"
           }
         },
         "zh-Hans" : {
@@ -3592,7 +3664,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "印尼语"
+            "value" : "印地语"
           }
         }
       }
@@ -3620,7 +3692,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "危险操作!!! 恢复初始化."
+            "value" : "危险操作!!! 恢复初始化。"
           }
         }
       }
@@ -3658,13 +3730,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instant Notification"
+            "value" : "Instant Notifications"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "即時通知"
+            "value" : "InstantNotify"
           }
         },
         "ko" : {
@@ -3676,7 +3748,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "即时通知"
+            "value" : "MsgNode"
           }
         }
       }
@@ -3686,19 +3758,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "History Dialogue"
+            "value" : "History Dialog"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "履歴対話"
+            "value" : "履歴チャット"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "히스토리 대화"
+            "value" : "History"
           }
         },
         "zh-Hans" : {
@@ -3726,13 +3798,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "히스토리 서버"
+            "value" : "History Server"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "历史服务器"
+            "value" : "History Server"
           }
         }
       }
@@ -3770,7 +3842,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "History Log"
+            "value" : "History"
           }
         },
         "ja" : {
@@ -3782,7 +3854,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "히스토리"
+            "value" : "기록"
           }
         },
         "zh-Hans" : {
@@ -3804,13 +3876,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "評価なし"
+            "value" : "評価を削除"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "평점 제거"
+            "value" : "평가 제거"
           }
         },
         "zh-Hans" : {
@@ -3832,13 +3904,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "パラメータ不全"
+            "value" : "パラメータ不足"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "파라미터 불완전"
+            "value" : "파라미터 불충분"
           }
         },
         "zh-Hans" : {
@@ -3910,7 +3982,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parameter length incorrect"
+            "value" : "Parameter length is incorrect"
           }
         },
         "ja" : {
@@ -3922,7 +3994,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "파라미터 길이 불일치"
+            "value" : "매개변수 길이 오류"
           }
         },
         "zh-Hans" : {
@@ -3950,7 +4022,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더블클릭 전체화면 표시"
+            "value" : "전체 화면으로 전환"
           }
         },
         "zh-Hans" : {
@@ -3966,7 +4038,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Found %lld devices"
+            "value" : "Found %lld Devices"
           }
         },
         "ja" : {
@@ -4034,7 +4106,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기기로 알림 보내기"
+            "value" : "디바이스로 알림 전송"
           }
         },
         "zh-Hans" : {
@@ -4090,13 +4162,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "확장 기능 취소"
+            "value" : "확장 기능 비활성화"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "取消扩展功能"
+            "value" : "禁用扩展功能"
           }
         }
       }
@@ -4106,25 +4178,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Customizable push notification alerts"
+            "value" : "Customizable notification tones for push settings"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通知音のカスタマイズが可能"
+            "value" : "プッシュ通知のカスタムサウンド設定が可能"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "푸시 알림 설정에 다양한 벨소리 적용 가능"
+            "value" : "푸시 알림에 맞춤 벨소리 설정 가능"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可以为推送设置不同的铃声"
+            "value" : "可为推送设置不同铃音"
           }
         }
       }
@@ -4134,31 +4206,56 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interrupt Level"
+            "value" : "Notification Severity Level"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通知設定の中断レベルを設定可能"
+            "value" : "通知設定の中断レベル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "통지 설정 중단 수준"
+            "value" : "중단 수준 알림 설정 가능"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可对通知设置中断级别"
+            "value" : "可中断通知级别"
           }
         }
       }
     },
     "可用" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Available"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用可能"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 가능"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可用"
+          }
+        }
+      }
     },
     "可连接" : {
       "localizations" : {
@@ -4193,25 +4290,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optional parameter values:\n- passive: Only added to list, no screen alert\n- active: Default value, system immediately displays notification\n- timeSensitive: Time-sensitive notification, visible in Focus Mode\n- critical: ⚠️ Important alert, normal alert with sound or in Focus Mode\n* Parameters can use 0-10 as substitutes, see documentation for details"
+            "value" : "Optional parameter values:\n- passive: Only added to the list, no screen-on alert.\n- active: Default value, system will immediately turn on the screen to display the notification.\n- timeSensitive: Time-sensitive notification, can display in Focus mode.\n- critical: ⚠️ Critical alert, can trigger normally in silent or Focus mode.\n* Parameters can use 0-10 as substitutes, see documentation for details."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オプションパラメータ値:\n- passive: リストに追加のみ、画面表示通知なし\n- active: デフォルト値、システムが即座に画面表示通知\n- timeSensitive: 時効性通知、フォーカスモードで通知表示可能\n- critical: ⚠️重要アラート、サイレントまたはフォーカスモードでも正常に通知\n* パラメータは0-10で代替可能、詳細はドキュメント参照"
+            "value" : "オプションパラメータ値:\n- passive: リストに追加のみ、画面表示通知なし\n- active: デフォルト値、システムが即時画面表示通知\n- timeSensitive: 時効性通知、フォーカスモードでも表示可能\n- critical: ⚠️重要アラート、サイレントまたはフォーカスモードでも正常に通知\n* パラメータは0-10の数値で代替可能、詳細はドキュメントを参照"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "선택적 매개변수 값:\n- passive: 목록에만 추가, 화면 알림 없음\n- active: 기본값, 시스템이 즉시 화면 알림 표시\n- timeSensitive: 시효성 알림, 집중 모드에서도 알림 표시 가능\n- critical: ⚠️ 중요 알림, 무음 또는 집중 모드에서도 정상 알림\n* 매개변수는 0-10으로 대체 가능, 자세한 내용은 문서 참조"
+            "value" : "선택적 매개변수 값:\n- passive: 목록에만 추가, 화면 표시 알림 없음\n- active: 기본값, 시스템이 즉시 화면에 알림 표시\n- timeSensitive: 시효성 알림, 집중 모드에서도 알림 표시 가능\n- critical: ⚠️ 중요 알림, 음소거 또는 집중 모드에서도 정상 알림\n* 매개변수는 0-10으로 대체 가능, 자세한 내용은 문서 참조"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可选参数值:\n- passive：仅添加到列表，不会亮屏提醒\n- active： 默认值，系统会立即亮屏显示通知。\n- timeSensitive:  时效性通知,专注模式下可显示通知。\n- critical: ‼️重要提醒，静音或专注模式可正常提醒\n* 参数可使用 0-10代替，具体查看文档"
+            "value" : "可选参数值：\n- passive：仅添加到列表，不会亮屏提示\n- active：默认值，系统会立即亮屏显示通知。\n- timeSensitive：时效性通知，专注模式下可显示通知。\n- critical：⚠️重要提醒，静音或专注模式下可正常提醒\n* 参数可使用0-10代替，具体查看文档"
           }
         }
       }
@@ -4227,7 +4324,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべての通知を同期"
+            "value" : "全鈴同期"
           }
         },
         "ko" : {
@@ -4239,7 +4336,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同步所有铃声"
+            "value" : "同步所有铃音"
           }
         }
       }
@@ -4255,19 +4352,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "おっす！ 私は%@です"
+            "value" : "こんにちは！私は%@です"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "안녕! 나는 %@"
+            "value" : "안녕하세요! 저는%@입니다"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "嗨! 我是%@"
+            "value" : "嘿！我是%@"
           }
         }
       }
@@ -4311,7 +4408,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アイコン残高"
+            "value" : "アイコン割り当て残数"
           }
         },
         "ko" : {
@@ -4345,7 +4442,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 Key"
+            "value" : "이미지Key"
           }
         },
         "zh-Hans" : {
@@ -4379,7 +4476,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "图片key重复"
+            "value" : "图片Key重复"
           }
         }
       }
@@ -4423,13 +4520,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像削除成功"
+            "value" : "画像削除完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 삭제 성공"
+            "value" : "이미지 삭제 완료"
           }
         },
         "zh-Hans" : {
@@ -4451,13 +4548,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像保存"
+            "value" : "画像アーカイブ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 저장"
+            "value" : "이미지 아카이브"
           }
         },
         "zh-Hans" : {
@@ -4479,7 +4576,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像が読み込まれていません"
+            "value" : "画像未読み込み"
           }
         },
         "ko" : {
@@ -4569,13 +4666,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새 계정 추가"
+            "value" : "신규 계정 추가"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "增加新账户"
+            "value" : "添加新账户"
           }
         }
       }
@@ -4585,25 +4682,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add New Data"
+            "value" : "Add New Resource"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新規データの追加"
+            "value" : "新規データ追加"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새 자료 추가"
+            "value" : "신규 자료 추가"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "增加新资料"
+            "value" : "添加新资料"
           }
         }
       }
@@ -4631,7 +4728,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "声音反馈"
+            "value" : "语音反馈"
           }
         }
       }
@@ -4659,7 +4756,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "声音设置"
+            "value" : "语音设置"
           }
         }
       }
@@ -4697,7 +4794,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy key"
+            "value" : "Copy Key"
           }
         },
         "ja" : {
@@ -4715,7 +4812,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "复制key"
+            "value" : "复制密钥"
           }
         }
       }
@@ -4821,7 +4918,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내용 복사"
+            "value" : "콘텐츠 복사"
           }
         },
         "zh-Hans" : {
@@ -4865,13 +4962,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy Image Address"
+            "value" : "Copy Image URL"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像アドレスのコピー"
+            "value" : "画像アドレスをコピー"
           }
         },
         "ko" : {
@@ -4893,19 +4990,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy successful"
+            "value" : "Copied"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コピー成功"
+            "value" : "コピー完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "복사 성공"
+            "value" : "복사 완료"
           }
         },
         "zh-Hans" : {
@@ -4955,7 +5052,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "コピー先URL"
+            "value" : "コピーリンク"
           }
         },
         "ko" : {
@@ -5061,7 +5158,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Complete"
+            "value" : "Done"
           }
         },
         "ja" : {
@@ -5123,7 +5220,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "公式サイン"
+            "value" : "公式署名"
           }
         },
         "ko" : {
@@ -5151,13 +5248,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鍵"
+            "value" : "暗号鍵"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "키"
+            "value" : "비밀 키"
           }
         },
         "zh-Hans" : {
@@ -5201,13 +5298,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Successful"
+            "value" : "Import successful"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "インポート成功"
+            "value" : "インポート完了"
           }
         },
         "ko" : {
@@ -5241,7 +5338,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구성 가져오기"
+            "value" : "Config Import"
           }
         },
         "zh-Hans" : {
@@ -5285,19 +5382,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export/Import (Messages/Configs/Database)"
+            "value" : "Export/Import (Msg/Config/Database)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "エクスポート/インポート（メッセージ/設定/データベース）"
+            "value" : "エクスポート/インポート (MsgNode/Config/DataHub)"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내보내기/가져오기(메시지/설정/DB)"
+            "value" : "내보내기/가져오기(메시지/설정/데이터베이스)"
           }
         },
         "zh-Hans" : {
@@ -5313,13 +5410,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear All Data"
+            "value" : "Erase All Data"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全データを削除"
+            "value" : "全データを消去"
           }
         },
         "ko" : {
@@ -5331,7 +5428,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将丢失所有数据"
+            "value" : "清除所有数据"
           }
         }
       }
@@ -5359,7 +5456,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将加密后的数据转换为Base64编码"
+            "value" : "将加密数据转换为Base64编码"
           }
         }
       }
@@ -5415,7 +5512,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已加载全部数据"
+            "value" : "数据已全部加载"
           }
         }
       }
@@ -5425,25 +5522,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thought"
+            "value" : "Processed"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "思考済み"
+            "value" : "検討済み"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "생각 완료"
+            "value" : "고려 완료"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已思考"
+            "value" : "已处理"
           }
         }
       }
@@ -5459,7 +5556,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写真ライブラリへのアクセスが許可されました"
+            "value" : "認証済み写真ライブラリ"
           }
         },
         "ko" : {
@@ -5633,7 +5730,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개발자 지원 계획"
+            "value" : "Dev Support Plan"
           }
         },
         "zh-Hans" : {
@@ -5649,13 +5746,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On"
+            "value" : "Enable"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オン"
+            "value" : "有効化"
           }
         },
         "ko" : {
@@ -5677,25 +5774,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After enabling serverless mode, the device tokens in the current server list will be cleared!!"
+            "value" : "After enabling No-Server Mode, the device tokens in the current server list will be cleared!!"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーレスモードを有効にすると、現在のサーバーリストのデバイストークンはクリアされます!!"
+            "value" : "サーバーレスモードを有効にすると、現在のサーバーリストのデバイストークンがクリアされます!!"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서버리스 모드 활성화 후, 현재 서버 목록의 디바이스 토큰이 초기화됩니다!!"
+            "value" : "서버리스 모드 활성화 후, 현재 서버 목록의 장치 토큰이 초기화됩니다!!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开启无服务器模式后, 当前服务器列表的设备令牌将清空!!"
+            "value" : "开启无服务器模式后，当前服务器列表的设备令牌将被清空！"
           }
         }
       }
@@ -5711,19 +5808,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新しいチャットを開始"
+            "value" : "新規チャット開始"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새로운 대화 시작"
+            "value" : "새 대화 시작"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开始新聊天"
+            "value" : "发起新对话"
           }
         }
       }
@@ -5733,25 +5830,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your conversation with the AI assistant will be displayed here."
+            "value" : "Your conversations with the AI assistant will appear here."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AIアシスタントとの対話はここに表示されます"
+            "value" : "AIアシスタントとの対話は、ここに表示されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI 어시스턴트와 대화할 때, 대화 내용이 여기에 표시됩니다."
+            "value" : "AI 어시스턴트와의 대화 내용이 여기에 표시됩니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当您与智能助手对话时，您的对话将显示在此处"
+            "value" : "与智能助手对话时，您的对话将在此处显示"
           }
         }
       }
@@ -5761,25 +5858,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When the push request URL does not specify the isArchive parameter, follow this setting to determine whether to save notification messages."
+            "value" : "When the push request URL does not specify the isArchive parameter, this setting determines whether to save notification messages."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プッシュリクエストURLにisArchiveパラメータが指定されていない場合、この設定に従って通知メッセージを保存するかどうかを決定します"
+            "value" : "アーカイブパラメータ未指定時の通知保存動作"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "푸시 요청 URL에 isArchive 매개변수가 지정되지 않은 경우, 이 설정에 따라 알림 메시지 저장 여부를 결정합니다"
+            "value" : "푸시 요청 URL에 isArchive 매개변수가 지정되지 않은 경우, 이 설정에 따라 알림 메시지 저장 여부를 결정합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当推送请求URL没有指定 isArchive 参数时，将按照此设置来决定是否保存通知消息"
+            "value" : "当推送请求URL未指定isArchive参数时，将按照此设置来决定是否保存通知消息"
           }
         }
       }
@@ -5823,7 +5920,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "必須権限が選択されていません"
+            "value" : "必須権限が未選択"
           }
         },
         "ko" : {
@@ -5879,13 +5976,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "思考中"
+            "value" : "処理中"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "생각 중"
+            "value" : "처리 중"
           }
         },
         "zh-Hans" : {
@@ -5935,7 +6032,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サマリー"
+            "value" : "概要"
           }
         },
         "ko" : {
@@ -5963,19 +6060,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KEYを復元"
+            "value" : "KEY復元"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "키 복구"
+            "value" : "KEY 복구"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "恢复KEY"
+            "value" : "恢复密钥"
           }
         }
       }
@@ -6025,7 +6122,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "복구 실패"
+            "value" : "복원 실패"
           }
         },
         "zh-Hans" : {
@@ -6047,13 +6144,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "復元成功"
+            "value" : "復元完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "복원 성공"
+            "value" : "복원 완료"
           }
         },
         "zh-Hans" : {
@@ -6069,25 +6166,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I can help you search, answer questions, write, and manage apps. Please give me your task!"
+            "value" : "I can help you search, answer questions, write, and manage apps. Please assign your tasks to me!"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "検索、質問への回答、執筆、アプリ管理など、お手伝いできます。お任せください！"
+            "value" : "私は検索、質問への回答、執筆、アプリ管理をお手伝いできます。あなたのタスクを私にお任せください！"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "검색, 답변, 글쓰기, 앱 관리까지 도와드립니다. 당신의 작업을 저에게 맡겨주세요!"
+            "value" : "검색, 질의 응답, 작성, 앱 관리를 도와드릴 수 있습니다. 당신의 작업을 저에게 맡겨주세요!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我可以帮你搜索，答疑，写作，管理App, 请把你的任务交给我吧！"
+            "value" : "我可以帮你搜索、答疑、写作、管理App，请把你的任务交给我吧！"
           }
         }
       }
@@ -6103,13 +6200,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべてのメッセージ"
+            "value" : "全てのメッセージ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 메시지"
+            "value" : "전체 메시지"
           }
         },
         "zh-Hans" : {
@@ -6125,25 +6222,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Notifications"
+            "value" : "All Alerts"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全ての鈴の音"
+            "value" : "全鈴音"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 알림"
+            "value" : "All Alerts"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有铃声"
+            "value" : "All Notifications"
           }
         }
       }
@@ -6215,7 +6312,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QRコードをスキャン"
+            "value" : "QRコードスキャン"
           }
         },
         "ko" : {
@@ -6283,7 +6380,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拒绝了访问权限"
+            "value" : "权限访问被拒绝"
           }
         }
       }
@@ -6311,7 +6408,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拖动图片到此处"
+            "value" : "拖拽图片到此处"
           }
         }
       }
@@ -6321,13 +6418,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continuous Ringing"
+            "value" : "Persistent Alert"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "継続アラート"
+            "value" : "継続通知"
           }
         },
         "ko" : {
@@ -6339,7 +6436,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "持续响铃"
+            "value" : "持续通知"
           }
         }
       }
@@ -6349,13 +6446,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete by Condition"
+            "value" : "Conditional Message Deletion"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "条件付きメッセージ削除"
+            "value" : "条件別メッセージ削除"
           }
         },
         "ko" : {
@@ -6377,7 +6474,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Receive General App Notification Alerts"
+            "value" : "Receive general app notification alerts"
           }
         },
         "ja" : {
@@ -6395,7 +6492,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接收一般性的应用通知提醒"
+            "value" : "接收常规应用通知提醒"
           }
         }
       }
@@ -6411,7 +6508,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "高優先度の重要通知受信アラート"
+            "value" : "高優先度通知の受信アラート"
           }
         },
         "ko" : {
@@ -6423,7 +6520,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接收高优先级的重要通知提醒"
+            "value" : "接收高优先级重要通知提醒"
           }
         }
       }
@@ -6439,7 +6536,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "推論能力"
+            "value" : "推論機能"
           }
         },
         "ko" : {
@@ -6473,7 +6570,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "푸시 콘텐츠"
+            "value" : "Push Content"
           }
         },
         "zh-Hans" : {
@@ -6573,7 +6670,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push Notification Sound"
+            "value" : "Push Notification Tone"
           }
         },
         "ja" : {
@@ -6613,7 +6710,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "힌트"
+            "value" : "알림"
           }
         },
         "zh-Hans" : {
@@ -6629,7 +6726,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prompt"
+            "value" : "Prompt Words"
           }
         },
         "ja" : {
@@ -6669,7 +6766,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프롬프트 상세정보"
+            "value" : "프롬프트 상세 정보"
           }
         },
         "zh-Hans" : {
@@ -6809,13 +6906,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이미지 포함 시 자동 캐시 다운로드"
+            "value" : "이미지를 포함하면 자동으로 다운로드 및 캐싱됩니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "携带一个image,会自动下载缓存"
+            "value" : "携带一个image，会自动下载缓存"
           }
         }
       }
@@ -6825,13 +6922,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Carry Image"
+            "value" : "Attach Image"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "画像を添付"
+            "value" : "画像添付"
           }
         },
         "ko" : {
@@ -6843,7 +6940,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "携带图片"
+            "value" : "导入图片"
           }
         }
       }
@@ -6859,7 +6956,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "概要アシスタント"
+            "value" : "要約アシスタント"
           }
         },
         "ko" : {
@@ -6881,7 +6978,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Play Ringtone"
+            "value" : "Playback Ringtone"
           }
         },
         "ja" : {
@@ -6949,7 +7046,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 성공"
+            "value" : "작업 완료"
           }
         },
         "zh-Hans" : {
@@ -6977,7 +7074,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트 아이콘, 이모지 아이콘, 사용자 지정 배경 지원"
+            "value" : "텍스트 아이콘, 이모지 아이콘, 사용자 정의 배경 지원"
           }
         },
         "zh-Hans" : {
@@ -7005,7 +7102,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오류"
+            "value" : "장애"
           }
         },
         "zh-Hans" : {
@@ -7021,13 +7118,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data incorrect"
+            "value" : "Data Error"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データが不正"
+            "value" : "データ不整合"
           }
         },
         "ko" : {
@@ -7039,7 +7136,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "数据不正确"
+            "value" : "数据异常"
           }
         }
       }
@@ -7049,7 +7146,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grouping data..."
+            "value" : "DataHub Grouping..."
           }
         },
         "ja" : {
@@ -7077,7 +7174,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading data..."
+            "value" : "Data loading..."
           }
         },
         "ja" : {
@@ -7089,7 +7186,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "데이터 로딩 중..."
+            "value" : "데이터 로드 중..."
           }
         },
         "zh-Hans" : {
@@ -7105,25 +7202,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Database File"
+            "value" : "DataHub Files"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データベースファイル"
+            "value" : "DataHubファイル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "데이터베이스 파일"
+            "value" : "DataHub 파일"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "数据库文件"
+            "value" : "数据文件"
           }
         }
       }
@@ -7133,25 +7230,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data"
+            "value" : "DataHub"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データ管理"
+            "value" : "DataHub"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "데이터 관리"
+            "value" : "DataHub"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "数据管理"
+            "value" : "DataHub"
           }
         }
       }
@@ -7189,7 +7286,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Files"
+            "value" : "File Manager"
           }
         },
         "ja" : {
@@ -7285,7 +7382,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새 프롬프트"
+            "value" : "새 프롬프트 생성"
           }
         },
         "zh-Hans" : {
@@ -7301,7 +7398,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wu"
+            "value" : "NoLet"
           }
         },
         "ja" : {
@@ -7313,7 +7410,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무"
+            "value" : "无"
           }
         },
         "zh-Hans" : {
@@ -7329,7 +7426,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Server Mode"
+            "value" : "Offline Mode"
           }
         },
         "ja" : {
@@ -7341,13 +7438,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서버리스 모드"
+            "value" : "오프라인 모드"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无服务器模式"
+            "value" : "离线模式"
           }
         }
       }
@@ -7363,7 +7460,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudアカウントの状態を確認できません。ネットワークの問題の可能性があります"
+            "value" : "iCloudアカウントの状態を確認できません。ネットワークの問題の可能性があります。"
           }
         },
         "ko" : {
@@ -7391,7 +7488,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "「無聊天」"
+            "value" : "無チャット"
           }
         },
         "ko" : {
@@ -7487,7 +7584,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "时间:"
+            "value" : "时间："
           }
         }
       }
@@ -7525,13 +7622,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto-save images on message receipt"
+            "value" : "Auto-save images from messages"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メッセージ受信時に画像を自動保存する"
+            "value" : "メッセージ受信時の画像自動保存"
           }
         },
         "ko" : {
@@ -7543,7 +7640,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是否收到消息自动保存图片"
+            "value" : "是否自动保存图片消息"
           }
         }
       }
@@ -7559,19 +7656,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "クリアしますか？"
+            "value" : "クリアを確定しますか？"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "정말로 비우시겠습니까?"
+            "value" : "정말로 삭제하시겠습니까?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是否确定清空?"
+            "value" : "确定清空？"
           }
         }
       }
@@ -7587,7 +7684,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "フルスクリーン表示"
+            "value" : "全画面表示"
           }
         },
         "ko" : {
@@ -7599,7 +7696,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "显示全屏"
+            "value" : "全屏显示"
           }
         }
       }
@@ -7609,7 +7706,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show Icon"
+            "value" : "Display Icon"
           }
         },
         "ja" : {
@@ -7637,13 +7734,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General Content"
+            "value" : "Standard Content"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通常コンテンツ"
+            "value" : "標準コンテンツ"
           }
         },
         "ko" : {
@@ -7665,13 +7762,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General Notification Permissions"
+            "value" : "Standard Notification Permissions"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通常の通知権限"
+            "value" : "一般通知権限"
           }
         },
         "ko" : {
@@ -7683,7 +7780,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "普通通知权限"
+            "value" : "标准通知权限"
           }
         }
       }
@@ -7693,25 +7790,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Standard notification permissions are required. If you enable critical notification permissions, all permissions will be automatically enabled. Please select the necessary permissions to continue using the app."
+            "value" : "Standard notification permissions are required. If you enable critical notification permissions, all permissions will be activated automatically. Please select the necessary permissions to continue using the application."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通常の通知権限は必須オプションです。重要な通知権限を有効にすると、すべての権限が自動的に有効になります。アプリの継続利用には必要な権限を選択してください。"
+            "value" : "標準通知権限は必須項目です。重要通知権限を有効にすると、すべての権限が自動的に有効化されます。アプリの継続利用には必要な権限を選択してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일반 알림 권한은 필수 항목입니다. 중요 알림 권한을 활성화하면 모든 권한이 자동으로 활성화됩니다. 앱 사용을 계속하려면 필요한 권한을 선택하세요."
+            "value" : "일반 알림 권한은 필수 항목입니다. 중요한 알림 권한을 활성화하면 모든 권한이 자동으로 활성화됩니다. 앱 사용을 계속하려면 필요한 권한을 선택하세요."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "普通通知权限为必选项。如果开启重要通知权限，所有权限将自动开启。请选择必要的权限以继续使用应用。"
+            "value" : "标准通知权限为必选项。若开启重要通知权限，所有权限将自动开启。请选择必要的权限以继续使用应用。"
           }
         }
       }
@@ -7721,7 +7818,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI Assistant"
+            "value" : "Intelligent Assistant"
           }
         },
         "ja" : {
@@ -7733,7 +7830,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "지능형 어시스턴트"
+            "value" : "AI 어시스턴트"
           }
         },
         "zh-Hans" : {
@@ -7749,7 +7846,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Smart Config"
+            "value" : "SmartConfig"
           }
         },
         "ja" : {
@@ -7777,7 +7874,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to switch temporarily"
+            "value" : "Temporarily Unavailable"
           }
         },
         "ja" : {
@@ -7795,7 +7892,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暂时不能切换"
+            "value" : "暂时无法切换"
           }
         }
       }
@@ -7811,7 +7908,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "もっと"
+            "value" : "詳細を見る"
           }
         },
         "ko" : {
@@ -7845,7 +7942,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 많은 설정"
+            "value" : "추가 설정"
           }
         },
         "zh-Hans" : {
@@ -7867,13 +7964,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更新成功"
+            "value" : "更新完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "업데이트 성공"
+            "value" : "업데이트 완료"
           }
         },
         "zh-Hans" : {
@@ -7885,7 +7982,32 @@
       }
     },
     "有异常" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abnormal"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "異常あり"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이상 있음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "异常"
+          }
+        }
+      }
     },
     "有限的访问权限" : {
       "localizations" : {
@@ -7898,7 +8020,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アクセス権限制限"
+            "value" : "制限付きアクセス権限"
           }
         },
         "ko" : {
@@ -7910,7 +8032,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有限的访问权限"
+            "value" : "受限访问权限"
           }
         }
       }
@@ -7976,7 +8098,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invalid Server Address"
+            "value" : "Server address invalid"
           }
         },
         "ja" : {
@@ -8010,7 +8132,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーは既に存在しています"
+            "value" : "サーバーは既に存在します"
           }
         },
         "ko" : {
@@ -8032,13 +8154,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Open Source Address"
+            "value" : "Server Source Address"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーオープンソースアドレス"
+            "value" : "サーバーソースコードリポジトリ"
           }
         },
         "ko" : {
@@ -8060,7 +8182,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Monitoring"
+            "value" : "Server Monitor"
           }
         },
         "ja" : {
@@ -8088,7 +8210,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Settings"
+            "value" : "Config"
           }
         },
         "ja" : {
@@ -8106,7 +8228,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "服务器设置"
+            "value" : "服务器配置"
           }
         }
       }
@@ -8122,7 +8244,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバー接続失敗"
+            "value" : "サーバー接続エラー"
           }
         },
         "ko" : {
@@ -8144,13 +8266,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Deployment Tutorial"
+            "value" : "Server Deployment Guide"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバー展開チュートリアル"
+            "value" : "サーバー展開ガイド"
           }
         },
         "ko" : {
@@ -8200,7 +8322,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not Activated"
+            "value" : "Inactive"
           }
         },
         "ja" : {
@@ -8228,7 +8350,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not logged into iCloud. Please sign in to your iCloud account."
+            "value" : "iCloud Not Signed In. Please sign in to your iCloud account."
           }
         },
         "ja" : {
@@ -8240,7 +8362,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인하세요."
+            "value" : "iCloud에 로그인되지 않았습니다. iCloud 계정에 로그인해 주세요."
           }
         },
         "zh-Hans" : {
@@ -8256,19 +8378,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud Status Unknown"
+            "value" : "Unknown iCloud Status"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不明な iCloud ステータス"
+            "value" : "iCloudステータス不明"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud 상태 알 수 없음"
+            "value" : "iCloud 상태 확인 중"
           }
         },
         "zh-Hans" : {
@@ -8290,13 +8412,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不明時間"
+            "value" : "未定時間"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "미정 시간"
+            "value" : "알 수 없는 시간"
           }
         },
         "zh-Hans" : {
@@ -8324,7 +8446,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unknown"
+            "value" : "상태 미확인"
           }
         },
         "zh-Hans" : {
@@ -8340,7 +8462,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permission Not Selected"
+            "value" : "Permissions Not Selected"
           }
         },
         "ja" : {
@@ -8368,25 +8490,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This app is free to use. Donations won't unlock any new features—just let you freely enjoy a good tool."
+            "value" : "This app is free to use. Donations do not unlock any new features, allowing you to freely use a great tool."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "本アプリは無料で利用可能です。寄付は新機能をアンロックせず、優れたツールを自由にお使いいただけます。"
+            "value" : "本アプリは無料でご利用いただけます。寄付は新機能の開放にはつながりません。優れたツールを自由にお使いください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 앱은 무료로 사용 가능하며, 후원은 새로운 기능을 추가하지 않습니다. 좋은 도구를 자유롭게 사용하세요."
+            "value" : "본 앱은 무료로 사용 가능하며, 후원해도 새로운 기능이 추가되지 않습니다. 좋은 도구를 자유롭게 활용하세요."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "本App免费使用,赞助不会开启任何新功能,让你自由地使用一个好工具"
+            "value" : "本应用免费使用，赞助不会开启任何新功能，让你自由地使用一个好工具"
           }
         }
       }
@@ -8436,7 +8558,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "히스토리 서버 보기"
+            "value" : "History Server"
           }
         },
         "zh-Hans" : {
@@ -8452,7 +8574,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Icon"
+            "value" : "View Icons"
           }
         },
         "ja" : {
@@ -8480,7 +8602,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Docs"
+            "value" : "View Document"
           }
         },
         "ja" : {
@@ -8520,7 +8642,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마크"
+            "value" : "태그"
           }
         },
         "zh-Hans" : {
@@ -8564,7 +8686,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Title/Subtitle/Content?group=default&badge=1&ttl=1"
+            "value" : "Title/Subtitle/Content?group=默认&badge=1&ttl=1"
           }
         },
         "ja" : {
@@ -8620,13 +8742,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud Account Status Check Error"
+            "value" : "Check iCloud Account Status Error"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloudアカウント状態の確認エラー"
+            "value" : "iCloudアカウント状態チェックエラー"
           }
         },
         "ko" : {
@@ -8688,7 +8810,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모델 이름: (gpt-4o-mini)"
+            "value" : "모델명: (gpt-4o-mini)"
           }
         },
         "zh-Hans" : {
@@ -8732,7 +8854,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to Use"
+            "value" : "Welcome to DataHub"
           }
         },
         "ja" : {
@@ -8844,7 +8966,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This name is used to search for historical grouping usage."
+            "value" : "This name is used to search for historical groups"
           }
         },
         "ja" : {
@@ -8856,13 +8978,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 이름은 히스토리 그룹 검색에 사용됩니다"
+            "value" : "이 이름은 기록 그룹 검색에 사용됩니다"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此名称用来查找历史分组使用"
+            "value" : "此名称用于查找历史分组"
           }
         }
       }
@@ -8872,13 +8994,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This action will permanently delete %@ data and cannot be undone. Are you sure you want to continue?"
+            "value" : "This operation will permanently delete %@ data and cannot be recovered. Are you sure you want to proceed?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "この操作は%@データを削除し、復元できません。続行しますか？"
+            "value" : "この操作により %@ データが削除され、復元できません。続行しますか？"
           }
         },
         "ko" : {
@@ -8900,13 +9022,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This action will delete all chat history and settings data, and cannot be recovered. Are you sure you want to proceed?"
+            "value" : "This action will delete all chat history and configuration data, and cannot be recovered. Are you sure you want to proceed?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "この操作により、全てのチャット履歴と設定データが削除され、復元できません。続行しますか？"
+            "value" : "この操作により、すべてのチャット履歴と設定データが削除され、復元できなくなります。続行しますか？"
           }
         },
         "ko" : {
@@ -8918,7 +9040,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此操作将删除所有聊天记录和设置数据，且无法恢复。确定要继续吗？"
+            "value" : "此操作将清除所有对话记录与配置数据，且无法恢复。确定要继续吗？"
           }
         }
       }
@@ -8928,7 +9050,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No images"
+            "value" : "No Image"
           }
         },
         "ja" : {
@@ -8946,7 +9068,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有图片"
+            "value" : "无图片"
           }
         }
       }
@@ -8956,25 +9078,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push Notifications Disabled"
+            "value" : "Push Notifications Off"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プッシュ通知がオフ"
+            "value" : "プッシュ通知が無効"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "푸시 알림이 켜져 있지 않음"
+            "value" : "푸시 알림이 꺼져 있음"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有打开推送"
+            "value" : "推送未开启"
           }
         }
       }
@@ -8984,7 +9106,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No data found"
+            "value" : "No Data Found"
           }
         },
         "ja" : {
@@ -8996,13 +9118,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "데이터를 찾을 수 없습니다"
+            "value" : "데이터를 찾을 수 없음"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有找到数据"
+            "value" : "未找到数据"
           }
         }
       }
@@ -9030,7 +9152,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有找到文件"
+            "value" : "未找到文件"
           }
         }
       }
@@ -9046,7 +9168,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "関連するプロンプトが見つかりませんでした"
+            "value" : "関連するプロンプトが見つかりません"
           }
         },
         "ko" : {
@@ -9058,7 +9180,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有找到相关提示词"
+            "value" : "未找到相关提示词"
           }
         }
       }
@@ -9086,7 +9208,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有文件"
+            "value" : "无文件"
           }
         }
       }
@@ -9102,7 +9224,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アルバム権限がありません"
+            "value" : "カタログ権限がありません"
           }
         },
         "ko" : {
@@ -9114,7 +9236,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有相册权限"
+            "value" : "无相册权限"
           }
         }
       }
@@ -9142,7 +9264,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有相机权限"
+            "value" : "无相机权限"
           }
         }
       }
@@ -9198,7 +9320,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "注册KEY"
+            "value" : "注册密钥"
           }
         }
       }
@@ -9332,13 +9454,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "활동 링크"
+            "value" : "활동 연결"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "活动连接"
+            "value" : "活动链接"
           }
         }
       }
@@ -9348,7 +9470,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Test/Save Success"
+            "value" : "Test/Save Successful"
           }
         },
         "ja" : {
@@ -9488,19 +9610,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message List"
+            "value" : "MsgList"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メッセージリスト"
+            "value" : "メッセージ一覧"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "메시지 목록"
+            "value" : "MsgNode"
           }
         },
         "zh-Hans" : {
@@ -9516,25 +9638,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Show logo when message card is ungrouped"
+            "value" : "Show logo for ungrouped message cards"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "メッセージカード未グループ時のロゴ表示"
+            "value" : "未グループ化のメッセージカードにロゴを表示"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "메시지 카드 미분류 시 로고 표시 여부"
+            "value" : "로고 미분류 메시지 카드에 표시"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "消息卡片未分组时是否显示logo"
+            "value" : "未分组消息卡片是否显示logo"
           }
         }
       }
@@ -9544,7 +9666,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Msg Archive"
+            "value" : "MsgArchive"
           }
         },
         "ja" : {
@@ -9556,13 +9678,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "메시지 보관함"
+            "value" : "MsgNode"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "消息存档"
+            "value" : "MsgNode"
           }
         }
       }
@@ -9600,19 +9722,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Thought"
+            "value" : "Deep Think"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ディープ・シンキング"
+            "value" : "深層思考"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "심층 사고"
+            "value" : "DeepThink"
           }
         },
         "zh-Hans" : {
@@ -9634,13 +9756,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "プロンプトを追加"
+            "value" : "Promptを追加"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프롬프트 추가"
+            "value" : "Prompt 추가"
           }
         },
         "zh-Hans" : {
@@ -9684,7 +9806,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added successfully"
+            "value" : "Added Successfully"
           }
         },
         "ja" : {
@@ -9696,7 +9818,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추가 성공"
+            "value" : "추가 완료"
           }
         },
         "zh-Hans" : {
@@ -9718,7 +9840,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サーバーを追加"
+            "value" : "サーバー追加"
           }
         },
         "ko" : {
@@ -9740,13 +9862,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cleaned"
+            "value" : "Cleared"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "クリア成功"
+            "value" : "クリーンアップ完了"
           }
         },
         "ko" : {
@@ -9758,7 +9880,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清理成功"
+            "value" : "清理完成"
           }
         }
       }
@@ -9780,7 +9902,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클리어"
+            "value" : "비우기"
           }
         },
         "zh-Hans" : {
@@ -9802,7 +9924,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "キャッシュデータをクリア"
+            "value" : "キャッシュデータの消去"
           }
         },
         "ko" : {
@@ -9814,7 +9936,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清空缓存数据"
+            "value" : "清除缓存数据"
           }
         }
       }
@@ -9836,7 +9958,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "지우기"
+            "value" : "초기화"
           }
         },
         "zh-Hans" : {
@@ -9864,7 +9986,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컨텍스트 지우기"
+            "value" : "컨텍스트 초기화"
           }
         },
         "zh-Hans" : {
@@ -9892,7 +10014,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클리어 실패"
+            "value" : "정리 실패"
           }
         },
         "zh-Hans" : {
@@ -9914,13 +10036,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "クリア成功"
+            "value" : "クリア完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "삭제 완료"
+            "value" : "정리 완료"
           }
         },
         "zh-Hans" : {
@@ -9942,13 +10064,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべてのデータをクリア"
+            "value" : "全データ消去"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 데이터 지우기"
+            "value" : "모든 데이터 삭제"
           }
         },
         "zh-Hans" : {
@@ -9964,13 +10086,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Expired Notices"
+            "value" : "Clear Expired Notifications"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "期限切れ通知のクリア"
+            "value" : "有効期限切れ通知の消去"
           }
         },
         "ko" : {
@@ -9998,13 +10120,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "スクロールして開始"
+            "value" : "先頭にスクロール"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시작 위치로 스크롤"
+            "value" : "시작으로 스크롤"
           }
         },
         "zh-Hans" : {
@@ -10026,7 +10148,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "終わりまでスクロール"
+            "value" : "終端までスクロール"
           }
         },
         "ko" : {
@@ -10038,7 +10160,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "滚动到结束"
+            "value" : "滚动到底部"
           }
         }
       }
@@ -10048,7 +10170,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click to switch app icon"
+            "value" : "Tap to switch app icon"
           }
         },
         "ja" : {
@@ -10066,7 +10188,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击切换应用图标"
+            "value" : "切换应用图标"
           }
         }
       }
@@ -10076,25 +10198,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click the top-right button to copy the test URL and preview the push effect."
+            "value" : "Click the button in the upper right corner to copy the test URL and preview the push effect."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "右上のボタンをクリックすると、テストURLをコピーしてプッシュ効果をプレビューできます"
+            "value" : "右上隅のボタンをクリックすると、テストURLをコピーしてプッシュ効果をプレビューできます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오른쪽 상단 버튼을 클릭하면 테스트 URL을 복사하고 푸시 효과를 미리 볼 수 있습니다."
+            "value" : "오른쪽 상단 버튼을 클릭하면 테스트 URL 복사 및 푸시 효과 미리보기가 가능합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击右上角按钮可以复制测试URL、预览推送效果"
+            "value" : "点击右上角按钮可复制测试URL、预览推送效果"
           }
         }
       }
@@ -10116,13 +10238,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더보기"
+            "value" : "더 보기"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击查看更多"
+            "value" : "查看更多"
           }
         }
       }
@@ -10138,7 +10260,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリにジャンプ"
+            "value" : "アプリを開く"
           }
         },
         "ko" : {
@@ -10150,7 +10272,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击跳转app"
+            "value" : "跳转至应用"
           }
         }
       }
@@ -10166,7 +10288,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "グループリストに入る"
+            "value" : "グループリストへ移動"
           }
         },
         "ko" : {
@@ -10178,7 +10300,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击进入分组列表"
+            "value" : "进入分组列表"
           }
         }
       }
@@ -10216,7 +10338,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version %@, double-click to switch display"
+            "value" : "Version %@, double-click to toggle display"
           }
         },
         "ja" : {
@@ -10244,13 +10366,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Status Abnormal"
+            "value" : "Status Exception"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "状態異常"
+            "value" : "ステータス異常"
           }
         },
         "ko" : {
@@ -10312,7 +10434,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용자 협약"
+            "value" : "사용자 계약"
           }
         },
         "zh-Hans" : {
@@ -10356,13 +10478,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete \\\"%@\\\"? This action cannot be undone."
+            "value" : "Are you sure you want to delete \"%@\"? This action cannot be undone."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@\"を削除してもよろしいですか？この操作は取り消せません。"
+            "value" : "「%@」を削除してもよろしいですか？この操作は取り消せません。"
           }
         },
         "ko" : {
@@ -10384,25 +10506,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete \"%@\"? This action cannot be undone."
+            "value" : "Confirm deletion of \"%@\"? This action cannot be undone."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@\" プロンプトを削除してもよろしいですか？この操作は取り消せません。"
+            "value" : "%@\"のプロンプトを削除してもよろしいですか？この操作は取り消せません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@\" 프롬프트를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
+            "value" : "%@\"를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "确定要删除\"%@\"提示词吗？此操作无法撤销。"
+            "value" : "确定要删除“%@”提示词吗？此操作无法撤销。"
           }
         }
       }
@@ -10452,7 +10574,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "삭제 확인"
+            "value" : "확인 삭제"
           }
         },
         "zh-Hans" : {
@@ -10496,7 +10618,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visual & Haptic"
+            "value" : "Vision & Touch"
           }
         },
         "ja" : {
@@ -10508,7 +10630,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시각 및 촉각"
+            "value" : "시각 및 촉감"
           }
         },
         "zh-Hans" : {
@@ -10552,7 +10674,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Program Icon"
+            "value" : "App Icon"
           }
         },
         "ja" : {
@@ -10564,7 +10686,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로그램 아이콘"
+            "value" : "AppIcon"
           }
         },
         "zh-Hans" : {
@@ -10592,7 +10714,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "엔드투엔드 암호화 푸시"
+            "value" : "E2E 암호화 푸시"
           }
         },
         "zh-Hans" : {
@@ -10608,7 +10730,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo"
+            "value" : "Algorithm"
           }
         },
         "ja" : {
@@ -10636,7 +10758,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo List"
+            "value" : "Algorithm List"
           }
         },
         "ja" : {
@@ -10664,19 +10786,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo Config"
+            "value" : "Algorithm Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo Config"
+            "value" : "アルゴリズム設定"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algo Config"
+            "value" : "알고리즘 설정"
           }
         },
         "zh-Hans" : {
@@ -10704,13 +10826,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기에 붙여넣기, 자동 인식"
+            "value" : "이곳에 붙여넣기, 자동 인식"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "粘贴到此处,自动识别"
+            "value" : "粘贴至此，自动识别"
           }
         }
       }
@@ -10726,19 +10848,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "システム予約ファイル！"
+            "value" : "システム予約ファイル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시스템 예약 파일!"
+            "value" : "시스템 예비 파일!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "系统保留文件!"
+            "value" : "系统保留文件"
           }
         }
       }
@@ -10748,25 +10870,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System Settings"
+            "value" : "Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "システム設定"
+            "value" : "Config"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시스템 설정"
+            "value" : "Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "系统设置"
+            "value" : "Config"
           }
         }
       }
@@ -10776,7 +10898,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Send message to AI assistant"
+            "value" : "Send message to AI Assistant"
           }
         },
         "ja" : {
@@ -10788,13 +10910,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "지능형 어시스턴트에 메시지 보내기"
+            "value" : "AI 어시스턴트에 메시지 보내기"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "给智能助手发消息"
+            "value" : "发送消息给智能助手"
           }
         }
       }
@@ -10828,7 +10950,32 @@
       }
     },
     "维护中" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenance"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "メンテナンス中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유지보수 중"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "维护中"
+          }
+        }
+      }
     },
     "编辑" : {
       "localizations" : {
@@ -10947,19 +11094,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Network permissions are essential for app functionality, enabling push notifications, data synchronization, and access to the latest information. Without network access, core features will be unavailable."
+            "value" : "Network permissions are essential for the app's normal operation, enabling push notifications, data synchronization, and access to the latest information. Without network permissions, core app functionality will be impaired."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ネットワーク権限はアプリの正常動作の基本であり、プッシュ通知の受信、データ同期、最新情報の取得に使用されます。ネットワーク権限がない場合、アプリのコア機能は正常に動作しません。"
+            "value" : "ネットワーク権限はアプリケーションが正常に動作するための基盤であり、プッシュ通知の受信、データの同期、最新情報の取得に使用されます。ネットワーク権限がない場合、アプリケーションのコア機能は正常に動作しません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네트워크 권한은 앱이 정상적으로 작동하는 기반으로, 푸시 알림 수신, 데이터 동기화 및 최신 정보 획득에 사용됩니다. 네트워크 권한이 없으면 앱의 핵심 기능이 정상적으로 작동할 수 없습니다."
+            "value" : "네트워크 권한은 앱이 정상적으로 작동하기 위한 기반으로, 푸시 알림 수신, 데이터 동기화 및 최신 정보 획득에 사용됩니다. 네트워크 권한 없이는 앱의 핵심 기능이 정상적으로 작동할 수 없습니다."
           }
         },
         "zh-Hans" : {
@@ -10981,7 +11128,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ネットワーク権限はアプリの正常動作に必須です。続行するにはネットワークアクセスを許可してください。"
+            "value" : "ネットワーク権限はアプリケーションが正常に動作するための基盤です。続行するにはネットワーク権限を付与してください。"
           }
         },
         "ko" : {
@@ -11071,7 +11218,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그룹 이름"
+            "value" : "그룹명"
           }
         },
         "zh-Hans" : {
@@ -11171,7 +11318,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto Save"
+            "value" : "Auto-Save"
           }
         },
         "ja" : {
@@ -11211,13 +11358,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커스텀 아이콘"
+            "value" : "사용자 지정 아이콘"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自定义icon"
+            "value" : "自定义图标"
           }
         }
       }
@@ -11239,7 +11386,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커스텀 확장"
+            "value" : "Custom Extension"
           }
         },
         "zh-Hans" : {
@@ -11261,7 +11408,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カスタムプッシュ表示ロゴ"
+            "value" : "カスタムプッシュ通知ロゴ"
           }
         },
         "ko" : {
@@ -11273,7 +11420,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自定义推送显示的logo"
+            "value" : "自定义推送显示logo"
           }
         }
       }
@@ -11295,7 +11442,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용자 지정 서명"
+            "value" : "사용자 정의 이름"
           }
         },
         "zh-Hans" : {
@@ -11311,13 +11458,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom Ringtone"
+            "value" : "Custom Alert Tone"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "カスタムアラート音"
+            "value" : "カスタム通知音"
           }
         },
         "ko" : {
@@ -11339,7 +11486,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "At least 11 characters"
+            "value" : "At least 1 character"
           }
         },
         "ja" : {
@@ -11351,13 +11498,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "최소 11자"
+            "value" : "최소 1자"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "至少1个字符"
+            "value" : "至少11个字符"
           }
         }
       }
@@ -11395,7 +11542,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get Developer Support"
+            "value" : "Developer Support"
           }
         },
         "ja" : {
@@ -11407,7 +11554,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개발자 지원 받기"
+            "value" : "개발자 지원"
           }
         },
         "zh-Hans" : {
@@ -11423,13 +11570,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get All Alerts"
+            "value" : "Get All Notifications"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "すべての通知を取得"
+            "value" : "全鈴声取得"
           }
         },
         "ko" : {
@@ -11519,7 +11666,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "터치 감지 및 피드백"
+            "value" : "터치 피드백"
           }
         },
         "zh-Hans" : {
@@ -11541,19 +11688,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定"
+            "value" : "Config"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정"
+            "value" : "Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置"
+            "value" : "Config"
           }
         }
       }
@@ -11569,19 +11716,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各対話に含める履歴メッセージ数を設定。数が多いほど文脈は充実しますが、トークン消費量が増加します"
+            "value" : "各対話における履歴メッセージ数を設定します。数が多いほど文脈が充実しますが、Token消費量が増加します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대화당 포함할 이전 메시지 수 설정. 수가 많을수록 맥락이 풍부해지지만, 토큰 소모량이 증가합니다."
+            "value" : "대화당 포함되는 이전 메시지 수를 설정합니다. 수가 많을수록 컨텍스트가 풍부해지지만, 토큰 사용량이 증가합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加 Token 消耗"
+            "value" : "设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加Token消耗"
           }
         }
       }
@@ -11597,7 +11744,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "デフォルト通知音の設定"
+            "value" : "デフォルト通知音設定"
           }
         },
         "ko" : {
@@ -11619,19 +11766,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please grant network permissions first"
+            "value" : "Please grant network permission first"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ネットワーク権限を付与してください"
+            "value" : "ネットワーク権限を先に許可してください"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네트워크 권한을 먼저 부여해 주세요"
+            "value" : "네트워크 권한을 먼저 허용해 주세요"
           }
         },
         "zh-Hans" : {
@@ -11647,19 +11794,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please register first"
+            "value" : "Please Register First"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "先に登録してください"
+            "value" : "まず登録してください"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "회원가입 먼저"
+            "value" : "먼저 등록해 주세요"
           }
         },
         "zh-Hans" : {
@@ -11709,7 +11856,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リクエストアドレス(api.openai.com)"
+            "value" : "リクエスト先アドレス(api.openai.com)"
           }
         },
         "ko" : {
@@ -11799,13 +11946,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프롬프트 키워드 제목 입력"
+            "value" : "프롬프트 제목 입력"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请输入提示词标题"
+            "value" : "请输入提示词标签标题"
           }
         }
       }
@@ -11815,7 +11962,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter Old KEY"
+            "value" : "Please enter the old KEY"
           }
         },
         "ja" : {
@@ -11843,7 +11990,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a valid server URL address, e.g.: https://example.com"
+            "value" : "Please enter a valid server URL, e.g., https://example.com"
           }
         },
         "ja" : {
@@ -11871,7 +12018,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter server address"
+            "value" : "Enter Server Address"
           }
         },
         "ja" : {
@@ -11883,7 +12030,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "서버 주소를 입력하세요"
+            "value" : "서버 주소 입력"
           }
         },
         "zh-Hans" : {
@@ -11899,7 +12046,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select additional permissions required"
+            "value" : "Please select additional permissions you require"
           }
         },
         "ja" : {
@@ -11933,7 +12080,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アカウントリスト"
+            "value" : "アカウント一覧"
           }
         },
         "ko" : {
@@ -11983,25 +12130,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jump to Third-Party"
+            "value" : "Redirect to Third-Party"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "サードパーティへリダイレクト"
+            "value" : "サードパーティ連携"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제3자로 이동"
+            "value" : "제3자 연결"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "跳转第三方"
+            "value" : "第三方跳转"
           }
         }
       }
@@ -12011,25 +12158,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jump Link:"
+            "value" : "Link:"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ジャンプリンク:"
+            "value" : "遷移リンク:"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "링크:"
+            "value" : "이동 링크:"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "跳转链接:"
+            "value" : "跳转链接："
           }
         }
       }
@@ -12039,7 +12186,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter %d-digit key"
+            "value" : "Enter a %d-digit key"
           }
         },
         "ja" : {
@@ -12057,7 +12204,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入%d位数的key"
+            "value" : "输入%d位数的密钥"
           }
         }
       }
@@ -12067,7 +12214,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter Group Name"
+            "value" : "Enter group name"
           }
         },
         "ja" : {
@@ -12079,7 +12226,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그룹 이름 입력"
+            "value" : "그룹명 입력"
           }
         },
         "zh-Hans" : {
@@ -12113,7 +12260,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入别名"
+            "value" : "设置别名"
           }
         }
       }
@@ -12123,7 +12270,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Input Image Name"
+            "value" : "Enter image name"
           }
         },
         "ja" : {
@@ -12135,7 +12282,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "입력 이미지 이름"
+            "value" : "이미지 이름 입력"
           }
         },
         "zh-Hans" : {
@@ -12157,19 +12304,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "旧キーを入力すると復元できます"
+            "value" : "旧キーを入力して復元"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이전 키 입력, 복구 가능"
+            "value" : "이전 키 입력으로 복구 가능"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入旧key,可以恢复"
+            "value" : "输入旧密钥以恢复"
           }
         }
       }
@@ -12179,7 +12326,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entering message..."
+            "value" : "Enter message..."
           }
         },
         "ja" : {
@@ -12197,7 +12344,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "输入消息..."
+            "value" : "正在输入..."
           }
         }
       }
@@ -12247,7 +12394,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이것은 암호화 예제입니다"
+            "value" : "이것은 암호화된 예시입니다"
           }
         },
         "zh-Hans" : {
@@ -12263,7 +12410,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This is the encrypted body text"
+            "value" : "This is the encrypted body section."
           }
         },
         "ja" : {
@@ -12275,7 +12422,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이것은 암호화된 본문 부분입니다"
+            "value" : "암호화된 본문입니다"
           }
         },
         "zh-Hans" : {
@@ -12337,7 +12484,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择功能"
+            "value" : "功能选择"
           }
         }
       }
@@ -12353,7 +12500,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暗号化アルゴリズム選択"
+            "value" : "暗号化アルゴリズムの選択"
           }
         },
         "ko" : {
@@ -12409,7 +12556,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "翻訳言語を選択"
+            "value" : "翻訳言語の選択"
           }
         },
         "ko" : {
@@ -12431,13 +12578,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select ringtone, cut off if exceeds 30 seconds"
+            "value" : "Select ringtone, will cut off after 30 seconds"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鈴声選択、30秒を超える部分はカット"
+            "value" : "通知音を選択、30秒を超える場合は自動で切断"
           }
         },
         "ko" : {
@@ -12449,7 +12596,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择铃声，超出30秒的将截断"
+            "value" : "选择铃声，超过30秒将被截断"
           }
         }
       }
@@ -12543,25 +12690,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification ringtone will play continuously for 30s, and multiple notifications will trigger the ringtone sequentially in order."
+            "value" : "Notification ringtone will play continuously for 30s, and multiple notifications will trigger in sequence."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通知音は30秒間継続して再生され、複数の通知が順次鳴ります"
+            "value" : "通知音は30秒間継続再生され、複数受信時は順次鳴動します"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알림 벨소리가 30초간 지속 재생되며, 여러 개가 수신될 경우 순차적으로 울립니다."
+            "value" : "알림 소리는 30초 동안 지속 재생되며, 여러 개를 수신할 경우 순서대로 울립니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通知铃声将持续播放30s，同时收到多个将按顺序依次响铃"
+            "value" : "通知铃声将持续播放30秒，同时收到的多个通知将按顺序依次响铃。"
           }
         }
       }
@@ -12577,13 +12724,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "部分登録成功"
+            "value" : "部分登録完了"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "부분 등록 성공"
+            "value" : "등록 부분 완료"
           }
         },
         "zh-Hans" : {
@@ -12599,19 +12746,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuration already exists"
+            "value" : "Config already exists"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定は既に存在します"
+            "value" : "設定済み"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구성이 이미 존재합니다"
+            "value" : "구성이 이미 존재함"
           }
         },
         "zh-Hans" : {
@@ -12627,25 +12774,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Config File"
+            "value" : "Config"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定ファイル"
+            "value" : "Config"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 파일"
+            "value" : "Config"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "配置文件"
+            "value" : "Config"
           }
         }
       }
@@ -12655,25 +12802,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restart to take effect, exiting program now!"
+            "value" : "Restart required to take effect, exiting now!"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再起動して有効になります、すぐにプログラムを終了します！"
+            "value" : "再起動後に有効になります。アプリを終了します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "재시작해야 적용됩니다, 즉시 프로그램을 종료합니다!"
+            "value" : "재시작해야 적용됩니다. 즉시 프로그램을 종료합니다!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重启才能生效,即将退出程序！"
+            "value" : "重启生效，即将退出程序！"
           }
         }
       }
@@ -12695,7 +12842,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "재명명"
+            "value" : "이름 변경"
           }
         },
         "zh-Hans" : {
@@ -12751,7 +12898,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다시 스캔"
+            "value" : "재스캔"
           }
         },
         "zh-Hans" : {
@@ -12779,13 +12926,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "키 재생성"
+            "value" : "Key 재생성"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新生成 Key"
+            "value" : "重新生成密钥"
           }
         }
       }
@@ -12807,7 +12954,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "재설정"
+            "value" : "초기화"
           }
         },
         "zh-Hans" : {
@@ -12823,25 +12970,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important Reminder: 70% Volume"
+            "value" : "Important Notification, 70% Volume"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重要リマインダー通知、70%音量"
+            "value" : "重要通知アラート、70%音量"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "중요 알림, 70% 음량"
+            "value" : "중요 알림, 70% 볼륨"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重要提醒通知,70%音量"
+            "value" : "重要提醒通知，70%音量"
           }
         }
       }
@@ -12857,13 +13004,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重要なお知らせ"
+            "value" : "重要通知"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "중요 공지"
+            "value" : "중요 알림"
           }
         },
         "zh-Hans" : {
@@ -12879,7 +13026,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important Notification Permissions"
+            "value" : "Critical Notification Permissions"
           }
         },
         "ja" : {
@@ -12897,7 +13044,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重要通知权限"
+            "value" : "关键通知权限"
           }
         }
       }
@@ -12935,25 +13082,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell Sound"
+            "value" : "BellTone"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鈴声"
+            "value" : "通知音"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "링 소리"
+            "value" : "DataHub"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "铃声"
+            "value" : "铃音"
           }
         }
       }
@@ -12969,19 +13116,19 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鈴声リスト"
+            "value" : "鈴音リスト"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "링 목록"
+            "value" : "알림 목록"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "铃声列表"
+            "value" : "铃音列表"
           }
         }
       }
@@ -13059,7 +13206,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ask AI Assistant"
+            "value" : "AI 어시스턴트"
           }
         },
         "zh-Hans" : {
@@ -13103,7 +13250,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attachment: An image"
+            "value" : "Attachment: One image"
           }
         },
         "ja" : {
@@ -13115,7 +13262,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "첨부: 이미지 1장"
+            "value" : "첨부: 이미지 1개"
           }
         },
         "zh-Hans" : {
@@ -13131,19 +13278,19 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nearby Devices Unavailable"
+            "value" : "No Nearby Devices"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "近くにデバイスがありません"
+            "value" : "周辺デバイス未検出"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주변에 장치 없음"
+            "value" : "주변에 기기 없음"
           }
         },
         "zh-Hans" : {
@@ -13165,13 +13312,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "近くの本"
+            "value" : "近隣の本"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주변의 책"
+            "value" : "주변 책"
           }
         },
         "zh-Hans" : {
@@ -13193,13 +13340,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "近くのデバイス"
+            "value" : "近接デバイス"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주변 기기"
+            "value" : "근처 기기"
           }
         },
         "zh-Hans" : {
@@ -13243,7 +13390,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hidden"
+            "value" : "Hide"
           }
         },
         "ja" : {
@@ -13277,7 +13424,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ランダム性パラメータ"
+            "value" : "ランダムパラメータ"
           }
         },
         "ko" : {
@@ -13305,7 +13452,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ランダムキー生成"
+            "value" : "ランダム鍵生成"
           }
         },
         "ko" : {
@@ -13327,7 +13474,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Required at"
+            "value" : "Requires"
           }
         },
         "ja" : {
@@ -13339,13 +13486,13 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "필요함"
+            "value" : "필요한 위치"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "需要在"
+            "value" : "需要位于"
           }
         }
       }
@@ -13355,13 +13502,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Requires Network Permission"
+            "value" : "Network Permission Required"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ネットワーク権限が必要"
+            "value" : "ネットワーク権限が必要です"
           }
         },
         "ko" : {
@@ -13417,7 +13564,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "静音分割1時間"
+            "value" : "サイレントセッション 1時間"
           }
         },
         "ko" : {
@@ -13429,7 +13576,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "静音分组1小时"
+            "value" : "静音分区1小时"
           }
         }
       }
@@ -13451,7 +13598,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알림 끄기"
+            "value" : "Silent Notification"
           }
         },
         "zh-Hans" : {
