@@ -19,7 +19,7 @@ import argparse
 
 class Translate:
     mode: int = 0
-    semaphore_number: int = 10
+    semaphore_number: int = 20
     deepseek_key: str = ""
     host: str = ""
     model: str = ""
@@ -40,7 +40,7 @@ class Translate:
         parser.add_argument("--host", type=str, default="https://api.deepseek.com", help="host")
         parser.add_argument("--model", type=str, default="deepseek-chat", help="mode")
         parser.add_argument("--mode", type=int, default=0, help="mode")
-        parser.add_argument("--copy_lang", type=str, default=None, help="language code to use key as value")
+        parser.add_argument("--copy_lang", type=str, default="zh", help="language code to use key as value")
         args = parser.parse_args()
 
         self.deepseek_key = (
@@ -72,10 +72,7 @@ class Translate:
         else:
             self.mode = args.mode
 
-        if copy_lang is None:
-            self.copy_lang = args.copy_lang
-        else:
-            self.copy_lang = copy_lang
+        self.copy_lang = copy_lang or args.copy_lang
 
         self.client = AsyncOpenAI(base_url=self.host, api_key=self.deepseek_key)
 
@@ -170,6 +167,7 @@ class Translate:
                     "lang": lang
                 }
         tasks = []
+
         async def return_text_task(text):
             return text
 
@@ -223,16 +221,12 @@ class Translate:
     @staticmethod
     def get_local_tips(lang_code="en"):
         return f"""
-            Role: App Localization Expert (Technical & UI)
-            Target Language: {lang_code}
-            
-            Rules:
-            1. Output ONLY the translation. No extra text.
-            2. DataHub Aesthetic: For system-level or structural components, use modern, modular nomenclature instead of literal translation.
-               - Example: "Data Manager" -> "DataHub", "Message Center" -> "MsgNode", "Settings" -> "Config".
-            3. Balanced UI Text: Use professional technical terms for functional labels. Only use shorthand (e.g., "Auth", "Sync") when standard text exceeds typical UI space or for developer-facing interfaces. Do NOT over-abbreviate common user actions.
-            4. Protected Terms: Do NOT translate URL parameters (e.g., title=), variables, or: "无字书", "無字書", "NoLet".
-            5. Style: Professional, clean, and industry-standard.
+            Act as a professional translator of app. Translate the text into {lang_code}.
+            Constraints:
+            1. Output ONLY the translated text.
+            2. DO NOT wrap the output in extra quotes or symbols (e.g., "", “”, 「」) unless they are part of the original source text.
+            3. DO NOT add any prefixes, labels, or introductory remarks.
+            4. Preserve the original punctuation only if it exists in the source.
             """
 
     @staticmethod
