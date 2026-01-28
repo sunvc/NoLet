@@ -34,7 +34,7 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    private func tabLabel(title: LocalizedStringKey, icon: String) -> some View {
+    private func tabLabel(title: String, icon: String) -> some View {
         Label(title, systemImage: icon)
             .symbolRenderingMode(.palette)
             .customForegroundStyle(.green, .primary)
@@ -112,7 +112,7 @@ struct ContentView: View {
                             MessagePage().router(manager)
                         }
                     } label: {
-                        tabLabel(title: "消息", icon: "ellipsis.message")
+                        tabLabel(title: String(localized: "消息"), icon: "ellipsis.message")
                     }.badge(messageManager.unreadCount)
 
                     Tab(value: .setting) {
@@ -120,7 +120,7 @@ struct ContentView: View {
                             SettingsPage().router(manager)
                         }
                     } label: {
-                        tabLabel(title: "设置", icon: "gear.badge.questionmark")
+                        tabLabel(title: String(localized: "设置"), icon: "gear.badge.questionmark")
                     }
 
                     if assistantAccouns.count > 0 {
@@ -129,7 +129,7 @@ struct ContentView: View {
                                 NoLetChatHomeView().router(manager)
                             }
                         } label: {
-                            tabLabel(title: "\(NCONFIG.AppName)", icon: "apple.intelligence")
+                            tabLabel(title: NCONFIG.AppName, icon: "apple.intelligence")
                         }
                     }
                 }
@@ -140,7 +140,7 @@ struct ContentView: View {
                     NavigationStack(path: _page($manager.mrouter)) {
                         MessagePage().router(manager)
                     }
-                    .tabItem { tabLabel(title: "消息", icon: "ellipsis.message") }
+                    .tabItem { tabLabel(title: String(localized: "消息"), icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
 
@@ -149,7 +149,7 @@ struct ContentView: View {
                             NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
-                            tabLabel(title: "\(NCONFIG.AppName)", icon: "atom")
+                            tabLabel(title: NCONFIG.AppName, icon: "atom")
                         }
                         .tag(TabPage.assistant)
                     }
@@ -157,7 +157,7 @@ struct ContentView: View {
                     NavigationStack(path: _page($manager.srouter)) {
                         SettingsPage().router(manager)
                     }
-                    .tabItem { tabLabel(title: "设置", icon: "gear.badge.questionmark") }
+                    .tabItem { tabLabel(title: String(localized: "设置"), icon: "gear.badge.questionmark") }
                     .tag(TabPage.setting)
                 }
             }

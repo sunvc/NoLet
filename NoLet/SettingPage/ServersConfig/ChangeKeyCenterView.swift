@@ -354,7 +354,7 @@ struct ChangeKeyCenterView: View {
                 state: $buttonState,
                 normal:
                 .init(
-                    title: String(localized: "注册KEY"),
+                    title: pageTitle,
                     background: .blue,
                     symbolImage: "person.crop.square.filled.and.at.rectangle"
                 ),

@@ -19,7 +19,7 @@ struct AppleStatusView: View {
     var body: some View {
         Group {
             if viewModel.isLoading {
-                ProgressView("Fetching status...")
+                ProgressView(String("Fetching status..."))
             } else if let error = viewModel.errorMessage {
                 VStack {
                     Image(systemName: "exclamationmark.triangle")
@@ -27,7 +27,7 @@ struct AppleStatusView: View {
                         .foregroundColor(.red)
                     Text(error)
                         .padding()
-                    Button("Retry") {
+                    Button(String("Retry")) {
                         Task {
                             try? await viewModel.fetchStatus()
                         }

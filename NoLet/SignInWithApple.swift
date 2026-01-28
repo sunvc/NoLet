@@ -28,7 +28,7 @@ struct SignInWithApple: View {
                 handleAuthorization(authResults)
             case .failure(let error):
                 logger.error("\(error)")
-                Toast.error(title: "Authorization failed")
+                Toast.shared.present(title: "Authorization failed", symbol: .error)
             }
         }
         .signInWithAppleButtonStyle(colorScheme == .dark ? .black : .white)
