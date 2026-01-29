@@ -174,19 +174,15 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     func setMarkdownConfig() {
         MarkdownConfig.shared.menus = [
-            MarkdownConfig.MenuItem(title: "复制", action: { text in
-                if !text.isEmpty {
-                    Clipboard.set(text)
-                    Haptic.impact()
-                    Toast.success(title: "复制成功")
+            MarkdownConfig.MenuItem(
+                title: String(localized: "二维码"),
+                image: UIImage(systemName: "qrcode"),
+                action: { [weak self] text in
+                    self?.selectMessage = nil
+                    self?.open(sheet: .quickResponseCode(text: text, title: nil, preview: nil))
+                    return true
                 }
-                return true
-            }),
-            MarkdownConfig.MenuItem(title: "二维码", action: { [weak self] text in
-                self?.selectMessage = nil
-                self?.open(sheet: .quickResponseCode(text: text, title: nil, preview: nil))
-                return true
-            }),
+            ),
         ]
     }
 }

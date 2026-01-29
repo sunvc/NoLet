@@ -15,6 +15,7 @@ import CloudKit
 import Defaults
 import UIKit
 
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(

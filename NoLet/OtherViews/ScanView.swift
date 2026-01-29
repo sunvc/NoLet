@@ -147,8 +147,8 @@ struct ScanView: View {
                             AppManager.shared.open(full: nil)
                             AppManager.shared.open(sheet: .quickResponseCode(
                                 text: code,
-                                title: String("二维码"),
-                                preview: String("二维码")
+                                title: String(localized: "二维码"),
+                                preview: String(localized: "二维码")
                             ))
                         } label: {
                             Image(systemName: "qrcode")

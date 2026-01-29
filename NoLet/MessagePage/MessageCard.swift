@@ -317,7 +317,7 @@ struct MessageCard: View {
                         )
                     }
                 }
-
+                
                 if let image = message.image {
                     Section {
                         saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
@@ -337,6 +337,10 @@ struct MessageCard: View {
                             Label("智能助手", systemImage: "atom")
                         }.tint(.green)
                     }
+                }
+                
+                if let body = message.body{
+                    ShareLink(item: body)
                 }
             } label: {
                 HStack {

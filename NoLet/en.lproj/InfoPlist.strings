@@ -4,7 +4,7 @@
   Created by Neo 2024/10/11.
 */
 
-CFBundleDisplayName = "NoLet";
+CFBundleDisplayName = "Nox";
 NSPhotoLibraryAddUsageDescription = "This app needs to access your photo library to save photos";
 NSCameraUsageDescription = "Need to use your camera to scan QR codes";
 NSPhotoLibraryUsageDescription = "We need to access your photo album";

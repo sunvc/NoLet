@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/swift-markdown-ui",
       "state" : {
-        "revision" : "ffe0100a72a005e39e59cadd3a288308cbe3fb37",
-        "version" : "2.0.2"
+        "revision" : "668b6f62a5da9ac23d32f55462e7791debadb623",
+        "version" : "2.0.5"
       }
     },
     {
