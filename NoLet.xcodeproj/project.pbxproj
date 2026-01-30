@@ -33,12 +33,14 @@
 		BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
+		BA66AD772F2CD8D800ADEDF5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */; };
+		BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD782F2CD8D800ADEDF5 /* Splash */; };
+		BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */; };
+		BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7D2F2D817800ADEDF5 /* Splash */; };
 		BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767C2F233E4900D1BF03 /* MarkdownUI */; };
 		BA71767F2F233E4900D1BF03 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767E2F233E4900D1BF03 /* Splash */; };
 		BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA8197852F2B003D00623275 /* MarkdownUI */; };
 		BA8197882F2B003D00623275 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA8197872F2B003D00623275 /* Splash */; };
-		BA8199B42F2BB05500623275 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA8199B32F2BB05500623275 /* MarkdownUI */; };
-		BA8199B62F2BB05500623275 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA8199B52F2BB05500623275 /* Splash */; };
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 /* End PBXBuildFile section */
 
@@ -409,6 +411,7 @@
 				BA71767F2F233E4900D1BF03 /* Splash in Frameworks */,
 				BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */,
 				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
+				BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
 				BA8197882F2B003D00623275 /* Splash in Frameworks */,
@@ -417,8 +420,9 @@
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
-				BA8199B62F2BB05500623275 /* Splash in Frameworks */,
-				BA8199B42F2BB05500623275 /* MarkdownUI in Frameworks */,
+				BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */,
+				BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */,
+				BA66AD772F2CD8D800ADEDF5 /* MarkdownUI in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
 				BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */,
@@ -553,8 +557,10 @@
 				BA71767E2F233E4900D1BF03 /* Splash */,
 				BA8197852F2B003D00623275 /* MarkdownUI */,
 				BA8197872F2B003D00623275 /* Splash */,
-				BA8199B32F2BB05500623275 /* MarkdownUI */,
-				BA8199B52F2BB05500623275 /* Splash */,
+				BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */,
+				BA66AD782F2CD8D800ADEDF5 /* Splash */,
+				BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */,
+				BA66AD7D2F2D817800ADEDF5 /* Splash */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -681,7 +687,7 @@
 				B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
-				BA8199B22F2BB05500623275 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1292,12 +1298,12 @@
 				minimumVersion = 0.7.1;
 			};
 		};
-		BA8199B22F2BB05500623275 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+		BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.2;
+				minimumVersion = 2.1.0;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
@@ -1404,6 +1410,24 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};
+		BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MarkdownUI;
+		};
+		BA66AD782F2CD8D800ADEDF5 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Splash;
+		};
+		BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		BA66AD7D2F2D817800ADEDF5 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = Splash;
+		};
 		BA71767C2F233E4900D1BF03 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MarkdownUI;
@@ -1418,16 +1442,6 @@
 		};
 		BA8197872F2B003D00623275 /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Splash;
-		};
-		BA8199B32F2BB05500623275 /* MarkdownUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA8199B22F2BB05500623275 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = MarkdownUI;
-		};
-		BA8199B52F2BB05500623275 /* Splash */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA8199B22F2BB05500623275 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = Splash;
 		};
 		BAB479802ED2392C00EE84AC /* Zip */ = {

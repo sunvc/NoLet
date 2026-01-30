@@ -14,43 +14,57 @@ import MarkdownUI
 import SwiftUI
 
 enum MarkdownColors {
-    // 主文本颜色：高亮但不刺眼
-    static let text = Color(light: Color(rgba: 0x1111_11FF), dark: Color(rgba: 0xFAFA_FAFF))
+    // 主标题：Light 纯黑增加分量，Dark 灰白避免刺眼
+    static let title = Color(
+        light: Color(rgba: 0x0000_00FF),
+        dark: Color(rgba: 0xE1E4_E8FF) // 柔和的浅灰白
+    )
 
-    // 次要文本颜色：更温和的中灰偏蓝
+    // 正文颜色：Light 模式稍浅一点点（深灰），Dark 模式采用淡青灰（阅读最舒服）
+    static let text = Color(
+        light: Color(rgba: 0x1A20_2CFF),
+        dark: Color(rgba: 0xD1D5_DBFF) // 略暗于标题，形成层级
+    )
+
+    // 次要文本：蓝灰调。Dark 模式下降低明度，使其“退后”
     static let secondaryText = Color(
-        light: Color(rgba: 0x3C4A_5AFF),
-        dark: Color(rgba: 0xA5B0_C0FF)
+        light: Color(rgba: 0x4A55_68FF),
+        dark: Color(rgba: 0x9CA3_AFFF)
     )
 
-    // 第三级文本颜色：蓝灰调，风格更轻快
-    static let tertiaryText = Color(light: Color(rgba: 0x6A7B_8EFF), dark: Color(rgba: 0x7F8F_A3FF))
+    // 第三级文本：仅用于脚注或极其不重要的说明
+    static let tertiaryText = Color(
+        light: Color(rgba: 0x7180_96FF),
+        dark: Color(rgba: 0x6B72_80FF)
+    )
 
-    // 背景颜色
-    static let background = Color(light: Color(rgba: 0xFFFF_FFFF), dark: Color(rgba: 0x1014_18FF))
+    // 背景颜色：Dark 模式采用深蓝黑，比纯黑更有质感
+    static let background = Color(
+        light: Color(rgba: 0xFFFF_FFFF),
+        dark: Color(rgba: 0x0D11_17FF)
+    )
 
-    // 次要背景颜色：引入冷灰调
+    // 次要背景（代码块、引用块）：Light 灰蓝，Dark 深灰蓝
     static let secondaryBackground = Color(
-        light: Color(rgba: 0xF2F6_FAFF),
-        dark: Color(rgba: 0x1A1F_26FF)
+        light: Color(rgba: 0xF6F8_FAFF),
+        dark: Color(rgba: 0x161B_22FF)
     )
 
-    // 链接颜色：鲜艳蓝调，增强可点击性
-    static let link = Color(light: Color(rgba: 0x0B5F_FFFF), dark: Color(rgba: 0x61A5_FFFF))
+    // 链接：Light 鲜艳，Dark 稍微降低饱和度防止“发光”感
+    static let link = Color(
+        light: Color(rgba: 0x0969_DAFF),
+        dark: Color(rgba: 0x58A6_FFFF)
+    )
 
-    // 边框颜色：色温更高的浅灰蓝
-    static let border = Color(light: Color(rgba: 0xD0D8_E0FF), dark: Color(rgba: 0x3A4A_5AFF))
+    // 边框/分割线：保持轻快，Dark 模式不要太亮
+    static let border = Color(light: Color(rgba: 0xD0D7_DEFF), dark: Color(rgba: 0x3036_3DFF))
+    static let divider = Color(light: Color(rgba: 0xD8E0_E8FF), dark: Color(rgba: 0x2126_2DFF))
 
-    // 分割线颜色：淡蓝灰，避免死灰感
-    static let divider = Color(light: Color(rgba: 0xC8D4_E0FF), dark: Color(rgba: 0x2B36_42FF))
-
-    // 复选框颜色：鲜亮蓝灰，强调状态
-    static let checkbox = Color(light: Color(rgba: 0x3366_CCFF), dark: Color(rgba: 0x85B4_FFFF))
-
-    // 复选框背景颜色：有一点明度变化
+    // 复选框与强调色
+    static let checkbox = Color(light: Color(rgba: 0x0969_DAFF), dark: Color(rgba: 0x388B_F1FF))
     static let checkboxBackground = Color(
-        light: Color(rgba: 0xEAF1_FAFF),
-        dark: Color(rgba: 0x2D3A_4AFF)
+        light: Color(rgba: 0xF3F6_F9FF),
+        dark: Color(rgba: 0x161B_22FF)
     )
 }
 
@@ -64,6 +78,7 @@ extension View {
             .markdownTextStyle {
                 FontWeight(fontWeight)
                 FontSize(.em(fontSize))
+                ForegroundColor(MarkdownColors.title)
             }
     }
 
@@ -77,7 +92,10 @@ extension View {
 enum MarkdownTheme {
     static func defaultTheme(_ defaultSize: CGFloat = 16, scaleFactor: CGFloat = 1.0) -> Theme {
         Theme()
-            .text { FontSize(defaultSize * scaleFactor) }
+            .text {
+                FontSize(defaultSize * scaleFactor)
+                ForegroundColor(MarkdownColors.text)
+            }
             .code {
                 FontFamilyVariant(.monospaced)
                 FontSize(.em(0.85))
@@ -116,9 +134,6 @@ enum MarkdownTheme {
             .heading6 { configuration in
                 configuration.label
                     .markdownHeadingStyle(fontSize: 0.82)
-                    .markdownTextStyle {
-                        ForegroundColor(MarkdownColors.tertiaryText)
-                    }
             }
             .paragraph { configuration in
                 configuration.label
@@ -130,7 +145,7 @@ enum MarkdownTheme {
                         .fill(MarkdownColors.border)
                         .relativeFrame(width: .em(0.2))
                     configuration.label
-                        .markdownTextStyle { ForegroundColor(MarkdownColors.secondaryText) }
+                        .markdownTextStyle { ForegroundColor(MarkdownColors.tertiaryText) }
                         .relativePadding(.horizontal, length: .em(1))
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -151,7 +166,7 @@ enum MarkdownTheme {
             }
             .table { configuration in
                 configuration.label
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(horizontal: true, vertical: true)
                     .markdownTableBorderStyle(.init(color: MarkdownColors.border))
                     .markdownTableBackgroundStyle(
                         .alternatingRows(
@@ -159,7 +174,7 @@ enum MarkdownTheme {
                             MarkdownColors.secondaryBackground
                         )
                     )
-                    .markdownMargin(top: 0, bottom: 16)
+                    .markdownMargin(top: 16, bottom: 16)
             }
             .tableCell { configuration in
                 configuration.label

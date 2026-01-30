@@ -25,6 +25,7 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     var image: String?
     var from: String?
     var host: String?
+    var reply: String?
     var level: Int
     var ttl: Int
     var isRead: Bool
@@ -42,6 +43,7 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
         static let image = Column(CodingKeys.image)
         static let from = Column(CodingKeys.from)
         static let host = Column(CodingKeys.host)
+        static let reply = Column(CodingKeys.reply)
         static let level = Column(CodingKeys.level)
         static let ttl = Column(CodingKeys.ttl)
         static let isRead = Column(CodingKeys.isRead)

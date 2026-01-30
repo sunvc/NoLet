@@ -53,6 +53,10 @@ struct MessageCard: View {
     }
 
     @Namespace private var sms
+
+    @FocusState private var showReply
+    @State private var replyText: String = ""
+
     var body: some View {
         /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
         VStack {
@@ -179,7 +183,11 @@ struct MessageCard: View {
                                     }
                             }
                             .scrollDisabled(true)
-                            .frame(maxWidth: .infinity, maxHeight: CGFloat(limitMessageLine * 30))
+                            .frame(
+                                maxWidth: .infinity,
+                                maxHeight: limitMessageLine >= 11 ? .infinity :
+                                    CGFloat(limitMessageLine * 30)
+                            )
                         }
                     }
                 }
@@ -244,6 +252,27 @@ struct MessageCard: View {
 
             } header: {
                 MessageViewHeader()
+            } footer: {
+                if let reply = message.reply {
+                    TextField(String("回复"), text: $replyText)
+                        .customField(icon: "text.bubble")
+                        .focused($showReply)
+                        .opacity(showReply ? 1 : 0) // 透明
+                        .frame(width: showReply ? self.windowWidth : 0, height: showReply ? 50 : 0)
+                        .keyboardType(.default)
+                        .onSubmit(of: .text) {
+                            Task { @MainActor in
+                                do {
+                                    let result = try await NetworkManager()
+                                        .fetch(url: reply + replyText)
+                                    Toast.success(title: result.check() ? "回复成功" : "回复失败")
+                                } catch {
+                                    Toast.error(title: "\(error.localizedDescription)")
+                                }
+                                self.replyText = ""
+                            }
+                        }
+                }
             }
         }
         .padding(.vertical)
@@ -317,7 +346,7 @@ struct MessageCard: View {
                         )
                     }
                 }
-                
+
                 if let image = message.image {
                     Section {
                         saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
@@ -338,10 +367,21 @@ struct MessageCard: View {
                         }.tint(.green)
                     }
                 }
-                
-                if let body = message.body{
+
+                if let body = message.body {
                     ShareLink(item: body)
                 }
+
+                if let reply = message.reply, !reply.isEmpty {
+                    Section {
+                        Button {
+                            self.showReply = true
+                        } label: {
+                            Label("回复", systemImage: "text.bubble")
+                        }
+                    }
+                }
+
             } label: {
                 HStack {
                     Spacer()
@@ -350,7 +390,7 @@ struct MessageCard: View {
                         .padding(.vertical, 5)
                 }
                 .contentShape(Rectangle())
-            }.zIndex(9999)
+            }
         }
         .background(linColor.gradient)
         .clipShape(RoundedRectangle(cornerRadius: 5))
@@ -364,7 +404,7 @@ struct MessageCard: View {
             message: MessagesManager.examples().first!,
             limitMessageLine: 10,
             assistantAccounsCount: 0
-        ){}
+        ) {}
             .listRowBackground(Color.clear)
             .listSectionSeparator(.hidden)
             .listRowInsets(EdgeInsets())

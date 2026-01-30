@@ -113,7 +113,7 @@ struct MoreOperationsView: View {
 
                 Stepper(
                     value: $limitMessageLine,
-                    in: 3...50,
+                    in: 3...11,
                     step: 1
                 ) {
                     Label(

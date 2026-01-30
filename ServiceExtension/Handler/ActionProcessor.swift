@@ -31,7 +31,13 @@ class ActionProcessor: NotificationContentProcessor {
             _ = try? await NetworkManager()
                 .fetch(url: host, params: ["id": id])
         }
-        
+
         return bestAttemptContent
+    }
+}
+
+extension String {
+    func markdownPre(_ max: Int = 15) -> Self {
+        count > max ? String(prefix(max)) + "..." : self
     }
 }

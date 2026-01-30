@@ -43,8 +43,7 @@ class ArchiveProcessor: NotificationContentProcessor {
                 .joined(separator: ",")
                 .replacingOccurrences(of: "\n", with: "")
 
-            bestAttemptContent.body = plainText
-                .count > 15 ? String(plainText.prefix(15)) + "..." : plainText
+            bestAttemptContent.body = plainText.markdownPre()
         default:
             bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
         }
@@ -59,6 +58,7 @@ class ArchiveProcessor: NotificationContentProcessor {
         let icon: String? = userInfo.raw(.icon)
         let image: String? = userInfo.raw(.image)
         let host: String? = userInfo.raw(.host)
+        let reply: String? = userInfo.raw(.reply)
         let messageID = bestAttemptContent.targetContentIdentifier
         let level = bestAttemptContent.level.rawValue
         let other = userInfo.toJSONString(excluding: Params.allCases.allString())
@@ -93,6 +93,7 @@ class ArchiveProcessor: NotificationContentProcessor {
             url: url,
             image: image,
             host: host,
+            reply: reply,
             level: Int(level),
             ttl: saveDays,
             isRead: false,

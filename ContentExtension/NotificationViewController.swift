@@ -12,10 +12,9 @@
 
 import Defaults
 import UIKit
-import WebKit
 import UserNotifications
 import UserNotificationsUI
-
+import WebKit
 
 class NotificationViewController: UIViewController, @MainActor UNNotificationContentExtension,
     WKNavigationDelegate
@@ -29,6 +28,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     private var currentCategory: Identifiers? // ←← 新增
 
     private var tips: String?
+    private var replyText: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +57,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         web.scrollView.contentInsetAdjustmentBehavior = .never
         web.scrollView.contentInset = .zero
         web.scrollView.scrollIndicatorInsets = .zero
-    
+
         preferredContentSize = CGSize(width: view.bounds.width, height: 1)
     }
 
@@ -72,7 +72,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         imageHeight = 0
         imageView.isHidden = true
         imageView.image = nil
-        
+
         // 关键：确保测量前 WebView 宽度与当前视图一致
         web.frame.size.width = view.bounds.width
 
@@ -98,7 +98,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
         let category = notification.request.content.categoryIdentifier
         self.currentCategory = Identifiers(rawValue: category)
-        
+
         if self.currentCategory != .myNotificationCategory,
            let body: String = userInfo.raw(Params.body),
            let html = convertMarkdownToHTML(body),
@@ -120,11 +120,14 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
         // 确保测量时的宽度是最终显示宽度
-        webView.evaluateJavaScript("document.querySelector('.markdown-body').offsetHeight") { [weak self] result, _ in
-            guard let self = self, let height = result as? CGFloat else { return }
-            // offsetHeight 不包含外边距，增加少量 padding 缓冲
-            self.updateLayout(webHeight: height + 10)
-        }
+        webView
+            .evaluateJavaScript("document.querySelector('.markdown-body').offsetHeight") { [
+                weak self
+            ] result, _ in
+                guard let self = self, let height = result as? CGFloat else { return }
+                // offsetHeight 不包含外边距，增加少量 padding 缓冲
+                self.updateLayout(webHeight: height + 10)
+            }
     }
 
     private func updateLayout(webHeight: CGFloat) {
@@ -193,7 +196,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             // TODO: - 回应信息
             guard let response = response as? UNTextInputNotificationResponse else { return }
             let text = response.userText // 获取用户在键盘输入的文字
-
+            guard self.replyText == nil else { return }
+            self.replyText = text
             if let reply: String = userInfo.raw(.reply) {
                 Task { @MainActor in
                     do {
@@ -206,6 +210,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                     } catch {
                         showTips(text: "\(error.localizedDescription)", color: .red)
                     }
+                    self.replyText = nil
                 }
             }
         }

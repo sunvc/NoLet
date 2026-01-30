@@ -103,6 +103,7 @@ struct SingleMessagesView: View {
                     .listSectionSeparator(.hidden)
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle("消息")
             .listStyle(.grouped)
             .animation(.easeInOut, value: messagesCount)

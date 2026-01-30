@@ -77,6 +77,12 @@ final class DatabaseManager {
                 t.rename(column: "read", to: "isRead")
             }
         }
+        
+        migrator.registerMigration("add reply") { db in
+            try db.alter(table: self.messageTabelName) { t in
+                t.add(column: "reply", .text)
+            }
+        }
     }
 
     func registerChatGroupMigrations(_ migrator: inout DatabaseMigrator) {
