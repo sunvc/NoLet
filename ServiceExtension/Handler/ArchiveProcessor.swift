@@ -32,7 +32,12 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         // MARK: - markdownbody body 显示
 
-        if bestAttemptContent.categoryIdentifier == Identifiers.markdown.rawValue {
+        if let _: String = bestAttemptContent.userInfo.raw(.reply) {
+            bestAttemptContent.categoryIdentifier = Identifiers.reply.rawValue
+        }
+
+        switch Identifiers(rawValue: bestAttemptContent.categoryIdentifier) {
+        case .markdown, .reply:
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
                 .joined(separator: ",")
@@ -40,6 +45,8 @@ class ArchiveProcessor: NotificationContentProcessor {
 
             bestAttemptContent.body = plainText
                 .count > 15 ? String(plainText.prefix(15)) + "..." : plainText
+        default:
+            bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
         }
 
         let group: String = userInfo.raw(.group) ?? String(localized: "默认")

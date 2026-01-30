@@ -12,7 +12,7 @@
 import AppIntents
 import Defaults
 
-//struct ServerAddressProvider: DynamicOptionsProvider {
+// struct ServerAddressProvider: DynamicOptionsProvider {
 //    func results() async throws -> [String] {
 //        Defaults[.servers].map { $0.server }
 //    }
@@ -20,12 +20,12 @@ import Defaults
 //    func defaultResult() async -> String? {
 //        Defaults[.servers].first?.server
 //    }
-//}
+// }
 
 struct SoundOptionsProvider: DynamicOptionsProvider {
     func results() async throws -> [String] {
         let (customSounds, defaultSounds) = AudioManager.shared.getFileList()
-        return ["Default"] + ( customSounds + defaultSounds).map {
+        return ["Default"] + (customSounds + defaultSounds).map {
             $0.deletingPathExtension().lastPathComponent
         }
     }
@@ -74,7 +74,7 @@ extension Identifiers {
         switch self {
         case .myNotificationCategory:
             return String(localized: "普通内容")
-        case .markdown:
+        case .markdown, .reply:
             return "Markdown"
         }
     }
@@ -85,7 +85,6 @@ struct APIPushToDeviceResponse: Codable {
     let message: String
     let timestamp: Int
 }
-
 
 enum LevelTitle: String, CaseIterable, Codable, Defaults.Serializable {
     case passive
@@ -106,6 +105,4 @@ enum LevelTitle: String, CaseIterable, Codable, Defaults.Serializable {
     static func rawValue(fromDisplayName name: String) -> String? {
         return LevelTitle.allCases.first(where: { $0.name == name })?.rawValue
     }
-
-   
 }

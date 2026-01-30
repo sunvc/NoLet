@@ -21,6 +21,9 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>weixin</string>
+		<string>weixinULAPI</string>
+		<string>weixinURLParamsAPI</string>
 		<string>photos-redirect</string>
 	</array>
 	<key>NSBonjourServices</key>

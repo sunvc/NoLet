@@ -18,7 +18,8 @@ enum Params: String, CaseIterable {
          callback, autoCopy, copy,
          icon, image, saveAlbum,
          cipherText, cipherNumber, iv,
-         aps, alert, caf
+         aps, alert, caf,
+         reply
 
     var name: String { rawValue.lowercased() }
 }

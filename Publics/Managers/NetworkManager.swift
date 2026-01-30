@@ -34,7 +34,21 @@ class NetworkManager: NSObject {
         var method: String { rawValue }
     }
 
-    struct EmptyResponse: Codable {}
+    struct Response {
+        var data: Data
+        var header: HTTPURLResponse
+
+        func check(_ response: String? = nil, code: ClosedRange<Int> = 200...299) -> Bool {
+            if let response {
+                return String(bytes: data, encoding: .utf8) == response && code ~= header.statusCode
+            }
+            return code ~= header.statusCode
+        }
+
+        func decode<T: Codable>() throws -> T {
+            try JSONDecoder().decode(T.self, from: data)
+        }
+    }
 
     /// 通用网络请求方法
     /// - Parameters:
@@ -50,7 +64,7 @@ class NetworkManager: NSObject {
         headers: [String: String] = [:],
         timeout: Double = 30
     ) async throws -> T {
-        let (data, response) = try await fetch(
+        let response = try await fetch(
             url: url,
             path: path,
             method: method,
@@ -59,14 +73,11 @@ class NetworkManager: NSObject {
             timeout: timeout
         )
 
-        guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
-        guard 200...299 ~= response.statusCode else {
-            throw APIError.invalidCode(response.statusCode)
+        guard response.check() else {
+            throw APIError.invalidCode(response.header.statusCode)
         }
 
-        // 尝试将响应的 JSON 解码为泛型模型 T
-        let result = try JSONDecoder().decode(T.self, from: data)
-        return result
+        return try response.decode() as T
     }
 
     func fetch(
@@ -76,26 +87,38 @@ class NetworkManager: NSObject {
         params: [String: Any] = [:],
         headers: [String: String] = [:],
         timeout: Double = 30
-    ) async throws -> (Data, URLResponse) {
-        // 尝试将字符串转换为 URL，如果失败则抛出错误
-        let url = (url + path).normalizedURLString()
-        guard var requestURL = URL(string: url) else {
+    ) async throws -> Response {
+        guard var baseURL = URL(string: url.normalizedURLString()) else {
             throw APIError.invalidURL
         }
 
-        // 如果是 GET 请求并且有参数，将参数拼接到 URL 的 query 中
-        if method == .GET, !params.isEmpty {
-            if var urlComponents = URLComponents(string: url) {
-                urlComponents.queryItems = params.map {
-                    URLQueryItem(name: $0.key, value: "\($0.value)")
-                }
-                if let composedURL = urlComponents.url {
-                    requestURL = composedURL
-                }
-            }
+        if !path.isEmpty {
+            let cleanedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            baseURL.appendPathComponent(cleanedPath)
         }
 
-        // 构造 URLRequest 请求对象
+        guard var components = URLComponents(
+            url: baseURL,
+            resolvingAgainstBaseURL: false
+        ) else {
+            throw APIError.invalidURL
+        }
+
+        if method == .GET, !params.isEmpty {
+            var items = components.queryItems ?? []
+
+            let newItems: [URLQueryItem] = params.map { key, value in
+                URLQueryItem(name: key, value: String(describing: value))
+            }
+
+            items.append(contentsOf: newItems)
+            components.queryItems = items
+        }
+
+        guard let requestURL = components.url else {
+            throw APIError.invalidURL
+        }
+
         var request = URLRequest(url: requestURL)
         request.httpMethod = method.method // .get 或 .post
 
@@ -115,27 +138,18 @@ class NetworkManager: NSObject {
         request.assumesHTTP3Capable = true
 
         let (data, response) = try await session.data(for: request)
+        guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
+
 //        logger.debug("\(request.description)\(params)\(String(data: data, encoding: .utf8))")
-        return (data, response)
+        return Response(data: data, header: response)
     }
 
     func test(url: String = "https://example.com") async -> Bool {
-        guard
-            let (_, response) = try? await fetch(url: url, method: .HEAD, timeout: 3),
-            let response = response as? HTTPURLResponse
-        else {
-            return false
-        }
-        return response.statusCode == 200
+        return (try? await fetch(url: url, method: .HEAD)) ?? false
     }
 
     func health(url: String) async -> Bool {
-        guard let data = try? await fetch(url: url + "/health", method: .GET, timeout: 3),
-              let response = data.1 as? HTTPURLResponse
-        else {
-            return false
-        }
-        return String(bytes: data.0, encoding: .utf8) == "OK" && response.statusCode == 200
+        return ((try? await fetch(url: url + "/health"))?.check("OK")) ?? false
     }
 
     enum APIError: Error {

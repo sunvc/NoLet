@@ -12,9 +12,10 @@
 
 import Defaults
 import UIKit
+import WebKit
 import UserNotifications
 import UserNotificationsUI
-import WebKit
+
 
 class NotificationViewController: UIViewController, @MainActor UNNotificationContentExtension,
     WKNavigationDelegate
@@ -25,10 +26,12 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     private var markdownHeight: CGFloat = 0
     private var imageHeight: CGFloat = 0 // ←← 新增
+    private var currentCategory: Identifiers? // ←← 新增
+
+    private var tips: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Tips View
         tipsView.text = ""
         tipsView.textAlignment = .center
@@ -37,7 +40,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
 
         // Image View
-        imageView.contentMode = .scaleAspectFit
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .clear
@@ -51,10 +53,11 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         web.backgroundColor = .clear
         web.scrollView.backgroundColor = .clear
         web.scrollView.isScrollEnabled = false
+        web.scrollView.bounces = false
         web.scrollView.contentInsetAdjustmentBehavior = .never
         web.scrollView.contentInset = .zero
         web.scrollView.scrollIndicatorInsets = .zero
-
+    
         preferredContentSize = CGSize(width: view.bounds.width, height: 1)
     }
 
@@ -62,6 +65,16 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     func didReceive(_ notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
+
+        // 重置状态，防止上一条通知的影响
+        tipsView.text = ""
+        tipsView.frame = .zero
+        imageHeight = 0
+        imageView.isHidden = true
+        imageView.image = nil
+        
+        // 关键：确保测量前 WebView 宽度与当前视图一致
+        web.frame.size.width = view.bounds.width
 
         // 兼容bark
         if let autoCopy: Bool = userInfo.raw(.autoCopy), autoCopy {
@@ -83,7 +96,10 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
         // MARK: - Markdown 渲染判断
 
-        if notification.request.content.categoryIdentifier == "markdown",
+        let category = notification.request.content.categoryIdentifier
+        self.currentCategory = Identifiers(rawValue: category)
+        
+        if self.currentCategory != .myNotificationCategory,
            let body: String = userInfo.raw(Params.body),
            let html = convertMarkdownToHTML(body),
            let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css")
@@ -91,12 +107,11 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             let baseURL = URL(fileURLWithPath: cssPath).deletingLastPathComponent()
             web.isHidden = false
             web.loadHTMLString(html, baseURL: baseURL)
-
         } else {
             // 非 markdown 分类 → WebView 高度为 0
             web.isHidden = true
             markdownHeight = 0
-            web.frame = CGRect(x: 0, y: imageView.frame.maxY, width: view.bounds.width, height: 0)
+            web.frame = .zero
             updateLayout(webHeight: 0)
         }
     }
@@ -104,11 +119,11 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     // MARK: - WebView Height
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-            webView.evaluateJavaScript("document.body.scrollHeight") { [weak self] result, _ in
-                guard let self = self, let height = result as? CGFloat else { return }
-                self.updateLayout(webHeight: height)
-            }
+        // 确保测量时的宽度是最终显示宽度
+        webView.evaluateJavaScript("document.querySelector('.markdown-body').offsetHeight") { [weak self] result, _ in
+            guard let self = self, let height = result as? CGFloat else { return }
+            // offsetHeight 不包含外边距，增加少量 padding 缓冲
+            self.updateLayout(webHeight: height + 10)
         }
     }
 
@@ -116,20 +131,32 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         markdownHeight = webHeight
 
         let tipsHeight = tipsView.bounds.height
+        let isReply = currentCategory == .reply
+
+        // 如果是 reply，tips 放在底部，顶部 y 从 0 开始
+        let startY: CGFloat = isReply ? 0 : tipsHeight
 
         imageView.frame = CGRect(
             x: 0,
-            y: tipsHeight,
+            y: startY,
             width: view.bounds.width,
             height: imageHeight
         )
 
         web.frame = CGRect(
             x: 0,
-            y: tipsHeight + imageHeight,
+            y: startY + imageHeight,
             width: view.bounds.width,
             height: webHeight
         )
+
+        if isReply {
+            // reply 模式：图片 + web + tips
+            tipsView.frame.origin.y = imageHeight + webHeight
+        } else {
+            // 普通模式：tips + 图片 + web
+            tipsView.frame.origin.y = 0
+        }
 
         preferredContentSize = CGSize(
             width: view.bounds.width,
@@ -161,28 +188,56 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 Defaults[.muteSetting][group] = Date().addingTimeInterval(3600)
                 showTips(text: String(localized: "[\(group)]分组静音成功"))
             }
+        } else if response.actionIdentifier == Identifiers.reply.rawValue {
+            let userInfo = response.notification.request.content.userInfo
+            // TODO: - 回应信息
+            guard let response = response as? UNTextInputNotificationResponse else { return }
+            let text = response.userText // 获取用户在键盘输入的文字
+
+            if let reply: String = userInfo.raw(.reply) {
+                Task { @MainActor in
+                    do {
+                        let result = try await NetworkManager().fetch(url: reply + text)
+                        if result.check() {
+                            completion(.dismiss)
+                        } else {
+                            showTips(text: String(localized: "Fail"), color: .red)
+                        }
+                    } catch {
+                        showTips(text: "\(error.localizedDescription)", color: .red)
+                    }
+                }
+            }
         }
         completion(.doNotDismiss)
     }
 
-    func showTips(text: String) {
+    func showTips(text: String, color: UIColor = .tintColor) {
+        self.tips = text
         Haptic.impact()
         tipsView.text = text
-
+        tipsView.textColor = color
         tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 35)
 
         updateLayout(webHeight: markdownHeight)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            if self.tips == text {
+                self.tipsView.text = ""
+                self.tipsView.frame = .zero
+                self.updateLayout(webHeight: self.markdownHeight)
+            }
+        }
     }
 
     // MARK: - Markdown → HTML
 
     private func convertMarkdownToHTML(_ markdown: String) -> String? {
         guard let htmlBody = PBMarkdown.markdownToHTML(markdown) else { return nil }
-
+        debugPrint(htmlBody)
         return """
             <html>
             <head>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
                 <link rel="stylesheet" type="text/css" href="markdown.css">
             </head>
 

@@ -28,11 +28,11 @@
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
-		B5835D782DEDFFF90066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
-		B5835D7A2DEDFFF90066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863D2F2311AC00CEBC4F /* MarkdownUI */; };
 		BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
+		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
+		BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767C2F233E4900D1BF03 /* MarkdownUI */; };
 		BA71767F2F233E4900D1BF03 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767E2F233E4900D1BF03 /* Splash */; };
 		BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA8197852F2B003D00623275 /* MarkdownUI */; };
@@ -450,13 +450,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */,
+				BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */,
 				BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */,
 				B5835D302DEDF3370066B32E /* Kingfisher in Frameworks */,
 				B5835D2E2DEDF3370066B32E /* Defaults in Frameworks */,
 				B5835B232DEDE0930066B32E /* UserNotificationsUI.framework in Frameworks */,
 				B5835B222DEDE0930066B32E /* UserNotifications.framework in Frameworks */,
-				B5835D7A2DEDFFF90066B32E /* cmark-gfm-extensions in Frameworks */,
-				B5835D782DEDFFF90066B32E /* cmark-gfm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,6 +814,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.2.6;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -863,6 +864,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.2.6;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

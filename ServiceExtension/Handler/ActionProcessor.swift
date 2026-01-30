@@ -31,7 +31,7 @@ class ActionProcessor: NotificationContentProcessor {
             _ = try? await NetworkManager()
                 .fetch(url: host, params: ["id": id])
         }
-
+        
         return bestAttemptContent
     }
 }

@@ -10,6 +10,7 @@
 			<array>
 				<string>markdown</string>
 				<string>myNotificationCategory</string>
+				<string>reply</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>0.01</real>
