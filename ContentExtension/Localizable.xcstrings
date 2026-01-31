@@ -42,6 +42,18 @@
             "state": "translated",
             "value": "Fail"
           }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "失敗"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실패"
+          }
         }
       }
     },

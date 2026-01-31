@@ -92,6 +92,7 @@ struct ChatInputView: View {
                         .background26(Color.white, radius: 20)
                 }
                 .transition(.scale)
+                .keyboardShortcut(.defaultAction)
             } else {
                 Image(systemName: "puzzlepiece.extension")
                     .foregroundStyle(chatManager.chatPrompt != nil ? .green : .gray)

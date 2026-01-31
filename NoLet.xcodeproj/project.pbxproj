@@ -11,7 +11,6 @@
 		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
 		B583589B2DEDD5980066B32E /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = B583589A2DEDD5980066B32E /* OpenAI */; };
-		B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = B583589D2DEDD5B80066B32E /* QRScanner */; };
 		B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A32DEDD6090066B32E /* cmark-gfm */; };
 		B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A52DEDD6090066B32E /* cmark-gfm-extensions */; };
 		B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359B92DEDDB170066B32E /* StoreKit.framework */; };
@@ -37,6 +36,9 @@
 		BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD782F2CD8D800ADEDF5 /* Splash */; };
 		BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */; };
 		BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7D2F2D817800ADEDF5 /* Splash */; };
+		BA66AD812F2DBE4B00ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD802F2DBE4B00ADEDF5 /* QRScanner */; };
+		BA66AD872F2DEDE000ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD862F2DEDE000ADEDF5 /* QRScanner */; };
+		BA66AD8A2F2DEF0D00ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD892F2DEF0D00ADEDF5 /* QRScanner */; };
 		BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767C2F233E4900D1BF03 /* MarkdownUI */; };
 		BA71767F2F233E4900D1BF03 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767E2F233E4900D1BF03 /* Splash */; };
 		BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA8197852F2B003D00623275 /* MarkdownUI */; };
@@ -410,7 +412,6 @@
 			files = (
 				BA71767F2F233E4900D1BF03 /* Splash in Frameworks */,
 				BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */,
-				B583589E2DEDD5B80066B32E /* QRScanner in Frameworks */,
 				BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
@@ -419,6 +420,7 @@
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
+				BA66AD872F2DEDE000ADEDF5 /* QRScanner in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */,
 				BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */,
@@ -427,6 +429,8 @@
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
 				BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */,
 				BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */,
+				BA66AD8A2F2DEF0D00ADEDF5 /* QRScanner in Frameworks */,
+				BA66AD812F2DBE4B00ADEDF5 /* QRScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,7 +551,6 @@
 				B58358942DEDD55B0066B32E /* GRDB */,
 				B58358972DEDD5790066B32E /* Kingfisher */,
 				B583589A2DEDD5980066B32E /* OpenAI */,
-				B583589D2DEDD5B80066B32E /* QRScanner */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
 				BAB479802ED2392C00EE84AC /* Zip */,
@@ -561,6 +564,9 @@
 				BA66AD782F2CD8D800ADEDF5 /* Splash */,
 				BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */,
 				BA66AD7D2F2D817800ADEDF5 /* Splash */,
+				BA66AD802F2DBE4B00ADEDF5 /* QRScanner */,
+				BA66AD862F2DEDE000ADEDF5 /* QRScanner */,
+				BA66AD892F2DEF0D00ADEDF5 /* QRScanner */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -684,10 +690,10 @@
 				B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */,
-				B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
 				BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				BA66AD882F2DEF0D00ADEDF5 /* XCRemoteSwiftPackageReference "QRScanner" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1282,14 +1288,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/QRScanner.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
 		B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftlang/swift-cmark";
@@ -1304,6 +1302,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.0;
+			};
+		};
+		BA66AD882F2DEF0D00ADEDF5 /* XCRemoteSwiftPackageReference "QRScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sunvc/QRScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.2;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
@@ -1336,11 +1342,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */;
 			productName = OpenAI;
-		};
-		B583589D2DEDD5B80066B32E /* QRScanner */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B583589C2DEDD5B80066B32E /* XCRemoteSwiftPackageReference "QRScanner" */;
-			productName = QRScanner;
 		};
 		B58358A32DEDD6090066B32E /* cmark-gfm */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1427,6 +1428,19 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = Splash;
+		};
+		BA66AD802F2DBE4B00ADEDF5 /* QRScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = QRScanner;
+		};
+		BA66AD862F2DEDE000ADEDF5 /* QRScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = QRScanner;
+		};
+		BA66AD892F2DEF0D00ADEDF5 /* QRScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA66AD882F2DEF0D00ADEDF5 /* XCRemoteSwiftPackageReference "QRScanner" */;
+			productName = QRScanner;
 		};
 		BA71767C2F233E4900D1BF03 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
