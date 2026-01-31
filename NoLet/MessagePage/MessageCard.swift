@@ -217,7 +217,7 @@ struct MessageCard: View {
                         topTrailingRadius: 15,
                         style: .continuous
                     )
-                    .fill(.gray.opacity(0.6))
+                    .fill(message.reply == nil ? .gray.opacity(0.6) : .orange)
                     .frame(height: 3)
                     .padding(.horizontal, 30)
                 }
@@ -249,30 +249,32 @@ struct MessageCard: View {
                         }
                     }
                 }
+                .safeAreaInset(edge: .bottom) {
+                    if let reply = message.reply {
+                        TextField(String("回复"), text: $replyText)
+                            .customField(icon: "text.bubble")
+                            .focused($showReply)
+                            .opacity(showReply ? 1 : 0.0001) // 透明
+                            .frame( height: showReply ? 50 : 1)
+                            .keyboardType(.default)
+                            .animation(.default, value: showReply)
+                            .onSubmit(of: .text) {
+                                Task { @MainActor in
+                                    do {
+                                        let result = try await NetworkManager()
+                                            .fetch(url: reply + replyText)
+                                        Toast.success(title: result.check() ? "回复成功" : "回复失败")
+                                    } catch {
+                                        Toast.error(title: "\(error.localizedDescription)")
+                                    }
+                                    self.replyText = ""
+                                }
+                            }
+                    }
+                }
 
             } header: {
                 MessageViewHeader()
-            } footer: {
-                if let reply = message.reply {
-                    TextField(String("回复"), text: $replyText)
-                        .customField(icon: "text.bubble")
-                        .focused($showReply)
-                        .opacity(showReply ? 1 : 0) // 透明
-                        .frame(width: showReply ? self.windowWidth : 0, height: showReply ? 50 : 0)
-                        .keyboardType(.default)
-                        .onSubmit(of: .text) {
-                            Task { @MainActor in
-                                do {
-                                    let result = try await NetworkManager()
-                                        .fetch(url: reply + replyText)
-                                    Toast.success(title: result.check() ? "回复成功" : "回复失败")
-                                } catch {
-                                    Toast.error(title: "\(error.localizedDescription)")
-                                }
-                                self.replyText = ""
-                            }
-                        }
-                }
             }
         }
         .padding(.vertical)

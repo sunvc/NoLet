@@ -40,7 +40,7 @@ struct ChatInputView: View {
             .padding(.horizontal)
 
             HStack(spacing: 10) {
-                if !chatManager.isFocusedInput && !.ISPAD {
+                if !chatManager.isFocusedInput && manager.sizeClass == .compact {
                     backupButton()
                         .transition(.move(edge: .leading))
                 }
@@ -180,7 +180,9 @@ struct ChatInputView: View {
     func backupButton() -> some View {
         if manager.historyPage == .setting {
             Button {
+                manager.router = []
                 manager.page = .setting
+                
                 Task.detached {
                     await Haptic.impact()
                     await Tone.play(.share)
@@ -195,7 +197,9 @@ struct ChatInputView: View {
             }.button26(.borderless)
         } else {
             Button {
+                manager.router = []
                 manager.page = .message
+                
                 Task.detached {
                     await Haptic.impact()
                     await Tone.play(.share)

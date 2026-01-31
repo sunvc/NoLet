@@ -18,7 +18,7 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
-
+    @Environment(\.horizontalSizeClass) var sizeClass
     @Default(.showGroup) private var showGroup
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
@@ -29,8 +29,8 @@ struct ContentView: View {
 
     @Namespace private var selectMessageSpace
 
-    private func _page(_ getValue: Binding<[RouterPage]>) -> Binding<[RouterPage]> {
-        Binding { getValue.wrappedValue } set: { manager.router = $0 }
+    private func _page(_ getValue: [RouterPage]) -> Binding<[RouterPage]> {
+        Binding { getValue } set: { manager.router = $0 }
     }
 
     @ViewBuilder
@@ -42,18 +42,26 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if .ISPAD {
+            if sizeClass == .regular {
                 NavigationSplitView(columnVisibility: $HomeViewMode) {
                     SettingsPage()
                         .environmentObject(manager)
                 } detail: {
-                    NavigationStack(path: _page($manager.prouter)) {
+                    NavigationStack(path: _page(manager.prouter)) {
                         MessagePage()
                             .router(manager)
                     }
                 }
+                .onAppear {
+                    // onChange bug 有不同步的情况, 在这同步一下
+                    manager.sizeClass = sizeClass
+                }
             } else {
                 IphoneHomeView()
+                    .onAppear {
+                        // onChange bug 有不同步的情况, 在这同步一下
+                        manager.sizeClass = sizeClass
+                    }
             }
         }
         .environmentObject(manager)
@@ -106,9 +114,9 @@ struct ContentView: View {
     func IphoneHomeView() -> some View {
         Group {
             if #available(iOS 26.0, *) {
-                TabView(selection: Binding(get: { manager.page }, set: { updateTab(with: $0) })) {
+                TabView(selection: updateTab) {
                     Tab(value: .message) {
-                        NavigationStack(path: _page($manager.mrouter)) {
+                        NavigationStack(path: _page(manager.mrouter)) {
                             MessagePage().router(manager)
                         }
                     } label: {
@@ -116,7 +124,7 @@ struct ContentView: View {
                     }.badge(messageManager.unreadCount)
 
                     Tab(value: .setting) {
-                        NavigationStack(path: _page($manager.srouter)) {
+                        NavigationStack(path: _page(manager.srouter)) {
                             SettingsPage().router(manager)
                         }
                     } label: {
@@ -125,7 +133,7 @@ struct ContentView: View {
 
                     if assistantAccouns.count > 0 {
                         Tab(value: .assistant, role: .search) {
-                            NavigationStack(path: _page($manager.arouter)) {
+                            NavigationStack(path: _page(manager.arouter)) {
                                 NoLetChatHomeView().router(manager)
                             }
                         } label: {
@@ -136,16 +144,25 @@ struct ContentView: View {
                 .tabBarMinimizeBehavior(.onScrollDown)
 
             } else {
-                TabView(selection: Binding(get: { manager.page }, set: { updateTab(with: $0) })) {
-                    NavigationStack(path: _page($manager.mrouter)) {
+                TabView(selection: updateTab) {
+                    NavigationStack(path: _page(manager.mrouter)) {
                         MessagePage().router(manager)
                     }
                     .tabItem { tabLabel(title: String(localized: "消息"), icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
 
+                    NavigationStack(path: _page(manager.srouter)) {
+                        SettingsPage().router(manager)
+                    }
+                    .tabItem { tabLabel(
+                        title: String(localized: "设置"),
+                        icon: "gear.badge.questionmark"
+                    ) }
+                    .tag(TabPage.setting)
+
                     if assistantAccouns.count > 0 {
-                        NavigationStack(path: _page($manager.arouter)) {
+                        NavigationStack(path: _page(manager.arouter)) {
                             NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
@@ -153,29 +170,27 @@ struct ContentView: View {
                         }
                         .tag(TabPage.assistant)
                     }
-
-                    NavigationStack(path: _page($manager.srouter)) {
-                        SettingsPage().router(manager)
-                    }
-                    .tabItem { tabLabel(title: String(localized: "设置"), icon: "gear.badge.questionmark") }
-                    .tag(TabPage.setting)
                 }
             }
         }
     }
 
-    func updateTab(with newTab: TabPage) {
-        if newTab != manager.page {
-            Task.detached {
-                await Haptic.impact()
-                await Tone.play(.share)
+    private var updateTab: Binding<TabPage> {
+        Binding {
+            manager.page
+        } set: { newTab in
+            if newTab != manager.page {
+                Task.detached {
+                    await Haptic.impact()
+                    await Tone.play(.share)
+                }
             }
-        }
 
-        if newTab == .assistant {
-            manager.historyPage = manager.page
+            if newTab == .assistant {
+                manager.historyPage = manager.page
+            }
+            manager.page = newTab
         }
-        manager.page = newTab
     }
 
     @ViewBuilder
@@ -311,6 +326,7 @@ extension View {
                     }
                     .ignoresSafeArea()
                     .navigationBarBackButtonHidden()
+
                 case .appleServerInfo:
                     AppleStatusView()
                 }

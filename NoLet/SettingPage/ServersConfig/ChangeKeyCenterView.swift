@@ -446,7 +446,6 @@ struct ChangeKeyCenterView: View {
 
 struct ChangeKeyView: View {
     @EnvironmentObject private var manager: AppManager
-
     @State var appear = false
     @State var appearBackground = false
     @State var viewState = CGSize.zero
@@ -495,7 +494,7 @@ struct ChangeKeyView: View {
                             .blur(radius: appearBackground ? 0 : 40)
                             .hueRotation(.degrees(viewState.width / 5))
                     )
-            }.frame(maxWidth: .ISPAD ? minSize / 2 : .infinity)
+            }.frame(maxWidth: (manager.sizeClass == .regular) ? minSize / 2 : .infinity)
 
             VStack {
                 HStack {

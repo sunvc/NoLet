@@ -64,8 +64,3 @@ extension View {
     }
 }
 
-extension Bool {
-    static var ISPAD: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
-}

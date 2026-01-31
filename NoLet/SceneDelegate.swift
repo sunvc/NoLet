@@ -120,7 +120,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let url = URLContexts.first?.url else { return }
         _ = AppManager.shared.HandlerOpenURL(url: url.absoluteString)
     }
-    
 }
 
 extension QuickAction {

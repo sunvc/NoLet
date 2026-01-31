@@ -49,20 +49,19 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var VipInfo: SubscribeUser? = nil
 
     @Published var servers: [PushServerModel] = []
+    
+    @Published var sizeClass: UserInterfaceSizeClass?
 
     var router: [RouterPage] = [] {
         didSet {
-            if .ISPAD {
-                prouter = router
-            } else {
-                switch page {
-                case .message:
-                    mrouter = router
-                case .setting:
-                    srouter = router
-                case .assistant:
-                    arouter = router
-                }
+            prouter = router
+            switch page {
+            case .message:
+                mrouter = router
+            case .setting:
+                srouter = router
+            case .assistant:
+                arouter = router
             }
         }
     }

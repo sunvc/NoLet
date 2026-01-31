@@ -31,6 +31,8 @@ nonisolated class NCONFIG {
     static let databaseName = "pushback.sqlite"
     static let longSoundPrefix = "pb.sounds.30s"
 
+    static let notificationName = "app.wzs.newMessage"
+
     #if DEBUG
     static let server = "https://wzs.app"
     #else
@@ -65,7 +67,7 @@ nonisolated class NCONFIG {
         CONTAINER.appendingPathComponent(NCONFIG.databaseName)
     }
 
-    static func offServer(_ from: String) -> Bool {  from.hasPrefix(server) }
+    static func offServer(_ from: String) -> Bool { from.hasPrefix(server) }
 
     enum FolderType: String, CaseIterable {
         case ptt

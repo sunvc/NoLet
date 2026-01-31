@@ -46,6 +46,14 @@ actor NotificationServiceActor {
 
     func completed() {
         handler(bestAttemptContent)
+        // 通知主 APP 有新消息
+        CFNotificationCenterPostNotification(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            CFNotificationName(NCONFIG.notificationName as CFString),
+            nil,
+            nil,
+            true
+        )
     }
 }
 

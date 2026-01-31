@@ -55,40 +55,44 @@ struct SettingsPage: View {
 
     var body: some View {
         List(selection: $selectView) {
-            if .ISPAD {
-                if manager.prouter.count > 0 {
-                    ListButton {
-                        Label("消息", systemImage: "ellipsis.message")
-                    } action: {
-                        Task { @MainActor in
-                            manager.router = []
-                        }
-                        return true
-                    }.id("message")
-                }
-
-                if manager.prouter.first != .noletChat {
-                    Section {
+            if manager.sizeClass == .regular {
+                Section {
+                    if manager.prouter.count > 0 {
                         ListButton {
-                            Group {
-                                if #available(iOS 26.0, *) {
-                                    Label("智能助手", systemImage: "gear.badge.questionmark")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.green, .primary)
-                                } else {
-                                    Label("智能助手", systemImage: "atom")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-
+                            Label("消息", systemImage: "ellipsis.message")
                         } action: {
                             Task { @MainActor in
-                                manager.router = [.noletChat]
+                                manager.router = []
                             }
                             return true
-                        }.id("noletchat")
+                        }.id("message")
                     }
+
+                    if manager.prouter.first != .noletChat {
+                        Section {
+                            ListButton {
+                                Label {
+                                    Text("智能助手")
+                                } icon: {
+                                    if #available(iOS 26.0, *) {
+                                        Image(systemName: "gear.badge.questionmark")
+                                    } else {
+                                        Image(systemName: "atom")
+                                    }
+                                }
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.green, .primary)
+
+                            } action: {
+                                Task { @MainActor in
+                                    manager.router = [.noletChat]
+                                }
+                                return true
+                            }.id("noletchat")
+                        }
+                    }
+                } header: {
+                    Text("主视图")
                 }
             }
 
@@ -171,7 +175,7 @@ struct SettingsPage: View {
                                     .renderingMode(.template)
                             }
                         }
-                        
+
                         .scaledToFit()
                         .frame(width: 26)
                         .customForegroundStyle(.accent, .primary)
@@ -318,7 +322,6 @@ struct SettingsPage: View {
                         .customForegroundStyle(.accent, Color.primary)
                 }
             }
-            
         }
     }
 }

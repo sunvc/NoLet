@@ -28,9 +28,7 @@ final class MessagesManager: ObservableObject {
 
     private var currentContent: String = ""
 
-    func flush(_ data: String, stop: Bool = false) {
-        
-    }
+    func flush(_ data: String, stop: Bool = false) {}
 
     private init() {
         let messages = DiskCache.shared.get()
@@ -40,7 +38,15 @@ final class MessagesManager: ObservableObject {
         }
     }
 
-    deinit { observationCancellable?.cancel() }
+    deinit {
+        observationCancellable?.cancel()
+        CFNotificationCenterRemoveObserver(
+            CFNotificationCenterGetDarwinNotifyCenter(),
+            UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque()),
+            CFNotificationName(NCONFIG.notificationName as CFString),
+            nil
+        )
+    }
 
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (Int, Int) in
@@ -68,6 +74,29 @@ final class MessagesManager: ObservableObject {
                     await self.updateGroup()
                 }
             }
+        )
+    }
+
+    func setupDarwinListener() {
+        let center = CFNotificationCenterGetDarwinNotifyCenter()
+        let observer = UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
+
+        // 2. 注册监听
+        CFNotificationCenterAddObserver(
+            center,
+            observer,
+            { _, observer, _, _, _ in
+                guard let observer = observer else { return }
+                let manager = Unmanaged<MessagesManager>.fromOpaque(
+                    observer
+                ).takeUnretainedValue()
+                Task {
+                    await manager.updateGroup()
+                }
+            },
+            NCONFIG.notificationName as CFString,
+            nil,
+            .deliverImmediately
         )
     }
 
