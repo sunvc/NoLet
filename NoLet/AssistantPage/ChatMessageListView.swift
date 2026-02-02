@@ -41,9 +41,8 @@ struct ChatMessageListView: View {
     // MARK: - Body
 
     var body: some View {
-
         ScrollViewReader { scrollViewProxy in
-            ScrollView(.vertical) {
+            List {
                 if chatManager.currentMessagesCount > suffixCount {
                     Button {
                         self.showHistory.toggle()
@@ -61,14 +60,13 @@ struct ChatMessageListView: View {
                         .font(.footnote)
                         .foregroundStyle(.gray)
                     }
+                    .listSpace()
                 }
-                LazyVStack{
-                    ForEach(chatManager.chatMessages, id: \.id) { message in
-                        ChatMessageView(message: message)
-                            .id(message.id)
-                    } 
+                ForEach(chatManager.chatMessages, id: \.id) { message in
+                    ChatMessageView(message: message)
+                        .id(message.id)
+                        .listSpace()
                 }
-                
 
                 Rectangle()
                     .fill(Color.clear)
@@ -88,7 +86,9 @@ struct ChatMessageListView: View {
                         }
                     }
                     .id(chatLastMessageID)
+                    .listSpace()
             }
+            .listStyle(.grouped)
             .background(.gray.opacity(0.1))
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in

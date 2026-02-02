@@ -178,6 +178,16 @@ struct HighlightedText: View {
     }
 }
 
+extension View {
+    @ViewBuilder
+    func listSpace() -> some View {
+        self
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+            .listSectionSeparator(.hidden)
+    }
+}
+
 #Preview {
     ContentView()
         .environmentObject(AppManager.shared)

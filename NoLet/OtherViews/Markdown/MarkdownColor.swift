@@ -165,16 +165,29 @@ enum MarkdownTheme {
                     .relativeFrame(minWidth: .em(1.5), alignment: .trailing)
             }
             .table { configuration in
-                configuration.label
-                    .fixedSize(horizontal: true, vertical: true)
-                    .markdownTableBorderStyle(.init(color: MarkdownColors.border))
-                    .markdownTableBackgroundStyle(
-                        .alternatingRows(
-                            MarkdownColors.background,
-                            MarkdownColors.secondaryBackground
+                ScrollView(.horizontal) {
+                    configuration.label
+                        .fixedSize(horizontal: true, vertical: true)
+                        .markdownTableBorderStyle(.init(color: MarkdownColors.border))
+                        .markdownTableBackgroundStyle(
+                            .alternatingRows(
+                                MarkdownColors.background,
+                                MarkdownColors.secondaryBackground
+                            )
                         )
-                    )
-                    .markdownMargin(top: 16, bottom: 16)
+                        .markdownMargin(top: 16, bottom: 16)
+                }
+                .padding(.vertical, 10)
+                .diff { view in
+                    Group {
+                        if #available(iOS 16.4, *) {
+                            view
+                                .scrollBounceBehavior(.basedOnSize, axes: .horizontal)
+                        } else {
+                            view
+                        }
+                    }
+                }
             }
             .tableCell { configuration in
                 configuration.label
