@@ -22,7 +22,6 @@ struct SearchMessageView: View {
     @State private var searchTask: Task<Void, Never>?
     @StateObject private var manager = AppManager.shared
     @StateObject private var messageManager = MessagesManager.shared
-    @Default(.limitMessageLine) var limitMessageLine
     @Default(.assistantAccouns) var assistantAccouns
 
     @State private var searched: Bool = false
@@ -79,7 +78,6 @@ struct SearchMessageView: View {
                         message: message,
                         searchText: manager.searchText,
                         showGroup: true,
-                        limitMessageLine: limitMessageLine,
                         assistantAccounsCount: assistantAccouns.count,
                         selectID: manager.selectID
                     ){

@@ -17,7 +17,6 @@ import SwiftUI
 
 struct SingleMessagesView: View {
     @Default(.showMessageAvatar) var showMessageAvatar
-    @Default(.limitMessageLine) var limitMessageLine
     @Default(.assistantAccouns) var assistantAccouns
 
     @State private var isLoading: Bool = false
@@ -53,7 +52,6 @@ struct SingleMessagesView: View {
                         searchText: "",
                         showAllTTL: showAllTTL,
                         showAvatar: showMessageAvatar,
-                        limitMessageLine: limitMessageLine,
                         assistantAccounsCount: assistantAccouns.count,
                         selectID: manager.selectID
                     ) {
@@ -106,7 +104,6 @@ struct SingleMessagesView: View {
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle("消息")
             .listStyle(.grouped)
-            .animation(.easeInOut, value: messagesCount)
             .refreshable {
                 self.loadData(proxy: proxy, limit: messagePage)
             }

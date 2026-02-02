@@ -24,7 +24,6 @@ struct MoreOperationsView: View {
     @Default(.defaultBrowser) var defaultBrowser
     @Default(.muteSetting) var muteSetting
     @Default(.feedbackSound) var feedbackSound
-    @Default(.limitMessageLine) var limitMessageLine
 
     var body: some View {
         List {
@@ -108,20 +107,6 @@ struct MoreOperationsView: View {
                                 showMessageAvatar ? Color.accentColor : Color.red,
                                 Color.primary
                             )
-                    }
-                }
-
-                Stepper(
-                    value: $limitMessageLine,
-                    in: 3...11,
-                    step: 1
-                ) {
-                    Label(
-                        "消息显示高度",
-                        systemImage: "\(String(format: "%02d", limitMessageLine)).circle"
-                    )
-                    .onLongPressGesture {
-                        limitMessageLine = 3
                     }
                 }
 

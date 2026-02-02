@@ -25,36 +25,43 @@ struct MarkdownCustomView: View {
     var content: String
     var searchText: String
     var scaleFactor: CGFloat
+    var select: Bool
 
     private var codeHighlightColorScheme: Splash.Theme {
         colorScheme == .dark ? .wwdc17(withFont: .init(size: 16)) :
             .sunset(withFont: .init(size: 16))
     }
 
-    init(content: String, searchText: String = "", scaleFactor: CGFloat = 1.0) {
+    init(
+        content: String,
+        searchText: String = "",
+        scaleFactor: CGFloat = 1.0,
+        select: Bool = false
+    ) {
         self.content = content.trimmingCharacters(in: .whitespacesAndNewlines)
         self.searchText = searchText
         self.scaleFactor = scaleFactor
+        self.select = select
     }
 
     @ScaledMetric(relativeTo: .callout) var baseSize: CGFloat = 17
 
     var body: some View {
-        if !searchText.isEmpty {
-            HighlightedText(text: PBMarkdown.plain(content), searchText: searchText)
-                .transition(.opacity.animation(.easeInOut(duration: 0.1)))
-
-        } else {
-            Markdown(content)
-                .markdownImageProvider(WebImageProvider())
-                .markdownInlineImageProvider(WebInlineImageProvider())
-                .environment(\.openURL, OpenURLAction { url in
-                    AppManager.openURL(url: url, .safari)
-                    return .handled // 表示链接已经被处理，不再执行默认行为
-                })
-                .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
-                .markdownTheme(MarkdownTheme.defaultTheme(baseSize, scaleFactor: scaleFactor))
+        Group {
+            if !searchText.isEmpty || select {
+                SelectableMarkdown(content, highlightText: searchText, highlightColor: .red)
+            } else {
+                Markdown(content)
+            }
         }
+        .markdownImageProvider(WebImageProvider())
+        .markdownInlineImageProvider(WebInlineImageProvider())
+        .environment(\.openURL, OpenURLAction { url in
+            AppManager.openURL(url: url, .safari)
+            return .handled // 表示链接已经被处理，不再执行默认行为
+        })
+        .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
+        .markdownTheme(MarkdownTheme.defaultTheme(baseSize, scaleFactor: scaleFactor))
     }
 }
 
@@ -155,6 +162,18 @@ struct WebImageView: View {
             }
         } else {
             status = .failure(String(localized: "地址错误"))
+        }
+    }
+}
+
+struct HighlightedText: View {
+    var text: String
+    var searchText: String?
+    var body: some View {
+        if let searchText, !searchText.isEmpty {
+            MarkdownCustomView(content: text, searchText: searchText)
+        } else {
+            Text(text)
         }
     }
 }

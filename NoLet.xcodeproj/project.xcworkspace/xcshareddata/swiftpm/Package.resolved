@@ -1,5 +1,5 @@
 {
-  "originHash" : "98892c270226db13a1f436cc8ba88304a10dd83276d5a674d417665578338a14",
+  "originHash" : "2a777548b9aa4c6d1857a0c8de7267768fcfbc5d0b6c1c2c2f537279493e1358",
   "pins" : [
     {
       "identity" : "defaults",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/swift-markdown-ui",
       "state" : {
-        "revision" : "5c4c548d34f5929802b007ddd6f3ab1b9f6af247",
-        "version" : "2.1.0"
+        "revision" : "9fb3e95b805fce19e491a0ae2d508c2e3f35b343",
+        "version" : "1.0.1"
       }
     },
     {

@@ -11,6 +11,7 @@
 //
 import Defaults
 import Kingfisher
+import MarkdownUI
 import OpenAI
 import SwiftUI
 
@@ -47,6 +48,7 @@ struct SelectMessageView: View {
 
     @State private var showOther: Bool = false
     @State private var showURL: Bool = false
+    @State private var showCopy = false
 
     var body: some View {
         NavigationStack {
@@ -194,7 +196,8 @@ struct SelectMessageView: View {
                                     MarkdownCustomView(
                                         content: body,
                                         searchText: "",
-                                        scaleFactor: scaleFactor
+                                        scaleFactor: scaleFactor,
+                                        select: showCopy
                                     )
                                     Spacer(minLength: 0)
                                 }
@@ -296,94 +299,11 @@ struct SelectMessageView: View {
                 }
 
                 ToolbarItem(placement: .bottomBar) {
-                    Menu {
-                        Section {
-                            if let other = message.other, !other.isEmpty {
-                                Button {
-                                    Clipboard.set(other)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制其他字段", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
+                    Label("复制", systemImage: "doc.on.doc")
+                        .foregroundColor(showCopy ? .red : .primary)
+                        .onTapGesture {
+                            self.showCopy.toggle()
                         }
-
-                        Section {
-                            if let image = message.image, !image.isEmpty {
-                                Button {
-                                    Clipboard.set(image)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制图片地址", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-                        }
-
-                        Section {
-                            if let url = message.url, !url.isEmpty {
-                                Button {
-                                    Clipboard.set(url)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制跳转地址", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-                        }
-
-                        Section {
-                            if let content = message.title, !content.isEmpty {
-                                Button {
-                                    Clipboard.set(content)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制标题", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-                        }
-                        Section {
-                            if let content = message.subtitle, !content.isEmpty {
-                                Button {
-                                    Clipboard.set(content)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制副标题", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-                        }
-
-                        Section {
-                            if let image = message.image {
-                                saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
-                            }
-                        }
-
-                        Section {
-                            if let content = message.body, !content.isEmpty {
-                                Button {
-                                    Clipboard.set(content)
-                                    Toast.copy(title: "复制成功")
-                                    Haptic.impact()
-                                } label: {
-                                    Label("复制内容", systemImage: "doc.on.doc")
-                                        .customForegroundStyle(.green, .primary)
-                                }
-                            }
-                        }
-
-                    } label: {
-                        Label("复制", systemImage: "doc.on.doc")
-                            .foregroundColor(.primary)
-                    }
                 }
 
                 if #available(iOS 26.0, *) {
@@ -479,13 +399,13 @@ struct SelectMessageView: View {
                         }
                     }
 
-                    let urlText = NSAttributedString(string: "\n\(url)", attributes: [
-                        .font: UIFont.systemFont(ofSize: 16),
-                        .foregroundColor: Color.yellow,
-                        .link: url,
-                    ])
 
-                    TextView(urlText)
+                    MarkdownCustomView(
+                        content: url,
+                        searchText: "",
+                        scaleFactor: scaleFactor,
+                        select: true
+                    )
                 }
             }
             .foregroundStyle(.accent)
@@ -554,7 +474,7 @@ struct SelectMessageView: View {
         do {
             let results = chatManager.chatsStream(text: text, tips: .abstract(translateLang.name))
             for try await result in results {
-                if let outputItem = result.choices.first?.delta.content{
+                if let outputItem = result.choices.first?.delta.content {
                     Task { @MainActor in
                         abstractResult += outputItem
                         Haptic.selection(limitFrequency: true)

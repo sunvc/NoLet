@@ -51,6 +51,8 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var servers: [PushServerModel] = []
     
     @Published var sizeClass: UserInterfaceSizeClass?
+    
+    @Published var copyMessageId: String? = nil
 
     var router: [RouterPage] = [] {
         didSet {
@@ -172,17 +174,6 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     }
 
     func setMarkdownConfig() {
-        MarkdownConfig.shared.menus = [
-            MarkdownConfig.MenuItem(
-                title: String(localized: "二维码"),
-                image: UIImage(systemName: "qrcode"),
-                action: { [weak self] text in
-                    self?.selectMessage = nil
-                    self?.open(sheet: .quickResponseCode(text: text, title: nil, preview: nil))
-                    return true
-                }
-            ),
-        ]
     }
 }
 

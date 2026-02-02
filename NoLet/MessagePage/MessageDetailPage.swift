@@ -22,7 +22,6 @@ struct MessageDetailPage: View {
     @StateObject private var messageManager = MessagesManager.shared
 
     @Default(.showMessageAvatar) var showMessageAvatar
-    @Default(.limitMessageLine) var limitMessageLine
     @Default(.assistantAccouns) var assistantAccouns
 
     // 分页相关状态
@@ -52,7 +51,6 @@ struct MessageDetailPage: View {
                                 searchText: searchText,
                                 showAllTTL: showAllTTL,
                                 showAvatar: showMessageAvatar,
-                                limitMessageLine: limitMessageLine,
                                 assistantAccounsCount: assistantAccouns.count,
                                 selectID: manager.selectID
                             ){

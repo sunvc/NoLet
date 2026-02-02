@@ -30,12 +30,16 @@
 		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863D2F2311AC00CEBC4F /* MarkdownUI */; };
 		BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
+		BA47C6172F305FF900866562 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6162F305FF900866562 /* MarkdownUI */; };
+		BA47C6192F305FF900866562 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6182F305FF900866562 /* Splash */; };
+		BA47C6262F307D1700866562 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6252F307D1700866562 /* MarkdownUI */; };
+		BA47C6282F307D1700866562 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6272F307D1700866562 /* Splash */; };
+		BA47C62B2F30A84600866562 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C62A2F30A84600866562 /* MarkdownUI */; };
+		BA47C62D2F30A84600866562 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C62C2F30A84600866562 /* Splash */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA66AD772F2CD8D800ADEDF5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */; };
 		BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD782F2CD8D800ADEDF5 /* Splash */; };
-		BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */; };
-		BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD7D2F2D817800ADEDF5 /* Splash */; };
 		BA66AD812F2DBE4B00ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD802F2DBE4B00ADEDF5 /* QRScanner */; };
 		BA66AD872F2DEDE000ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD862F2DEDE000ADEDF5 /* QRScanner */; };
 		BA66AD8A2F2DEF0D00ADEDF5 /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD892F2DEF0D00ADEDF5 /* QRScanner */; };
@@ -119,6 +123,7 @@
 		B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B5AA557F2E6D71D8000F3042 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		BA66AD902F2E2B3A00ADEDF5 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		BAC5A8162ED1B0DD00BCC38B /* translate.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = translate.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -412,25 +417,29 @@
 			files = (
 				BA71767F2F233E4900D1BF03 /* Splash in Frameworks */,
 				BA8197862F2B003D00623275 /* MarkdownUI in Frameworks */,
-				BA66AD7C2F2D817800ADEDF5 /* MarkdownUI in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
+				BA47C62B2F30A84600866562 /* MarkdownUI in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
 				BA8197882F2B003D00623275 /* Splash in Frameworks */,
 				BA71767D2F233E4900D1BF03 /* MarkdownUI in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
+				BA47C62D2F30A84600866562 /* Splash in Frameworks */,
 				BA66AD872F2DEDE000ADEDF5 /* QRScanner in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				BA66AD792F2CD8D800ADEDF5 /* Splash in Frameworks */,
-				BA66AD7E2F2D817800ADEDF5 /* Splash in Frameworks */,
+				BA47C6282F307D1700866562 /* Splash in Frameworks */,
 				BA66AD772F2CD8D800ADEDF5 /* MarkdownUI in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
 				BA2F863E2F2311AC00CEBC4F /* MarkdownUI in Frameworks */,
 				BA2F86402F2311AC00CEBC4F /* Splash in Frameworks */,
+				BA47C6192F305FF900866562 /* Splash in Frameworks */,
 				BA66AD8A2F2DEF0D00ADEDF5 /* QRScanner in Frameworks */,
+				BA47C6262F307D1700866562 /* MarkdownUI in Frameworks */,
 				BA66AD812F2DBE4B00ADEDF5 /* QRScanner in Frameworks */,
+				BA47C6172F305FF900866562 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +514,7 @@
 				B58359D12DEDDF360066B32E /* UserNotifications.framework */,
 				B58359D32DEDDF360066B32E /* UserNotificationsUI.framework */,
 				B58359FD2DEDDFE10066B32E /* SwiftUI.framework */,
+				BA66AD902F2E2B3A00ADEDF5 /* AuthenticationServices.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -562,11 +572,15 @@
 				BA8197872F2B003D00623275 /* Splash */,
 				BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */,
 				BA66AD782F2CD8D800ADEDF5 /* Splash */,
-				BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */,
-				BA66AD7D2F2D817800ADEDF5 /* Splash */,
 				BA66AD802F2DBE4B00ADEDF5 /* QRScanner */,
 				BA66AD862F2DEDE000ADEDF5 /* QRScanner */,
 				BA66AD892F2DEF0D00ADEDF5 /* QRScanner */,
+				BA47C6162F305FF900866562 /* MarkdownUI */,
+				BA47C6182F305FF900866562 /* Splash */,
+				BA47C6252F307D1700866562 /* MarkdownUI */,
+				BA47C6272F307D1700866562 /* Splash */,
+				BA47C62A2F30A84600866562 /* MarkdownUI */,
+				BA47C62C2F30A84600866562 /* Splash */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -655,7 +669,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2610;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					B58357F62DEDD3B10066B32E = {
@@ -692,8 +706,8 @@
 				B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
-				BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BA66AD882F2DEF0D00ADEDF5 /* XCRemoteSwiftPackageReference "QRScanner" */,
+				BA47C6292F30A84600866562 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1296,12 +1310,12 @@
 				minimumVersion = 0.7.1;
 			};
 		};
-		BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+		BA47C6292F30A84600866562 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.0;
+				minimumVersion = 1.0.1;
 			};
 		};
 		BA66AD882F2DEF0D00ADEDF5 /* XCRemoteSwiftPackageReference "QRScanner" */ = {
@@ -1411,22 +1425,38 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};
+		BA47C6162F305FF900866562 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MarkdownUI;
+		};
+		BA47C6182F305FF900866562 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Splash;
+		};
+		BA47C6252F307D1700866562 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MarkdownUI;
+		};
+		BA47C6272F307D1700866562 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Splash;
+		};
+		BA47C62A2F30A84600866562 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA47C6292F30A84600866562 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		BA47C62C2F30A84600866562 /* Splash */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA47C6292F30A84600866562 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = Splash;
+		};
 		BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MarkdownUI;
 		};
 		BA66AD782F2CD8D800ADEDF5 /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Splash;
-		};
-		BA66AD7B2F2D817800ADEDF5 /* MarkdownUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = MarkdownUI;
-		};
-		BA66AD7D2F2D817800ADEDF5 /* Splash */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA66AD7A2F2D817800ADEDF5 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = Splash;
 		};
 		BA66AD802F2DBE4B00ADEDF5 /* QRScanner */ = {

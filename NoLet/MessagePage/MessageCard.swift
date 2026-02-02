@@ -22,7 +22,6 @@ struct MessageCard: View {
     var showGroup: Bool = false
     var showAllTTL: Bool = false
     var showAvatar: Bool = true
-    var limitMessageLine: Int
     var assistantAccounsCount: Int
     var selectID: String? = nil
     var delete: () -> Void
@@ -163,52 +162,27 @@ struct MessageCard: View {
                         }
 
                         if let body = message.body, !body.isEmpty {
-                            ScrollView(.vertical) {
-                                MarkdownCustomView(content: body, searchText: searchText)
-                                    .font(.body)
-                                    .textSelection(.enabled)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.bottom, 5)
-                                    .onTapGesture(count: 2) {
-                                        showFull()
-                                    }
-                                    .accessibilityElement(children: .ignore)
-                                    .accessibilityValue(
-                                        String("\(PBMarkdown.plain(message.accessibilityValue()))")
-                                    )
-                                    .accessibilityLabel("消息内容")
-                                    .accessibilityHint("双击全屏显示")
-                                    .accessibilityAction(named: "显示全屏") {
-                                        showFull()
-                                    }
-                            }
-                            .scrollDisabled(true)
-                            .frame(
-                                maxWidth: .infinity,
-                                maxHeight: limitMessageLine >= 11 ? .infinity :
-                                    CGFloat(limitMessageLine * 30)
+                            MarkdownCustomView(
+                                content: body,
+                                searchText: searchText,
+                                select: manager.copyMessageId == message.id
                             )
+                            .font(.body)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.bottom, 5)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityValue(
+                                String("\(PBMarkdown.plain(message.accessibilityValue()))")
+                            )
+                            .accessibilityLabel("消息内容")
+                            .accessibilityHint("双击全屏显示")
+                            .accessibilityAction(named: "显示全屏") {
+                                showFull()
+                            }
                         }
                     }
                 }
                 .padding(8)
-                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                    Button {
-                        showFull()
-                    } label: {
-                        Label("全屏查看", systemImage: "arrow.up.backward.and.arrow.down.forward")
-                    }.tint(.orange)
-                }
-                .swipeActions(edge: .trailing) {
-                    Button {
-                        self.delete()
-                    } label: {
-                        Label("删除", systemImage: "trash")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, Color.primary)
-
-                    }.tint(.red)
-                }
                 .overlay(alignment: .bottom) {
                     UnevenRoundedRectangle(
                         topLeadingRadius: 15,
@@ -255,7 +229,7 @@ struct MessageCard: View {
                             .customField(icon: "text.bubble")
                             .focused($showReply)
                             .opacity(showReply ? 1 : 0.0001) // 透明
-                            .frame( height: showReply ? 50 : 1)
+                            .frame(height: showReply ? 50 : 1)
                             .keyboardType(.default)
                             .animation(.default, value: showReply)
                             .onSubmit(of: .text) {
@@ -278,11 +252,11 @@ struct MessageCard: View {
             }
         }
         .padding(.vertical)
+        .contentShape(Rectangle())
         .simultaneousGesture(
-            MagnificationGesture()
-                .onEnded { _ in
-                    showFull()
-                }
+            MagnificationGesture().onEnded { _ in
+                showFull()
+            }
         )
     }
 
@@ -322,76 +296,99 @@ struct MessageCard: View {
                     .accessibilityValue(message.group)
                 Spacer()
             }
-            Menu {
-                Section {
-                    Button {
-                        Haptic.impact()
-                        Clipboard.set(message.body)
-                        Toast.copy(title: "复制成功")
-                    } label: {
-                        Label("复制", systemImage: "doc.on.clipboard")
-                            .customForegroundStyle(.yellow, .white)
-
-                    }.tint(.accent)
-                }
-
-                if let url = message.url {
-                    Button {
-                        if let fileURL = URL(string: url) {
-                            AppManager.openURL(url: fileURL, .safari)
-                        }
-                        Haptic.impact()
-                    } label: {
-                        Label(
-                            "打开链接",
-                            systemImage: "network"
-                        )
+            
+            
+            if manager.copyMessageId == message.id {
+                Button {
+                    withAnimation {
+                        manager.copyMessageId = nil
                     }
+                } label: {
+                    Image(systemName: "arrow.uturn.forward")
+                        .imageScale(.large)
+                        .button26(.borderless)
                 }
-
-                if let image = message.image {
-                    Section {
-                        saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
-                    }
-                }
-
-                if assistantAccounsCount > 0 {
+            } else {
+                Menu {
                     Section {
                         Button {
-                            Haptic.impact()
-                            DispatchQueue.main.async {
-                                AppManager.shared.askMessageID = message.id
-                                AppManager.shared.page = .assistant
-                                AppManager.shared.router = []
+                            withAnimation {
+                                manager.copyMessageId = message.id
                             }
                         } label: {
-                            Label("智能助手", systemImage: "atom")
-                        }.tint(.green)
-                    }
-                }
-
-                if let body = message.body {
-                    ShareLink(item: body)
-                }
-
-                if let reply = message.reply, !reply.isEmpty {
-                    Section {
-                        Button {
-                            self.showReply = true
-                        } label: {
-                            Label("回复", systemImage: "text.bubble")
+                            Label("复制模式", systemImage: "doc.on.doc")
                         }
                     }
-                }
 
-            } label: {
-                HStack {
-                    Spacer()
-                    Image(systemName: "ellipsis")
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
+                    if let url = message.url {
+                        Button {
+                            if let fileURL = URL(string: url) {
+                                AppManager.openURL(url: fileURL, .safari)
+                            }
+                            Haptic.impact()
+                        } label: {
+                            Label(
+                                "打开链接",
+                                systemImage: "network"
+                            )
+                        }
+                    }
+
+                    if let image = message.image {
+                        Section {
+                            saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
+                        }
+                    }
+
+                    if assistantAccounsCount > 0 {
+                        Section {
+                            Button {
+                                Haptic.impact()
+                                DispatchQueue.main.async {
+                                    AppManager.shared.askMessageID = message.id
+                                    AppManager.shared.page = .assistant
+                                    AppManager.shared.router = []
+                                }
+                            } label: {
+                                Label("智能助手", systemImage: "atom")
+                            }.tint(.green)
+                        }
+                    }
+
+                    if let body = message.body {
+                        ShareLink(item: body)
+                    }
+
+                    if let reply = message.reply, !reply.isEmpty {
+                        Section {
+                            Button {
+                                self.showReply = true
+                            } label: {
+                                Label("回复", systemImage: "text.bubble")
+                            }
+                        }
+                    }
+
+                    Section {
+                        Button {
+                            self.delete()
+                        } label: {
+                            Label("删除", systemImage: "trash")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.white, Color.primary)
+
+                        }.tint(.red)
+                    }
+
+                } label: {
+                    HStack {
+                        Spacer()
+                        Image(systemName: "ellipsis")
+                            .padding(.horizontal)
+                            .padding(.vertical, 5)
+                    }
+                    .contentShape(Rectangle())
                 }
-                .contentShape(Rectangle())
             }
         }
         .background(linColor.gradient)
@@ -404,7 +401,6 @@ struct MessageCard: View {
     List {
         MessageCard(
             message: MessagesManager.examples().first!,
-            limitMessageLine: 10,
             assistantAccounsCount: 0
         ) {}
             .listRowBackground(Color.clear)

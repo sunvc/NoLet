@@ -18,7 +18,6 @@ enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
     case autoSaveImages
     case showMessageIcon
-    case messageHeight
     case defaultBrowser
     case openSystemSettings
     case openServerSettings
@@ -93,10 +92,6 @@ enum NoLetChatAction: String, CaseIterable {
         case .showMessageIcon:
             guard let val = value as? Bool else { return paramsError }
             Defaults[.showMessageAvatar] = val
-
-        case .messageHeight:
-            guard let val = value as? Int else { return paramsError }
-            Defaults[.limitMessageLine] = val
 
         case .defaultBrowser:
             guard
@@ -199,13 +194,6 @@ enum NoLetChatAction: String, CaseIterable {
                 .type(.boolean),
                 .description("Whether to show app icon in message list")
             )
-
-        case .messageHeight:
-            return .init(fields: [
-                .type(.integer),
-                .description("Maximum lines for message bubble, range 1 to 10"),
-            ])
-
         case .defaultBrowser:
             return .init(fields: [
                 .type(.string),
