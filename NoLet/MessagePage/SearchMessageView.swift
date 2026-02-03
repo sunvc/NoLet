@@ -100,6 +100,9 @@ struct SearchMessageView: View {
                 Spacer(minLength: 30)
             }
         }
+        .scrollDismissesKeyboard(.interactively)
+        .scrollContentBackground(.hidden)
+        .background(.gray.opacity(0.1))
         .animation(.interactiveSpring, value: messages.count)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

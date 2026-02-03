@@ -135,6 +135,7 @@ struct MessageCard: View {
                                 .imageScale(.medium)
                                 .foregroundStyle(.gray)
                         }
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             if let url = message.url, let fileURL = URL(string: url) {
                                 AppManager.openURL(url: fileURL, .safari)
@@ -164,6 +165,7 @@ struct MessageCard: View {
                         if let url = message.image {
                             AsyncPhotoView(url: url, zoom: false, height: 230)
                                 .padding(5)
+                                .contentShape(Rectangle())
                                 .onTapGesture {
                                     self.showFull()
                                 }
@@ -215,6 +217,7 @@ struct MessageCard: View {
                 .frame(minHeight: 50)
                 .mbackground26(.message, radius: 15)
                 .padding(10)
+                .contentShape(Rectangle())
                 .onTapGesture(count: 2) {
                     self.showFull()
                 }
@@ -493,6 +496,7 @@ extension View {
     func shadow(group _: Bool) -> some View {
         shadow(color: Color.shadow2, radius: 1, x: -1, y: -1)
             .shadow(color: Color.shadow1, radius: 5, x: 3, y: 5)
+            .shadow(color: Color.shadow1.opacity(0.5), radius: 5, x: -3, y: -5)
     }
 }
 

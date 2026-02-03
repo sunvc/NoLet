@@ -83,6 +83,9 @@ struct MessageDetailPage: View {
                         }
                         
                     }
+                    .scrollDismissesKeyboard(.interactively)
+                    .scrollContentBackground(.hidden)
+                    .background(.gray.opacity(0.1))
                     .animation(.easeInOut, value: messages)
                     .environmentObject(messageManager)
                     .refreshable {

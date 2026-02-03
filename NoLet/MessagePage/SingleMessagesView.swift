@@ -106,10 +106,10 @@ struct SingleMessagesView: View {
                         .shadow(radius: 10)
                     }
                 }
-               
-                
             }
             .scrollDismissesKeyboard(.interactively)
+            .scrollContentBackground(.hidden)
+            .background(.gray.opacity(0.1))
             .navigationTitle("消息")
             .refreshable {
                 self.loadData(proxy: proxy, limit: messagePage)

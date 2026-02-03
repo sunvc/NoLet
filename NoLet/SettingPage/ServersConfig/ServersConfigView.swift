@@ -234,11 +234,11 @@ struct ServersConfigView: View {
                 servers = []
 
                 Task.detached(priority: .userInitiated) {
-                    let servers = await Defaults[.cloudServers]
+                    let servers = await Defaults[.servers]
                     await withTaskGroup(of: Void.self) { group in
                         for server in servers {
                             group.addTask {
-                                let server = await manager.register(server: server)
+                                let server = await manager.register(server: server, reset: true)
                                 if server.status {
                                     Toast.success(title: "操作成功")
                                 } else {

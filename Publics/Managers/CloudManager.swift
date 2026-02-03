@@ -188,6 +188,7 @@ final class CloudManager {
             _ = try await database.deleteRecord(withID: recordID)
             return true
         } catch {
+            logger.fault("\(error)")
             return false
         }
     }

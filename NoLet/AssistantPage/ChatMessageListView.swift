@@ -89,6 +89,7 @@ struct ChatMessageListView: View {
                 }
             }
             .background(.gray.opacity(0.1))
+            .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
