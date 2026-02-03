@@ -52,6 +52,7 @@ struct MarkdownCustomView: View {
                 SelectableMarkdown(content, highlightText: searchText, highlightColor: .red)
             } else {
                 Markdown(content)
+                    .textSelection(.enabled)
             }
         }
         .markdownImageProvider(WebImageProvider())
@@ -175,16 +176,6 @@ struct HighlightedText: View {
         } else {
             Text(text)
         }
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func listSpace() -> some View {
-        self
-            .listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listSectionSeparator(.hidden)
     }
 }
 

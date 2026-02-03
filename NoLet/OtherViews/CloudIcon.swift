@@ -18,7 +18,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct CloudIcon: View {
-
     @EnvironmentObject var manager: AppManager
 
     @State private var searchText: String = ""
@@ -164,7 +163,7 @@ struct CloudIcon: View {
                             Text(verbatim: String(localized: "加载中") + "...")
                                 .font(.headline)
                                 .foregroundColor(.gray)
-                                .frame(width: windowWidth)
+                                .frame(maxWidth: .infinity)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(40)

@@ -38,55 +38,55 @@ struct ChatMessageListView: View {
 
     let height = UIScreen.main.bounds.height
 
+
     // MARK: - Body
 
     var body: some View {
         ScrollViewReader { scrollViewProxy in
-            List {
-                if chatManager.currentMessagesCount > suffixCount {
-                    Button {
-                        self.showHistory.toggle()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text(verbatim: "\(suffixCount)/\(chatManager.currentMessagesCount)")
-                                .padding(.trailing, 10)
-                            Text("点击查看更多")
-
-                            Spacer()
-                        }
-                        .padding(.vertical)
-                        .contentShape(Rectangle())
-                        .font(.footnote)
-                        .foregroundStyle(.gray)
-                    }
-                    .listSpace()
-                }
-                ForEach(chatManager.chatMessages, id: \.id) { message in
-                    ChatMessageView(message: message)
-                        .id(message.id)
-                        .listSpace()
-                }
-
-                Rectangle()
-                    .fill(Color.clear)
-                    .frame(height: 120)
-                    .background(
-                        GeometryReader { proxy in
-                            Color.clear
-                                .preference(
-                                    key: OffsetKey.self,
-                                    value: proxy.frame(in: .global).maxY
-                                )
-                        }
-                    )
-                    .onPreferenceChange(OffsetKey.self) { newValue in
-                        Task { @MainActor in
-                            offsetY = newValue
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10)]) {
+                    if chatManager.currentMessagesCount > suffixCount {
+                        Button {
+                            self.showHistory.toggle()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text(verbatim: "\(suffixCount)/\(chatManager.currentMessagesCount)")
+                                    .padding(.trailing, 10)
+                                Text("点击查看更多")
+                                
+                                Spacer()
+                            }
+                            .padding(.vertical)
+                            .contentShape(Rectangle())
+                            .font(.footnote)
+                            .foregroundStyle(.gray)
                         }
                     }
-                    .id(chatLastMessageID)
-                    .listSpace()
+                    ForEach(chatManager.chatMessages.suffix(6), id: \.id) { message in
+                        ChatMessageView(message: message)
+                            .id(message.id)
+                    }
+                    
+                    Rectangle()
+                        .fill(Color.clear)
+                        .frame(height: 120)
+                        .background(
+                            GeometryReader { proxy in
+                                Color.clear
+                                    .preference(
+                                        key: OffsetKey.self,
+                                        value: proxy.frame(in: .global).maxY
+                                    )
+                            }
+                        )
+                        .onPreferenceChange(OffsetKey.self) { newValue in
+                            Task { @MainActor in
+                                offsetY = newValue
+                            }
+                        }
+                        .id(chatLastMessageID)
+                }
             }
             .listStyle(.grouped)
             .background(.gray.opacity(0.1))

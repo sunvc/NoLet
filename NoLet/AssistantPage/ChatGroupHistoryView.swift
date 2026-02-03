@@ -36,27 +36,18 @@ struct ChatGroupHistoryView: View {
     @EnvironmentObject private var chatManager: NoLetChatManager
     var body: some View {
         NavigationStack {
-            List {
-                if chatGroups.isEmpty {
-                    emptyView
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                } else {
-                    ForEach(chatGroupSection, id: \.id) { section in
-                        chatView(section: section)
-                            .listRowInsets(EdgeInsets(
-                                top: 10,
-                                leading: 0,
-                                bottom: 0,
-                                trailing: 0
-                            ))
-                            .listRowBackground(Color.clear)
-                           
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10)]) {
+                    if chatGroups.isEmpty {
+                        emptyView
+                    } else {
+                        ForEach(chatGroupSection, id: \.id) { section in
+                            chatView(section: section)
+                        }
                     }
                 }
             }
             .scrollIndicators(.hidden)
-            .listStyle(.grouped)
             .navigationTitle("最近使用")
             .searchable(text: $text)
             .popView(isPresented: $showChangeGroupName) {

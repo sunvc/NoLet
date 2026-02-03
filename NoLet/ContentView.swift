@@ -54,13 +54,13 @@ struct ContentView: View {
                 }
                 .onAppear {
                     // onChange bug 有不同步的情况, 在这同步一下
-                    manager.sizeClass = sizeClass
+                    manager.sizeClass = .regular
                 }
             } else {
-                IphoneHomeView()
+                compactHomeView()
                     .onAppear {
                         // onChange bug 有不同步的情况, 在这同步一下
-                        manager.sizeClass = sizeClass
+                        manager.sizeClass = .compact
                     }
             }
         }
@@ -111,7 +111,7 @@ struct ContentView: View {
     }
 
     @ViewBuilder
-    func IphoneHomeView() -> some View {
+    func compactHomeView() -> some View {
         Group {
             if #available(iOS 26.0, *) {
                 TabView(selection: updateTab) {

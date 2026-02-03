@@ -266,7 +266,6 @@ struct SelectMessageView: View {
                             }
                     )
                 }
-                .frame(width: windowWidth)
                 .padding(.top, 30)
                 .padding(.bottom, 150)
                 .onChange(of: translateLang) { _ in

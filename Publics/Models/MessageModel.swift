@@ -74,7 +74,7 @@ struct ChatGroup: Codable, FetchableRecord, PersistableRecord, Identifiable, Has
     }
 }
 
-struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
+struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable, Equatable {
     var id: String = UUID().uuidString
     var timestamp: Date
     var chat: String

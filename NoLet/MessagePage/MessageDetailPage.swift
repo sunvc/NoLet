@@ -19,6 +19,7 @@ struct MessageDetailPage: View {
     let group: String
 
     @EnvironmentObject private var manager: AppManager
+    @Environment(\.horizontalSizeClass) var sizeClass
     @StateObject private var messageManager = MessagesManager.shared
 
     @Default(.showMessageAvatar) var showMessageAvatar
@@ -31,60 +32,64 @@ struct MessageDetailPage: View {
     @State private var isLoading: Bool = false
     @State private var showAllTTL: Bool = false
     @State private var searchText: String = ""
-    
-    private var messagePage:Int {
-        messageManager.messagePage    
+
+    private var messagePage: Int {
+        messageManager.messagePage
     }
-    
+
     var lastMessage: Message? {
         messages.elementFromEnd(5)
+    }
+
+    var columns: [GridItem] {
+        return Array(
+            repeating: GridItem(.flexible(), spacing: 10),
+            count: sizeClass == .compact ? 1 : 2
+        )
     }
 
     var body: some View {
         Group {
             if searchText.isEmpty {
                 ScrollViewReader { proxy in
-                    List {
-                        ForEach(messages, id: \.id) { message in
-                            MessageCard(
-                                message: message,
-                                searchText: searchText,
-                                showAllTTL: showAllTTL,
-                                showAvatar: showMessageAvatar,
-                                assistantAccounsCount: assistantAccouns.count,
-                                selectID: manager.selectID
-                            ){
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    withAnimation(.default) {
-                                        messages.removeAll(where: { $0.id == message.id })
+                    ScrollView {
+                        LazyVGrid(columns: columns) {
+                            ForEach(messages, id: \.id) { message in
+                                MessageCard(
+                                    message: message,
+                                    searchText: searchText,
+                                    showAllTTL: showAllTTL,
+                                    showAvatar: showMessageAvatar,
+                                    assistantAccounsCount: assistantAccouns.count,
+                                    selectID: manager.selectID
+                                ) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        withAnimation(.default) {
+                                            messages.removeAll(where: { $0.id == message.id })
+                                        }
+                                    }
+
+                                    Task.detached(priority: .background) {
+                                        _ = await MessagesManager.shared.delete(message)
                                     }
                                 }
-
-                                Task.detached(priority: .background) {
-                                    _ = await MessagesManager.shared.delete(message)
-                                }
-                            }
-                            .id(message.id)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
-                            .listSectionSeparator(.hidden)
-                            .onAppear {
-                                if messages.count < allCount && lastMessage == message {
-                                    loadData(proxy: proxy, item: message)
+                                .id(message.id)
+                                .onAppear {
+                                    if messages.count < allCount && lastMessage == message {
+                                        loadData(proxy: proxy, item: message)
+                                    }
                                 }
                             }
                         }
+                        .animation(.easeInOut, value: messages)
+                        .environmentObject(messageManager)
+                        .refreshable {
+                            self.loadData(proxy: proxy, limit: messagePage)
+                        }
+                        .onChange(of: messageManager.updateSign) { _ in
+                            loadData(proxy: proxy, limit: max(messages.count, messagePage))
+                        }
                     }
-                    .listStyle(.grouped)
-                    .animation(.easeInOut, value: messages)
-                    .environmentObject(messageManager)
-                    .refreshable {
-                        self.loadData(proxy: proxy, limit:  messagePage)
-                    }
-                    .onChange(of: messageManager.updateSign) { _ in
-                        loadData(proxy: proxy, limit: max(messages.count, messagePage))
-                    }
-                    
                 }
             } else {
                 SearchMessageView(group: group)
@@ -109,9 +114,8 @@ struct MessageDetailPage: View {
                 manager.searchText = ""
             }
         }
-        
+
         .toolbar {
-            
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .bottomBar)
                 DefaultToolbarItem(kind: .search, placement: .bottomBar)
@@ -157,13 +161,13 @@ struct MessageDetailPage: View {
     }
 
     private func loadData(proxy: ScrollViewProxy? = nil, limit: Int = 20, item: Message? = nil) {
-        Task{
+        Task {
             let results = await MessagesManager.shared.query(
                 group: self.group,
                 limit: limit,
                 item?.createDate
             )
-            
+
             let count = await MessagesManager.shared.count(group: self.group)
             await MainActor.run {
                 self.allCount = count

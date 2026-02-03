@@ -17,6 +17,7 @@ struct SearchMessageView: View {
     var group: String?
 
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.horizontalSizeClass) var sizeClass
     @State private var messages: [Message] = []
     @State private var allCount: Int = 0
     @State private var searchTask: Task<Void, Never>?
@@ -34,81 +35,71 @@ struct SearchMessageView: View {
         messages.elementFromEnd(5)
     }
 
+    var columns: [GridItem] {
+        return Array(
+            repeating: GridItem(.flexible(), spacing: 10),
+            count: sizeClass == .compact ? 1 : 2
+        )
+    }
+
     var body: some View {
-        List {
-            if searched{
-                HStack {
-                    Spacer()
-                    Text("搜索中...")
-                        .font(.title3.bold())
-                        .foregroundStyle(.green)
-                    Spacer()
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
-                .listRowSeparator(.hidden)
-            }else if messages.count == 0 && manager.searchText.isEmpty {
-                HStack {
-                    Spacer()
-                    Text("搜索历史消息")
-                        .font(.title3.bold())
-                        .foregroundStyle(.blue)
-                    Spacer()
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
-                .listRowSeparator(.hidden)
-            } else if messages.count == 0 && !manager.searchText.isEmpty {
-                HStack {
-                    Spacer()
-                    Text("没有找到数据")
-                        .font(.title3.bold())
-                        .foregroundStyle(.orange)
-                    Spacer()
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
-                .listRowSeparator(.hidden)
-            } else {
-                ForEach(messages, id: \.id) { message in
-                    MessageCard(
-                        message: message,
-                        searchText: manager.searchText,
-                        showGroup: true,
-                        assistantAccounsCount: assistantAccouns.count,
-                        selectID: manager.selectID
-                    ){
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            withAnimation(.default) {
-                                messages.removeAll(where: { $0.id == message.id })
+        ScrollView {
+            LazyVGrid(columns: columns) {
+                if searched {
+                    HStack {
+                        Spacer()
+                        Text("搜索中...")
+                            .font(.title3.bold())
+                            .foregroundStyle(.green)
+                        Spacer()
+                    }
+                } else if messages.count == 0 && manager.searchText.isEmpty {
+                    HStack {
+                        Spacer()
+                        Text("搜索历史消息")
+                            .font(.title3.bold())
+                            .foregroundStyle(.blue)
+                        Spacer()
+                    }
+                } else if messages.count == 0 && !manager.searchText.isEmpty {
+                    HStack {
+                        Spacer()
+                        Text("没有找到数据")
+                            .font(.title3.bold())
+                            .foregroundStyle(.orange)
+                        Spacer()
+                    }
+                } else {
+                    ForEach(messages, id: \.id) { message in
+                        MessageCard(
+                            message: message,
+                            searchText: manager.searchText,
+                            showGroup: true,
+                            assistantAccounsCount: assistantAccouns.count,
+                            selectID: manager.selectID
+                        ) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation(.default) {
+                                    messages.removeAll(where: { $0.id == message.id })
+                                }
+                            }
+
+                            Task.detached(priority: .background) {
+                                _ = await messageManager.delete(message)
                             }
                         }
-
-                        Task.detached(priority: .background) {
-                            _ = await messageManager.delete(message)
-                        }
-                    }
-                    .id(message.id)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listSectionSeparator(.hidden)
-                    .onAppear {
-                        if messages.count < allCount && lastMessage == message {
-                            loadData(limit: messagePage, item: message)
+                        .id(message.id)
+                        .onAppear {
+                            if messages.count < allCount && lastMessage == message {
+                                loadData(limit: messagePage, item: message)
+                            }
                         }
                     }
                 }
-            }
 
-            Spacer(minLength: 30)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
+                Spacer(minLength: 30)
+            }
         }
-        .listStyle(.grouped)
         .animation(.interactiveSpring, value: messages.count)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

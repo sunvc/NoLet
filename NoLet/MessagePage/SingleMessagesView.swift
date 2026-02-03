@@ -19,6 +19,8 @@ struct SingleMessagesView: View {
     @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.assistantAccouns) var assistantAccouns
 
+    @Environment(\.horizontalSizeClass) var sizeClass
+
     @State private var isLoading: Bool = false
 
     @State private var showAllTTL: Bool = false
@@ -38,77 +40,80 @@ struct SingleMessagesView: View {
     private var messagePage: Int {
         messageManager.messagePage
     }
-    
+
     var lastMessage: Message? {
         messageManager.messages.elementFromEnd(5)
     }
 
+    var columns: [GridItem] {
+        return Array(
+            repeating: GridItem(.flexible(), spacing: 10),
+            count: sizeClass == .compact ? 1 : 2
+        )
+    }
+
     var body: some View {
         ScrollViewReader { proxy in
-            List {
-                ForEach(messageManager.messages, id: \.id) { message in
-                    MessageCard(
-                        message: message,
-                        searchText: "",
-                        showAllTTL: showAllTTL,
-                        showAvatar: showMessageAvatar,
-                        assistantAccounsCount: assistantAccouns.count,
-                        selectID: manager.selectID
-                    ) {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            withAnimation(.default) {
-                                messageManager.messages.removeAll(where: { $0.id == message.id })
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    ForEach(messageManager.messages, id: \.id) { message in
+                        MessageCard(
+                            message: message,
+                            searchText: "",
+                            showAllTTL: showAllTTL,
+                            showAvatar: showMessageAvatar,
+                            assistantAccounsCount: assistantAccouns.count,
+                            selectID: manager.selectID
+                        ) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                withAnimation(.default) {
+                                    messageManager.messages
+                                        .removeAll(where: { $0.id == message.id })
+                                }
+                            }
+
+                            Task.detached(priority: .background) {
+                                _ = await messageManager.delete(message)
+                            }
+                            Toast.success(title: "删除成功")
+                        }
+                        .id(message.id)
+                        .onAppear {
+                            if messagesCount < messageManager.allCount && lastMessage == message {
+                                self.loadData(proxy: proxy, limit: messagePage, item: message)
                             }
                         }
-
-                        Task.detached(priority: .background) {
-                            _ = await messageManager.delete(message)
-                        }
-                        Toast.success(title: "删除成功")
                     }
-                    .id(message.id)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listSectionSeparator(.hidden)
-                    .onAppear {
-                        if messagesCount < messageManager.allCount && lastMessage == message {
-                            self.loadData(proxy: proxy, limit: messagePage, item: message)
+
+                    if messagesCount == 0 && showLoading {
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 16) {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .primary))
+                                    .scaleEffect(2)
+                                    .padding(.vertical, 30)
+                                    .padding()
+
+                                Text("数据加载中...")
+                                    .foregroundColor(.primary)
+                                    .font(.body)
+                                    .bold()
+                            }
+                            Spacer()
                         }
+                        .padding(24)
+                        .shadow(radius: 10)
                     }
                 }
-
-                if messagesCount == 0 && showLoading {
-                    HStack {
-                        Spacer()
-                        VStack(spacing: 16) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .primary))
-                                .scaleEffect(2)
-                                .padding(.vertical, 30)
-                                .padding()
-
-                            Text("数据加载中...")
-                                .foregroundColor(.primary)
-                                .font(.body)
-                                .bold()
-                        }
-                        Spacer()
-                    }
-                    .padding(24)
-                    .shadow(radius: 10)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listSectionSeparator(.hidden)
+                .scrollDismissesKeyboard(.interactively)
+                .navigationTitle("消息")
+                .refreshable {
+                    self.loadData(proxy: proxy, limit: messagePage)
                 }
-            }
-            .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("消息")
-            .listStyle(.grouped)
-            .refreshable {
-                self.loadData(proxy: proxy, limit: messagePage)
-            }
-            .onChange(of: messageManager.updateSign) { _ in
-                loadData(proxy: proxy, limit: max(messagesCount, messagePage))
+                .onChange(of: messageManager.updateSign) { _ in
+                    loadData(proxy: proxy, limit: max(messagesCount, messagePage))
+                }
             }
         }
         .diff { view in
@@ -177,7 +182,6 @@ struct SingleMessagesView: View {
         showLoading = true
 
         Task {
-
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
 
             await MainActor.run {
@@ -196,7 +200,6 @@ struct SingleMessagesView: View {
         }
     }
 }
-
 
 extension Array {
     func elementFromEnd(_ index: Int) -> Element? {

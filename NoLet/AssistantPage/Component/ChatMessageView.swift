@@ -22,7 +22,7 @@ struct ChatMessageView: View {
     }
 
     var body: some View {
-        VStack{
+        VStack {
             Section {
                 if message.request.count > 0 || quote != nil {
                     VStack {
@@ -47,7 +47,6 @@ struct ChatMessageView: View {
                                         Toast.success(title: "复制成功")
                                     }
                                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    
                             }
                         }
                     }
@@ -64,6 +63,7 @@ struct ChatMessageView: View {
                             .foregroundColor(.primary)
                             .background(.message)
                             .foregroundColor(.primary)
+                            .lineLimit(8)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                             .onTapGesture(count: 2) {
                                 Clipboard.set(message.content)
@@ -74,7 +74,7 @@ struct ChatMessageView: View {
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
                 }
-            }footer: {
+            } footer: {
                 HStack {
                     Text("字符计数: \(message.content.count)")
                         .font(.caption2)

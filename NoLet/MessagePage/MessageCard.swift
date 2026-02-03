@@ -56,6 +56,14 @@ struct MessageCard: View {
     @FocusState private var showReply
     @State private var replyText: String = ""
 
+    var lineColor: Color {
+        if manager.copyMessageId == message.id {
+            return .orange
+        } else {
+            return message.reply == nil ? .gray.opacity(0.6) : .green
+        }
+    }
+
     var body: some View {
         /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
         VStack {
@@ -175,14 +183,12 @@ struct MessageCard: View {
                                 String("\(PBMarkdown.plain(message.accessibilityValue()))")
                             )
                             .accessibilityLabel("消息内容")
-                            .accessibilityHint("双击全屏显示")
-                            .accessibilityAction(named: "显示全屏") {
-                                showFull()
-                            }
+                            
                         }
                     }
                 }
                 .padding(8)
+                .padding(.bottom, 6)
                 .overlay(alignment: .bottom) {
                     UnevenRoundedRectangle(
                         topLeadingRadius: 15,
@@ -191,13 +197,27 @@ struct MessageCard: View {
                         topTrailingRadius: 15,
                         style: .continuous
                     )
-                    .fill(message.reply == nil ? .gray.opacity(0.6) : .orange)
+                    .fill(lineColor)
                     .frame(height: 3)
                     .padding(.horizontal, 30)
+                    .padding(.vertical, 3)
+                    .onTapGesture {
+                        if manager.copyMessageId == nil {
+                            manager.copyMessageId = message.id
+                        } else {
+                            manager.copyMessageId = nil
+                        }
+                    }
                 }
                 .frame(minHeight: 50)
                 .mbackground26(.message, radius: 15)
-                .padding(5)
+                .padding(10)
+                .onTapGesture(count: 2) {
+                    self.showFull()
+                }
+                .accessibilityAction(named: "显示全屏") {
+                    showFull()
+                }
                 .diff { view in
                     Group {
                         if #available(iOS 18.0, *) {
@@ -208,10 +228,8 @@ struct MessageCard: View {
                                 }, set: { _ in
                                     manager.selectMessage = nil
                                 })) {
-                                    VStack {
-                                        SelectMessageView(message: message) {
-                                            manager.selectMessage = nil
-                                        }
+                                    SelectMessageView(message: message) {
+                                        manager.selectMessage = nil
                                     }
                                     .navigationTransition(
                                         .zoom(sourceID: message.id, in: sms)
@@ -253,11 +271,6 @@ struct MessageCard: View {
         }
         .padding(.vertical)
         .contentShape(Rectangle())
-        .simultaneousGesture(
-            MagnificationGesture().onEnded { _ in
-                showFull()
-            }
-        )
     }
 
     func showFull() {
@@ -296,99 +309,93 @@ struct MessageCard: View {
                     .accessibilityValue(message.group)
                 Spacer()
             }
-            
-            
-            if manager.copyMessageId == message.id {
-                Button {
-                    withAnimation {
-                        manager.copyMessageId = nil
-                    }
-                } label: {
-                    Image(systemName: "arrow.uturn.forward")
-                        .imageScale(.large)
-                        .button26(.borderless)
-                }
-            } else {
-                Menu {
-                    Section {
-                        Button {
+
+            Menu {
+                Section {
+                    Button {
+                        if manager.copyMessageId == nil {
                             withAnimation {
                                 manager.copyMessageId = message.id
                             }
-                        } label: {
-                            Label("复制模式", systemImage: "doc.on.doc")
-                        }
-                    }
-
-                    if let url = message.url {
-                        Button {
-                            if let fileURL = URL(string: url) {
-                                AppManager.openURL(url: fileURL, .safari)
-                            }
-                            Haptic.impact()
-                        } label: {
-                            Label(
-                                "打开链接",
-                                systemImage: "network"
-                            )
-                        }
-                    }
-
-                    if let image = message.image {
-                        Section {
-                            saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
-                        }
-                    }
-
-                    if assistantAccounsCount > 0 {
-                        Section {
-                            Button {
-                                Haptic.impact()
-                                DispatchQueue.main.async {
-                                    AppManager.shared.askMessageID = message.id
-                                    AppManager.shared.page = .assistant
-                                    AppManager.shared.router = []
-                                }
-                            } label: {
-                                Label("智能助手", systemImage: "atom")
-                            }.tint(.green)
-                        }
-                    }
-
-                    if let body = message.body {
-                        ShareLink(item: body)
-                    }
-
-                    if let reply = message.reply, !reply.isEmpty {
-                        Section {
-                            Button {
-                                self.showReply = true
-                            } label: {
-                                Label("回复", systemImage: "text.bubble")
+                        } else {
+                            withAnimation {
+                                manager.copyMessageId = nil
                             }
                         }
-                    }
 
+                    } label: {
+                        Label("复制模式", systemImage: "doc.on.doc")
+                    }
+                }
+
+                if let url = message.url {
+                    Button {
+                        if let fileURL = URL(string: url) {
+                            AppManager.openURL(url: fileURL, .safari)
+                        }
+                        Haptic.impact()
+                    } label: {
+                        Label(
+                            "打开链接",
+                            systemImage: "network"
+                        )
+                    }
+                }
+
+                if let image = message.image {
+                    Section {
+                        saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
+                    }
+                }
+
+                if assistantAccounsCount > 0 {
                     Section {
                         Button {
-                            self.delete()
+                            Haptic.impact()
+                            DispatchQueue.main.async {
+                                AppManager.shared.askMessageID = message.id
+                                AppManager.shared.page = .assistant
+                                AppManager.shared.router = []
+                            }
                         } label: {
-                            Label("删除", systemImage: "trash")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.white, Color.primary)
-
-                        }.tint(.red)
+                            Label("智能助手", systemImage: "atom")
+                        }.tint(.green)
                     }
-
-                } label: {
-                    HStack {
-                        Spacer()
-                        Image(systemName: "ellipsis")
-                            .padding(.horizontal)
-                            .padding(.vertical, 5)
-                    }
-                    .contentShape(Rectangle())
                 }
+
+                if let body = message.body {
+                    ShareLink(item: body)
+                }
+
+                if let reply = message.reply, !reply.isEmpty {
+                    Section {
+                        Button {
+                            self.showReply = true
+                        } label: {
+                            Label("回复", systemImage: "text.bubble")
+                        }
+                    }
+                }
+
+                Section {
+                    Button {
+                        self.delete()
+                    } label: {
+                        Label("删除", systemImage: "trash")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white, Color.primary)
+
+                    }.tint(.red)
+                }
+
+            } label: {
+                HStack {
+                    Spacer()
+                    Image(systemName: "ellipsis")
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
+                }
+                .contentShape(Rectangle())
             }
         }
         .background(linColor.gradient)

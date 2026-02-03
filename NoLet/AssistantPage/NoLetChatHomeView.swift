@@ -116,7 +116,7 @@ struct NoLetChatHomeView: View {
         .sheet(isPresented: $chatManager.showAllHistory) {
             ChatGroupHistoryView(show: $chatManager.showAllHistory)
                 .customPresentationCornerRadius(30)
-                .presentationDetents([.height(self.windowHeight * 0.7), .large])
+                .presentationDetents([.height(UIScreen.main.bounds.size.height * 0.7), .large])
         }
         .sheet(isPresented: $chatManager.showPromptChooseView) {
             PromptChooseView(show: $chatManager.showPromptChooseView)
