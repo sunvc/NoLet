@@ -76,6 +76,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
         _syncAppInfo()
+        Task.detached {
+            await AppManager.syncServer()
+        }
     }
 
     private var syncTask: Task<Void, Never>?

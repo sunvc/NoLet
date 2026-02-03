@@ -49,9 +49,9 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var VipInfo: SubscribeUser? = nil
 
     @Published var servers: [PushServerModel] = []
-    
+
     @Published var sizeClass: UserInterfaceSizeClass?
-    
+
     @Published var copyMessageId: String? = nil
 
     var router: [RouterPage] = [] {
@@ -110,21 +110,6 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     var updates: Task<Void, Never>?
 
-    class func syncLocalToCloud() {
-        let locals = Defaults[.servers]
-        let clouds = Defaults[.cloudServers]
-
-        // 过滤掉有 group 的
-        let filteredLocals = locals.filter { $0.group?.isEmpty ?? true }
-        let filteredClouds = clouds.filter { $0.group?.isEmpty ?? true }
-
-        // 合并并去重（前提是 PushServerModel 遵守 Hashable）
-        let merged = Array(Set(filteredLocals + filteredClouds))
-
-        // 同步回云端
-        Defaults[.cloudServers] = merged
-    }
-
     func HandlerOpenURL(url: String) -> String? {
         switch outParamsHandler(address: url) {
         case .crypto(let text):
@@ -173,8 +158,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
         }
     }
 
-    func setMarkdownConfig() {
-    }
+    func setMarkdownConfig() {}
 }
 
 extension AppManager {
@@ -478,10 +462,6 @@ extension AppManager {
     ) async -> PushServerModel {
         var server = server
 
-        if server.name == "uuneo.com" || server.name == "push.uuneo.com" {
-            server.url = NCONFIG.server
-        }
-
         do {
             let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
             let params = DeviceInfo(
@@ -507,8 +487,6 @@ extension AppManager {
                 server.key = data.deviceKey
                 server.status = true
             }
-
-            Self.syncLocalToCloud()
             return server
         } catch {
             server.status = false
@@ -550,7 +528,6 @@ extension AppManager {
                 Defaults[.servers][index] = serverNew
             }
             Toast.success(title: "添加成功")
-            Self.syncLocalToCloud()
         } else {
             Toast.success(title: "注册失败")
         }
@@ -618,8 +595,7 @@ extension AppManager {
     }
 
     nonisolated static func syncServer() async {
-        let pushServerDatas =
-            Array(await Set<PushServerModel>(Defaults[.servers] + Defaults[.cloudServers]))
+        let pushServerDatas = await Defaults[.servers]
 
         let serverName = await CloudManager.serverName
         let datas = pushServerDatas.compactMap { server in
