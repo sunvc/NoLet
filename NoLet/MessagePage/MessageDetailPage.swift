@@ -81,14 +81,15 @@ struct MessageDetailPage: View {
                                 }
                             }
                         }
-                        .animation(.easeInOut, value: messages)
-                        .environmentObject(messageManager)
-                        .refreshable {
-                            self.loadData(proxy: proxy, limit: messagePage)
-                        }
-                        .onChange(of: messageManager.updateSign) { _ in
-                            loadData(proxy: proxy, limit: max(messages.count, messagePage))
-                        }
+                        
+                    }
+                    .animation(.easeInOut, value: messages)
+                    .environmentObject(messageManager)
+                    .refreshable {
+                        self.loadData(proxy: proxy, limit: messagePage)
+                    }
+                    .onChange(of: messageManager.updateSign) { _ in
+                        loadData(proxy: proxy, limit: max(messages.count, messagePage))
                     }
                 }
             } else {

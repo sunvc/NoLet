@@ -88,7 +88,6 @@ struct ChatMessageListView: View {
                         .id(chatLastMessageID)
                 }
             }
-            .listStyle(.grouped)
             .background(.gray.opacity(0.1))
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: chatManager.isFocusedInput) { _ in

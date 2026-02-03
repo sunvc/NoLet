@@ -106,14 +106,16 @@ struct SingleMessagesView: View {
                         .shadow(radius: 10)
                     }
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .navigationTitle("消息")
-                .refreshable {
-                    self.loadData(proxy: proxy, limit: messagePage)
-                }
-                .onChange(of: messageManager.updateSign) { _ in
-                    loadData(proxy: proxy, limit: max(messagesCount, messagePage))
-                }
+               
+                
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle("消息")
+            .refreshable {
+                self.loadData(proxy: proxy, limit: messagePage)
+            }
+            .onChange(of: messageManager.updateSign) { _ in
+                loadData(proxy: proxy, limit: max(messagesCount, messagePage))
             }
         }
         .diff { view in
