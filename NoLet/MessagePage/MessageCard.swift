@@ -183,7 +183,6 @@ struct MessageCard: View {
                                 String("\(PBMarkdown.plain(message.accessibilityValue()))")
                             )
                             .accessibilityLabel("消息内容")
-                            
                         }
                     }
                 }
@@ -202,10 +201,14 @@ struct MessageCard: View {
                     .padding(.horizontal, 30)
                     .padding(.vertical, 3)
                     .onTapGesture {
-                        if manager.copyMessageId == nil {
-                            manager.copyMessageId = message.id
+                        if manager.copyMessageId != message.id {
+                            withAnimation {
+                                manager.copyMessageId = message.id
+                            }
                         } else {
-                            manager.copyMessageId = nil
+                            withAnimation {
+                                manager.copyMessageId = nil
+                            }
                         }
                     }
                 }
@@ -313,7 +316,8 @@ struct MessageCard: View {
             Menu {
                 Section {
                     Button {
-                        if manager.copyMessageId == nil {
+                        
+                        if manager.copyMessageId != message.id {
                             withAnimation {
                                 manager.copyMessageId = message.id
                             }
