@@ -201,14 +201,22 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             if let reply: String = userInfo.raw(.reply) {
                 Task { @MainActor in
                     do {
+                        showTips(text: String(localized: "正在回复..."), color: .orange)
                         let result = try await NetworkManager().fetch(url: reply + text)
                         if result.check() {
-                            completion(.dismiss)
+                            extensionContext?.dismissNotificationContentExtension()
+                            return
                         } else {
-                            showTips(text: String(localized: "Fail"), color: .red)
+                            showTips(
+                                text: "\(String(localized: "回复失败")):\(result.header.statusCode)",
+                                color: .red
+                            )
                         }
                     } catch {
-                        showTips(text: "\(error.localizedDescription)", color: .red)
+                        showTips(
+                            text: "\(String(localized: "发生错误")):\(error.localizedDescription)",
+                            color: .red
+                        )
                     }
                     self.replyText = nil
                 }
@@ -238,7 +246,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     private func convertMarkdownToHTML(_ markdown: String) -> String? {
         guard let htmlBody = PBMarkdown.markdownToHTML(markdown) else { return nil }
-        debugPrint(htmlBody)
         return """
             <html>
             <head>
