@@ -35,6 +35,7 @@ final class MessagesManager: ObservableObject {
         groupMessages = messages
         if !Bundle.main.isAppExtension {
             startObservingUnreadCount()
+            setupDarwinListener()
         }
     }
 
@@ -125,13 +126,14 @@ extension MessagesManager {
         }
     }
 
-    nonisolated func updateRead() async -> Int? {
-        return try? await DB.dbQueue.write { db in
+   
+    nonisolated func updateRead() async -> Int {
+        return (try? await DB.dbQueue.write { db in
             // 批量更新 read 字段为 true
             try Message
                 .filter(Message.Columns.isRead == false)
                 .updateAll(db, [Message.Columns.isRead.set(to: true)])
-        }
+        }) ?? 0
     }
 
     nonisolated func unreadCount(group: String? = nil) async -> Int {

@@ -29,6 +29,9 @@ class BadgeProcessor: NotificationContentProcessor {
                 await MessagesManager.shared.markAllRead()
             }
             bestAttemptContent.badge = NSNumber(value: badge)
+        }else{
+            let badge = await MessagesManager.shared.unreadCount()
+            bestAttemptContent.badge = NSNumber(value: badge)
         }
 
         return bestAttemptContent

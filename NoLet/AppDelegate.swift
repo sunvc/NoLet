@@ -120,10 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions)
             -> Void
     ) {
-        // 由于Sqlit 底层通知延迟，手动更新
-        Task.detached(priority: .background) {
-            await MessagesManager.shared.updateGroup()
-        }
 
         completionHandler([.banner])
         Haptic.impact(.light)

@@ -146,14 +146,6 @@ struct SingleMessagesView: View {
         }
         .task(id: "singleData") {
             self.loadData(limit: messagePage)
-            Task.detached(priority: .background) {
-                guard let count = await messageManager.updateRead() else { return }
-
-                // 清除徽章
-                try await UNUserNotificationCenter.current().setBadgeCount(0)
-
-                logger.info("更新未读条数: \(count)")
-            }
         }
     }
 
@@ -184,6 +176,9 @@ struct SingleMessagesView: View {
         showLoading = true
 
         Task {
+            let count = await messageManager.updateRead()
+            logger.info("更新未读条数: \(count)")
+            
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
 
             await MainActor.run {

@@ -75,9 +75,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_: UIScene) {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
+        
         _syncAppInfo()
-        Task.detached {
-            await AppManager.syncServer()
+
+        Task { @MainActor in
+            let unread = MessagesManager.shared.unreadCount
+            UNUserNotificationCenter.current().setBadgeCount(unread)
         }
     }
 
@@ -88,10 +91,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             await MessagesManager.shared.deleteExpired()
             await AppManager.syncServer()
             await NoLetChatManager.shared.clearunuse()
-            let unread = await MessagesManager.shared.unreadCount
-            DispatchQueue.main.async {
-                UNUserNotificationCenter.current().setBadgeCount(unread)
-            }
         }
     }
 
