@@ -27,7 +27,7 @@ struct MessageDetailPage: View {
 
     // 分页相关状态
     @State private var messages: [Message] = []
-    @State private var allCount: Int = 1_000_000
+    @State private var allCount: Int = 9_999_999
 
     @State private var isLoading: Bool = false
     @State private var showAllTTL: Bool = false
@@ -47,6 +47,8 @@ struct MessageDetailPage: View {
             count: sizeClass == .compact ? 1 : 2
         )
     }
+
+    @State private var loadData: Bool = false
 
     var body: some View {
         Group {
@@ -81,7 +83,9 @@ struct MessageDetailPage: View {
                                 }
                             }
                         }
-                        
+                        if loadData {
+                            DataLoadingView()
+                        }
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollContentBackground(.hidden)
@@ -139,7 +143,8 @@ struct MessageDetailPage: View {
         }
         .task {
             loadData()
-
+        }
+        .onDisappear {
             Task.detached(priority: .background) {
                 try? await DatabaseManager.shared.dbQueue.write { db in
                     // 更新指定 group 的未读消息为已读
@@ -164,8 +169,14 @@ struct MessageDetailPage: View {
         }
     }
 
-    private func loadData(proxy: ScrollViewProxy? = nil, limit: Int = 20, item: Message? = nil) {
+    private func loadData(
+        proxy: ScrollViewProxy? = nil,
+        limit: Int = 50,
+        item: Message? = nil
+    ) {
         Task {
+            guard !self.loadData else { return }
+            self.loadData = true
             let results = await MessagesManager.shared.query(
                 group: self.group,
                 limit: limit,
@@ -191,6 +202,7 @@ struct MessageDetailPage: View {
                     }
                 }
             }
+            self.loadData = false
         }
     }
 }

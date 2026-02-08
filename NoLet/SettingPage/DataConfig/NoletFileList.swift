@@ -302,7 +302,6 @@ struct FileRowContent: View {
 
     func thumbnail(url: URL, size: CGFloat = 100, defaultIcon _: String) async -> Image {
         do {
-            logger.info("\(url)")
             if url.path.contains("ImageCache"),!item.isDirectory,
                let uiImage = await ImageManager.loadThumbnail(path: url.path(), maxPixel: 300)
             {

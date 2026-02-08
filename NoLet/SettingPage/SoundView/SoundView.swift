@@ -154,50 +154,77 @@ struct SoundView: View {
     }
 
     func downloadSounds() async throws {
-        let destinationURL = try await tipsManager.download(from: NCONFIG.soundsRemoteURL.url)
-
-        let result = try Zip.quickUnzipFile(destinationURL)
-
-        guard let soundsURL = NCONFIG.getDir(.sounds) else { throw "Not Dir" }
 
         let fileManager = FileManager.default
-        if !fileManager.fileExists(atPath: soundsURL.path) {
-            try fileManager.createDirectory(at: soundsURL, withIntermediateDirectories: true)
+
+        // 1️⃣ 下载 zip 文件
+        let zipURL = try await tipsManager.download(
+            from: NCONFIG.soundsRemoteURL.url
+        )
+
+        // 2️⃣ 解压 zip
+        let unzipURL = try Zip.quickUnzipFile(zipURL)
+
+        // 3️⃣ sounds 目录
+        guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
+            throw "Not Dir"
         }
+
+        if !fileManager.fileExists(atPath: soundsDirURL.path) {
+            try fileManager.createDirectory(
+                at: soundsDirURL,
+                withIntermediateDirectories: true
+            )
+        }
+
+        // 4️⃣ 枚举解压后的文件
         guard let enumerator = fileManager.enumerator(
-            at: result,
+            at: unzipURL,
             includingPropertiesForKeys: [.isDirectoryKey],
             options: [.skipsHiddenFiles]
-        )
-        else {
+        ) else {
             return
         }
 
         let skipFiles = tipsManager.allSounds()
-        while let any = enumerator.nextObject() {
-            guard let fileURL = any as? URL else { continue }
-            let values = try fileURL.resourceValues(forKeys: [.isDirectoryKey])
+
+        while let item = enumerator.nextObject() as? URL {
+
+            let values = try item.resourceValues(forKeys: [.isDirectoryKey])
             if values.isDirectory == true { continue }
-            let baseName = fileURL.deletingPathExtension().lastPathComponent
+
+            let baseName = item.deletingPathExtension().lastPathComponent
             if skipFiles.contains(baseName) { continue }
-            let destinationURL = destinationURL.appendingPathComponent("\(baseName).caf")
-            if fileManager.fileExists(atPath: destinationURL.path) { continue }
+
+            let outputURL = soundsDirURL
+                .appendingPathComponent("\(baseName).caf")
+
+            if fileManager.fileExists(atPath: outputURL.path) {
+                continue
+            }
+
+            // 5️⃣ 优先走转码
             if (try? await AudioConversion().toCAFShort(
-                inputURL: fileURL,
-                outputURL: destinationURL
+                inputURL: item,
+                outputURL: outputURL
             )) != nil {
                 continue
             }
-            if fileURL.pathExtension.lowercased() == "caf" {
-                try fileManager.moveItem(at: fileURL, to: destinationURL)
+
+            // 6️⃣ 本身就是 caf，直接移动
+            if item.pathExtension.lowercased() == "caf" {
+                try fileManager.moveItem(at: item, to: outputURL)
             }
         }
 
+        // 7️⃣ 更新列表
         tipsManager.updateFileList()
 
-        try? FileManager.default.removeItem(at: result)
-        try? FileManager.default.removeItem(at: destinationURL)
+        // 8️⃣ 清理临时文件
+        try? fileManager.removeItem(at: unzipURL)
+        try? fileManager.removeItem(at: zipURL)
     }
+
 
     /// 通用文件保存方法
     func saveSound(

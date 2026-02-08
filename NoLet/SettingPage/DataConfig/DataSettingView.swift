@@ -60,10 +60,7 @@ struct DataSettingView: View {
                     Button {
                         self.addLoading = true
                         Task.detached(priority: .high) {
-                            _ = await MessagesManager.createStressTest(
-                                max: Int(exampleValue),
-                                len: 500
-                            )
+                            _ = await self.createStressTest(max: Int(exampleValue))
                             await MainActor.run {
                                 self.addLoading = false
                                 self.calculateSize()
@@ -310,6 +307,26 @@ struct DataSettingView: View {
 
                 HStack {
                     Button {
+                        try? DatabaseManager.shared.dbQueue
+                            .vacuum()
+                        calculateSize()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Label("整理数据库", systemImage: "arrow.down.doc.fill")
+                                .foregroundStyle(.white, Color.primary)
+                                .padding(.vertical, 5)
+                                .fontWeight(.bold)
+
+                            Spacer()
+                        }
+                    }
+                    .tint(.green)
+                    .buttonStyle(.borderedProminent)
+                }
+
+                HStack {
+                    Button {
                         self.resetAppShow.toggle()
                     } label: {
                         HStack {
@@ -484,6 +501,53 @@ struct DataSettingView: View {
         } catch {
             logger.error("\(error)")
             return error.localizedDescription
+        }
+    }
+
+    func createStressTest(
+        max number: Int = 100_000
+    ) async -> Bool {
+        do {
+            let body = """
+                ---
+
+                ## 📌 功能亮点
+
+                ### 📲 Push 通知
+
+                - 简单易用的 API 可推送任意自定义内容
+                - 支持多种通知级别
+                - 支持自定义图标、铃声等
+
+                ---
+
+                ## 📡 自建服务器
+
+                项目支持自建推送服务器，方便对推送流程进行私有化部署：
+
+                - 服务端代码同样开源
+                - 支持 Docker 部署
+                - 有助于提高数据隐私和可控性
+
+                ---
+                """
+
+            try await DatabaseManager.shared.dbQueue.write { db in
+                try autoreleasepool {
+                    for k in 0..<number {
+                        let message = Message(
+                            id: UUID().uuidString, createDate: .now,
+                            group: "\(k % 50)", title: "\(k) Test",
+                            body: "\(body)", level: 1, ttl: 1, isRead: true
+                        )
+                        try message.insert(db)
+                    }
+                }
+            }
+            return true
+        } catch {
+            logger.error("创建失败")
+            return false
         }
     }
 }

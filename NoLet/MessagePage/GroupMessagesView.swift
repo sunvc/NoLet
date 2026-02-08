@@ -22,26 +22,6 @@ struct GroupMessagesView: View {
     var body: some View {
         ScrollViewReader { proxy in
             List {
-                if messageManager.showGroupLoading && messageManager.groupMessages.count == 0 {
-                    HStack {
-                        Spacer()
-                        VStack(spacing: 16) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .primary))
-                                .scaleEffect(1.5)
-
-                            Text("数据分组中...")
-                                .foregroundColor(.primary)
-                                .font(.body)
-                                .bold()
-                        }
-                        Spacer()
-                    }
-                    .padding(24)
-                    .shadow(radius: 10)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
 
                 ForEach(messageManager.groupMessages, id: \.id) { message in
                     MessageRow(message: message)
@@ -81,9 +61,6 @@ struct GroupMessagesView: View {
             .onChange(of: messageManager.allCount) { _ in
                 if let selectGroup = manager.selectGroup {
                     proxyTo(proxy: proxy, selectGroup: selectGroup)
-                    Task { @MainActor in
-                        manager.router = [.messageDetail(selectGroup)]
-                    }
                 }
             }
         }

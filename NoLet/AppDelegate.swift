@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await AppManager.shared.registerForRemoteNotifications()
             }
         }
-        
+
         return true
     }
 
@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 } else {
                     _ = await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
                 }
-                if await Defaults[.servers].count == 0{
+                if await Defaults[.servers].count == 0 {
                     await Defaults[.noServerModel] = true
                 }
             }
@@ -120,7 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions)
             -> Void
     ) {
-
         completionHandler([.banner])
         Haptic.impact(.light)
 

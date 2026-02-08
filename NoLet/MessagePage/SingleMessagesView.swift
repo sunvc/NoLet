@@ -86,24 +86,7 @@ struct SingleMessagesView: View {
                     }
 
                     if messagesCount == 0 && showLoading {
-                        HStack {
-                            Spacer()
-                            VStack(spacing: 16) {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .primary))
-                                    .scaleEffect(2)
-                                    .padding(.vertical, 30)
-                                    .padding()
-
-                                Text("数据加载中...")
-                                    .foregroundColor(.primary)
-                                    .font(.body)
-                                    .bold()
-                            }
-                            Spacer()
-                        }
-                        .padding(24)
-                        .shadow(radius: 10)
+                        DataLoadingView()
                     }
                 }
             }
@@ -203,6 +186,29 @@ extension Array {
         let targetIndex = count - index
         guard targetIndex >= 0 else { return nil }
         return self[targetIndex]
+    }
+}
+
+struct DataLoadingView: View {
+    var text: String = String(localized: "数据加载中...")
+    var body: some View {
+        HStack {
+            Spacer()
+            VStack(spacing: 16) {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                    .scaleEffect(2)
+                    .padding(.vertical, 30)
+                    .padding()
+
+                Text(text)
+                    .foregroundColor(.primary)
+                    .font(.body)
+                    .bold()
+            }
+            Spacer()
+        }
+        .padding(24)
     }
 }
 

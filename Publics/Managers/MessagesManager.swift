@@ -15,7 +15,7 @@ import GRDB
 final class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: DatabaseManager = .shared
-    private let cache: DiskCache = .shared
+    private let cache: MessageGroupCache = .shared
     private var observationCancellable: AnyDatabaseCancellable?
 
     @Published var unreadCount: Int = 0
@@ -23,16 +23,12 @@ final class MessagesManager: ObservableObject {
     @Published var updateSign: Int = 0
     @Published var groupMessages: [Message] = []
     @Published var messages: [Message] = []
-    @Published var showGroupLoading: Bool = false
     let messagePage: Int = 50
 
     private var currentContent: String = ""
 
-    func flush(_ data: String, stop: Bool = false) {}
-
     private init() {
-        let messages = DiskCache.shared.get()
-        groupMessages = messages
+        groupMessages = MessageGroupCache.shared.get()
         if !Bundle.main.isAppExtension {
             startObservingUnreadCount()
             setupDarwinListener()
@@ -62,14 +58,13 @@ final class MessagesManager: ObservableObject {
             onError: { error in
                 logger.error("Failed to observe unread count:\(error)")
             },
-            onChange: { [weak self] newUnreadCount in
-                logger.info("🧲: 监听 Message: \(newUnreadCount.0)-\(newUnreadCount.1)")
+            onChange: { [weak self] response in
+                logger.info("🧲: 监听 Message: \(response.0)-\(response.1)")
                 guard let self else { return }
                 DispatchQueue.main.async {
-                    self.showGroupLoading = true
                     self.updateSign += 1
-                    self.unreadCount = newUnreadCount.0
-                    self.allCount = newUnreadCount.1
+                    self.unreadCount = response.0
+                    self.allCount = response.1
                 }
                 Task.detached(priority: .userInitiated) {
                     await self.updateGroup()
@@ -91,7 +86,7 @@ final class MessagesManager: ObservableObject {
                 let manager = Unmanaged<MessagesManager>.fromOpaque(
                     observer
                 ).takeUnretainedValue()
-                Task {
+                Task.detached(priority: .userInitiated) {
                     await manager.updateGroup()
                 }
             },
@@ -102,31 +97,22 @@ final class MessagesManager: ObservableObject {
     }
 
     func updateGroup() async {
-        await MainActor.run {
-            self.showGroupLoading = true
-        }
-        let results = await queryGroup()
         let count = await self.count()
         let unCount = await unreadCount()
-        await MainActor.run { [weak self] in
-            self?.groupMessages = results
-            self?.updateSign += 1
-            self?.allCount = count
-            self?.unreadCount = unCount
-            self?.showGroupLoading = false
+
+        Task { @MainActor in
+            self.updateSign += 1
+            self.allCount = count
+            self.unreadCount = unCount
         }
-        DiskCache.shared.set(results)
+        cache.set(await self.queryGroup())
+        Task { @MainActor in
+            self.groupMessages = cache.get()
+        }
     }
 }
 
 extension MessagesManager {
-    nonisolated func all() async throws -> [Message] {
-        try await DB.dbQueue.read { db in
-            try Message.order(Message.Columns.createDate.desc).fetchAll(db)
-        }
-    }
-
-   
     nonisolated func updateRead() async -> Int {
         return (try? await DB.dbQueue.write { db in
             // 批量更新 read 字段为 true
@@ -173,9 +159,7 @@ extension MessagesManager {
             try await DB.dbQueue.write { db in
                 try message.insert(db, onConflict: .replace)
             }
-            var messages = cache.get().filter { $0.group != message.group }
-            messages.insert(message, at: 0)
-            cache.set(messages)
+            cache.set(message)
         } catch {
             logger.error("Add or update message failed: \(error)")
         }
@@ -280,37 +264,20 @@ extension MessagesManager {
     nonisolated func queryGroup() async -> [Message] {
         do {
             return try await DB.dbQueue.read { db in
-                try self.fetchGroupedMessages(from: db)
+                try Message.fetchAll(db, sql: """
+                       SELECT *
+                       FROM (
+                           SELECT *,
+                                  ROW_NUMBER() OVER (PARTITION BY "group" ORDER BY createDate DESC) AS rn
+                           FROM message
+                       )
+                       WHERE rn = 1
+                    """)
             }
         } catch {
             logger.error("Failed to query messages: \(error)")
             return []
         }
-    }
-
-    private nonisolated func fetchGroupedMessages(from db: Database) throws -> [Message] {
-        let rows = try Row.fetchAll(db, sql: """
-                SELECT m.*, unread.count AS unreadCount
-                FROM (
-                    SELECT *
-                    FROM (
-                        SELECT *,
-                               ROW_NUMBER() OVER (PARTITION BY "group" ORDER BY createDate DESC, id DESC) AS rn
-                        FROM message
-                    )
-                    WHERE rn = 1
-                ) AS m
-                LEFT JOIN (
-                    SELECT "group", COUNT(*) AS count
-                    FROM message
-                    WHERE isRead = 0
-                    GROUP BY "group"
-                ) AS unread
-                ON m."group" = unread."group"
-                ORDER BY unread.count DESC NULLS LAST, m.createDate DESC
-            """)
-
-        return try rows.map { try Message(row: $0) }
     }
 
     nonisolated func query(
@@ -377,8 +344,6 @@ extension MessagesManager {
                 try request.deleteAll(db)
             }
 
-            try await DB.dbQueue.vacuum()
-
         } catch {
             logger.error("删除消息失败: \(error)")
         }
@@ -399,7 +364,7 @@ extension MessagesManager {
                 try message.delete(db)
                 return try Message.filter(Message.Columns.group == message.group).fetchCount(db)
             }
-            try? await DB.dbQueue.vacuum()
+
             return result
         } catch {
             logger.error("删除消息失败：\(error)")
@@ -416,7 +381,7 @@ extension MessagesManager {
                 }
                 return nil
             }
-            try? DB.dbQueue.vacuum()
+
             return result
         } catch {
             logger.error("删除消息失败：\(error)")
@@ -438,7 +403,7 @@ extension MessagesManager {
                           AND datetime(createdate, '+' || ttl || ' days') < ?
                     """, arguments: [ExpirationTime.forever.rawValue, cutoffDateExpr])
             }
-            try? await DB.dbQueue.vacuum()
+
         } catch {
             logger.error("删除失败: \(error)")
         }
@@ -460,98 +425,58 @@ extension MessagesManager {
         // 使用 \n 连接回去
         return processedLines.joined(separator: "\n")
     }
-
-    static func createStressTest(
-        max number: Int = 100_000,
-        len textLength: Int = 600
-    ) async -> Bool {
-        do {
-            let body = Self.generateRandomChineseText()
-
-            try await shared.DB.dbQueue.write { db in
-                try autoreleasepool {
-                    for k in 0..<number {
-                        let message = Message(
-                            id: UUID().uuidString, createDate: .now,
-                            group: "\(k % 10)", title: "\(k) Test",
-                            body: "Text Data \(body)", level: 1, ttl: 1, isRead: true
-                        )
-                        try message.insert(db)
-                    }
-                }
-            }
-            return true
-        } catch {
-            logger.error("创建失败")
-            return false
-        }
-    }
-
-    static func generateRandomChineseText(_ approxBytes: Int = 500) -> String {
-        // 常用汉字 Unicode 范围：0x4E00 ~ 0x9FA5
-        let minCodePoint = 0x4E00
-        let maxCodePoint = 0x9FA5
-
-        var result = ""
-
-        while result.utf8.count < approxBytes {
-            let codePoint = Int.random(in: minCodePoint...maxCodePoint)
-            if let scalar = UnicodeScalar(codePoint) {
-                result.append(Character(scalar))
-            }
-        }
-
-        return result
-    }
 }
 
-final private class DiskCache: Sendable {
-    static let shared = DiskCache()
+extension MessagesManager {
+    final nonisolated class MessageGroupCache: Sendable {
+        static let shared = MessageGroupCache()
 
-    private let cacheDirectory: URL
+        private let cacheDirectory: URL
 
-    var fileURL: URL {
-        cacheDirectory.appendingPathComponent("groupsKey".safeFileName, conformingTo: .data)
-    }
+        let fileURL: URL
 
-    private init() {
-        cacheDirectory = NCONFIG.getDir(.caches)!
-
-        try? FileManager.default.createDirectory(
-            at: cacheDirectory,
-            withIntermediateDirectories: true
-        )
-    }
-
-    /// 保存缓存
-    func set(_ messages: [Message]) {
-        do {
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted // 格式化输出
-            encoder.dateEncodingStrategy = .secondsSince1970
-            let data = try encoder.encode(messages)
-            try data.write(to: fileURL)
-        } catch {
-            print("❌ DiskCache write error:", error)
+        private init() {
+            cacheDirectory = NCONFIG.getDir(.caches)!
+            try? FileManager.default.createDirectory(
+                at: cacheDirectory,
+                withIntermediateDirectories: true
+            )
+            fileURL = cacheDirectory.appendingPathComponent("groups.plist")
         }
-    }
 
-    /// 读取缓存
-    func get() -> [Message] {
-        do {
-            let data = try Data(contentsOf: fileURL)
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .secondsSince1970
-            let messages = try decoder.decode([Message].self, from: data)
-            return messages
-        } catch {
-            return []
+        /// 保存缓存
+        func set(_ data: Message) {
+            let datas = self.get().filter { $0.group != data.group }
+            self.set([data] + datas)
         }
-    }
 
-    /// 删除缓存
-    func remove() {
-        try? FileManager.default.removeItem(at: fileURL)
+        func set(_ datas: [Message]) {
+            do {
+                let encoder = PropertyListEncoder()
+                encoder.outputFormat = .binary
+                let data = try encoder.encode(datas)
+                try data.write(to: fileURL, options: .atomic)
+            } catch {
+                logger.error("写入失败:\(error)")
+            }
+        }
+
+        /// 读取缓存
+        func get() -> [Message] {
+            do {
+                let data = try Data(contentsOf: fileURL)
+                let decoder = PropertyListDecoder()
+                let datas = try decoder.decode([Message].self, from: data)
+                return datas.sorted(by: { $0.createDate > $1.createDate })
+            } catch {
+                return []
+            }
+        }
+
+        /// 删除缓存
+        func remove() {
+            try? FileManager.default.removeItem(at: fileURL)
+        }
     }
 }
 
