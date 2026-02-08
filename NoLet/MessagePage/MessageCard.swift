@@ -319,7 +319,6 @@ struct MessageCard: View {
             Menu {
                 Section {
                     Button {
-                        
                         if manager.copyMessageId != message.id {
                             withAnimation {
                                 manager.copyMessageId = message.id
@@ -370,8 +369,16 @@ struct MessageCard: View {
                     }
                 }
 
-                if let body = message.body {
-                    ShareLink(item: body)
+                if let body = message.body, !body.isEmpty {
+                    Section {
+                        ShareWeChatView(text: body)
+                    }
+                }
+
+                if let image = message.image, !image.isEmpty {
+                    Section {
+                        ShareWeChatView(png: image)
+                    }
                 }
 
                 if let reply = message.reply, !reply.isEmpty {

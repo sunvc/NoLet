@@ -54,7 +54,6 @@ move_file() {
 
 move_file "$SRC_APP_FILE"   "$APP_FILE_PATH"
 
-
 #----- 5. Done ----------------------------------------------------------------
 
 echo "=== 🎉 All operations completed successfully ==="

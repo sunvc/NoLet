@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - WeChatManager.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,9 +10,9 @@
 
 //  History:
 //    Created by Neo on 2026/2/9 02:27.
-    
 
 import WechatOpenSDK
+import SwiftUI
 
 final class WeChatManager: NSObject {
     static let shared = WeChatManager()
@@ -80,10 +80,61 @@ extension WeChatManager: WXApiDelegate {
     func onResp(_ resp: BaseResp) {}
 
     func register() {
+//        WXApi.startLog(by: .detail) { log in
+//            print("WeChatSDK: \(log)")
+//        }
         WXApi.registerApp("wx20dc05a5d82cabbe", universalLink: "https://wzs.app/")
+
+//        WXApi.checkUniversalLinkReady { step, result in
+//            print("\(step.rawValue), \(result.success), \(result.errorInfo), \(result.suggestion)")
+//        }
     }
 
     func handleOpenUniversalLink(continue userActivity: NSUserActivity) {
         WXApi.handleOpenUniversalLink(userActivity, delegate: self)
+    }
+}
+
+extension SceneDelegate{
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        WeChatManager.shared.handleOpenUniversalLink(continue: userActivity)
+    }
+}
+
+
+struct ShareWeChatView: View {
+    var text: String?
+    var png: String?
+    var symbol: String {
+        if text != nil {
+            return "ellipsis.message"
+        }
+        if png != nil {
+            return "photo.on.rectangle"
+        }
+        return "square.and.arrow.up"
+    }
+
+    var body: some View {
+        if text != nil || png != nil {
+            Menu {
+                ForEach(WeChatManager.SendType.allCases, id: \.self) { item in
+                    Section {
+                        Button {
+                            if let text {
+                                WeChatManager.sendMessage(text, type: item)
+                            } else if let png {
+                                WeChatManager.sendPng(png, type: item)
+                            }
+
+                        } label: {
+                            Label(item.name, systemImage: item.symbol)
+                        }
+                    }
+                }
+            } label: {
+                Label("分享到微信", systemImage: symbol)
+            }
+        }
     }
 }

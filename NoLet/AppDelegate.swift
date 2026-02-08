@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await AppManager.shared.registerForRemoteNotifications()
             }
         }
+        
+        WeChatManager.shared.register()
 
         return true
     }

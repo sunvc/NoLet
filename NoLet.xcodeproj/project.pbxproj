@@ -27,12 +27,30 @@
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
-		BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5835D7B2DEE14C10066B32E /* WebKit.framework */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
+		BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E95DF2F3991C200B6DF1B /* WechatOpenSDK.xcframework */; };
+		BA9E96DF2F3993A100B6DF1B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96DE2F3993A100B6DF1B /* QuartzCore.framework */; };
+		BA9E96E12F3993A800B6DF1B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
+		BA9E96E32F3993BD00B6DF1B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E22F3993BD00B6DF1B /* CoreGraphics.framework */; };
 		BAAA191F2F390F3300E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAAA191E2F390F3300E0D66F /* MarkdownUI */; };
 		BAAA19212F390F3300E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BAAA19202F390F3300E0D66F /* Splash */; };
 		BAAA19242F390F5600E0D66F /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BAAA19232F390F5600E0D66F /* QRScanner */; };
+		BAAA193A2F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863D2F2311AC00CEBC4F /* MarkdownUI */; };
+		BAAA193B2F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA2F863F2F2311AC00CEBC4F /* Splash */; };
+		BAAA193C2F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA71767C2F233E4900D1BF03 /* MarkdownUI */; };
+		BAAA193D2F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA8197872F2B003D00623275 /* Splash */; };
+		BAAA193E2F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */; };
+		BAAA193F2F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD782F2CD8D800ADEDF5 /* Splash */; };
+		BAAA19402F391CB200E0D66F /* QRScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BA66AD802F2DBE4B00ADEDF5 /* QRScanner */; };
+		BAAA19412F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6162F305FF900866562 /* MarkdownUI */; };
+		BAAA19422F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6182F305FF900866562 /* Splash */; };
+		BAAA19432F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6252F307D1700866562 /* MarkdownUI */; };
+		BAAA19442F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6272F307D1700866562 /* Splash */; };
+		BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6322F31FCC600866562 /* MarkdownUI */; };
+		BAAA19462F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6342F31FCC600866562 /* Splash */; };
+		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
+		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 /* End PBXBuildFile section */
 
@@ -105,11 +123,14 @@
 		B58359FD2DEDDFE10066B32E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B5835B112DEDE07C0066B32E /* ServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5835B212DEDE0930066B32E /* ContentExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ContentExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		B5835D7B2DEE14C10066B32E /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B5AA557F2E6D71D8000F3042 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
 		BA66AD902F2E2B3A00ADEDF5 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
+		BA9E95DF2F3991C200B6DF1B /* WechatOpenSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = WechatOpenSDK.xcframework; sourceTree = "<group>"; };
+		BA9E96DE2F3993A100B6DF1B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BA9E96E02F3993A800B6DF1B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		BA9E96E22F3993BD00B6DF1B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		BAC5A8162ED1B0DD00BCC38B /* translate.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = translate.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -401,6 +422,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAAA19482F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAAA19462F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAAA19442F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA19432F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAAA19422F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA19412F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */,
+				BAAA19402F391CB200E0D66F /* QRScanner in Frameworks */,
+				BA9E96E12F3993A800B6DF1B /* WebKit.framework in Frameworks */,
+				BAAA193F2F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA193E2F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAAA193D2F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA193C2F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAAA193B2F391CB200E0D66F /* Splash in Frameworks */,
+				BAAA193A2F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BA9E96DF2F3993A100B6DF1B /* QuartzCore.framework in Frameworks */,
+				BA9E96E32F3993BD00B6DF1B /* CoreGraphics.framework in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
 				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
@@ -441,7 +481,6 @@
 			files = (
 				BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */,
 				BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */,
-				BA22E77D2ED4AE38001CF636 /* WebKit.framework in Frameworks */,
 				B5835D302DEDF3370066B32E /* Kingfisher in Frameworks */,
 				B5835D2E2DEDF3370066B32E /* Defaults in Frameworks */,
 				B5835B232DEDE0930066B32E /* UserNotificationsUI.framework in Frameworks */,
@@ -481,12 +520,15 @@
 		B58359B82DEDDB170066B32E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B5835D7B2DEE14C10066B32E /* WebKit.framework */,
+				BA9E96E22F3993BD00B6DF1B /* CoreGraphics.framework */,
+				BA9E96E02F3993A800B6DF1B /* WebKit.framework */,
+				BA9E96DE2F3993A100B6DF1B /* QuartzCore.framework */,
 				B58359B92DEDDB170066B32E /* StoreKit.framework */,
 				B58359D12DEDDF360066B32E /* UserNotifications.framework */,
 				B58359D32DEDDF360066B32E /* UserNotificationsUI.framework */,
 				B58359FD2DEDDFE10066B32E /* SwiftUI.framework */,
 				BA66AD902F2E2B3A00ADEDF5 /* AuthenticationServices.framework */,
+				BA9E95DF2F3991C200B6DF1B /* WechatOpenSDK.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -813,7 +855,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.2.7;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -863,7 +905,7 @@
 					"$(PROJECT_DIR)",
 				);
 				MARKETING_VERSION = 2.2.7;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
