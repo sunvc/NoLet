@@ -11,11 +11,12 @@
 //  History:
 //    Created by Neo on 2026/2/9 02:27.
 
-import WechatOpenSDK
 import SwiftUI
+import WechatOpenSDK
 
-final class WeChatManager: NSObject {
-    static let shared = WeChatManager()
+final nonisolated class WeChatManager: NSObject {
+    @MainActor static let shared = WeChatManager()
+
     private override init() {
         super.init()
     }
@@ -50,27 +51,33 @@ final class WeChatManager: NSObject {
         WXApi.send(request)
     }
 
-    static func sendPng(_ data: String, type: SendType = .WXSceneSession) {
-        Task {
-            let png = WXImageObject()
+    nonisolated static func sendPng(_ data: Data, type: SendType = .WXSceneSession) {
+        let png = WXImageObject()
+        png.imageData = data
+        let message = WXMediaMessage()
+        message.mediaObject = png
+        message.thumbData = data.toThumbnail(max: 100)?.pngData()
+        
+        let request = SendMessageToWXReq()
+        request.bText = false
+        request.message = message
+        request.scene = type.rawValue
+        WXApi.send(request)
+    }
 
+    nonisolated static func sendPng(_ data: String, type: SendType = .WXSceneSession) {
+        Task { 
             guard let dataUrl = await ImageManager.downloadImage(data),
                   let image = UIImage(contentsOfFile: dataUrl),
-                  let thumb = image.preparingThumbnail(of: CGSize(width: 100, height: 100))
+                  let data = image.pngData()
             else { return }
 
-            png.imageData = image.pngData() ?? Data()
-
-            let message = WXMediaMessage()
-            message.mediaObject = png
-            message.thumbData = thumb.pngData()
-
-            let request = SendMessageToWXReq()
-            request.bText = false
-            request.message = message
-            request.scene = type.rawValue
-            await WXApi.send(request)
+            Self.sendPng(data, type: type)
         }
+    }
+
+    static func isWXAppInstalled() -> Bool {
+        WXApi.isWXAppInstalled()
     }
 }
 
@@ -86,7 +93,8 @@ extension WeChatManager: WXApiDelegate {
         WXApi.registerApp("wx20dc05a5d82cabbe", universalLink: "https://wzs.app/")
 
 //        WXApi.checkUniversalLinkReady { step, result in
-//            print("\(step.rawValue), \(result.success), \(result.errorInfo), \(result.suggestion)")
+//            print("\(step.rawValue), \(result.success), \(result.errorInfo),
+//            \(result.suggestion)")
 //        }
     }
 
@@ -95,12 +103,11 @@ extension WeChatManager: WXApiDelegate {
     }
 }
 
-extension SceneDelegate{
+extension SceneDelegate {
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         WeChatManager.shared.handleOpenUniversalLink(continue: userActivity)
     }
 }
-
 
 struct ShareWeChatView: View {
     var text: String?

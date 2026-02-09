@@ -64,6 +64,7 @@ struct MessageCard: View {
         }
     }
 
+    @State private var showSnap: Bool = false
     var body: some View {
         /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
         VStack {
@@ -270,7 +271,9 @@ struct MessageCard: View {
                             }
                     }
                 }
-
+                .snapshot(trigger: showSnap) { item in
+                    manager.open(sheet: .share(contents: [item], preview: item, title: "消息截图"))
+                }
             } header: {
                 MessageViewHeader()
             }
@@ -330,54 +333,49 @@ struct MessageCard: View {
                         }
 
                     } label: {
-                        Label("复制模式", systemImage: "doc.on.doc")
+                        Label("选择复制", systemImage: "doc.on.doc")
                     }
                 }
-
-                if let url = message.url {
-                    Button {
-                        if let fileURL = URL(string: url) {
-                            AppManager.openURL(url: fileURL, .safari)
-                        }
-                        Haptic.impact()
-                    } label: {
-                        Label(
-                            "打开链接",
-                            systemImage: "network"
-                        )
-                    }
-                }
-
-                if let image = message.image {
-                    Section {
-                        saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
-                    }
-                }
-
-                if assistantAccounsCount > 0 {
-                    Section {
+                Section {
+                    HStack {
                         Button {
-                            Haptic.impact()
-                            DispatchQueue.main.async {
-                                AppManager.shared.askMessageID = message.id
-                                AppManager.shared.page = .assistant
-                                AppManager.shared.router = []
-                            }
+                            self.showSnap.toggle()
                         } label: {
-                            Label("智能助手", systemImage: "atom")
-                        }.tint(.green)
+                            Label("分享截图", systemImage: "doc.append")
+                        }
+
+                        if let image = message.image, !image.isEmpty {
+                            Button {
+                                Task {
+                                    if let image = await ImageManager.downloadImage(image),
+                                       let image = UIImage(contentsOfFile: image)
+                                    {
+                                        manager.open(sheet: .share(
+                                            contents: [image],
+                                            preview: image,
+                                            title: String(localized: "图片消息")
+                                        ))
+                                    }
+                                }
+
+                            } label: {
+                                Label("分享图片", systemImage: "photo.circle")
+                            }
+                        }
                     }
                 }
 
                 if let body = message.body, !body.isEmpty {
                     Section {
-                        ShareWeChatView(text: body)
-                    }
-                }
-
-                if let image = message.image, !image.isEmpty {
-                    Section {
-                        ShareWeChatView(png: image)
+                        Button {
+                            manager.open(sheet: .share(
+                                contents: [body],
+                                preview: nil,
+                                title: String(localized: "文字消息")
+                            ))
+                        } label: {
+                            Label("分享内容", systemImage: "menucard")
+                        }
                     }
                 }
 
@@ -388,6 +386,25 @@ struct MessageCard: View {
                         } label: {
                             Label("回复", systemImage: "text.bubble")
                         }
+                    }
+                }
+
+                if assistantAccounsCount > 0 {
+                    Section {
+                        Button {
+                            Haptic.impact()
+                            DispatchQueue.main.async {
+                                AppManager.shared.askMessageID = message.id
+                                AppManager.shared.page = .assistant
+                                if manager.sizeClass == .compact {
+                                    AppManager.shared.router = []
+                                } else {
+                                    AppManager.shared.router = [.noletChat]
+                                }
+                            }
+                        } label: {
+                            Label("智能助手", systemImage: "atom")
+                        }.tint(.green)
                     }
                 }
 

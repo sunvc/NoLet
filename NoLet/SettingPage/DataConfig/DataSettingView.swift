@@ -103,7 +103,11 @@ struct DataSettingView: View {
 
                                         DispatchQueue.main.async {
                                             AppManager.shared
-                                                .open(sheet: .share(contents: [filepath]))
+                                                .open(sheet: .share(
+                                                    contents: [filepath],
+                                                    preview: nil,
+                                                    title: nil
+                                                ))
                                             self.showexportLoading = false
                                             self.calculateSize()
                                         }
@@ -125,7 +129,11 @@ struct DataSettingView: View {
                     Section {
                         Button {
                             if let configPath = AppManager.createDatabaseFileTem() {
-                                AppManager.shared.open(sheet: .share(contents: [configPath]))
+                                AppManager.shared.open(sheet: .share(
+                                    contents: [configPath],
+                                    preview: nil,
+                                    title: nil
+                                ))
                                 self.calculateSize()
                             }
 
@@ -138,7 +146,11 @@ struct DataSettingView: View {
 
                     Section {
                         Button {
-                            AppManager.shared.open(sheet: .share(contents: [NCONFIG.databasePath]))
+                            AppManager.shared.open(sheet: .share(
+                                contents: [NCONFIG.databasePath],
+                                preview: nil,
+                                title: nil
+                            ))
                             self.calculateSize()
                         } label: {
                             Label("数据库文件", systemImage: "internaldrive")

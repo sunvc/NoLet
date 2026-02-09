@@ -71,7 +71,7 @@ struct MessagePage: View {
                 ToolbarItem(placement: messageManager
                     .allCount <= 3 ? .topBarLeading : .secondaryAction) { exampleButton }
             } else {
-                ToolbarItem(placement: .topBarTrailing) { exampleButton }
+                ToolbarItem(placement: .secondaryAction) { exampleButton }
             }
 
             if manager.searchText.isEmpty && !searchFocused {

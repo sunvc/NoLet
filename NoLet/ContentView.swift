@@ -29,8 +29,10 @@ struct ContentView: View {
 
     @Namespace private var selectMessageSpace
 
-    private func _page(_ getValue: [RouterPage]) -> Binding<[RouterPage]> {
-        Binding { getValue } set: { manager.router = $0 }
+    private func _page(_ getValue: Binding<[RouterPage]>) -> Binding<[RouterPage]> {
+        Binding { getValue.wrappedValue } set: {
+            manager.router = $0
+        }
     }
 
     @ViewBuilder
@@ -47,7 +49,7 @@ struct ContentView: View {
                     SettingsPage()
                         .environmentObject(manager)
                 } detail: {
-                    NavigationStack(path: _page(manager.prouter)) {
+                    NavigationStack(path: _page($manager.prouter)) {
                         MessagePage()
                             .router(manager)
                     }
@@ -116,7 +118,7 @@ struct ContentView: View {
             if #available(iOS 26.0, *) {
                 TabView(selection: updateTab) {
                     Tab(value: .message) {
-                        NavigationStack(path: _page(manager.mrouter)) {
+                        NavigationStack(path: _page($manager.mrouter)) {
                             MessagePage().router(manager)
                         }
                     } label: {
@@ -124,7 +126,7 @@ struct ContentView: View {
                     }.badge(messageManager.unreadCount)
 
                     Tab(value: .setting) {
-                        NavigationStack(path: _page(manager.srouter)) {
+                        NavigationStack(path: _page($manager.srouter)) {
                             SettingsPage().router(manager)
                         }
                     } label: {
@@ -133,7 +135,7 @@ struct ContentView: View {
 
                     if assistantAccouns.count > 0 {
                         Tab(value: .assistant, role: .search) {
-                            NavigationStack(path: _page(manager.arouter)) {
+                            NavigationStack(path: _page($manager.arouter)) {
                                 NoLetChatHomeView().router(manager)
                             }
                         } label: {
@@ -145,14 +147,14 @@ struct ContentView: View {
 
             } else {
                 TabView(selection: updateTab) {
-                    NavigationStack(path: _page(manager.mrouter)) {
+                    NavigationStack(path: _page($manager.mrouter)) {
                         MessagePage().router(manager)
                     }
                     .tabItem { tabLabel(title: String(localized: "消息"), icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
 
-                    NavigationStack(path: _page(manager.srouter)) {
+                    NavigationStack(path: _page($manager.srouter)) {
                         SettingsPage().router(manager)
                     }
                     .tabItem { tabLabel(
@@ -162,7 +164,7 @@ struct ContentView: View {
                     .tag(TabPage.setting)
 
                     if assistantAccouns.count > 0 {
-                        NavigationStack(path: _page(manager.arouter)) {
+                        NavigationStack(path: _page($manager.arouter)) {
                             NoLetChatHomeView().router(manager)
                         }
                         .tabItem {
@@ -252,8 +254,8 @@ struct ContentView: View {
                     .presentationDetents([.medium])
             case .crypto(let item):
                 ChangeCryptoConfigView(item: item)
-            case .share(let contents):
-                ActivityViewController(activityItems: contents)
+            case .share(let contents, let preview, let title):
+                ActivityViewController(activityItems: contents, preview: preview, title: title)
                     .presentationDetents([.medium, .large])
             case .cloudServer:
                 NavigationStack {

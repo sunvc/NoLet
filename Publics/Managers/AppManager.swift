@@ -53,6 +53,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var sizeClass: UserInterfaceSizeClass?
 
     @Published var copyMessageId: String? = nil
+    @Published var isWXAppInstalled: Bool = false
 
     var router: [RouterPage] = [] {
         didSet {

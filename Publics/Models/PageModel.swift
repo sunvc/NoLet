@@ -10,6 +10,7 @@
 //    Created by Neo on 2025/6/18.
 //
 import Foundation
+import UIKit
 
 // MARK: - Page model
 
@@ -28,6 +29,8 @@ enum SubPage: Equatable, Identifiable {
             return ta == tb && tia == tib && pra == prb
         case (.crypto(let a), .crypto(let b)):
             return a == b
+        case (.share(let a, let b, let c), .share(let d, let f, let g)):
+            return a.count == d.count && b == f && c == g
         default:
             return false
         }
@@ -41,7 +44,7 @@ enum SubPage: Equatable, Identifiable {
     case paywall
     case quickResponseCode(text: String, title: String?, preview: String?)
     case crypto(CryptoModelConfig)
-    case share(contents: [Any])
+    case share(contents: [Any], preview: UIImage?, title: String?)
     case nearby
     case cloudServer
 
