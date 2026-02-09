@@ -19,7 +19,6 @@ struct MessageDetailPage: View {
     let group: String
 
     @EnvironmentObject private var manager: AppManager
-    @Environment(\.horizontalSizeClass) var sizeClass
     @StateObject private var messageManager = MessagesManager.shared
 
     @Default(.showMessageAvatar) var showMessageAvatar
@@ -41,13 +40,6 @@ struct MessageDetailPage: View {
         messages.elementFromEnd(5)
     }
 
-    var columns: [GridItem] {
-        return Array(
-            repeating: GridItem(.flexible(), spacing: 10),
-            count: sizeClass == .compact ? 1 : 2
-        )
-    }
-
     @State private var loadData: Bool = false
 
     var body: some View {
@@ -55,7 +47,7 @@ struct MessageDetailPage: View {
             if searchText.isEmpty {
                 ScrollViewReader { proxy in
                     ScrollView {
-                        LazyVGrid(columns: columns) {
+                        LazyVGrid(columns: manager.messageColume) {
                             ForEach(messages, id: \.id) { message in
                                 MessageCard(
                                     message: message,

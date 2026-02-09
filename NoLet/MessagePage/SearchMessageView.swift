@@ -17,7 +17,7 @@ struct SearchMessageView: View {
     var group: String?
 
     @Environment(\.colorScheme) var colorScheme
-    @Environment(\.horizontalSizeClass) var sizeClass
+
     @State private var messages: [Message] = []
     @State private var allCount: Int = 0
     @State private var searchTask: Task<Void, Never>?
@@ -35,16 +35,10 @@ struct SearchMessageView: View {
         messages.elementFromEnd(5)
     }
 
-    var columns: [GridItem] {
-        return Array(
-            repeating: GridItem(.flexible(), spacing: 10),
-            count: sizeClass == .compact ? 1 : 2
-        )
-    }
 
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: columns) {
+            LazyVGrid(columns: manager.messageColume) {
                 if searched {
                     HStack {
                         Spacer()

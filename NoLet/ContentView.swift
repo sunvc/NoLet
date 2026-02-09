@@ -29,6 +29,7 @@ struct ContentView: View {
 
     @Namespace private var selectMessageSpace
 
+    //  只能用 getValue: Binding 不然 16.0 不能pop
     private func _page(_ getValue: Binding<[RouterPage]>) -> Binding<[RouterPage]> {
         Binding { getValue.wrappedValue } set: {
             manager.router = $0
@@ -54,14 +55,12 @@ struct ContentView: View {
                             .router(manager)
                     }
                 }
-                .onAppear {
-                    // onChange bug 有不同步的情况, 在这同步一下
+                .onAppear { 
                     manager.sizeClass = .regular
                 }
             } else {
                 compactHomeView()
-                    .onAppear {
-                        // onChange bug 有不同步的情况, 在这同步一下
+                    .onAppear { 
                         manager.sizeClass = .compact
                     }
             }
@@ -110,6 +109,15 @@ struct ContentView: View {
                 }
             }
         }
+        .background(
+            GeometryReader { proxy in
+                let width = proxy.frame(in: .global).width
+                Color.clear.preference(key: ContentWidthKey.self, value: width)
+            }
+            .onPreferenceChange(ContentWidthKey.self) { value in
+                manager.totalWidth = value
+            }
+        )
     }
 
     @ViewBuilder
@@ -337,6 +345,13 @@ extension View {
             .navigationBarTitleDisplayMode(.large)
             .environmentObject(manager)
         }
+    }
+}
+
+struct ContentWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 

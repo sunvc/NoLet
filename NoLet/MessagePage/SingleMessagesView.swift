@@ -19,7 +19,6 @@ struct SingleMessagesView: View {
     @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.assistantAccouns) var assistantAccouns
 
-    @Environment(\.horizontalSizeClass) var sizeClass
 
     @State private var isLoading: Bool = false
 
@@ -45,17 +44,11 @@ struct SingleMessagesView: View {
         messageManager.messages.elementFromEnd(5)
     }
 
-    var columns: [GridItem] {
-        return Array(
-            repeating: GridItem(.flexible(), spacing: 10),
-            count: sizeClass == .compact ? 1 : 2
-        )
-    }
 
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                LazyVGrid(columns: columns) {
+                LazyVGrid(columns: manager.messageColume) {
                     ForEach(messageManager.messages, id: \.id) { message in
                         MessageCard(
                             message: message,

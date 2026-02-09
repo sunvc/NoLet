@@ -55,6 +55,19 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var copyMessageId: String? = nil
     @Published var isWXAppInstalled: Bool = false
 
+    @Published var totalWidth: CGFloat = 0
+
+    var messageColume: [GridItem] {
+        if totalWidth < 700 {
+            [GridItem(.flexible(), spacing: 10)]
+        } else {
+            Array(
+                repeating: GridItem(.flexible(), spacing: 10),
+                count: sizeClass == .compact ? 1 : 2
+            )
+        }
+    }
+
     var router: [RouterPage] = [] {
         didSet {
             prouter = router
