@@ -116,6 +116,7 @@ struct ContentView: View {
             }
             .onPreferenceChange(ContentWidthKey.self) { value in
                 manager.totalWidth = value
+                debugPrint(value)
             }
         )
     }

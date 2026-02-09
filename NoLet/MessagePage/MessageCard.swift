@@ -337,30 +337,30 @@ struct MessageCard: View {
                     }
                 }
                 Section {
-                    HStack {
+                    Button {
+                        self.showSnap.toggle()
+                    } label: {
+                        Label("分享截图", systemImage: "crop")
+                    }
+                }
+
+                if let image = message.image, !image.isEmpty {
+                    Section {
                         Button {
-                            self.showSnap.toggle()
-                        } label: {
-                            Label("分享截图", systemImage: "doc.append")
-                        }
-
-                        if let image = message.image, !image.isEmpty {
-                            Button {
-                                Task {
-                                    if let image = await ImageManager.downloadImage(image),
-                                       let image = UIImage(contentsOfFile: image)
-                                    {
-                                        manager.open(sheet: .share(
-                                            contents: [image],
-                                            preview: image,
-                                            title: String(localized: "图片消息")
-                                        ))
-                                    }
+                            Task {
+                                if let image = await ImageManager.downloadImage(image),
+                                   let image = UIImage(contentsOfFile: image)
+                                {
+                                    manager.open(sheet: .share(
+                                        contents: [image],
+                                        preview: image,
+                                        title: String(localized: "图片消息")
+                                    ))
                                 }
-
-                            } label: {
-                                Label("分享图片", systemImage: "photo.circle")
                             }
+
+                        } label: {
+                            Label("分享图片", systemImage: "photo.circle")
                         }
                     }
                 }
@@ -374,7 +374,7 @@ struct MessageCard: View {
                                 title: String(localized: "文字消息")
                             ))
                         } label: {
-                            Label("分享内容", systemImage: "menucard")
+                            Label("分享内容", systemImage: "doc.append")
                         }
                     }
                 }
@@ -423,6 +423,7 @@ struct MessageCard: View {
                 HStack {
                     Spacer()
                     Image(systemName: "ellipsis")
+                        .imageScale(.large)
                         .padding(.horizontal)
                         .padding(.vertical, 5)
                 }

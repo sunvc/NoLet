@@ -48,6 +48,7 @@ struct SingleMessagesView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
+               
                 LazyVGrid(columns: manager.messageColume) {
                     ForEach(messageManager.messages, id: \.id) { message in
                         MessageCard(
@@ -77,10 +78,10 @@ struct SingleMessagesView: View {
                             }
                         }
                     }
-
-                    if messagesCount == 0 && showLoading {
-                        DataLoadingView()
-                    }
+                }
+                
+                if messagesCount == 0 && showLoading {
+                    DataLoadingView()
                 }
             }
             .scrollDismissesKeyboard(.interactively)

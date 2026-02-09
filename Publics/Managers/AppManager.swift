@@ -61,10 +61,17 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
         if totalWidth < 700 {
             [GridItem(.flexible(), spacing: 10)]
         } else {
-            Array(
-                repeating: GridItem(.flexible(), spacing: 10),
-                count: sizeClass == .compact ? 1 : 2
-            )
+            if ProcessInfo.processInfo.isiOSAppOnMac {
+                Array(
+                    repeating: GridItem(.flexible(), spacing: 10),
+                    count: sizeClass == .compact ? 1 : Int(totalWidth / 500)
+                )
+            } else {
+                Array(
+                    repeating: GridItem(.flexible(), spacing: 10),
+                    count: sizeClass == .compact ? 1 : 2
+                )
+            }
         }
     }
 
