@@ -135,8 +135,8 @@ struct CloudIcon: View {
             .overlay {
                 if isTargeted {
                     ColoredBorder(
-                        top: 5,
-                        bottom: ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 50
+                        top: 50,
+                        bottom: 50
                     )
                 }
             }

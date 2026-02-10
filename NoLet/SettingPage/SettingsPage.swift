@@ -74,11 +74,10 @@ struct SettingsPage: View {
                                 Label {
                                     Text("智能助手")
                                 } icon: {
-                                    if #available(iOS 26.0, *) {
-                                        Image(systemName: "gear.badge.questionmark")
-                                    } else {
-                                        Image(systemName: "atom")
-                                    }
+                                    Image("agent")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .customForegroundStyle(.accent, .primary)
                                 }
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(.green, .primary)
@@ -164,21 +163,10 @@ struct SettingsPage: View {
                     Label {
                         Text("智能助手")
                     } icon: {
-                        Group {
-                            if #available(iOS 18.0, *) {
-                                Image(systemName: "apple.intelligence")
-                                    .resizable()
-                                    .renderingMode(.template)
-                            } else {
-                                Image(systemName: "atom")
-                                    .resizable()
-                                    .renderingMode(.template)
-                            }
-                        }
-
-                        .scaledToFit()
-                        .frame(width: 26)
-                        .customForegroundStyle(.accent, .primary)
+                        Image("agent")
+                            .resizable()
+                            .scaledToFit()
+                            .customForegroundStyle(.accent, .primary)
                     }
 
                 } action: {
@@ -242,7 +230,7 @@ struct SettingsPage: View {
                     Label {
                         Text("更多设置")
                     } icon: {
-                        Image(systemName: "dial.high")
+                        Image(systemName: "gear.badge")
                             .symbolRenderingMode(.palette)
                             .customForegroundStyle(.accent, Color.primary)
                     }

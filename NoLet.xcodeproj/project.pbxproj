@@ -178,7 +178,6 @@
 				"Extensions/Date+.swift",
 				"Extensions/Encodable+.swift",
 				"Extensions/Image+.swift",
-				Extensions/Logo.swift,
 				"Extensions/String+.swift",
 				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
@@ -206,7 +205,6 @@
 				"Extensions/Date+.swift",
 				"Extensions/Encodable+.swift",
 				"Extensions/Image+.swift",
-				Extensions/Logo.swift,
 				"Extensions/String+.swift",
 				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
@@ -237,7 +235,6 @@
 				"Extensions/Date+.swift",
 				"Extensions/Encodable+.swift",
 				"Extensions/Image+.swift",
-				Extensions/Logo.swift,
 				"Extensions/String+.swift",
 				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
@@ -709,6 +706,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				ko,
 			);
 			mainGroup = B58357EE2DEDD3B10066B32E;
 			minimizedProjectReferenceProxies = 1;

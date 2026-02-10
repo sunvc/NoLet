@@ -49,6 +49,9 @@ struct PushToDeviceIntent: AppIntent {
     @Parameter(title: "群组", default: "默认")
     var group: String
 
+    @Parameter(title: "回复")
+    var reply: String?
+
     @Parameter(title: "标题")
     var title: String?
 
@@ -72,9 +75,7 @@ struct PushToDeviceIntent: AppIntent {
         }
 
         if let sound, !sound.isEmpty, sound.lowercased() != "default" {
-        
             params["sound"] = "\(sound).caf"
-            
         }
 
         if !group.isEmpty {
@@ -113,63 +114,71 @@ struct PushToDeviceIntent: AppIntent {
             params["url"] = url.absoluteString
         }
 
+        if let reply {
+            params["reply"] = reply
+        }
+        
         if let cipherKey, !cipherKey.isEmpty {
-            
-            if let algorithm = CryptoAlgorithm(rawValue: cipherKey.count){
+            if let algorithm = CryptoAlgorithm(rawValue: cipherKey.count) {
                 var cryptoConfig = await CryptoModelConfig.data
-                
+
                 cryptoConfig.algorithm = algorithm
                 cryptoConfig.key = cipherKey
 
                 let jsonData = try JSONSerialization.data(withJSONObject: params)
-                
-                guard let cipherResult = await CryptoManager(cryptoConfig).encrypt(jsonData) else {
+
+                guard let cipherResult = await CryptoManager(cryptoConfig).encrypt(jsonData)
+                else {
                     return .result(value: "cipher fail")
                 }
-                
+
                 params["ciphertext"] = cipherResult
                 params["body"] = "-"
                 params.removeValue(forKey: "title")
                 params.removeValue(forKey: "subtitle")
-                
-            }else{
+
+            } else {
                 return .result(value: "Encryption key error")
             }
-            
         }
-        
-        
 
-        if let address = URL(string: address), await address.hasHttp {
-            let res: APIPushToDeviceResponse? = try await NetworkManager()
-                .fetch(
-                    url: address.absoluteString,
-                    method: .POST,
-                    params: params
-                )
-            return .result(value: res?.code == 200 ? "ok" : "fail")
-        } else {
-            guard let token = await CloudManager.shared.queryOrUpdateDeviceToken(address) else {
-                return .result(value: "Token is Empty...")
-            }
+        do {
            
-            params.removeValue(forKey: "title")
-            params.removeValue(forKey: "subtitle")
-            params.removeValue(forKey: "body")
-            
-            let response = try await APNs.shared.push(
-                token,
-                id: UUID().uuidString,
-                title: title,
-                subtitle: subTitle,
-                body: body,
-                markdown: category == "Markdown",
-                group: group,
-                custom: params
-            )
-            
-            logger.info("response: \(String(describing: response))")
-            return .result(value: response.statusCode == 200 ? "ok" : response.reason ?? "fail")
+
+            if let address = URL(string: address), await address.hasHttp {
+                let res: APIPushToDeviceResponse? = try await NetworkManager()
+                    .fetch(
+                        url: address.absoluteString,
+                        method: .POST,
+                        params: params
+                    )
+                return .result(value: res?.code == 200 ? "ok" : "fail")
+            } else {
+                guard let token = await CloudManager.shared.queryOrUpdateDeviceToken(address) else {
+                    return .result(value: "Token is Empty...")
+                }
+
+                params.removeValue(forKey: "title")
+                params.removeValue(forKey: "subtitle")
+                params.removeValue(forKey: "body")
+
+                let response = try await APNs.shared.push(
+                    token,
+                    id: UUID().uuidString,
+                    title: title,
+                    subtitle: subTitle,
+                    body: body,
+                    markdown: category == "Markdown",
+                    group: group,
+                    custom: params
+                )
+
+                logger.info("response: \(String(describing: response))")
+                return .result(value: response.statusCode == 200 ? "ok" : response.reason ?? "fail")
+            }
+        } catch {
+            logger.error("\(error.localizedDescription)")
+            return .result(value: "\(error.localizedDescription)")
         }
     }
 }

@@ -107,7 +107,7 @@ class APNs {
             let info = try await CloudManager.shared.pushToken { record in
                 guard let apnsInfo = ApnsInfo(record: record) else { throw "No Data" }
                 let data = try self.generateAuthToken(apnsInfo)
-                return data.toCKRecord(type: CloudManager.apnsInfoName)
+                return (data.token, data.timestamp)
             }
             self.apnsInfo = ApnsInfo(record: info)
         }
@@ -200,8 +200,6 @@ class APNs {
                     apnsResponse.timestamp = Date(timeIntervalSince1970: tsDouble)
                 }
             }
-            
-            
 
             logger.info("apnsResponse: \(String(describing: apnsResponse))")
 

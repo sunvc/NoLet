@@ -60,7 +60,10 @@ struct VolumeOptionsProvider: DynamicOptionsProvider {
 struct CategoryParamsProvider: DynamicOptionsProvider {
     func results() async throws -> [String] {
         Identifiers.allCases.compactMap { item in
-            item.name
+            if item != .reply {
+                return item.name
+            }
+            return nil
         }
     }
 

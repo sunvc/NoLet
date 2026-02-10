@@ -230,7 +230,7 @@ final class CloudManager {
         }
     }
 
-    func pushToken(update: @escaping (CKRecord) throws -> CKRecord) async throws -> CKRecord {
+    func pushToken(update: @escaping (CKRecord) throws -> (String, Date)) async throws -> CKRecord {
         let predicate = NSPredicate(value: true)
 
         guard let record = await fetchRecords(Self.apnsInfoName, for: predicate, in: database).first
@@ -246,11 +246,15 @@ final class CloudManager {
         if timestamp > Date() { return record }
 
         // 调用 update 获取新 token
-        let apnsInfo = try update(record)
-        // 保存到 CloudKit
-        _ = try await database.save(apnsInfo)
+        let (token, date) = try update(record)
+        
+        record["token"] = token
+        record["timestamp"] = date
 
-        return apnsInfo
+        // 保存到 CloudKit
+        _ = try await database.save(record)
+
+        return record
     }
 
     func synchronousServers(from records: [CKRecord]) async -> [CKRecord] {

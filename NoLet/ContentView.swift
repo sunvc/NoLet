@@ -55,12 +55,12 @@ struct ContentView: View {
                             .router(manager)
                     }
                 }
-                .onAppear { 
+                .onAppear {
                     manager.sizeClass = .regular
                 }
             } else {
                 compactHomeView()
-                    .onAppear { 
+                    .onAppear {
                         manager.sizeClass = .compact
                     }
             }
@@ -111,12 +111,13 @@ struct ContentView: View {
         }
         .background(
             GeometryReader { proxy in
-                let width = proxy.frame(in: .global).width
-                Color.clear.preference(key: ContentWidthKey.self, value: width)
+                Color.clear.preference(
+                    key: ContentWidthKey.self,
+                    value: proxy.frame(in: .global).width
+                )
             }
             .onPreferenceChange(ContentWidthKey.self) { value in
                 manager.totalWidth = value
-                debugPrint(value)
             }
         )
     }

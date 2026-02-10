@@ -56,8 +56,8 @@ final nonisolated class WeChatManager: NSObject {
         png.imageData = data
         let message = WXMediaMessage()
         message.mediaObject = png
-        message.thumbData = data.toThumbnail(max: 100)?.pngData()
-        
+        message.thumbData = data.toThumbnail()?.jpegData(compressionQuality: 1)
+
         let request = SendMessageToWXReq()
         request.bText = false
         request.message = message
@@ -66,7 +66,7 @@ final nonisolated class WeChatManager: NSObject {
     }
 
     nonisolated static func sendPng(_ data: String, type: SendType = .WXSceneSession) {
-        Task { 
+        Task {
             guard let dataUrl = await ImageManager.downloadImage(data),
                   let image = UIImage(contentsOfFile: dataUrl),
                   let data = image.pngData()
@@ -79,6 +79,19 @@ final nonisolated class WeChatManager: NSObject {
     static func isWXAppInstalled() -> Bool {
         WXApi.isWXAppInstalled()
     }
+
+    static func toWechatThumbData(from data: Data) -> Data? {
+        guard let image = UIImage(data: data) else { return nil }
+        var quality: CGFloat = 0.6
+        var data = image.jpegData(compressionQuality: quality)
+
+        while let d = data, d.count > 32 * 1024, quality > 0.1 {
+            quality -= 0.1
+            data = image.jpegData(compressionQuality: quality)
+        }
+
+        return data
+    }
 }
 
 extension WeChatManager: WXApiDelegate {
@@ -87,15 +100,17 @@ extension WeChatManager: WXApiDelegate {
     func onResp(_ resp: BaseResp) {}
 
     func register() {
-//        WXApi.startLog(by: .detail) { log in
-//            print("WeChatSDK: \(log)")
-//        }
+        #if DEBUG
+        WXApi.startLog(by: .detail) { log in
+            print("WeChatSDK: \(log)")
+        }
+        #endif
         WXApi.registerApp("wx20dc05a5d82cabbe", universalLink: "https://wzs.app/")
-
-//        WXApi.checkUniversalLinkReady { step, result in
-//            print("\(step.rawValue), \(result.success), \(result.errorInfo),
-//            \(result.suggestion)")
-//        }
+        #if DEBUG
+        WXApi.checkUniversalLinkReady { step, result in
+            print("\(step.rawValue), \(result.success), \(result.errorInfo),\(result.suggestion)")
+        }
+        #endif
     }
 
     func handleOpenUniversalLink(continue userActivity: NSUserActivity) {

@@ -31,7 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window?.rootViewController = hosting
         window?.makeKeyAndVisible()
-        // 2. 添加 overlay window（如 Toast 层）
+        // 2. 添加 overlay window（Toast 层）
         if overlayWindow == nil {
             let overlay = PassthroughWindow(windowScene: windowScene)
             overlay.backgroundColor = .clear
@@ -48,7 +48,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url
-            // 处理这个 URL
             _ = AppManager.shared.HandlerOpenURL(url: url.absoluteString)
         } else if let shortcutItem = connectionOptions.shortcutItem {
             _ = AppManager.runQuick(shortcutItem.type)
@@ -122,10 +121,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let url = URLContexts.first?.url else { return }
         _ = AppManager.shared.HandlerOpenURL(url: url.absoluteString)
     }
-    
-   
-    
-   
 }
 
 extension QuickAction {

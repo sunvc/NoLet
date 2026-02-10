@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "wechat.pdf",
+      "filename" : "agent.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "wechat_dark.pdf",
+      "filename" : "agent_dark.pdf",
       "idiom" : "universal"
     }
   ],

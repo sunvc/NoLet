@@ -58,21 +58,10 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var totalWidth: CGFloat = 0
 
     var messageColume: [GridItem] {
-        if totalWidth < 700 {
-            [GridItem(.flexible(), spacing: 10)]
-        } else {
-            if ProcessInfo.processInfo.isiOSAppOnMac {
-                Array(
-                    repeating: GridItem(.flexible(), spacing: 10),
-                    count: sizeClass == .compact ? 1 : Int(totalWidth / 500)
-                )
-            } else {
-                Array(
-                    repeating: GridItem(.flexible(), spacing: 10),
-                    count: sizeClass == .compact ? 1 : 2
-                )
-            }
-        }
+        Array(
+            repeating: GridItem(.flexible(), spacing: 10),
+            count: sizeClass == .compact ? 1 : Int(totalWidth / 500)
+        )
     }
 
     var router: [RouterPage] = [] {

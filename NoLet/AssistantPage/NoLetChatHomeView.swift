@@ -40,14 +40,10 @@ struct NoLetChatHomeView: View {
     @State private var hidenTabar: Bool = false
 
     @State private var selectAction: MessageAction? = nil
-    
-    
 
     var body: some View {
         ZStack {
             ChatMessageListView()
-            
-            
 
             if chatManager.chatMessages.count == 0 {
                 spaceHome
@@ -136,23 +132,13 @@ struct NoLetChatHomeView: View {
         VStack {
             Spacer()
             VStack {
-                ChatIcon()
-                    .fill(
-                        LinearGradient(
-                            gradient: Gradient(stops: [
-                                .init(color: .red, location: 0.0),
-                                .init(color: .yellow, location: 0.5),
-                                .init(color: .green, location: 1.0),
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
+                Image("agent")
+                    .resizable()
                     .scaledToFit()
                     .frame(width: 200)
                     .minimumScaleFactor(0.5)
 
-                Text("嗨! 我是\(NCONFIG.AppName)" )
+                Text("嗨! 我是\(NCONFIG.AppName)")
                     .font(.title)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
@@ -236,7 +222,7 @@ struct NoLetChatHomeView: View {
                                 resultHandler(choice: choice)
                             }
                         }
-                        
+
                         await chatManager.contentActor.finish()
                         await chatManager.reasonActor.finish()
                     }
@@ -322,8 +308,6 @@ struct NoLetChatHomeView: View {
         }
         return toolCallsMap
     }
-
-    
 
     func clearCurrent() {
         chatManager.currentRequest = ""

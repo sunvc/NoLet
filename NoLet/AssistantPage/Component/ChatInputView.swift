@@ -25,7 +25,7 @@ struct ChatInputView: View {
     @FocusState private var isFocusedInput: Bool
 
     @State private var selectedPromptIndex: Int?
-    @State private var focused:Bool = false
+    @State private var focused: Bool = false
 
     private var quote: Message? {
         guard let messageID = manager.askMessageID else { return nil }
@@ -44,19 +44,17 @@ struct ChatInputView: View {
                     backupButton()
                         .transition(.move(edge: .leading))
                 }
-                if !manager.isLoading{
+                if !manager.isLoading {
                     inputField
                         .transition(.move(edge: .trailing))
-                }else{
+                } else {
                     Spacer()
                 }
-               
             }
             .padding(.horizontal)
             .animation(.default, value: text)
         }
-        .padding(.bottom, isFocusedInput ? 10 : 30)
-        
+        .padding(.bottom, isFocusedInput ? (ProcessInfo.processInfo.isiOSAppOnMac ? 30 : 10) : 30)
     }
 
     // MARK: - Subviews
@@ -64,13 +62,13 @@ struct ChatInputView: View {
     private var inputField: some View {
         HStack {
             TextField("给智能助手发消息", text: $text, axis: .vertical)
-                .lineLimit(3)
+                .lineLimit(5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
                 .focused($isFocusedInput)
                 .frame(minHeight: 50)
                 .onChange(of: isFocusedInput) { value in
-                    withAnimation { 
+                    withAnimation {
                         chatManager.isFocusedInput = value
                     }
                 }
@@ -78,25 +76,19 @@ struct ChatInputView: View {
             if !text.isEmpty {
                 // 发送按钮
                 Button(action: {
-                    self.text = text.trimmingCharacters(in: .whitespaces)
-                    if text.removingAllWhitespace.count > 0 {
-                        onSend(text)
-                        isFocusedInput = false
-                    } else {
-                        Toast.error(title: "至少1个字符")
-                    }
-
+                    sendMessage()
                 }) {
                     Image(systemName: "arrow.up.circle.fill")
                         .font(.largeTitle)
                         .background26(Color.white, radius: 20)
                 }
                 .transition(.scale)
-                .keyboardShortcut(.defaultAction)
+                .keyboardShortcut(.return, modifiers: [.command])
             } else {
                 Image(systemName: "puzzlepiece.extension")
                     .foregroundStyle(chatManager.chatPrompt != nil ? .green : .gray)
                     .font(.title2)
+                    .transition(.scale)
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 15))
                     .onTapGesture {
                         chatManager.showPromptChooseView = true
@@ -107,22 +99,30 @@ struct ChatInputView: View {
         .background26(Color(.systemGray6), radius: 17)
     }
 
+    func sendMessage() {
+        self.text = text.trimmingCharacters(in: .whitespaces)
+        if text.removingAllWhitespace.count > 0 {
+            onSend(text)
+            isFocusedInput = false
+        } else {
+            Toast.error(title: "至少1个字符")
+        }
+    }
+
     @ViewBuilder
     func PromptLabelView() -> some View {
         HStack(spacing: 10) {
-            if !chatManager.reasoningEffort.emptyData{
-                Menu { 
+            if !chatManager.reasoningEffort.emptyData {
+                Menu {
                     Button(role: .destructive) {
                         chatManager.reasoningEffort = .minimal
                     } label: {
                         Label("清除", systemImage: "eraser")
                             .customForegroundStyle(.accent, .primary)
                     }
-                } label: { 
+                } label: {
                     QuoteView(message: String(localized: "深度思考"))
                 }
-
-                
             }
             Spacer()
 
@@ -183,7 +183,7 @@ struct ChatInputView: View {
             Button {
                 manager.router = []
                 manager.page = .setting
-                
+
                 Task.detached {
                     await Haptic.impact()
                     await Tone.play(.share)
@@ -200,7 +200,7 @@ struct ChatInputView: View {
             Button {
                 manager.router = []
                 manager.page = .message
-                
+
                 Task.detached {
                     await Haptic.impact()
                     await Tone.play(.share)
