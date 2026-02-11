@@ -261,6 +261,14 @@ extension ExampleView {
                 params: "?ciphertext=\(ciphertext)",
                 index: 10
             ),
+            
+            PushExampleModel(
+                header: Text("快捷回复"),
+                footer: Text("回复内容会拼接在用户指定的reply参数结尾"),
+                title: String(localized: "快捷回复"),
+                params: "\(String(localized: "快捷回复"))?reply=\(NCONFIG.server)?text=",
+                index: 11
+            ),
         ]
     }
 }
