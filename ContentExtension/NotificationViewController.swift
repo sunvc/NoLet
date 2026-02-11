@@ -20,12 +20,12 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     WKNavigationDelegate
 {
     @IBOutlet var tipsView: UILabel!
-    @IBOutlet var imageView: UIImageView! // ←← 新增
+    @IBOutlet var imageView: UIImageView!
     @IBOutlet var web: WKWebView!
 
     private var markdownHeight: CGFloat = 0
-    private var imageHeight: CGFloat = 0 // ←← 新增
-    private var currentCategory: Identifiers? // ←← 新增
+    private var imageHeight: CGFloat = 0
+    private var currentCategory: Identifiers?
 
     private var tips: String?
     private var replyText: String?
@@ -209,13 +209,13 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                         } else {
                             showTips(
                                 text: "\(String(localized: "回复失败")):\(result.header.statusCode)",
-                                color: .red
+                                color: .red, afterClose: true
                             )
                         }
                     } catch {
                         showTips(
                             text: "\(String(localized: "发生错误")):\(error.localizedDescription)",
-                            color: .red
+                            color: .red, afterClose: true
                         )
                     }
                     self.replyText = nil
@@ -225,7 +225,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         completion(.doNotDismiss)
     }
 
-    func showTips(text: String, color: UIColor = .tintColor) {
+    func showTips(text: String, color: UIColor = .tintColor, afterClose: Bool = false) {
         self.tips = text
         Haptic.impact()
         tipsView.text = text
@@ -233,11 +233,13 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 35)
 
         updateLayout(webHeight: markdownHeight)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            if self.tips == text {
-                self.tipsView.text = ""
-                self.tipsView.frame = .zero
-                self.updateLayout(webHeight: self.markdownHeight)
+        if afterClose {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                if self.tips == text {
+                    self.tipsView.text = ""
+                    self.tipsView.frame = .zero
+                    self.updateLayout(webHeight: self.markdownHeight)
+                }
             }
         }
     }

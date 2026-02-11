@@ -52,6 +52,7 @@
 		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
 		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
 		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
+		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -476,6 +477,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */,
 				BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */,
 				BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */,
 				B5835D302DEDF3370066B32E /* Kingfisher in Frameworks */,

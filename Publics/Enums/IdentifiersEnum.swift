@@ -52,7 +52,7 @@ enum Identifiers: String, CaseIterable, Codable {
             UNTextInputNotificationAction(
                 identifier: Identifiers.reply.rawValue,
                 title: Identifiers.reply.rawValue,
-                options: []
+                options: .foreground
             ),
         ]
 
@@ -61,7 +61,7 @@ enum Identifiers: String, CaseIterable, Codable {
                 identifier: item.rawValue,
                 actions: item == .reply ? replyActions : actions,
                 intentIdentifiers: [],
-                options: []
+                options: .customDismissAction
             )
         }
 
