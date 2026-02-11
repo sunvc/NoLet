@@ -250,7 +250,7 @@ struct MessageCard: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     if let reply = message.reply {
-                        TextField(String("回复"), text: $replyText)
+                        TextField("回复", text: $replyText)
                             .customField(icon: "text.bubble")
                             .focused($showReply)
                             .opacity(showReply ? 1 : 0.0001) // 透明
@@ -264,7 +264,10 @@ struct MessageCard: View {
                                             .fetch(url: reply + replyText)
                                         Toast.success(title: result.check() ? "回复成功" : "回复失败")
                                     } catch {
-                                        Toast.error(title: "\(error.localizedDescription)")
+                                        Toast.shared.present(
+                                            title: error.localizedDescription,
+                                            symbol: .error
+                                        )
                                     }
                                     self.replyText = ""
                                 }
@@ -272,7 +275,11 @@ struct MessageCard: View {
                     }
                 }
                 .snapshot(trigger: showSnap) { item in
-                    manager.open(sheet: .share(contents: [item], preview: item, title: "消息截图"))
+                    manager.open(sheet: .share(
+                        contents: [item],
+                        preview: item,
+                        title: String(localized: "消息截图")
+                    ))
                 }
             } header: {
                 MessageViewHeader()

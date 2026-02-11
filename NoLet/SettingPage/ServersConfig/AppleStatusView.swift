@@ -84,7 +84,7 @@ struct ServiceRow: View {
                     if event.eventStatus.lowercased() != "resolved" && event.eventStatus
                         .lowercased() != "completed"
                     {
-                        Text("⚠️ \(event.message)")
+                        Text(verbatim: "⚠️ \(event.message)")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
