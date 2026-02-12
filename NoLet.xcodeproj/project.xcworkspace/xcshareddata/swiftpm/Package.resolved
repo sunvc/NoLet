@@ -1,5 +1,5 @@
 {
-  "originHash" : "dd630541765fbd2c9fdb0ccc7fd821d43dae262699f039ffb85701799f4f78bc",
+  "originHash" : "98892c270226db13a1f436cc8ba88304a10dd83276d5a674d417665578338a14",
   "pins" : [
     {
       "identity" : "defaults",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/QRScanner",
       "state" : {
-        "revision" : "f4e9075e37d5ccfcc7f259488a4bedac629efb34",
-        "version" : "1.2.2"
+        "revision" : "75c8f60025a61fc1636fae0233a746163f815b7f",
+        "version" : "1.2.3"
       }
     },
     {

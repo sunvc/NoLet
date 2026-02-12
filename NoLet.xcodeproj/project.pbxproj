@@ -1351,7 +1351,7 @@
 			repositoryURL = "https://github.com/sunvc/QRScanner";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.2.3;
 			};
 		};
 		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {

@@ -20,7 +20,7 @@ struct AboutNoLetView: View {
     @Default(.deviceToken) private var deviceToken
     @Default(.id) private var id
     @Default(.nearbyShow) private var nearbyShow
-
+    @Default(.allMessagecount) var allMessagecount
     @State private var showNearbySetting: Bool = false
     @State private var buildDetail: Bool = false
     @State private var product: Product?
@@ -193,8 +193,14 @@ struct AboutNoLetView: View {
                 }
 
             } header: {
-                Text("应用信息")
-                    .textCase(.none)
+                HStack {
+                    Text("应用信息")
+                    Spacer()
+                    Text("\(allMessagecount)")
+                        .contentTransition(.numericText())
+                        .animation(.easeInOut(duration: 0.3), value: allMessagecount)
+                }
+                .textCase(.none)
             }
 
             Section {
@@ -252,17 +258,6 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.yellow, Color.primary)
                 }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    manager.router = [.about, .appleServerInfo]
-                    Haptic.impact()
-                } label: {
-                    Image(systemName: "apple.logo")
-                        .symbolRenderingMode(.palette)
-                        .customForegroundStyle(.accent, Color.primary)
-                }
-            }
-            
         }
         .navigationBarTitleDisplayMode(.inline)
         .task {
@@ -303,11 +298,11 @@ extension NCONFIG {
     static let pushHelp: NURL = docServer + "tutorial"
 
     static var docServer: NURL {
-        if Locale.current.language.languageCode?.identifier == "zh"{
+        if Locale.current.language.languageCode?.identifier == "zh" {
             return wikiServer + "/"
         }
         return wikiServer + "/en"
-    } 
+    }
 }
 
 #Preview {

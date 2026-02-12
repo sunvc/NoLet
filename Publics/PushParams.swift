@@ -22,18 +22,10 @@ enum Params: String, CaseIterable {
          reply
 
     var name: String { rawValue.lowercased() }
-}
-
-extension [Params] {
-    func allString() -> [String] {
-        compactMap { param in
-            param.name
-        }
-    }
+    static var names: [String] { Self.allCases.compactMap { $0.name } }
 }
 
 extension Dictionary where Key == AnyHashable, Value == Any {
-    
     private var apsObj: [AnyHashable: Any]? {
         self[Params.aps.name] as? [AnyHashable: Any]
     }
@@ -41,7 +33,7 @@ extension Dictionary where Key == AnyHashable, Value == Any {
     private var alertObj: [AnyHashable: Any]? {
         apsObj?[Params.alert.name] as? [AnyHashable: Any]
     }
-    
+
     func raw<T: ValueConvertible>(_ params: Params) -> T? {
         var value: Any? {
             switch params {
@@ -55,8 +47,6 @@ extension Dictionary where Key == AnyHashable, Value == Any {
         }
         return T.convert(from: value)
     }
-
-    
 
     func other() -> Self {
         filter { key, _ in
@@ -112,10 +102,7 @@ extension Bool: ValueConvertible {
             if ["true", "y", "yes", "1"].contains(lower) {
                 return true
             }
-            if ["false", "n", "no", "0"].contains(lower) {
-                return false
-            }
-            return nil
+            return false
         default:
             return nil
         }

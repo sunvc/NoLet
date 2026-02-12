@@ -200,28 +200,45 @@ struct ServersConfigView: View {
             }
         }
         .toolbar {
-            ToolbarItem {
-                withAnimation {
+            ToolbarItem(placement: .secondaryAction) {
+                Section{
                     Button {
                         manager.open(sheet: nil)
                         manager.open(full: .customKey)
                     } label: {
-                        Image(systemName: "plus.viewfinder")
+                        Label("添加服务器", systemImage: "plus.viewfinder")
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(Color.accentColor, Color.primary)
                             .accessibilityLabel("添加服务器")
                     }
                 }
             }
+            
+            
             if cloudServers.count > 0 {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .secondaryAction) {
+                    Section{
+                        Button {
+                            manager.open(sheet: .cloudServer)
+                        } label: {
+                            Label("历史服务器", systemImage: "clock.arrow.circlepath")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(Color.accentColor, Color.primary)
+                                .accessibilityLabel("查看历史服务器")
+                        }
+                    }
+                }
+            }
+            
+            ToolbarItem(placement: .secondaryAction) {
+                Section{
                     Button {
-                        manager.open(sheet: .cloudServer)
+                        manager.router = [.server, .appleServerInfo]
+                        Haptic.impact()
                     } label: {
-                        Image(systemName: "clock.arrow.circlepath")
+                        Label(String("Apple Status"), systemImage: "apple.logo")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(Color.accentColor, Color.primary)
-                            .accessibilityLabel("查看历史服务器")
+                            .customForegroundStyle(.accent, Color.primary)
                     }
                 }
             }

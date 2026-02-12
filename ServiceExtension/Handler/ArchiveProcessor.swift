@@ -25,14 +25,15 @@ class ArchiveProcessor: NotificationContentProcessor {
         let body: String = {
             if let body: String = userInfo.raw(.body) {
                 /// 解决换行符渲染问题
-                return MessagesManager.ensureMarkdownLineBreaks(body)
+                return ensureMarkdownLineBreaks(body)
             }
             return ""
         }()
 
         // MARK: - markdownbody body 显示
 
-        if let _: String = bestAttemptContent.userInfo.raw(.reply) {
+        let reply: String? = userInfo.raw(.reply)
+        if reply != nil {
             bestAttemptContent.categoryIdentifier = Identifiers.reply.rawValue
         }
 
@@ -58,10 +59,9 @@ class ArchiveProcessor: NotificationContentProcessor {
         let icon: String? = userInfo.raw(.icon)
         let image: String? = userInfo.raw(.image)
         let host: String? = userInfo.raw(.host)
-        let reply: String? = userInfo.raw(.reply)
         let messageID = bestAttemptContent.targetContentIdentifier
         let level = bestAttemptContent.level.rawValue
-        let other = userInfo.toJSONString(excluding: Params.allCases.allString())
+        let other = userInfo.toJSONString(excluding: Params.names)
 
         //  获取保存时间
         var saveDays: Int {
@@ -104,5 +104,22 @@ class ArchiveProcessor: NotificationContentProcessor {
         await MessagesManager.shared.deleteExpired()
 
         return bestAttemptContent
+    }
+
+    func ensureMarkdownLineBreaks(_ text: String) -> String {
+        // 将文本按行分割
+        let lines = text.components(separatedBy: .newlines)
+
+        // 处理每一行：检查结尾是否已经有两个空格
+        let processedLines = lines.map { line in
+            if line.hasSuffix("  ") || line.isEmpty {
+                return line
+            } else {
+                return line + "  " // 添加两个空格
+            }
+        }
+
+        // 使用 \n 连接回去
+        return processedLines.joined(separator: "\n")
     }
 }

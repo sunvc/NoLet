@@ -83,6 +83,7 @@ struct DataSettingView: View {
             }
             .listRowBackground(Color.clear)
             .listSectionSeparator(.hidden)
+            .listRowInsets(EdgeInsets())
             #endif
 
             Section {
