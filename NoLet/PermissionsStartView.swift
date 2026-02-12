@@ -249,7 +249,7 @@ struct PermissionsStartView: View {
 
                                 TextField("请输入服务器地址", text: $customServerAddress)
                                     .font(.subheadline)
-                                    .autocapitalization(.none)
+                                    .textInputAutocapitalization(.never)
                                     .disableAutocorrection(true)
                             }
                             .padding(.vertical, 8)

@@ -182,7 +182,7 @@ struct NoLetChatAccountDetail: View {
                         .textContentType(.none)
                 }
             }
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .customField(icon: "key.icloud") {
                 if let text = Clipboard.getText(), !text.isEmpty {
                     self.data.key = text
@@ -200,7 +200,7 @@ struct NoLetChatAccountDetail: View {
 
     private var baseNameField: some View {
         TextField(String("Name"), text: $data.name)
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "atom") {
                 if let text = Clipboard.getText(), !text.isEmpty {
@@ -211,7 +211,7 @@ struct NoLetChatAccountDetail: View {
 
     private var baseHostField: some View {
         TextField(String("Host"), text: $data.host)
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "network") {
                 if let text = Clipboard.getText(), !text.isEmpty {
@@ -226,7 +226,7 @@ struct NoLetChatAccountDetail: View {
 
     private var basePathField: some View {
         TextField(String("BasePath"), text: $data.basePath)
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(
                 icon: "point.filled.topleft.down.curvedto.point.bottomright.up"
@@ -239,7 +239,7 @@ struct NoLetChatAccountDetail: View {
 
     private var baseModelField: some View {
         TextField(String("Model"), text: $data.model)
-            .autocapitalization(.none)
+            .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "slider.horizontal.2.square.badge.arrow.down") {
                 if let text = Clipboard.getText() {

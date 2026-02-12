@@ -28,8 +28,6 @@ struct ChangeKeyCenterView: View {
     }
 
     @State private var appear = [false, false, false]
-    @State private var circleInitialY: CGFloat = .zero
-    @State private var circleY: CGFloat = .zero
 
     @Default(.servers) var servers
     @Default(.cryptoConfigs) var cryptoConfigs
@@ -69,7 +67,7 @@ struct ChangeKeyCenterView: View {
                         }
                 }
                 .slideFadeIn(show: appear[0], offset: 30)
-
+                
                 Spacer()
             }
 
@@ -78,8 +76,7 @@ struct ChangeKeyCenterView: View {
                     if let selectCrypto {
                         Text(maskString(selectCrypto.key))
                             .minimumScaleFactor(0.5)
-                            .foregroundColor(.primary)
-                            .blendMode(.overlay)
+                            .foregroundColor(.orange)
                     }
                     Spacer()
 
@@ -139,7 +136,11 @@ struct ChangeKeyCenterView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.accentColor)
                     .onTapGesture {
-                        manager.router.append(.web(url: NCONFIG.delpoydoc.url))
+                        if ProcessInfo.processInfo.isiOSAppOnMac{
+                            AppManager.openURL(url: NCONFIG.delpoydoc.url, .safari)
+                        }else{
+                            manager.router.append(.web(url: NCONFIG.delpoydoc.url))
+                        }
                         Haptic.impact()
                     }
             }
@@ -148,14 +149,6 @@ struct ChangeKeyCenterView: View {
         .padding(20)
         .padding(.vertical, 10)
         .background(.ultraThinMaterial)
-        .background(
-            VStack {
-                Circle().fill(.blue).frame(width: 68, height: 68)
-                    .offset(x: 0, y: circleY)
-                    .scaleEffect(appear[0] ? 1 : 0.1)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        )
         .modifier(OutlineModifier(cornerRadius: 30))
         .onAppear { animate() }
         .disabled(disabledPage)
@@ -193,32 +186,15 @@ struct ChangeKeyCenterView: View {
     func InputHost() -> some View {
         TextField(String(NCONFIG.server), text: $keyHost)
             .keyboardType(.URL)
-            .autocapitalization(.none)
-            .disableAutocorrection(true)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(true)
             .foregroundStyle(.textBlack)
             .customField(
                 icon: "personalhotspot.circle"
             ) {
                 self.keyHost = NCONFIG.server
             }
-            .overlay(
-                GeometryReader { proxy in
-                    let offset = proxy.frame(in: .named("stack")).minY + 32
-                    Color.clear.preference(key: CirclePreferenceKey.self, value: offset)
-
-                }.onPreferenceChange(CirclePreferenceKey.self) { value in
-                    circleInitialY = value
-                    circleY = value
-                }
-            )
             .focused($isHostFocused)
-            .onChange(of: isHostFocused) { value in
-                if value {
-                    withAnimation {
-                        circleY = circleInitialY
-                    }
-                }
-            }
             .onTapGesture {
                 self.isHostFocused = true
                 Haptic.impact()
@@ -233,30 +209,13 @@ struct ChangeKeyCenterView: View {
             self.keyName = value.onlyLettersAndNumbers()
         }))
         .keyboardType(.default)
-        .autocapitalization(.none)
-        .disableAutocorrection(true)
+        .textInputAutocapitalization(.never)
+        .autocorrectionDisabled(true)
         .foregroundStyle(.textBlack)
         .customField(
             icon: "person.badge.key"
         )
-        .overlay(
-            GeometryReader { proxy in
-                let offset = proxy.frame(in: .named("stack")).minY + 32
-                Color.clear.preference(key: CirclePreferenceKey.self, value: offset)
-
-            }.onPreferenceChange(CirclePreferenceKey.self) { value in
-                circleInitialY = value
-                circleY = value
-            }
-        )
         .focused($isPhoneFocused)
-        .onChange(of: isPhoneFocused) { value in
-            if value {
-                withAnimation {
-                    circleY = circleInitialY
-                }
-            }
-        }
         .onTapGesture {
             self.isPhoneFocused = true
             Haptic.impact()
@@ -343,8 +302,8 @@ struct ChangeKeyCenterView: View {
                     self.disabledPage = false
                 }
             }
-
-        }.padding(.top)
+        }
+        .padding(.top)
     }
 
     @ViewBuilder
@@ -450,7 +409,7 @@ struct ChangeKeyView: View {
     @State var appear = false
     @State var appearBackground = false
     @State var viewState = CGSize.zero
-    
+
     var drag: some Gesture {
         DragGesture()
             .onChanged { value in
@@ -496,7 +455,7 @@ struct ChangeKeyView: View {
                             .blur(radius: appearBackground ? 0 : 40)
                             .hueRotation(.degrees(viewState.width / 5))
                     )
-            }.frame(maxWidth: 500)
+            }.frame(maxWidth: 700)
 
             VStack {
                 HStack {

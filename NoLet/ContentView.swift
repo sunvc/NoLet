@@ -120,6 +120,7 @@ struct ContentView: View {
                 manager.totalWidth = value
             }
         )
+        
     }
 
     @ViewBuilder
