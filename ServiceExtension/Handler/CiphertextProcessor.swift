@@ -34,7 +34,7 @@ class CiphertextProcessor: NotificationContentProcessor {
             var alert = [String: Any]()
             var soundName: String? = nil
 
-            if let category: String = map.raw(.category, nesting: false),
+            if let category: String = map.raw(.category),
                category == Identifiers.markdown.rawValue
             {
                 bestAttemptContent.categoryIdentifier = category
@@ -43,20 +43,20 @@ class CiphertextProcessor: NotificationContentProcessor {
             }
 
             /// map 不能使用.raw 因为没有aps的层级嵌套
-            if let id: String = map.raw(.id, nesting: false) {
+            if let id: String = map.raw(.id) {
                 bestAttemptContent.targetContentIdentifier = id
             }
 
-            if let title: String = map.raw(.title, nesting: false) {
+            if let title: String = map.raw(.title) {
                 bestAttemptContent.title = title
                 alert[Params.title.name] = title
             }
 
-            if let subtitle: String = map.raw(.subtitle, nesting: false) {
+            if let subtitle: String = map.raw(.subtitle) {
                 bestAttemptContent.subtitle = subtitle
                 alert[Params.subtitle.name] = subtitle
             }
-            if let body: String = map.raw(.body, nesting: false) {
+            if let body: String = map.raw(.body) {
                 bestAttemptContent.body = body
                 alert[Params.body.name] = body
             }
@@ -67,11 +67,11 @@ class CiphertextProcessor: NotificationContentProcessor {
                 bestAttemptContent.categoryIdentifier = Params.markdown.name
             }
 
-            if let group: String = map.raw(.group, nesting: false) {
+            if let group: String = map.raw(.group) {
                 bestAttemptContent.threadIdentifier = group
             }
 
-            if var sound: String = map.raw(.sound, nesting: false) {
+            if var sound: String = map.raw(.sound) {
                 if !sound.hasSuffix(Params.caf.name) {
                     sound = "\(sound).\(Params.caf.name)"
                 }

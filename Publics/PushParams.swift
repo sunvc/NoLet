@@ -33,81 +33,91 @@ extension [Params] {
 }
 
 extension Dictionary where Key == AnyHashable, Value == Any {
-    func raw<T>(_ params: Params, nesting: Bool = true) -> T? {
-        let value = raw(params, nesting: nesting)
-
-        switch T.self {
-        case is String.Type:
-            // 字符串类型转换
-            if let s = value as? String {
-                return s as? T
-            } else if let n = value as? Int {
-                return String(n) as? T
-            } else if let b = value as? Bool {
-                return String(b) as? T
-            } else {
-                return value as? T
-            }
-
-        case is Int.Type:
-            // 整数类型转换
-            if let n = value as? Int {
-                return n as? T
-            } else if let data = value as? String, let intValue = Int(data) {
-                return intValue as? T
-            } else {
-                return value as? T
-            }
-
-        case is Bool.Type:
-            // 布尔类型转换
-            if let b = value as? Bool {
-                return b as? T
-            } else if let data = value as? Int {
-                return (data > 0) as? T
-            } else if let data = value as? String {
-                // 支持更多布尔值字符串格式
-                let lowercased = data.lowercased()
-                if ["true", "y", "yes", "1"].contains(lowercased) {
-                    return true as? T
-                } else if ["false", "n", "no", "0"].contains(lowercased) {
-                    return false as? T
-                }
-            }
-            return value as? T
-
-        default:
-            return value as? T
-        }
+    
+    private var apsObj: [AnyHashable: Any]? {
+        self[Params.aps.name] as? [AnyHashable: Any]
     }
 
-    private func raw(_ params: Params, nesting: Bool = true) -> Any? {
-        switch params {
-        case .title, .subtitle, .body:
-            if nesting {
-                let alert =
-                    (self[Params.aps.name] as? [String: Any])?[Params.alert.name] as? [String: Any]
-                return alert?[params.name]
-            } else {
-                return self[params.name]
-            }
-
-        case .sound:
-            if nesting {
-                return (self[Params.aps.name] as? [AnyHashable: Any])?[Params.sound.name]
-            } else {
-                return self[params.name]
-            }
-
-        default:
-            return self[params.name]
-        }
+    private var alertObj: [AnyHashable: Any]? {
+        apsObj?[Params.alert.name] as? [AnyHashable: Any]
     }
+    
+    func raw<T: ValueConvertible>(_ params: Params) -> T? {
+        var value: Any? {
+            switch params {
+            case .title, .subtitle, .body:
+                return alertObj?[params.name]
+            case .sound:
+                return apsObj?[params.name]
+            default:
+                return self[params.name]
+            }
+        }
+        return T.convert(from: value)
+    }
+
+    
 
     func other() -> Self {
         filter { key, _ in
             guard let keyStr = key as? String else { return true }
             return !Params.allCases.contains { $0.name == keyStr }
+        }
+    }
+}
+
+protocol ValueConvertible {
+    static func convert(from value: Any?) -> Self?
+}
+
+extension String: ValueConvertible {
+    static func convert(from value: Any?) -> String? {
+        switch value {
+        case let s as String:
+            return s
+        case let n as Int:
+            return String(n)
+        case let b as Bool:
+            return String(b)
+        default:
+            return nil
+        }
+    }
+}
+
+extension Int: ValueConvertible {
+    static func convert(from value: Any?) -> Int? {
+        switch value {
+        case let n as Int:
+            return n
+        case let s as String:
+            return Int(s)
+        case let b as Bool:
+            return b ? 1 : 0
+        default:
+            return nil
+        }
+    }
+}
+
+extension Bool: ValueConvertible {
+    static func convert(from value: Any?) -> Bool? {
+        switch value {
+        case let b as Bool:
+            return b
+        case let n as Int:
+            return n > 0
+        case let s as String:
+            let lower = s.lowercased()
+            if ["true", "y", "yes", "1"].contains(lower) {
+                return true
+            }
+            if ["false", "n", "no", "0"].contains(lower) {
+                return false
+            }
+            return nil
+        default:
+            return nil
         }
     }
 }
