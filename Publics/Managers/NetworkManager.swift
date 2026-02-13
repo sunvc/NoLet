@@ -34,7 +34,7 @@ class NetworkManager: NSObject {
         var method: String { rawValue }
     }
 
-    struct Response {
+    nonisolated struct Response: Sendable {
         var data: Data
         var header: HTTPURLResponse
 

@@ -45,8 +45,8 @@ enum SubPage: Equatable, Identifiable {
     case quickResponseCode(text: String, title: String?, preview: String?)
     case crypto(CryptoModelConfig)
     case share(contents: [Any], preview: UIImage?, title: String?)
-    case nearby
     case cloudServer
+    case authView
 
     var id: String {
         switch self {
@@ -59,8 +59,8 @@ enum SubPage: Equatable, Identifiable {
         case .quickResponseCode: "quickResponseCode"
         case .crypto: "crypto"
         case .share: "share"
-        case .nearby: "nearby"
         case .cloudServer: "cloudServer"
+        case .authView: "authView"
         }
     }
 }
@@ -80,6 +80,7 @@ enum RouterPage: Hashable {
     case appleServerInfo
     case files(url: URL)
     case web(url: URL)
+
 }
 
 extension RouterPage: Equatable {

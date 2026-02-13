@@ -11,39 +11,23 @@
 //  History:
 //    Created by Neo on 2026/2/9 02:27.
 
+import CryptoKit
 import SwiftUI
 import WechatOpenSDK
 
-final nonisolated class WeChatManager: NSObject {
-    @MainActor static let shared = WeChatManager()
+final class WeChatManager: NetworkManager {
+    static let shared = WeChatManager()
 
     private override init() {
         super.init()
     }
 
-    enum SendType: Int32, CaseIterable {
-        case WXSceneSession = 0
-        case WXSceneTimeline = 1
-        case WXSceneFavorite = 2
+    private var auth: WechatAuthSDK?
 
-        var name: String {
-            switch self {
-            case .WXSceneSession: String(localized: "朋友")
-            case .WXSceneTimeline: String(localized: "朋友圈")
-            case .WXSceneFavorite: String(localized: "收藏")
-            }
-        }
+    private var appid = "wx20dc05a5d82cabbe"
+    private var secret = "e52f99117816f5800abdfa10e44cbdf9"
 
-        var symbol: String {
-            switch self {
-            case .WXSceneSession: "person"
-            case .WXSceneTimeline: "livephoto"
-            case .WXSceneFavorite: "archivebox"
-            }
-        }
-    }
-
-    static func sendMessage(_ text: String, type: SendType = .WXSceneSession) {
+    nonisolated static func sendMessage(_ text: String, type: SendType = .WXSceneSession) {
         let request = SendMessageToWXReq()
         request.bText = true
         request.text = text
@@ -76,28 +60,175 @@ final nonisolated class WeChatManager: NSObject {
         }
     }
 
-    static func isWXAppInstalled() -> Bool {
+    nonisolated static func isWXAppInstalled() -> Bool {
         WXApi.isWXAppInstalled()
     }
 
-    static func toWechatThumbData(from data: Data) -> Data? {
-        guard let image = UIImage(data: data) else { return nil }
-        var quality: CGFloat = 0.6
-        var data = image.jpegData(compressionQuality: quality)
+    static func auth() {
+        let req = SendAuthReq()
+        req.scope = "snsapi_userinfo"
+        req.state = "nolet"
 
-        while let d = data, d.count > 32 * 1024, quality > 0.1 {
-            quality -= 0.1
-            data = image.jpegData(compressionQuality: quality)
+        WXApi.send(req)
+    }
+
+    func requestAuth(code: String) async -> WeChatTokenResponse? {
+        do {
+            let url = "https://api.weixin.qq.com/sns/oauth2/access_token"
+
+            let params: [String: Any] = [
+                "appid": self.appid,
+                "secret": self.secret,
+                "code": code,
+                "grant_type": "authorization_code",
+            ]
+
+            let data = try await self.fetch(url: url, method: .GET, params: params, headers: [:])
+
+            let res: WeChatTokenResponse = try data.decode()
+
+            return res
+        } catch {
+            debugPrint(error)
         }
 
-        return data
+        return nil
+    }
+
+    func getAccessToken() async -> WeChatAccessTokenResponse? {
+        do {
+            let url = "https://api.weixin.qq.com/cgi-bin/stable_token"
+
+            let params = [
+                "grant_type": "client_credential",
+                "appid": self.appid,
+                "secret": self.secret,
+            ]
+
+            let response = try await self.fetch(url: url, method: .POST, params: params)
+
+            let data: WeChatAccessTokenResponse = try response.decode()
+            return data
+        } catch {
+            debugPrint(error)
+            return nil
+        }
+    }
+
+    func generateWeChatSignature(params: [String: String]) -> String {
+        let sortedKeys = params.keys.sorted()
+
+        let string1 = sortedKeys
+            .map { "\($0.lowercased())=\(params[$0]!)" }
+            .joined(separator: "&")
+
+        print("待签名字符串:", string1)
+
+        let data = Data(string1.utf8)
+        let hash = Insecure.SHA1.hash(data: data)
+
+        let signature = hash.map { String(format: "%02x", $0) }.joined()
+
+        return signature
+    }
+}
+
+extension WeChatManager: WechatAuthAPIDelegate {
+    func qrCode() async {
+        self.auth = WechatAuthSDK()
+        self.auth?.delegate = self
+
+        guard let response = await getAccessToken(),
+              let ticket = await self.get_sdk_ticket(accessToken: response.accessToken)?.ticket
+        else { return }
+
+        let timeStamp = "\(Int(Date().timeIntervalSince1970))"
+        let scope = "snsapi_userinfo"
+        let schemeData = "nolet"
+        let random = Domap.generateRandomString()
+
+        let params = [
+            "appid": self.appid,
+            "sdk_ticket": ticket,
+            "nonceStr": random,
+            "timeStamp": timeStamp,
+        ]
+
+        let sign = self.generateWeChatSignature(params: params)
+
+        self.auth?.auth(
+            self.appid,
+            nonceStr: random,
+            timeStamp: timeStamp,
+            scope: scope,
+            signature: sign,
+            schemeData: schemeData
+        )
+    }
+
+    func get_sdk_ticket(accessToken: String) async -> WeChatTicketResponse? {
+        do {
+            let url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket"
+            let params = [
+                "access_token": accessToken,
+                "type": "2",
+            ]
+
+            let response = try await self.fetch(url: url, params: params)
+
+            let data: WeChatTicketResponse = try response.decode()
+
+            return data
+        } catch {
+            debugPrint(error.localizedDescription)
+            return nil
+        }
+    }
+
+    func onAuthGotQrcode(_ image: UIImage) {
+        AppManager.shared.QRCodeImage = image
+    }
+
+    func onQrcodeScanned() {
+        AppManager.shared.QRCodeImage = nil
+    }
+
+    func onAuthFinish(_ errCode: Int32, authCode: String?) {
+        logger.log("\(errCode)\(authCode)")
     }
 }
 
 extension WeChatManager: WXApiDelegate {
-    func onReq(_ req: BaseReq) {}
+    func onReq(_ req: BaseReq) {
+        logger.log("\(req)")
+    }
 
-    func onResp(_ resp: BaseResp) {}
+    func getUserInfo(token: String, id: String) async -> WeChatUserResponse? {
+        do {
+            let url = "https://api.weixin.qq.com/sns/userinfo?access_token=\(token)&openid=\(id)"
+            let data = try await self.fetch(url: url)
+            let res: WeChatUserResponse = try data.decode()
+            return res
+        } catch {
+            debugPrint(error.localizedDescription)
+            return nil
+        }
+    }
+
+    func onResp(_ resp: BaseResp) {
+        logger.log("\(resp)")
+
+        if let res = resp as? SendAuthResp, res.errCode == 0, let code = res.code,
+           let state = res.state
+        {
+            debugPrint(code, state)
+            Task {
+                if let data = await requestAuth(code: code), let id = data.openid {
+                    debugPrint(id)
+                }
+            }
+        }
+    }
 
     func register() {
         #if DEBUG
@@ -157,6 +288,100 @@ struct ShareWeChatView: View {
             } label: {
                 Label("分享到微信", systemImage: symbol)
             }
+        }
+    }
+}
+
+nonisolated extension WeChatManager {
+    nonisolated struct WeChatTokenResponse: Codable {
+        let accessToken: String?
+        let expiresIn: Int?
+        let refreshToken: String?
+        let openid: String?
+        let scope: String?
+
+        let errcode: Int?
+        let errmsg: String?
+
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "access_token"
+            case expiresIn = "expires_in"
+            case refreshToken = "refresh_token"
+            case openid
+            case scope
+            case errcode
+            case errmsg
+        }
+    }
+
+    nonisolated struct WeChatUserResponse: Codable {
+        // 成功字段
+        let openid: String?
+        let nickname: String?
+        let sex: Int?
+        let province: String?
+        let city: String?
+        let country: String?
+        let headimgurl: String?
+        let privilege: [String]?
+        let unionid: String?
+
+        // 错误字段
+        let errcode: Int?
+        let errmsg: String?
+
+        var isSuccess: Bool {
+            return errcode == nil
+        }
+    }
+
+    nonisolated struct WeChatTicketResponse: Codable {
+        let errcode: Int
+        let errmsg: String
+        let ticket: String?
+        let expiresIn: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case errcode
+            case errmsg
+            case ticket
+            case expiresIn = "expires_in"
+        }
+
+        var isSuccess: Bool {
+            return errcode == 0
+        }
+    }
+
+    nonisolated enum SendType: Int32, CaseIterable {
+        case WXSceneSession = 0
+        case WXSceneTimeline = 1
+        case WXSceneFavorite = 2
+
+        var name: String {
+            switch self {
+            case .WXSceneSession: String(localized: "朋友")
+            case .WXSceneTimeline: String(localized: "朋友圈")
+            case .WXSceneFavorite: String(localized: "收藏")
+            }
+        }
+
+        var symbol: String {
+            switch self {
+            case .WXSceneSession: "person"
+            case .WXSceneTimeline: "livephoto"
+            case .WXSceneFavorite: "archivebox"
+            }
+        }
+    }
+
+    nonisolated struct WeChatAccessTokenResponse: Codable {
+        let accessToken: String
+        let expiresIn: Int
+
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "access_token"
+            case expiresIn = "expires_in"
         }
     }
 }

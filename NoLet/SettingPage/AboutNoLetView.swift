@@ -59,11 +59,7 @@ struct AboutNoLetView: View {
                                 Haptic.impact()
                             }
                             .onLongPressGesture {
-                                if nearbyShow {
-                                    manager.open(full: .nearby)
-                                } else {
-                                    self.showNearbySetting.toggle()
-                                }
+                                manager.open(sheet: .authView)
                                 Haptic.impact()
                             }
 
@@ -141,11 +137,6 @@ struct AboutNoLetView: View {
                     Clipboard.set(id)
                     Toast.copy(title: "复制成功")
                     return true
-                }
-                if showNearbySetting || nearbyShow {
-                    Toggle(isOn: $nearbyShow) {
-                        Label("附近的书", systemImage: "location.viewfinder")
-                    }
                 }
 
                 // App开源地址
@@ -262,6 +253,11 @@ struct AboutNoLetView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             await loadProduct()
+        }
+        .overlay {
+            if let image = manager.QRCodeImage {
+                Image(uiImage: image)
+            }
         }
     }
 
