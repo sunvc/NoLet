@@ -330,7 +330,7 @@ struct SCCPUCardView: View {
                         Text(verbatim: "D")
                             .font(.caption)
                             .foregroundColor(.gray)
-                            .padding(.bottom)
+                            .padding(.bottom, 1)
                     }
                 }
                 Spacer(minLength: 0)
@@ -408,7 +408,6 @@ struct SCMemoryCardView: View {
         }
         .padding(20)
         .mbackground26(.message, radius: 16)
-        .cornerRadius(16)
     }
 }
 
@@ -454,7 +453,7 @@ struct SCNetworkCardView: View {
                 Spacer()
                 SCNetStatItem(label: String(localized: "主动建连"), value: "\(status.activeConn)")
                 Spacer()
-                SCNetStatItem(label: String(localized: "被动建连"), value: "\(status.passiveConn)")
+                SCNetStatItem(label: String(localized: "被动建连"), value: formatCount(status.passiveConn))
                 Spacer()
                 SCNetStatItem(label: String(localized: "建连失败"), value: "\(status.failConn)")
             }
@@ -500,7 +499,22 @@ struct SCNetworkCardView: View {
         }
         .padding(20)
         .mbackground26(.message, radius: 16)
-        .cornerRadius(16)
+    }
+    
+    
+    func formatCount(_ number: Int) -> String {
+        if number > 1000{
+            return  trimZero(Double(number) / 1_000) + "k"
+        }
+        return "\(number)"
+    }
+    
+    private func trimZero(_ value: Double) -> String {
+        let formatted = String(format: "%.1f", value)
+        if formatted.hasSuffix(".0") {
+            return String(formatted.dropLast(2))
+        }
+        return formatted
     }
 }
 
@@ -679,7 +693,7 @@ struct SCDiskCardView: View {
         }
         .padding(20)
         .mbackground26(.message, radius: 16)
-        .cornerRadius(16)
+
     }
 }
 
@@ -816,7 +830,6 @@ struct SCDockerCardView: View {
         }
         .padding(20)
         .mbackground26(.message, radius: 16)
-        .cornerRadius(16)
     }
 }
 

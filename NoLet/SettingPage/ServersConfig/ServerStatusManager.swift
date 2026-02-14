@@ -38,6 +38,7 @@ final class SCServerStatusManager: ObservableObject {
 
     func start() {
         timer?.invalidate()
+        Task.detached { await self.refresh() }
         timer = Timer
             .scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
                 guard let self else { return }
@@ -64,7 +65,7 @@ final class SCServerStatusManager: ObservableObject {
             }
         } catch {
             // Keep last successful data
-            Toast.error(title: "没有管理员权限!")
+            Toast.error(title: "连接失败!")
             logger.error("\(error.localizedDescription)")
         }
     }
