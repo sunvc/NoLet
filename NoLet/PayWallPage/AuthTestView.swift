@@ -15,62 +15,87 @@ import AuthenticationServices
 import SwiftUI
 
 struct AuthTestView: View {
+    @StateObject private var wechat = WeChatManager.shared
     var body: some View {
-        NavigationStack { 
-            List {
-                HStack{
-                    Spacer()
+        NavigationStack {
+            VStack {
+                if let image = wechat.QRCodeImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .transition(.scale)
+                        .padding()
+
+                } else {
                     Image("launch")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 150)
-                        
-                    Spacer()
+                        .transition(.scale)
+                        .padding()
                 }
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
-                    
-                SignInWithApple()
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listSectionSeparator(.hidden)
-                    .padding(.vertical)
 
-                Button {
-                    if ProcessInfo.processInfo.isiOSAppOnMac {
-                        Task {
-                            await WeChatManager.shared.qrCode()
-                        }
-                    } else {
-                        WeChatManager.auth()
-                    }
+                if wechat.QRCodeImage == nil {
+                    VStack{
+                        Spacer()
+                        SignInWithApple()
+                            .padding(.vertical)
+                        Button {
+                            if ProcessInfo.processInfo.isiOSAppOnMac {
+                                Task {
+                                    await WeChatManager.shared.qrCode()
+                                }
+                            } else {
+                                WeChatManager.auth()
+                            }
 
-                } label: {
-                    HStack {
-                        Image("wechat")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 35)
-                        if ProcessInfo.processInfo.isiOSAppOnMac {
-                            Text("微信扫码登录")
-                        } else {
-                            Text("微信授权登陆")
+                        } label: {
+                            HStack {
+                                if wechat.QRCodeLoading {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                    Text("正在获取二维码")
+                                } else {
+                                    Image("wechat")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 26)
+                                    if ProcessInfo.processInfo.isiOSAppOnMac {
+                                        Text("微信扫码登录")
+                                    } else {
+                                        Text("微信授权登陆")
+                                    }
+                                }
+                            }
+                            .font(.title3)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity)
+                            .background(.background)
+                            .clipShape(.rect)
                         }
-                    }
-                    .padding(.vertical)
-                    .frame(maxWidth: .infinity)
-                    .background(.background)
-                    .clipShape(.rect)
+                        .disabled(wechat.QRCodeLoading)
+                        .buttonStyle(.borderless)
+                        .padding(.bottom, 50)
+                    }.padding(.horizontal)
                 }
-                
-                .buttonStyle(.borderless)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-                .listSectionSeparator(.hidden)
             }
+            .frame(maxHeight: .infinity)
             .navigationTitle("账号中心(Test)")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if wechat.QRCodeImage != nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            wechat.QRCodeImage = nil
+                        } label: {
+                            Label("关闭", systemImage: "arrow.uturn.backward.circle")
+                        }
+                    }
+                }
+            }
         }
     }
+}
+
+#Preview {
+    AuthTestView()
 }

@@ -276,7 +276,7 @@ struct ContentView: View {
                 }
             case .authView:
                 AuthTestView()
-                    .presentationDetents([.medium, .large])
+                    .presentationDetents([ProcessInfo.processInfo.isiOSAppOnMac ? .height(600) : .medium, .large])
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

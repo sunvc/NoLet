@@ -22,7 +22,6 @@ struct ReverseScrollView<Content>: View where Content: View {
     
     // Calculate content offset
     func offset(outerheight: CGFloat, innerheight: CGFloat) -> CGFloat {
-        print("outerheight: \(outerheight) innerheight: \(innerheight)")
         
         let totalOffset = currentOffset + scrollOffset
         return -((innerheight/2 - outerheight/2) - totalOffset)
@@ -48,19 +47,13 @@ struct ReverseScrollView<Content>: View where Content: View {
     
     func onDragChanged(_ value: DragGesture.Value) {
         // Update rendered offset
-        print("Start: \(value.startLocation.y)")
-        print("Start: \(value.location.y)")
         self.scrollOffset = (value.location.y - value.startLocation.y)
-        print("Scrolloffset: \(self.scrollOffset)")
     }
     
     func onDragEnded(_ value: DragGesture.Value, outerHeight: CGFloat) {
         // Update view to target position based on drag position
         let scrollOffset = value.location.y - value.startLocation.y
-        print("Ended currentOffset=\(self.currentOffset) scrollOffset=\(scrollOffset)")
-        
         let topLimit = self.contentHeight - outerHeight
-        print("toplimit: \(topLimit)")
         
         // Negative topLimit => Content is smaller than screen size. We reset the scroll position on drag end:
         if topLimit < 0 {
@@ -75,7 +68,6 @@ struct ReverseScrollView<Content>: View where Content: View {
                 self.currentOffset += scrollOffset
             }
         }
-        print("new currentOffset=\(self.currentOffset)")
         self.scrollOffset = 0
     }
 }

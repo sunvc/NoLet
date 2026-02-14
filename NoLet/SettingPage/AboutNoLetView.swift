@@ -254,11 +254,7 @@ struct AboutNoLetView: View {
         .task {
             await loadProduct()
         }
-        .overlay {
-            if let image = manager.QRCodeImage {
-                Image(uiImage: image)
-            }
-        }
+        
     }
 
     func loadProduct() async {
@@ -266,7 +262,7 @@ struct AboutNoLetView: View {
             let products = try await Product.products(for: ["one_time_support_2_99"])
             product = products.first
         } catch {
-            print("Failed to load products: \(error)")
+            logger.error("Failed to load products: \(error)")
         }
     }
 

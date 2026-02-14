@@ -56,8 +56,6 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
     @Published var isWXAppInstalled: Bool = false
 
     @Published var totalWidth: CGFloat = 0
-    
-    @Published var QRCodeImage: UIImage? = nil
 
     var messageColume: [GridItem] {
         Array(

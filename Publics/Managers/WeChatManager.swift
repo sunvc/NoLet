@@ -15,8 +15,11 @@ import CryptoKit
 import SwiftUI
 import WechatOpenSDK
 
-final class WeChatManager: NetworkManager {
+final class WeChatManager: NetworkManager, ObservableObject {
     static let shared = WeChatManager()
+
+    @Published var QRCodeImage: UIImage? = nil
+    @Published var QRCodeLoading: Bool = false
 
     private override init() {
         super.init()
@@ -25,7 +28,8 @@ final class WeChatManager: NetworkManager {
     private var auth: WechatAuthSDK?
 
     private var appid = "wx20dc05a5d82cabbe"
-    private var secret = "e52f99117816f5800abdfa10e44cbdf9"
+    private var secret = ""
+    private var universalLink = "https://wzs.app/"
 
     nonisolated static func sendMessage(_ text: String, type: SendType = .WXSceneSession) {
         let request = SendMessageToWXReq()
@@ -89,7 +93,7 @@ final class WeChatManager: NetworkManager {
 
             return res
         } catch {
-            debugPrint(error)
+            logger.error("\(error)")
         }
 
         return nil
@@ -110,7 +114,7 @@ final class WeChatManager: NetworkManager {
             let data: WeChatAccessTokenResponse = try response.decode()
             return data
         } catch {
-            debugPrint(error)
+            logger.error("\(error)")
             return nil
         }
     }
@@ -121,9 +125,6 @@ final class WeChatManager: NetworkManager {
         let string1 = sortedKeys
             .map { "\($0.lowercased())=\(params[$0]!)" }
             .joined(separator: "&")
-
-        print("待签名字符串:", string1)
-
         let data = Data(string1.utf8)
         let hash = Insecure.SHA1.hash(data: data)
 
@@ -135,6 +136,8 @@ final class WeChatManager: NetworkManager {
 
 extension WeChatManager: WechatAuthAPIDelegate {
     func qrCode() async {
+        self.QRCodeLoading = true
+
         self.auth = WechatAuthSDK()
         self.auth?.delegate = self
 
@@ -180,17 +183,18 @@ extension WeChatManager: WechatAuthAPIDelegate {
 
             return data
         } catch {
-            debugPrint(error.localizedDescription)
+            logger.error("\(error)")
             return nil
         }
     }
 
     func onAuthGotQrcode(_ image: UIImage) {
-        AppManager.shared.QRCodeImage = image
+        self.QRCodeImage = image
+        self.QRCodeLoading = false
     }
 
     func onQrcodeScanned() {
-        AppManager.shared.QRCodeImage = nil
+        self.QRCodeImage = nil
     }
 
     func onAuthFinish(_ errCode: Int32, authCode: String?) {
@@ -210,7 +214,7 @@ extension WeChatManager: WXApiDelegate {
             let res: WeChatUserResponse = try data.decode()
             return res
         } catch {
-            debugPrint(error.localizedDescription)
+            logger.error("\(error)")
             return nil
         }
     }
@@ -221,27 +225,26 @@ extension WeChatManager: WXApiDelegate {
         if let res = resp as? SendAuthResp, res.errCode == 0, let code = res.code,
            let state = res.state
         {
-            debugPrint(code, state)
             Task {
                 if let data = await requestAuth(code: code), let id = data.openid {
-                    debugPrint(id)
+                    logger.log("\(state) - \(id)")
                 }
             }
         }
     }
 
     func register() {
-        #if DEBUG
-        WXApi.startLog(by: .detail) { log in
-            print("WeChatSDK: \(log)")
-        }
-        #endif
-        WXApi.registerApp("wx20dc05a5d82cabbe", universalLink: "https://wzs.app/")
-        #if DEBUG
-        WXApi.checkUniversalLinkReady { step, result in
-            print("\(step.rawValue), \(result.success), \(result.errorInfo),\(result.suggestion)")
-        }
-        #endif
+//        #if DEBUG
+//        WXApi.startLog(by: .detail) { log in
+//            print("WeChatSDK: \(log)")
+//        }
+//        #endif
+        WXApi.registerApp(self.appid, universalLink: self.universalLink)
+//        #if DEBUG
+//        WXApi.checkUniversalLinkReady { step, result in
+//            print("\(step.rawValue), \(result.success), \(result.errorInfo),\(result.suggestion)")
+//        }
+//        #endif
     }
 
     func handleOpenUniversalLink(continue userActivity: NSUserActivity) {
