@@ -23,6 +23,7 @@ final class SCServerStatusManager: ObservableObject {
     @Published private(set) var processes: [SCProcess] = []
     @Published var showProcessSheet: Bool = false
     @Published var processSort: ProcessSort = .cpuDesc
+    @Published var errorCount: Int = 0
 
     private var timer: Timer?
     private var http = NetworkManager()
@@ -42,7 +43,11 @@ final class SCServerStatusManager: ObservableObject {
         timer = Timer
             .scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
                 guard let self else { return }
-                Task.detached { await self.refresh() }
+                Task.detached {
+                    if await self.errorCount < 3 {
+                        await self.refresh()
+                    }
+                }
             }
     }
 
@@ -67,13 +72,17 @@ final class SCServerStatusManager: ObservableObject {
             // Keep last successful data
             Toast.error(title: "连接失败!")
             logger.error("\(error.localizedDescription)")
+            await MainActor.run {
+                self.errorCount += 1
+            }
         }
     }
 
     private func fetchStatus() async throws -> SCServerStatus {
         let response = try await http.fetch(
             url: self.server.url,
-            path: "/ping/monitor",
+            path: "/info",
+            params: ["mode": "monitor"],
             headers: CryptoManager.signature(sign: self.server.sign, server: server.key)
         )
         let result: SCServerStatusResponse = try response.decode()
@@ -83,7 +92,8 @@ final class SCServerStatusManager: ObservableObject {
     private func fetchProcesses() async throws -> [SCProcess] {
         let response = try await http.fetch(
             url: self.server.url,
-            path: "/ping/processes",
+            path: "/info",
+            params: ["mode": "processes"],
             headers: CryptoManager.signature(sign: self.server.sign, server: server.key)
         )
         let result: [SCProcessResponse] = try response.decode()

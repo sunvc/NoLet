@@ -40,6 +40,7 @@ struct ServerMonitoringView: View {
                         .foregroundColor(.gray)
                         .padding(.horizontal)
                 }
+                .padding(.horizontal)
             }
 
             Section {
@@ -48,6 +49,7 @@ struct ServerMonitoringView: View {
                     .spaceStyle()
             } header: {
                 Text(verbatim: "Memory")
+                    .padding(.horizontal)
             }
 
             Section {
@@ -56,6 +58,7 @@ struct ServerMonitoringView: View {
                     .spaceStyle()
             } header: {
                 Text(verbatim: "Network")
+                    .padding(.horizontal)
             }
 
             // Docker Card
@@ -65,19 +68,23 @@ struct ServerMonitoringView: View {
                         .spaceStyle()
                 } header: {
                     Text(verbatim: "Docker")
+                        .padding(.horizontal)
                 }
             }
-
-            Section {
-                // Disk Cards
-                ForEach(status.disks) { disk in
-                    SCDiskCardView(disk: disk)
-                        .spaceStyle()
-                        .padding(.bottom, 10)
+            if !status.disks.isEmpty{
+                Section {
+                    // Disk Cards
+                    ForEach(status.disks) { disk in
+                        SCDiskCardView(disk: disk)
+                            .spaceStyle()
+                            .padding(.bottom, 10)
+                    }
+                } header: {
+                    Text(verbatim: "Disk")
+                        .padding(.horizontal)
                 }
-            } header: {
-                Text(verbatim: "Disk")
             }
+            
         }
         .listStyle(.grouped)
         .navigationTitle(server.url.removeHTTPPrefix())
@@ -89,10 +96,25 @@ struct ServerMonitoringView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                if manager.errorCount >= 3 {
+                    Button {
+                        manager.errorCount = 0
+                    } label: {
+                        Label("开启", systemImage: "power.circle.fill")
+                    }
+                }else{
+                    Button {
+                        manager.errorCount = 3
+                    } label: {
+                        Label("暂停", systemImage: "pause.fill")
+                    }
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     manager.showProcessSheet.toggle()
                 } label: {
-                    Label("进程列表", systemImage: "list.bullet.clipboard")
+                    Label("进程列表", systemImage: "archivebox.circle")
                 }
             }
         }
@@ -453,7 +475,10 @@ struct SCNetworkCardView: View {
                 Spacer()
                 SCNetStatItem(label: String(localized: "主动建连"), value: "\(status.activeConn)")
                 Spacer()
-                SCNetStatItem(label: String(localized: "被动建连"), value: formatCount(status.passiveConn))
+                SCNetStatItem(
+                    label: String(localized: "被动建连"),
+                    value: formatCount(status.passiveConn)
+                )
                 Spacer()
                 SCNetStatItem(label: String(localized: "建连失败"), value: "\(status.failConn)")
             }
@@ -500,15 +525,14 @@ struct SCNetworkCardView: View {
         .padding(20)
         .mbackground26(.message, radius: 16)
     }
-    
-    
+
     func formatCount(_ number: Int) -> String {
-        if number > 1000{
-            return  trimZero(Double(number) / 1_000) + "k"
+        if number > 1000 {
+            return trimZero(Double(number) / 1000) + "k"
         }
         return "\(number)"
     }
-    
+
     private func trimZero(_ value: Double) -> String {
         let formatted = String(format: "%.1f", value)
         if formatted.hasSuffix(".0") {
@@ -693,7 +717,6 @@ struct SCDiskCardView: View {
         }
         .padding(20)
         .mbackground26(.message, radius: 16)
-
     }
 }
 
