@@ -25,9 +25,9 @@ final class SCServerStatusManager: ObservableObject {
     @Published var processSort: ProcessSort = .cpuDesc
     @Published var errorCount: Int = 0
 
-    private var timer: Timer?
+    private var refreshTask: Task<Void, Never>?
     private var http = NetworkManager()
-    var refreshInterval: TimeInterval = 2.0
+    var refreshInterval: UInt64 = 2
 
     init(server: PushServerModel) {
         status = .placeholder
@@ -38,43 +38,52 @@ final class SCServerStatusManager: ObservableObject {
     @MainActor deinit { self.stop() }
 
     func start() {
-        timer?.invalidate()
-        Task.detached { await self.refresh() }
-        timer = Timer
-            .scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
-                guard let self else { return }
-                Task.detached {
-                    if await self.errorCount < 3 {
-                        await self.refresh()
-                    }
+        stop()
+        refreshTask = Task.detached { [weak self] in
+            while !Task.isCancelled {
+                guard let self = self else { break }
+
+                await self.refresh()
+
+                if await self.errorCount >= 3 {
+                    try? await Task.sleep(for: .seconds(self.errorCount))
+                    await MainActor.run { self.errorCount = 0 }
+                    continue
                 }
+                try? await Task.sleep(for: .seconds(self.refreshInterval))
             }
+        }
     }
 
     func stop() {
-        timer?.invalidate()
-        timer = nil
+        refreshTask?.cancel()
+        refreshTask = nil
     }
 
-    func refresh() async {
+    nonisolated func refresh() async {
         do {
-            let status = try await fetchStatus()
-            Task { @MainActor in
-                self.status = status
+            async let fetchedStatus = fetchStatus()
+            if await showProcessSheet {
+                async let fetchedProcesses = fetchProcesses()
+                let (s, p) = try await (fetchedStatus, fetchedProcesses)
+                await updateUI(status: s, processes: p)
+            } else {
+                let s = try await fetchedStatus
+                await updateUI(status: s, processes: nil)
             }
-            if showProcessSheet {
-                let processes = try await fetchProcesses()
-                Task { @MainActor in
-                    self.processes = processes
-                }
-            }
+            await MainActor.run { self.errorCount = 0 }
         } catch {
-            // Keep last successful data
             Toast.error(title: "连接失败!")
-            logger.error("\(error.localizedDescription)")
             await MainActor.run {
                 self.errorCount += 1
             }
+        }
+    }
+
+    private func updateUI(status: SCServerStatus, processes: [SCProcess]?) {
+        self.status = status
+        if let processes = processes {
+            self.processes = processes
         }
     }
 
@@ -83,7 +92,8 @@ final class SCServerStatusManager: ObservableObject {
             url: self.server.url,
             path: "/info",
             params: ["mode": "monitor"],
-            headers: CryptoManager.signature(sign: self.server.sign, server: server.key)
+            headers: CryptoManager.signature(sign: self.server.sign, server: server.key),
+            timeout: 3
         )
         let result: SCServerStatusResponse = try response.decode()
         return SCServerStatusMapper.map(from: result)
@@ -94,7 +104,8 @@ final class SCServerStatusManager: ObservableObject {
             url: self.server.url,
             path: "/info",
             params: ["mode": "processes"],
-            headers: CryptoManager.signature(sign: self.server.sign, server: server.key)
+            headers: CryptoManager.signature(sign: self.server.sign, server: server.key),
+            timeout: 3
         )
         let result: [SCProcessResponse] = try response.decode()
         return result.map { p in

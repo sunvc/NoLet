@@ -37,6 +37,7 @@ final class CloudManager {
     static let deviceTokenName = "DeviceToken"
     static let apnsInfoName = "ApnsInfo"
     static let serverName = "PushServerModal"
+    static let weChatInfo = "WeChatInfo"
 
     func checkAccount() async -> (Bool, String) {
         var message = (false, String(localized: "未知 iCloud 状态"))
@@ -264,16 +265,16 @@ final class CloudManager {
             in: privateDatabase
         )
 
-        let cloudIndex: [String: CKRecord] = Dictionary(
-            uniqueKeysWithValues: cloudRecords.compactMap { record in
-                guard
-                    let url = record["url"] as? String,
-                    let key = record["key"] as? String
-                else { return nil }
+        var cloudIndex: [String: CKRecord] = [:]
 
-                return ("\(url)|\(key)", record)
-            }
-        )
+        for record in cloudRecords {
+            guard
+                let url = record["url"] as? String,
+                let key = record["key"] as? String
+            else { continue }
+
+            cloudIndex["\(url)|\(key)"] = record
+        }
 
         var waitRecords: [CKRecord] = []
 
@@ -310,5 +311,9 @@ final class CloudManager {
             logger.error("Failed to upload records:\(error)")
             return cloudRecords
         }
+    }
+    
+    func downloadWeChatInfo() async {
+        
     }
 }

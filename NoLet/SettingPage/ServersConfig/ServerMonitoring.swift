@@ -26,67 +26,96 @@ struct ServerMonitoringView: View {
 
     var body: some View {
         let status = manager.status
-        List {
+        ScrollView {
             Section {
                 // CPU Card
                 SCCPUCardView(status: status)
-                    .spaceStyle()
+                    .mbackground26(.message, radius: 16)
+                    .padding(.horizontal, 5)
             } header: {
                 HStack {
                     Text(verbatim: "CPU")
                     Spacer()
                     Text(status.osInfo)
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
-                        .padding(.horizontal)
                 }
+                .foregroundColor(.gray)
                 .padding(.horizontal)
+                .font(.subheadline)
+                .padding(.top)
             }
 
             Section {
                 // Memory Card
                 SCMemoryCardView(status: status)
-                    .spaceStyle()
+                    .mbackground26(.message, radius: 16)
+                    .padding(.horizontal, 5)
+
             } header: {
-                Text(verbatim: "Memory")
-                    .padding(.horizontal)
+                HStack {
+                    Text(verbatim: "Memory")
+
+                    Spacer()
+                }
+                .foregroundColor(.gray)
+                .padding(.horizontal)
+                .font(.subheadline)
+                .padding(.top)
             }
 
             Section {
                 // Network Card
                 SCNetworkCardView(status: status.network)
-                    .spaceStyle()
+                    .mbackground26(.message, radius: 16)
+                    .padding(.horizontal, 5)
             } header: {
-                Text(verbatim: "Network")
-                    .padding(.horizontal)
+                HStack {
+                    Text(verbatim: "Network")
+
+                    Spacer()
+                }
+                .foregroundColor(.gray)
+                .padding(.horizontal)
+                .font(.subheadline)
+                .padding(.top)
             }
 
             // Docker Card
             if !status.containers.isEmpty {
                 Section {
                     SCDockerCardView(containers: status.containers)
-                        .spaceStyle()
+                        .mbackground26(.message, radius: 16)
+                        .padding(.horizontal, 5)
                 } header: {
-                    Text(verbatim: "Docker")
-                        .padding(.horizontal)
+                    HStack {
+                        Text(verbatim: "Docker")
+                        Spacer()
+                    }
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+                    .font(.subheadline)
+                    .padding(.top)
                 }
             }
-            if !status.disks.isEmpty{
+            if !status.disks.isEmpty {
                 Section {
                     // Disk Cards
-                    ForEach(status.disks) { disk in
+                    ForEach(status.disks, id: \.id) { disk in
                         SCDiskCardView(disk: disk)
-                            .spaceStyle()
+                            .mbackground26(.message, radius: 16)
                             .padding(.bottom, 10)
                     }
                 } header: {
-                    Text(verbatim: "Disk")
-                        .padding(.horizontal)
+                    HStack {
+                        Text(verbatim: "Disk")
+                        Spacer()
+                    }
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+                    .font(.subheadline)
+                    .padding(.top)
                 }
             }
-            
         }
-        .listStyle(.grouped)
         .navigationTitle(server.url.removeHTTPPrefix())
         .sheet(isPresented: $manager.showProcessSheet) {
             SCProcessSheet(
@@ -102,7 +131,7 @@ struct ServerMonitoringView: View {
                     } label: {
                         Label("开启", systemImage: "power.circle.fill")
                     }
-                }else{
+                } else {
                     Button {
                         manager.errorCount = 3
                     } label: {
@@ -156,7 +185,7 @@ struct SCProcessSheet: View {
             ScrollView {
                 LazyVStack(alignment: .center, spacing: 10, pinnedViews: .sectionHeaders) {
                     Section {
-                        ForEach(sorted) { p in
+                        ForEach(sorted, id: \.id) { p in
                             HStack(alignment: .firstTextBaseline) {
                                 Text(p.name)
                                     .font(.system(size: 15, weight: .regular, design: .monospaced))
@@ -300,7 +329,7 @@ struct SCCPUCardView: View {
             }
 
             VStack {
-                ForEach(status.cores) { core in
+                ForEach(status.cores, id: \.id) { core in
                     // Dot Chart Visualization
                     SCDotChartView(core: core)
                         .frame(height: 8)
@@ -375,7 +404,6 @@ struct SCCPUCardView: View {
             }
         }
         .padding()
-        .mbackground26(.message, radius: 16)
     }
 }
 
@@ -429,7 +457,6 @@ struct SCMemoryCardView: View {
             }
         }
         .padding(20)
-        .mbackground26(.message, radius: 16)
     }
 }
 
@@ -506,7 +533,7 @@ struct SCNetworkCardView: View {
             }
 
             DisclosureGroup {
-                ForEach(virtualInterfaces) { interface in
+                ForEach(virtualInterfaces, id: \.id) { interface in
                     SCNetworkInterfaceRow(interface: interface)
                         .padding(.vertical, 8)
                 }
@@ -522,8 +549,7 @@ struct SCNetworkCardView: View {
                 }
             }
         }
-        .padding(20)
-        .mbackground26(.message, radius: 16)
+        .padding()
     }
 
     func formatCount(_ number: Int) -> String {
@@ -604,7 +630,7 @@ struct SCDiskCardView: View {
             HStack {
                 // Header Row
                 VStack(alignment: .center) {
-                    BreathingDot()
+                    BreathingDot(isOn: disk.readRate.plus(disk.writeRate) > 0)
                         .frame(width: 6, height: 6)
                         .padding(.top, 3)
                     Spacer()
@@ -716,26 +742,23 @@ struct SCDiskCardView: View {
             }
         }
         .padding(20)
-        .mbackground26(.message, radius: 16)
     }
 }
 
 struct BreathingDot: View {
-    @State private var isBreathing = false
+    var isOn: Bool
 
     var body: some View {
         Circle()
-            .fill(Color.green)
-            .scaleEffect(isBreathing ? 1.4 : 0.8)
-            .opacity(isBreathing ? 1 : 0.5)
+            .fill(isOn ? Color.green : .gray)
+            .scaleEffect(isOn ? 1.4 : 1.0)
+            .opacity(isOn ? 1 : 0.5)
             .animation(
-                .easeInOut(duration: 1.2)
-                    .repeatForever(autoreverses: true),
-                value: isBreathing
+                isOn
+                    ? .easeInOut(duration: 1.2).repeatForever(autoreverses: true)
+                    : .default,
+                value: isOn
             )
-            .onAppear {
-                isBreathing = true
-            }
     }
 }
 
@@ -743,7 +766,7 @@ struct SCDockerCardView: View {
     let containers: [SCDockerContainer]
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack {
             // Header
             HStack {
                 Text(verbatim: "CPU")
@@ -761,7 +784,7 @@ struct SCDockerCardView: View {
 
             Divider().background(Color.gray.opacity(0.3))
 
-            ForEach(containers) { container in
+            ForEach(containers, id: \.id) { container in
                 VStack(spacing: 12) {
                     HStack(alignment: .center, spacing: 10) {
                         // CPU Ring
@@ -786,8 +809,6 @@ struct SCDockerCardView: View {
                                     .font(.subheadline)
                                     .fontWeight(.medium)
                                 Spacer()
-                                Image(systemName: "ellipsis")
-                                    .foregroundColor(.gray)
                             }
 
                             HStack {
@@ -843,16 +864,24 @@ struct SCDockerCardView: View {
                             .foregroundColor(.gray)
                         }
                     }
+                    .contentShape(Rectangle())
                 }
-                .padding(.vertical, 12)
+                .padding(10)
+                .clipShape(.rect)
+                .contextMenu {
+                    Button {} label: {
+                        Label("重启", systemImage: "power.circle")
+                            .customForegroundStyle(.green, .primary)
+                    }
+                }
 
                 if container.id != containers.last?.id {
                     Divider().background(Color.gray.opacity(0.2))
                 }
             }
         }
-        .padding(20)
-        .mbackground26(.message, radius: 16)
+
+        .padding()
     }
 }
 
@@ -1219,17 +1248,18 @@ extension Color {
     }
 }
 
-extension View {
-    @ViewBuilder
-    fileprivate func spaceStyle() -> some View {
-        self.listRowInsets(EdgeInsets())
-            .listRowBackground(Color.clear)
-            .listSectionSeparator(.hidden)
-            .padding(.horizontal, 5)
+// 预览
+#Preview {
+    NavigationStack {
+        ServerMonitoringView(server: PushServerModel(url: "http://127.0.0.1:8080"))
     }
 }
 
-// 预览
-#Preview {
-    ServerMonitoringView(server: PushServerModel(url: "https://example.com"))
+extension String {
+    func plus(_ other: String) -> Int {
+        guard let a = Int(self), let b = Int(other) else {
+            return 0
+        }
+        return a + b
+    }
 }
