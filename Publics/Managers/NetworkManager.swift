@@ -144,12 +144,12 @@ class NetworkManager: NSObject {
         return Response(data: data, header: response)
     }
 
-    func test(url: String = "https://example.com") async -> Bool {
-        return (try? await fetch(url: url, method: .HEAD)) ?? false
+    func test(url: String = "https://www.apple.com") async -> Bool {
+        return (try? await fetch(url: url, method: .HEAD))?.check() ?? false
     }
 
     func health(url: String) async -> Bool {
-        return ((try? await fetch(url: url + "/health"))?.check("OK")) ?? false
+        return (try? await fetch(url: url + "/health"))?.check("OK") ?? false
     }
 
     enum APIError: Error {
