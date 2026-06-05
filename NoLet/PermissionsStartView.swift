@@ -71,8 +71,7 @@ struct PermissionsStartView: View {
     @State private var alertTitle: String = "" // 警告提示标题
     @State private var customServerAddress: String = "" // 自定义服务器地址
     @State private var urlValidationError: Bool = false // URL验证错误标志
-    @State private var useCustomServer = false // 是否使用自定义服务器
-    @Default(.noServerModel) var noServerModel
+    @State private var useAppServer = true // 是否使用自定义服务器
     @StateObject private var appManager = AppManager.shared
     
     
@@ -101,7 +100,7 @@ struct PermissionsStartView: View {
 
     // 获取当前使用的服务器地址
     private var currentServerURL: String {
-        if useCustomServer && !appManager.customServerURL.isEmpty {
+        if !useAppServer && !appManager.customServerURL.isEmpty {
             return appManager.customServerURL
         } else {
             return NCONFIG.server
@@ -168,75 +167,54 @@ struct PermissionsStartView: View {
                         .padding(.horizontal)
 
                     VStack(spacing: 10) {
-                        // 自定义服务器开关
-                        if !useCustomServer{
-                            HStack{
-                                Toggle(isOn: $noServerModel) { 
-                                    Label {
-                                        Text("无服务器模式")
-                                            .font(.headline)
-                                    } icon: {
-                                        Image(systemName: "apple.logo")
-                                            .font(.title)
-                                            .foregroundColor(.blue)
-                                            .frame(width: 36, height: 36)
-                                            .symbolRenderingMode(.palette)
-                                    }
+                        
+                        HStack {
+                            Image(systemName: "server.rack")
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                                .frame(width: 36, height: 36)
+                                .background {
+                                    Circle()
+                                        .fill(Color.blue.opacity(0.1))
                                 }
-                                .onChange(of: noServerModel) { _ in
-                                    if noServerModel{
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("使用官方服务器")
+                                    .font(.headline)
+                                
+                                Text("切换使用官方服务器或自定义服务器")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                            
+                            Spacer()
+                            
+                            Toggle(isOn: $useAppServer) {}
+                                .toggleStyle(SwitchToggleStyle(tint: .green))
+                                .labelsHidden()
+                                .onChange(of: useAppServer) { value in
+                                    if value{
                                         customServerAddress = ""
-                                        useCustomServer = false
                                     }
                                 }
-                            }
-                            .padding(.horizontal, 15)
                         }
-                       
-                        if !noServerModel{
-                            HStack {
-                                Image(systemName: "server.rack")
-                                    .font(.title2)
-                                    .foregroundColor(.blue)
-                                    .frame(width: 36, height: 36)
-                                    .background {
-                                        Circle()
-                                            .fill(Color.blue.opacity(0.1))
-                                    }
-                                
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text("使用自定义服务器")
-                                        .font(.headline)
-                                    
-                                    Text("切换使用官方服务器或自定义服务器")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                }
-                                
-                                Spacer()
-                                
-                                Toggle(isOn: $useCustomServer) {}
-                                    .toggleStyle(SwitchToggleStyle(tint: .green))
-                                    .labelsHidden()
-                            }
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 15)
-                            .background {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(UIColor.systemBackground))
-                                    .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
-                            }
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(
-                                        useCustomServer ? Color.blue.opacity(0.3) : Color.gray
-                                            .opacity(0.1),
-                                        lineWidth: 1
-                                    )
-                            )
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 15)
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color(UIColor.systemBackground))
+                                .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
                         }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(
+                                    useAppServer ? Color.blue.opacity(0.3) : Color.gray
+                                        .opacity(0.1),
+                                    lineWidth: 1
+                                )
+                        )
                         // 自定义服务器地址输入框 - 仅在开启自定义服务器时显示
-                        if useCustomServer && !noServerModel{
+                        if !useAppServer {
                             HStack {
                                 Image(systemName: "link")
                                     .font(.title2)
@@ -310,7 +288,7 @@ struct PermissionsStartView: View {
                                 return
                             }
                             // 检查如果开启了自定义服务器，需要验证URL
-                            if useCustomServer {
+                            if !useAppServer {
                                 Task { @MainActor in
                                     let customServer = customServerAddress.normalizedURLString()
 
@@ -418,7 +396,7 @@ struct PermissionsStartView: View {
         self.complete = complete
 
         // 加载已保存的服务器地址
-        if useCustomServer {
+        if !useAppServer {
             _customServerAddress = State(initialValue: appManager.customServerURL)
         } else {
             _customServerAddress = State(initialValue: "")

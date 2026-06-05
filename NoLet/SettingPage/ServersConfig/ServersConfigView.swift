@@ -16,7 +16,6 @@ import SwiftUI
 
 struct ServersConfigView: View {
     @Default(.servers) var servers
-    @Default(.noServerModel) var noServerModel
 
     @EnvironmentObject private var manager: AppManager
     @StateObject private var chatManager = NoLetChatManager.shared
@@ -200,6 +199,24 @@ struct ServersConfigView: View {
             }
         }
         .toolbar {
+            
+            ToolbarItem(placement: .secondaryAction) {
+                Section{
+                    Button {
+                        
+                        Task{
+                            await  manager.appendServer(server: PushServerModel(url: NCONFIG.server))
+                        }
+                       
+                    } label: {
+                        Label("快速添加", systemImage: "point.3.connected.trianglepath.dotted")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, .primary)
+                            .accessibilityLabel("快速添加")
+                    }
+                }
+            }
+            
             ToolbarItem(placement: .secondaryAction) {
                 Section{
                     Button {
@@ -208,7 +225,7 @@ struct ServersConfigView: View {
                     } label: {
                         Label("添加服务器", systemImage: "plus.viewfinder")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(Color.accentColor, Color.primary)
+                            .customForegroundStyle(.accent, .primary)
                             .accessibilityLabel("添加服务器")
                     }
                 }
@@ -223,7 +240,7 @@ struct ServersConfigView: View {
                         } label: {
                             Label("历史服务器", systemImage: "clock.arrow.circlepath")
                                 .symbolRenderingMode(.palette)
-                                .foregroundStyle(Color.accentColor, Color.primary)
+                                .customForegroundStyle(.accent, .primary)
                                 .accessibilityLabel("查看历史服务器")
                         }
                     }
@@ -244,37 +261,6 @@ struct ServersConfigView: View {
             }
         }
         .navigationTitle("服务器")
-        .alert("无服务器模式", isPresented: $showNoServerMode) {
-            Button("取消", role: .cancel) {}
-            Button("开启", role: .destructive) {
-                noServerModel = true
-                servers = []
-
-                Task.detached(priority: .userInitiated) {
-                    let servers = await Defaults[.servers]
-                    await withTaskGroup(of: Void.self) { group in
-                        for server in servers {
-                            group.addTask {
-                                let server = await manager.register(server: server, reset: true)
-                                if server.status {
-                                    Toast.success(title: "操作成功")
-                                } else {
-                                    Toast.question(title: "操作失败")
-                                }
-                            }
-                        }
-                    }
-                }
-                manager.router = []
-            }
-        } message: {
-            Text("开启无服务器模式后, 当前服务器列表的设备令牌将清空!!")
-        }
-        .onDisappear {
-            if servers.count == 0 {
-                noServerModel = true
-            }
-        }
     }
 }
 
@@ -285,7 +271,6 @@ struct ServersConfigView: View {
 
 struct CloudServersView: View {
     @Default(.servers) var servers
-    @Default(.noServerModel) var noServerModel
     @EnvironmentObject private var manager: AppManager
     @EnvironmentObject private var chatManager: NoLetChatManager
 

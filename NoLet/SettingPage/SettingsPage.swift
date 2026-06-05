@@ -22,7 +22,6 @@ struct SettingsPage: View {
     @Default(.sound) var sound
     @Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
-    @Default(.noServerModel) var noServerModel
 
     @State private var webShow: Bool = false
     @State private var showLoading: Bool = false
@@ -97,43 +96,22 @@ struct SettingsPage: View {
 
             Section(header: Text("App配置").textCase(.none)) {
                 ZStack {
-                    if noServerModel {
-                        Toggle(isOn: $noServerModel) {
-                            Label {
-                                Text("无服务器模式")
-                                    .foregroundStyle(.textBlack)
-                            } icon: {
-                                Image(systemName: "apple.logo")
-                                    .symbolRenderingMode(.palette)
-                                    .customForegroundStyle(Color.red)
-                            }
+                    ListButton {
+                        Label {
+                            Text("服务器")
+                                .foregroundStyle(.textBlack)
+                        } icon: {
+                            Image(systemName: "externaldrive.badge.wifi")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(serverTypeColor, Color.primary)
                         }
-                    } else {
-                        ListButton {
-                            Label {
-                                Text("服务器")
-                                    .foregroundStyle(.textBlack)
-                            } icon: {
-                                Image(systemName: "externaldrive.badge.wifi")
-                                    .symbolRenderingMode(.palette)
-                                    .customForegroundStyle(serverTypeColor, Color.primary)
-                            }
 
-                        } action: {
-                            Task { @MainActor in
-                                manager.router = [.server]
-                            }
-                            return true
-                        }.id("servers")
-                    }
-                }
-                .onChange(of: noServerModel) { _ in
-                    if !noServerModel {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    } action: {
+                        Task { @MainActor in
                             manager.router = [.server]
-                            Haptic.impact()
                         }
-                    }
+                        return true
+                    }.id("servers")
                 }
 
                 ListButton {

@@ -1073,6 +1073,9 @@
         }
       }
     },
+    "使用官方服务器" : {
+
+    },
     "使用文档" : {
       "localizations" : {
         "en" : {
@@ -1138,6 +1141,7 @@
       }
     },
     "使用自定义服务器" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3250,6 +3254,7 @@
       }
     },
     "开启无服务器模式后, 当前服务器列表的设备令牌将清空!!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3392,6 +3397,9 @@
           }
         }
       }
+    },
+    "快速添加" : {
+
     },
     "快速预览" : {
       "localizations" : {
@@ -4226,6 +4234,7 @@
       }
     },
     "无服务器模式" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
