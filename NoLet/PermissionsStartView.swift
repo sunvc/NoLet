@@ -38,31 +38,30 @@ enum PermissionStep {
 }
 
 struct PermissionsStartView: View {
-    /// 视图属性
-    @State private var permissionOptions: [PermissionOption] = [
-        .init(
-            mode: .base,
-            title: String(localized: "普通通知权限"),
-            description: String(localized: "接收一般性的应用通知提醒"),
-            iconName: "bell",
-            isSelected: false,
-            isRequired: true
-        ),
-        .init(
-            mode: .critical,
-            title: String(localized: "重要通知权限"),
-            description: String(localized: "接收高优先级的重要通知提醒"),
-            iconName: "bell.badge"
-        ),
-        .init(
-            mode: .network,
-            title: String(localized: "网络通知权限"),
-            description: String(localized: "允许应用通过网络接收推送通知"),
-            iconName: "network",
-            isSelected: false,
-            isRequired: true
-        ),
-    ]
+    @State private var networkPer = PermissionOption(
+        mode: .network,
+        title: String(localized: "网络权限"),
+        description: String(localized: "允许应用通过网络接收推送通知"),
+        iconName: "network",
+        isSelected: false,
+        isRequired: true
+    )
+
+    @State private var basePer = PermissionOption(
+        mode: .base,
+        title: String(localized: "普通通知权限"),
+        description: String(localized: "接收一般性的应用通知提醒"),
+        iconName: "bell",
+        isSelected: false,
+        isRequired: true
+    )
+
+    @State private var criticalPer = PermissionOption(
+        mode: .critical,
+        title: String(localized: "重要通知权限"),
+        description: String(localized: "接收高优先级的重要通知提醒"),
+        iconName: "bell.badge"
+    )
 
     @State private var currentStep: PermissionStep = .networkPermission // 当前权限设置步骤
     @State private var showNextScreen: Bool = false
@@ -73,30 +72,8 @@ struct PermissionsStartView: View {
     @State private var urlValidationError: Bool = false // URL验证错误标志
     @State private var useAppServer = true // 是否使用自定义服务器
     @StateObject private var appManager = AppManager.shared
-    
-    
 
     var complete: (() -> Void)?
-
-    // 检查必选权限是否已选择
-    private var requiredPermissionsSelected: Bool {
-        for option in permissionOptions {
-            if option.isRequired && !option.isSelected {
-                return false
-            }
-        }
-        return true
-    }
-
-    // 检查是否所有权限都已选择
-    private var allPermissionsSelected: Bool {
-        return permissionOptions.allSatisfy { $0.isSelected }
-    }
-
-    // 检查网络权限是否已选择
-    private var isNetworkPermissionSelected: Bool {
-        return permissionOptions.first(where: { $0.mode == .network })?.isSelected == true
-    }
 
     // 获取当前使用的服务器地址
     private var currentServerURL: String {
@@ -130,16 +107,12 @@ struct PermissionsStartView: View {
             if currentStep == .networkPermission {
                 // 第一步：只显示网络权限
                 VStack(spacing: 12) {
-                    Text("网络权限")
+                    Text("确认已开启网络权限")
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal)
 
-                    if let networkIndex = permissionOptions
-                        .firstIndex(where: { $0.mode == .network })
-                    {
-                        PermissionOptionCard(option: $permissionOptions[networkIndex])
-                    }
+                    PermissionOptionCard(option: $networkPer)
 
                     // 网络权限说明
                     VStack(alignment: .leading, spacing: 8) {
@@ -167,7 +140,6 @@ struct PermissionsStartView: View {
                         .padding(.horizontal)
 
                     VStack(spacing: 10) {
-                        
                         HStack {
                             Image(systemName: "server.rack")
                                 .font(.title2)
@@ -177,23 +149,23 @@ struct PermissionsStartView: View {
                                     Circle()
                                         .fill(Color.blue.opacity(0.1))
                                 }
-                            
+
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("使用官方服务器")
                                     .font(.headline)
-                                
+
                                 Text("切换使用官方服务器或自定义服务器")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }
-                            
+
                             Spacer()
-                            
+
                             Toggle(isOn: $useAppServer) {}
                                 .toggleStyle(SwitchToggleStyle(tint: .green))
                                 .labelsHidden()
                                 .onChange(of: useAppServer) { value in
-                                    if value{
+                                    if value {
                                         customServerAddress = ""
                                     }
                                 }
@@ -255,15 +227,8 @@ struct PermissionsStartView: View {
                         .padding(.horizontal)
 
                     VStack(spacing: 10) {
-                        // 只显示普通通知和重要通知权限
-                        ForEach(0..<permissionOptions.count, id: \.self) { index in
-                            if permissionOptions[index].mode != .network {
-                                PermissionOptionCard(option: $permissionOptions[index])
-                                    .onChange(of: permissionOptions[index].isSelected) { newValue in
-                                        handlePermissionChange(index: index, isSelected: newValue)
-                                    }
-                            }
-                        }
+                        PermissionOptionCard(option: $basePer)
+                        PermissionOptionCard(option: $criticalPer)
                     }
                     .padding(.vertical, 8)
                 }
@@ -277,52 +242,43 @@ struct PermissionsStartView: View {
                 if currentStep == .networkPermission {
                     // 第一步：继续按钮
                     Button {
-                        if let networkIndex = permissionOptions
-                            .firstIndex(where: { $0.mode == .network })
-                        {
-                            guard permissionOptions[networkIndex].isSelected else {
-                                // 网络权限未选择，显示警告
-                                alertTitle = String(localized: "需要网络权限")
-                                alertMessage = String(localized: "网络权限是应用正常运行的基础，请授予网络权限以继续。")
-                                showAlert = true
-                                return
-                            }
-                            // 检查如果开启了自定义服务器，需要验证URL
-                            if !useAppServer {
-                                Task { @MainActor in
-                                    let customServer = customServerAddress.normalizedURLString()
+                        guard networkPer.isSelected else {
+                            // 网络权限未选择，显示警告
+                            alertTitle = String(localized: "需要网络权限")
+                            alertMessage = String(localized: "网络权限是应用正常运行的基础，请授予网络权限以继续。")
+                            showAlert = true
+                            return
+                        }
+                        // 检查如果开启了自定义服务器，需要验证URL
+                        if !useAppServer {
+                            Task { @MainActor in
+                                let customServer = customServerAddress.normalizedURLString()
 
-                                    if customServer.count > 10 {
-                                        if await NetworkManager().health(url: customServer) {
-                                            // URL有效，保存并进入下一步
-                                            await MainActor.run {
-                                                appManager.customServerURL = customServerAddress
-                                                withAnimation {
-                                                    self.currentStep = .otherPermissions
-                                                }
-                                            }
-                                            return
+                                if customServer.count > 10 {
+                                    if await NetworkManager().health(url: customServer) {
+                                        appManager.customServerURL = customServerAddress
+                                        withAnimation {
+                                            self.currentStep = .otherPermissions
                                         }
-                                    }
-
-                                    await MainActor.run {
-                                        // URL无效，显示警告
-                                        self.alertTitle = String(localized: "服务器地址无效")
-                                        self
-                                            .alertMessage =
-                                            String(
-                                                localized: "请输入有效的服务器URL地址，例如：https://example.com"
-                                            )
-                                        self.showAlert = true
-                                        self.urlValidationError = true
+                                        return
                                     }
                                 }
+                                // URL无效，显示警告
+                                self.alertTitle = String(localized: "服务器地址无效")
+                                self
+                                    .alertMessage =
+                                    String(
+                                        localized: "请输入有效的服务器URL地址，例如：https://example.com"
+                                    )
+                                self.showAlert = true
+                                self.urlValidationError = true
+                                
+                            }
 
-                            } else {
-                                // 未开启自定义服务器，直接进入下一步
-                                withAnimation {
-                                    currentStep = .otherPermissions
-                                }
+                        } else {
+                            // 未开启自定义服务器，直接进入下一步
+                            withAnimation {
+                                currentStep = .otherPermissions
                             }
                         }
                     } label: {
@@ -333,14 +289,14 @@ struct PermissionsStartView: View {
                             .frame(maxWidth: .infinity)
                             .background {
                                 Capsule()
-                                    .fill(isNetworkPermissionSelected ? Color.blue.gradient : Color
+                                    .fill(networkPer.isSelected ? Color.blue.gradient : Color
                                         .gray.gradient)
                             }
                     }
                 } else {
                     // 第二步：完成按钮
                     Button {
-                        if requiredPermissionsSelected {
+                        if basePer.isSelected && networkPer.isSelected {
                             // 完成并进入下一个界面
                             withAnimation {
                                 showNextScreen = true
@@ -363,7 +319,7 @@ struct PermissionsStartView: View {
                             .frame(maxWidth: .infinity)
                             .background {
                                 Capsule()
-                                    .fill(requiredPermissionsSelected ? Color.blue.gradient : Color
+                                    .fill(basePer.isSelected && networkPer.isSelected ? Color.blue.gradient : Color
                                         .gray.gradient)
                             }
                     }
@@ -388,7 +344,6 @@ struct PermissionsStartView: View {
         }
         .padding(.top, 70)
         .padding(.bottom, 30)
-        
     }
 
     /// 组件初始化
@@ -405,40 +360,6 @@ struct PermissionsStartView: View {
         // 设置默认的alert标题和消息
         _alertTitle = State(initialValue: String(localized: "需要网络权限"))
         _alertMessage = State(initialValue: String(localized: "网络权限是应用正常运行的基础，请授予网络权限以继续。"))
-    }
-
-    /// 处理权限变更的联动逻辑
-    private func handlePermissionChange(index: Int, isSelected: Bool) {
-        // 获取当前修改的权限类型
-        let currentPermissionType = permissionOptions[index].mode
-
-        // 根据当前步骤处理权限联动
-        if currentStep == .networkPermission {
-            // 第一步：网络权限步骤
-            if currentPermissionType == .network, isSelected {
-                // 网络权限被打开，确保普通通知权限也准备好
-                if let baseIndex = permissionOptions.firstIndex(where: { $0.mode == .base }) {
-                    permissionOptions[baseIndex].isSelected = true
-                }
-            }
-        } else {
-            // 第二步：其他权限步骤
-            if isSelected {
-                if currentPermissionType == .base { // 普通通知权限打开
-                    // 确保网络权限已打开（应该在第一步已完成）
-                    if let networkIndex = permissionOptions
-                        .firstIndex(where: { $0.mode == .network })
-                    {
-                        permissionOptions[networkIndex].isSelected = true
-                    }
-                } else if currentPermissionType == .critical { // 重要通知权限打开
-                    // 打开所有权限
-                    for i in 0..<permissionOptions.count {
-                        permissionOptions[i].isSelected = true
-                    }
-                }
-            }
-        }
     }
 
     // 验证URL是否有效
@@ -539,7 +460,7 @@ struct PermissionOptionCard: View {
 }
 
 #Preview {
-   ContentView()
+    ContentView()
         .environmentObject(AppManager.shared)
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()

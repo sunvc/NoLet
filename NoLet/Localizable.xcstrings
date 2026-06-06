@@ -6061,6 +6061,9 @@
         }
       }
     },
+    "确认已开启网络权限" : {
+
+    },
     "示例" : {
       "localizations" : {
         "en" : {
@@ -6414,6 +6417,7 @@
       }
     },
     "网络通知权限" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

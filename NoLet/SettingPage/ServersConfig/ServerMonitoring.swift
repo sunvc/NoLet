@@ -500,14 +500,17 @@ struct SCNetworkCardView: View {
             HStack {
                 SCNetStatItem(label: String(localized: "重传率"), value: status.retransRate)
                 Spacer()
-                SCNetStatItem(label: String(localized: "主动建连"), value: "\(status.activeConn)")
+                SCNetStatItem(
+                    label: String(localized: "主动建连"),
+                    value: formatCount(status.activeConn)
+                )
                 Spacer()
                 SCNetStatItem(
                     label: String(localized: "被动建连"),
                     value: formatCount(status.passiveConn)
                 )
                 Spacer()
-                SCNetStatItem(label: String(localized: "建连失败"), value: "\(status.failConn)")
+                SCNetStatItem(label: String(localized: "建连失败"), value: formatCount(status.failConn))
             }
 
             HStack {
@@ -553,10 +556,17 @@ struct SCNetworkCardView: View {
     }
 
     func formatCount(_ number: Int) -> String {
-        if number > 1000 {
-            return trimZero(Double(number) / 1000) + "k"
+        let units = ["", "K", "M", "B", "T"]
+        
+        var value = Double(number)
+        var unitIndex = 0
+        
+        while value >= 1000 && unitIndex < units.count - 1 {
+            value /= 1000
+            unitIndex += 1
         }
-        return "\(number)"
+        
+        return trimZero(value) + units[unitIndex]
     }
 
     private func trimZero(_ value: Double) -> String {

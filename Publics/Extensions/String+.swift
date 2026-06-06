@@ -49,7 +49,7 @@ extension String {
     }
 
     nonisolated var removingAllWhitespace: String {
-        self.filter({!$0.isWhitespace})
+        self.filter { !$0.isWhitespace }
     }
 
     func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
@@ -144,12 +144,8 @@ extension Character {
 }
 
 extension String {
-
-    
     nonisolated func normalizedURLString() -> String {
-        if self.isEmpty{
-            return NCONFIG.server
-        }
+        if self.isEmpty { return self }
         // 尝试解析
         if let url = URL(string: self),
            let scheme = url.scheme?.lowercased(), scheme.hasHttp
