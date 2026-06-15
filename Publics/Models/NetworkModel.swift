@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - NetworkModel.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,19 +10,19 @@
 
 //  History:
 //    Created by Neo on 2025/12/24 21:37.
-    
 
 import Foundation
 
 // MARK: - Remote Response
-struct baseResponse<T>: Codable where T: Codable {
+
+nonisolated struct baseResponse<T>: Sendable, Codable where T: Codable & Sendable {
     var code: Int
     var message: String
     var data: T?
     var timestamp: Int?
 }
 
-struct DeviceInfo: Codable {
+nonisolated struct DeviceInfo: Codable, Sendable {
     var deviceKey: String
     var deviceToken: String
     var group: String?
@@ -35,7 +35,7 @@ struct DeviceInfo: Codable {
     }
 }
 
-enum requestHeader: String {
+nonisolated enum requestHeader: String {
     case https = "https://"
     case http = "http://"
 }

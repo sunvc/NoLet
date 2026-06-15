@@ -15,15 +15,15 @@ import CryptoKit
 import SwiftUI
 import WechatOpenSDK
 
-final class WeChatManager: NetworkManager, ObservableObject {
+final class WeChatManager: NSObject, ObservableObject {
     static let shared = WeChatManager()
 
     @Published var QRCodeImage: UIImage? = nil
     @Published var QRCodeLoading: Bool = false
 
-    private override init() {
-        super.init()
-    }
+    private let network = NetworkManager()
+
+    private override init() {}
 
     private var auth: WechatAuthSDK?
 
@@ -80,14 +80,19 @@ final class WeChatManager: NetworkManager, ObservableObject {
         do {
             let url = "https://api.weixin.qq.com/sns/oauth2/access_token"
 
-            let params: [String: Any] = [
+            let params: [String: String] = [
                 "appid": self.appid,
                 "secret": self.secret,
                 "code": code,
                 "grant_type": "authorization_code",
             ]
 
-            let data = try await self.fetch(url: url, method: .GET, params: params, headers: [:])
+            let data = try await self.network.fetch(
+                url: url,
+                method: .GET,
+                params: params,
+                headers: [:]
+            )
 
             let res: WeChatTokenResponse = try data.decode()
 
@@ -109,7 +114,7 @@ final class WeChatManager: NetworkManager, ObservableObject {
                 "secret": self.secret,
             ]
 
-            let response = try await self.fetch(url: url, method: .POST, params: params)
+            let response = try await self.network.fetch(url: url, method: .POST, params: params)
 
             let data: WeChatAccessTokenResponse = try response.decode()
             return data
@@ -177,7 +182,7 @@ extension WeChatManager: WechatAuthAPIDelegate {
                 "type": "2",
             ]
 
-            let response = try await self.fetch(url: url, params: params)
+            let response = try await self.network.fetch(url: url, params: params)
 
             let data: WeChatTicketResponse = try response.decode()
 
@@ -210,7 +215,7 @@ extension WeChatManager: WXApiDelegate {
     func getUserInfo(token: String, id: String) async -> WeChatUserResponse? {
         do {
             let url = "https://api.weixin.qq.com/sns/userinfo?access_token=\(token)&openid=\(id)"
-            let data = try await self.fetch(url: url)
+            let data = try await self.network.fetch(url: url)
             let res: WeChatUserResponse = try data.decode()
             return res
         } catch {

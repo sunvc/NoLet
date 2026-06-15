@@ -62,7 +62,7 @@ struct PushToDeviceIntent: AppIntent {
     var body: String?
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
-        var params: [String: Any] = [:]
+        var params: [String: String] = [:]
 
         if let level, !level.isEmpty,
            let level = await LevelTitle.rawValue(fromDisplayName: level)
@@ -70,7 +70,8 @@ struct PushToDeviceIntent: AppIntent {
             params["level"] = level
 
             if await level == LevelTitle.critical.name {
-                params["volume"] = volume
+                
+                params["volume"] = String(describing: volume)
             }
         }
 

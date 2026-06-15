@@ -18,7 +18,7 @@ import StoreKit
 import SwiftUI
 import UIKit
 
-final class AppManager: NetworkManager, ObservableObject, Sendable {
+final class AppManager: ObservableObject, Sendable {
     static let shared = AppManager()
 
     @Published var page: TabPage = .message
@@ -57,6 +57,8 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     @Published var totalWidth: CGFloat = 0
 
+    var network = NetworkManager()
+
     var messageColume: [GridItem] {
         Array(
             repeating: GridItem(.flexible(), spacing: 10),
@@ -80,8 +82,7 @@ final class AppManager: NetworkManager, ObservableObject, Sendable {
 
     private var appending: Bool = false
 
-    private override init() {
-        super.init()
+    private init() {
         updates = newTransactionListenerTask()
     }
 
@@ -416,7 +417,7 @@ extension AppManager {
     func restore(address: String, deviceKey: String, sign: String? = nil) async -> Bool {
         do {
             let response: baseResponse<String> =
-                try await fetch(
+                try await self.network.fetch(
                     url: address,
                     path: "/register/\(deviceKey)",
                     headers: CryptoManager.signature(sign: sign, server: deviceKey)
@@ -478,9 +479,9 @@ extension AppManager {
                 deviceKey: server.key,
                 deviceToken: deviceToken,
                 group: server.group
-            ).toEncodableDictionary() ?? [:]
+            )
 
-            let response: baseResponse<DeviceInfo> = try await fetch(
+            let response: baseResponse<DeviceInfo> = try await self.network.fetch(
                 url: server.url,
                 path: "/register",
                 method: .POST,

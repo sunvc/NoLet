@@ -12,7 +12,7 @@
 
 import SwiftUI
 
-extension Encodable {
+nonisolated extension Encodable {
     func toEncodableDictionary() -> [String: Any]? {
         guard let data = try? JSONEncoder().encode(self) else { return nil }
         guard let dictionary = try? JSONSerialization.jsonObject(
@@ -23,7 +23,7 @@ extension Encodable {
     }
 }
 
-extension Dictionary where Key == AnyHashable, Value == Any {
+nonisolated extension Dictionary where Key == AnyHashable, Value == Any {
     func toStringDict(excluding keysToExclude: [String] = []) -> [String: String] {
         var result: [String: String] = [:]
         for (keyAny, valueAny) in self {

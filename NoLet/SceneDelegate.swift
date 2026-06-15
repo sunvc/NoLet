@@ -45,6 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             overlay.isUserInteractionEnabled = true
             overlayWindow = overlay
         }
+        
+        
 
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url

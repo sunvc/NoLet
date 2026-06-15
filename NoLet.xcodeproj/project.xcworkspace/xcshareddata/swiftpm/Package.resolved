@@ -1,5 +1,5 @@
 {
-  "originHash" : "98892c270226db13a1f436cc8ba88304a10dd83276d5a674d417665578338a14",
+  "originHash" : "97e9703be4be8de43ca8a91cb094618830b339fdddeff62e2d096aa21c7fc70f",
   "pins" : [
     {
       "identity" : "defaults",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "50fe2d27e207e4c354524f4eef07f652a096bfa1",
         "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "opus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sunvc/Opus.git",
+      "state" : {
+        "revision" : "eb2d8a0a7e08c03e4c767a45a6d1afa78e6f64d8",
+        "version" : "1.0.1"
       }
     },
     {

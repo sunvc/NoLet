@@ -17,7 +17,7 @@ import UIKit
 enum SubPage: Equatable, Identifiable {
     static func == (lhs: SubPage, rhs: SubPage) -> Bool {
         switch (lhs, rhs) {
-        case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon),
+        case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon), (.ptt, .ptt),
              (.cloudIcon, .cloudIcon), (.paywall, .paywall), (.cloudServer, .cloudServer):
             return true
         case (.web(let a), .web(let b)):
@@ -47,6 +47,7 @@ enum SubPage: Equatable, Identifiable {
     case share(contents: [Any], preview: UIImage?, title: String?)
     case cloudServer
     case authView
+    case ptt
 
     var id: String {
         switch self {
@@ -61,6 +62,7 @@ enum SubPage: Equatable, Identifiable {
         case .share: "share"
         case .cloudServer: "cloudServer"
         case .authView: "authView"
+        case .ptt: "ptt"
         }
     }
 }
@@ -80,7 +82,6 @@ enum RouterPage: Hashable {
     case appleServerInfo
     case files(url: URL)
     case web(url: URL)
-
 }
 
 extension RouterPage: Equatable {

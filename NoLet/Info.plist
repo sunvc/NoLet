@@ -47,6 +47,10 @@
 		<string>INStartCallIntent</string>
 		<string>INSendMessageIntent</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Digital-7 Mono.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -68,6 +72,7 @@
 	<array>
 		<string>remote-notification</string>
 		<string>audio</string>
+		<string>push-to-talk</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
 	<array>

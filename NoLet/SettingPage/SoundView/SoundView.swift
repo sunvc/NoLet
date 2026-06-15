@@ -158,7 +158,7 @@ struct SoundView: View {
         let fileManager = FileManager.default
 
         // 1️⃣ 下载 zip 文件
-        let zipURL = try await tipsManager.download(
+        let zipURL = try await tipsManager.network.download(
             from: NCONFIG.soundsRemoteURL.url
         )
 

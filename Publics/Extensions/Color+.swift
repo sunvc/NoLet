@@ -14,7 +14,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-extension UIColor {
+nonisolated extension UIColor {
     convenience init?(hexString: String) {
         // 只保留 0-9 A-F a-f
         let hex = hexString.uppercased().filter { "0123456789ABCDEF".contains($0) }

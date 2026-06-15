@@ -13,6 +13,7 @@
 import AVFAudio
 import CloudKit
 import Defaults
+import PushToTalk
 import UIKit
 
 @main
@@ -39,6 +40,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         WeChatManager.shared.register()
         AppManager.shared.isWXAppInstalled = WeChatManager.isWXAppInstalled()
+
+        Task {
+            let manager = try await PTChannelManager.channelManager(
+                delegate: PTTChannelDelegate.shared,
+                restorationDelegate: PTTChannelDelegate.shared
+            )
+            
+            PushTalkManager.shared.channelManager = manager
+        }
         return true
     }
 

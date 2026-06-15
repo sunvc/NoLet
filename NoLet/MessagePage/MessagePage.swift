@@ -67,6 +67,11 @@ struct MessagePage: View {
         }
         .deleteTips($selectAction)
         .toolbar {
+            
+            ToolbarItem(placement: .secondaryAction) {
+               pttButton
+            }
+            
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: messageManager
                     .allCount <= 3 ? .topBarLeading : .secondaryAction) { exampleButton }
@@ -96,6 +101,19 @@ struct MessagePage: View {
                 Label("使用示例", systemImage: "questionmark.bubble")
                     .symbolRenderingMode(.palette)
                     .customForegroundStyle(Color.accent, Color.primary)
+            }
+        }
+    }
+    
+    private var pttButton: some View{
+        Section {
+            Button {
+                manager.open(full: .ptt)
+                Haptic.impact()
+            } label: {
+                Label("语音对讲", systemImage: "person.line.dotted.person")
+                    .symbolRenderingMode(.palette)
+                    .customForegroundStyle(.accent, .primary)
             }
         }
     }

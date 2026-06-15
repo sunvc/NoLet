@@ -19,7 +19,7 @@ import SwiftUI
 
 // MARK: - 铃声界面播放铃声 Actor
 
-final class AudioManager: NetworkManager, ObservableObject {
+final class AudioManager: ObservableObject {
     static let shared = AudioManager()
 
     @Published var defaultSounds: [URL] = []
@@ -40,9 +40,10 @@ final class AudioManager: NetworkManager, ObservableObject {
     private var playerItemStatusObserver: NSKeyValueObservation?
 
     private var endObserver: NSObjectProtocol?
+    
+    var network = NetworkManager()
 
-    private override init() {
-        super.init()
+    private init() {
         updateFileList()
     }
 

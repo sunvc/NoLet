@@ -18,7 +18,7 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-class NetworkManager: NSObject {
+final nonisolated class NetworkManager: NSObject, Sendable {
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -34,7 +34,7 @@ class NetworkManager: NSObject {
         var method: String { rawValue }
     }
 
-    nonisolated struct Response: Sendable {
+    struct Response: Sendable {
         var data: Data
         var header: HTTPURLResponse
 
@@ -56,11 +56,11 @@ class NetworkManager: NSObject {
     ///   - method: 请求方法（默认为 GET）
     ///   - params: 请求参数（支持 GET 查询参数或 POST body）
     /// - Returns: 返回泛型解码后的模型数据
-    func fetch<T: Codable>(
+    func fetch<T: Codable, P: Encodable & Sendable>(
         url: String,
         path: String = "",
         method: requestMethod = .GET,
-        params: [String: Any] = [:],
+        params: P? = nil,
         headers: [String: String] = [:],
         timeout: Double = 30
     ) async throws -> T {
@@ -79,12 +79,14 @@ class NetworkManager: NSObject {
 
         return try response.decode() as T
     }
-
-    func fetch(
+    
+    
+   
+    func fetch<P: Encodable & Sendable>(
         url: String,
         path: String = "",
         method: requestMethod = .GET,
-        params: [String: Any] = [:],
+        params: P? = nil,
         headers: [String: String] = [:],
         timeout: Double = 30
     ) async throws -> Response {
@@ -104,15 +106,8 @@ class NetworkManager: NSObject {
             throw APIError.invalidURL
         }
 
-        if method == .GET, !params.isEmpty {
-            var items = components.queryItems ?? []
-
-            let newItems: [URLQueryItem] = params.map { key, value in
-                URLQueryItem(name: key, value: String(describing: value))
-            }
-
-            items.append(contentsOf: newItems)
-            components.queryItems = items
+        if method == .GET, let params {
+            components.queryItems = try params.queryItems()
         }
 
         guard let requestURL = components.url else {
@@ -130,8 +125,8 @@ class NetworkManager: NSObject {
         }
 
         // 如果是 POST 请求，将参数编码为 JSON 设置到 httpBody
-        if method == .POST, !params.isEmpty {
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+        if method == .POST, let params {
+            request.httpBody = try JSONEncoder().encode(params)
         }
         request.timeoutInterval = timeout
 
@@ -143,6 +138,48 @@ class NetworkManager: NSObject {
 //        logger.debug("\(request.description)\(params)\(String(data: data, encoding: .utf8))")
         return Response(data: data, header: response)
     }
+    
+    // 无 params
+    func fetch<T: Codable>(
+        url: String,
+        path: String = "",
+        method: requestMethod = .GET,
+        headers: [String: String] = [:],
+        timeout: Double = 30
+    ) async throws -> T {
+        let response = try await fetch(
+            url: url,
+            path: path,
+            method: method,
+            params: EmptyParams(),
+            headers: headers,
+            timeout: timeout
+        )
+
+        guard response.check() else {
+            throw APIError.invalidCode(response.header.statusCode)
+        }
+
+        return try response.decode() as T
+    }
+    // 无 params
+    func fetch(
+        url: String,
+        path: String = "",
+        method: requestMethod = .GET,
+        headers: [String: String] = [:],
+        timeout: Double = 30
+    ) async throws -> Response {
+        return try await self.fetch(
+            url: url,
+            path: path,
+            method: method,
+            params: EmptyParams(),
+            headers: headers,
+            timeout: timeout
+        )
+    }
+    
 
     func test(url: String = "https://www.apple.com") async -> Bool {
         return (try? await fetch(url: url, method: .HEAD))?.check() ?? false
@@ -169,7 +206,7 @@ class NetworkManager: NSObject {
         }
 
         request.timeoutInterval = timeout
-
+        
         // 创建下载任务
         let (downloadedURL, response) = try await session.download(for: request)
 
@@ -219,5 +256,65 @@ class NetworkManager: NSObject {
         let language = locale.language.languageCode?.identifier ?? "en" // e.g. zh
 
         return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
+    }
+
+    struct EmptyParams: Codable, Sendable {}
+    
+    func uploadFile(
+        data: Data,
+        url: String,
+        path: String? = nil,
+        headers: [String: String] = [:]
+    ) async throws -> Data {
+        guard var url = URL(string: url) else {
+            throw APIError.invalidURL
+        }
+
+        if let path {
+            let cleanedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+            url.appendPathComponent(cleanedPath)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+
+        for (key, value) in headers {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+
+        let useragent = await self.customUserAgent()
+        request.setValue(useragent, forHTTPHeaderField: "User-Agent")
+        request.setValue(await Defaults[.id], forHTTPHeaderField: "Authorization")
+        request.timeoutInterval = 15
+
+        let (data, response) = try await self.session.upload(for: request, from: data)
+        // 验证响应
+        guard let httpResponse = response as? HTTPURLResponse,
+              200...299 ~= httpResponse.statusCode
+        else {
+            throw APIError.invalidCode(-1)
+        }
+
+        return data
+    }
+}
+
+nonisolated extension Encodable {
+    fileprivate func queryItems() throws -> [URLQueryItem] {
+        let data = try JSONEncoder().encode(self)
+
+        let object = try JSONSerialization.jsonObject(
+            with: data
+        )
+
+        guard let dict = object as? [String: Any] else {
+            return []
+        }
+
+        return dict.map {
+            URLQueryItem(
+                name: $0.key,
+                value: String(describing: $0.value)
+            )
+        }
     }
 }

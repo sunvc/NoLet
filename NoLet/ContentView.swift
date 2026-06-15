@@ -120,7 +120,6 @@ struct ContentView: View {
                 manager.totalWidth = value
             }
         )
-        
     }
 
     @ViewBuilder
@@ -228,6 +227,8 @@ struct ContentView: View {
                 }
             case .web(let url):
                 SFSafariView(url: url).ignoresSafeArea()
+            case .ptt:
+                PushToTalkView()
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
