@@ -154,7 +154,7 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
         }
     }
 
-    func startRecording(_ activity: Bool = true) async {
+    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
         logger.debug("Avvio trasmissione audio...")
         
         let clock = ContinuousClock()
@@ -204,7 +204,7 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
             }
             self.skippedSamplesCount = 0
             let targetSampleCount = UInt32(audioFormat.sampleRate * 0.26)
-            let pttMusicPlay = await Defaults[.pttMusicPlay]
+            
             inputNode
                 .installTap(
                     onBus: 0,

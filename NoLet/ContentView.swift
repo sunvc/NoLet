@@ -24,6 +24,7 @@ struct ContentView: View {
     @StateObject private var messageManager = MessagesManager.shared
     @Default(.firstStart) private var firstStart
     @Default(.assistantAccouns) var assistantAccouns
+    @Default(.usePtt) var usePtt
 
     @State private var HomeViewMode: NavigationSplitViewVisibility = .detailOnly
 
@@ -134,6 +135,19 @@ struct ContentView: View {
                     } label: {
                         tabLabel(title: String(localized: "消息"), icon: "ellipsis.message")
                     }.badge(messageManager.unreadCount)
+                    
+                    if usePtt{
+                        Tab(value: .ptt) {
+                            NavigationStack(path: _page($manager.trouter)) {
+                                PushToTalkView()
+                                    .router(manager)
+                                    .toolbar(.hidden, for: .tabBar)
+                            }
+                        } label: {
+                            tabLabel(title: String(localized: "语音"), icon: "message.and.waveform")
+                        }
+                    }
+                    
 
                     Tab(value: .setting) {
                         NavigationStack(path: _page($manager.srouter)) {
@@ -163,6 +177,16 @@ struct ContentView: View {
                     .tabItem { tabLabel(title: String(localized: "消息"), icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
+                    
+                    if usePtt{
+                        NavigationStack(path: _page($manager.trouter)) {
+                            PushToTalkView()
+                                .router(manager)
+                                .toolbar(.hidden, for: .tabBar)
+                        }
+                        .tabItem { tabLabel(title: String(localized: "语音"), icon: "message.and.waveform")}
+                        .tag(TabPage.ptt)
+                    }
 
                     NavigationStack(path: _page($manager.srouter)) {
                         SettingsPage().router(manager)
@@ -227,8 +251,6 @@ struct ContentView: View {
                 }
             case .web(let url):
                 SFSafariView(url: url).ignoresSafeArea()
-            case .ptt:
-                PushToTalkView()
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

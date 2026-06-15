@@ -64,4 +64,5 @@ extension Defaults.Keys {
 
     static let feedbackSound = Key<Bool>("feedbackSound", false)
     static let nearbyShow = Key<Bool>("nearbyShow", false)
+    static let usePtt = Key<Bool>("usePushToTalk", false)
 }

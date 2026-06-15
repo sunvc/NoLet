@@ -513,9 +513,9 @@ struct PushToTalkView: View {
                     Label {
                         Text("历史频道")
                     } icon: {
-                        Image(systemName: "list.bullet.clipboard")
+                        Image(systemName: "text.pad.header.badge.clock")
                             .foregroundStyle(.orange, .primary)
-                            .font(.title)
+                            .font(.largeTitle)
                     }
                     .labelStyle(.iconOnly)
                 }
@@ -553,7 +553,7 @@ struct PushToTalkView: View {
                     self.showVoiceList.toggle()
                     Haptic.impact()
                 } label: {
-                    Image(systemName: "message.and.waveform")
+                    Image(systemName: "text.bubble.badge.clock")
                         .foregroundStyle(.white, .accent)
                         .font(.largeTitle)
                 }
@@ -562,14 +562,17 @@ struct PushToTalkView: View {
 
                 Spacer(minLength: 0)
                 Button {
-                    AppManager.shared.open(full: .none)
+                    AppManager.shared.page = .message
                     Haptic.impact()
                 } label: {
-                    Image(systemName: "house.circle")
+                    Image(systemName: "apple.homekit")
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(.orange, .yellow, .pink)
                         .font(.largeTitle)
                         .padding(.trailing, 10)
 
                 }.offset(x: buttonType == .call ? 0 : 100)
+                
             }
             .padding(.horizontal, 30)
             .opacity(buttonType == .call ? 1 : 0)

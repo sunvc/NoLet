@@ -24,9 +24,54 @@ struct MoreOperationsView: View {
     @Default(.defaultBrowser) var defaultBrowser
     @Default(.muteSetting) var muteSetting
     @Default(.feedbackSound) var feedbackSound
+    @Default(.usePtt) var usePtt
 
     var body: some View {
         List {
+            
+            Section{
+                Toggle(isOn: $usePtt) {
+                    Label {
+                        Text("语音消息")
+                    } icon: {
+                        Image(systemName: "message.badge.waveform")
+                            .foregroundStyle(
+                                usePtt ? Color.accentColor : Color.red,
+                                Color.primary
+                            )
+                    }
+                }
+                
+                ListButton {
+                    Label {
+                        Text("云图标")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        ZStack {
+                            Image(systemName: "icloud")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(Color.primary)
+                            Image(systemName: "photo")
+                                .scaleEffect(0.4)
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.accent)
+                                .offset(y: 2)
+                        }
+                    }
+                } action: {
+                    Task { @MainActor in
+                        manager.open(sheet: .cloudIcon)
+                    }
+                    return true
+                }.id("icloudPng")
+                
+            }header: {
+                Text("附加功能")
+                    .bold()
+                    .font(.footnote)
+            }
+            
+            
             Section {
                 Toggle(isOn: $feedbackSound) {
                     Label {

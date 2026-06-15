@@ -116,29 +116,6 @@ struct SettingsPage: View {
 
                 ListButton {
                     Label {
-                        Text("云图标")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        ZStack {
-                            Image(systemName: "icloud")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(Color.primary)
-                            Image(systemName: "photo")
-                                .scaleEffect(0.4)
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent)
-                                .offset(y: 2)
-                        }
-                    }
-                } action: {
-                    Task { @MainActor in
-                        manager.open(sheet: .cloudIcon)
-                    }
-                    return true
-                }.id("icloudPng")
-
-                ListButton {
-                    Label {
                         Text("智能助手")
                     } icon: {
                         Image("agent")
@@ -156,7 +133,7 @@ struct SettingsPage: View {
 
                 ListButton {
                     Label {
-                        Text("声音设置")
+                        Text("铃声设置")
                     } icon: {
                         Image(systemName: "speaker.wave.2.circle")
                             .symbolRenderingMode(.palette)

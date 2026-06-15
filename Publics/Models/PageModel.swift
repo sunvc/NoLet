@@ -17,7 +17,7 @@ import UIKit
 enum SubPage: Equatable, Identifiable {
     static func == (lhs: SubPage, rhs: SubPage) -> Bool {
         switch (lhs, rhs) {
-        case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon), (.ptt, .ptt),
+        case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon),
              (.cloudIcon, .cloudIcon), (.paywall, .paywall), (.cloudServer, .cloudServer):
             return true
         case (.web(let a), .web(let b)):
@@ -47,7 +47,6 @@ enum SubPage: Equatable, Identifiable {
     case share(contents: [Any], preview: UIImage?, title: String?)
     case cloudServer
     case authView
-    case ptt
 
     var id: String {
         switch self {
@@ -62,7 +61,6 @@ enum SubPage: Equatable, Identifiable {
         case .share: "share"
         case .cloudServer: "cloudServer"
         case .authView: "authView"
-        case .ptt: "ptt"
         }
     }
 }
@@ -114,4 +112,5 @@ enum TabPage: String, Sendable, CaseIterable {
     case message
     case setting
     case assistant
+    case ptt
 }

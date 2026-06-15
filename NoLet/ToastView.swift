@@ -192,7 +192,7 @@ struct ToastGroup: View {
                     ColoredBorder()
                 }
             }
-            .statusBarHidden(manager.fullPage == .ptt)
+            .statusBarHidden(manager.page == .ptt)
             
         }
     }

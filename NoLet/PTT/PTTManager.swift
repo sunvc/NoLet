@@ -92,7 +92,7 @@ final class PushTalkManager: ObservableObject {
             }
         )
     }
-    
+
     func joinConnect() async throws {
         self.powerState = true
         self.serverStatus = .connecting
@@ -140,7 +140,7 @@ final class PushTalkManager: ObservableObject {
 
         case (.idle, .startRecord(let activity)):
             beginRecord(activity)
-            
+
         case (.idle, .recordStarted):
             internalStopRecord(isCancel: true)
 
@@ -228,7 +228,7 @@ final class PushTalkManager: ObservableObject {
 
     func playWaitList() {
         guard let message = waitPlayList.first else {
-            internalStopPlay()
+            self.send(.stopPlay)
             return
         }
         self.send(.startPlay(message))
@@ -256,10 +256,8 @@ final class PushTalkManager: ObservableObject {
     private func beginRecord(_ activity: Bool = true) {
         state = .recording
         logger.info("Start Record")
-        Task { 
-            await audioHandler.startRecording(activity)
-            send(.recordStarted)
-        }
+        audioHandler.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
+        send(.recordStarted)
     }
 
     private func internalStopPlay() {
@@ -541,8 +539,6 @@ extension PushTalkManager {
             logger.error("\(error.localizedDescription)")
             return nil
         }
-        
-
     }
 }
 
@@ -565,7 +561,6 @@ extension PushTalkManager {
         case recording
 
         var title: String {
-            
             switch self {
             case .idle:
                 return String(localized: "空闲中")

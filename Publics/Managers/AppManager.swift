@@ -30,6 +30,7 @@ final class AppManager: ObservableObject, Sendable {
     @Published var searchText: String = ""
 
     @Published var mrouter: [RouterPage] = []
+    @Published var trouter: [RouterPage] = []
     @Published var srouter: [RouterPage] = []
     @Published var arouter: [RouterPage] = []
     @Published var prouter: [RouterPage] = []
@@ -76,6 +77,8 @@ final class AppManager: ObservableObject, Sendable {
                 srouter = router
             case .assistant:
                 arouter = router
+            case .ptt:
+                trouter = router
             }
         }
     }
