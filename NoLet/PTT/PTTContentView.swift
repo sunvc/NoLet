@@ -10,7 +10,7 @@ import Combine
 import Defaults
 import SwiftUI
 
-struct PushToTalkView: View {
+struct PTTContentView: View {
     @Environment(\.dismiss) var dismiss
     @State private var ispress: Bool = false
 
@@ -862,11 +862,6 @@ struct HourAndMinuteView: View {
 
 
 #Preview {
-    PushToTalkView()
+    PTTContentView()
 }
 
-extension Int {
-    func KHZ() -> String {
-        formatted(.number.precision(.integerLength(3)))
-    }
-}

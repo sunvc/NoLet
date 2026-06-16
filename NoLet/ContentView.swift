@@ -138,7 +138,7 @@ struct ContentView: View {
                     if usePtt{
                         Tab(value: .ptt) {
                             NavigationStack(path: _page($manager.trouter)) {
-                                PushToTalkView()
+                                PTTContentView()
                                     .router(manager)
                                     .toolbar(.hidden, for: .tabBar)
                             }
@@ -179,7 +179,7 @@ struct ContentView: View {
                     
                     if usePtt{
                         NavigationStack(path: _page($manager.trouter)) {
-                            PushToTalkView()
+                            PTTContentView()
                                 .router(manager)
                                 .toolbar(.hidden, for: .tabBar)
                         }
