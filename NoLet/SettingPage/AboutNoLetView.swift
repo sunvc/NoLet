@@ -187,7 +187,7 @@ struct AboutNoLetView: View {
                 HStack {
                     Text("应用信息")
                     Spacer()
-                    Text("\(allMessagecount)")
+                    Text(verbatim: "\(allMessagecount)")
                         .contentTransition(.numericText())
                         .animation(.easeInOut(duration: 0.3), value: allMessagecount)
                 }

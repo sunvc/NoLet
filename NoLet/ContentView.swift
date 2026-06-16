@@ -19,10 +19,12 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) var sizeClass
-    @Default(.showGroup) private var showGroup
+    
     @ObservedObject private var manager = AppManager.shared
     @ObservedObject private var messageManager = MessagesManager.shared
+    
     @Default(.firstStart) private var firstStart
+    @Default(.showGroup) private var showGroup
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.usePtt) var usePtt
 

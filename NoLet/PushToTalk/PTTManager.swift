@@ -1307,7 +1307,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
 
         isRemotePushIncoming.withLock { $0 = true }
 
-        if let remote = pushPayload["remote"] as? String {
+        if let remote = pushPayload["url"] as? String {
             Task {
                 if let voice = await pttManager.saveVoice(remoteUrl: remote) {
                     await pttManager.send(.startPlay(voice))

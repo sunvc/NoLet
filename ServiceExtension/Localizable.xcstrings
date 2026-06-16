@@ -200,6 +200,12 @@
             "state": "translated",
             "value": "无服务器"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No server"
+          }
         }
       }
     },

@@ -129,22 +129,6 @@
         }
       }
     },
-    "%lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
-          }
-        }
-      }
-    },
     "%lld个月": {
       "localizations": {
         "en": {
@@ -605,22 +589,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Markdown样式"
-          }
-        }
-      }
-    },
-    "No active physical interface": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No active physical interface"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No active physical interface"
           }
         }
       }

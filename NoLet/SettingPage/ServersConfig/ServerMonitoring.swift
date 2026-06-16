@@ -530,7 +530,7 @@ struct SCNetworkCardView: View {
                 SCNetworkInterfaceRow(interface: primary)
                     .padding(.vertical, 8)
             } else {
-                Text("No active physical interface")
+                Text(verbatim: "No active physical interface")
                     .font(.caption)
                     .foregroundColor(.gray)
             }

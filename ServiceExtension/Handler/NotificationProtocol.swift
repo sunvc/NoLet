@@ -63,7 +63,6 @@ enum ProcessorItem: CaseIterable {
     case badge
     case mute
     case level
-    case action
     case attachment
     case icon
 
@@ -75,7 +74,6 @@ enum ProcessorItem: CaseIterable {
         case .mute: MuteProcessor()
         case .icon: IconProcessor()
         case .attachment: AttachmentProcessor()
-        case .action: ActionProcessor()
         case .level: LevelProcessor()
         }
     }
