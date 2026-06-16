@@ -20,8 +20,8 @@ struct PushToTalkView: View {
 
     @State private var historyNumber: Int = 0
 
-    @State private var prefixTem: Int = 0
-    @State private var suffixTem: Int = 0
+    @State private var mhzTem: Int = -1
+    @State private var khzTem: Int = -1
     @State private var showSettings: Bool = false
 
     @Default(.pttChannel) var pttChannel
@@ -32,11 +32,7 @@ struct PushToTalkView: View {
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
 
-    var pttServers: [PushServerModel] {
-        var servers = servers.filter { $0.status > 1 }
-        servers.insert(PushServerModel.noServer, at: 0)
-        return servers
-    }
+    
 
     var iconVolume: String {
         if pttVoiceVolume <= 0 {
@@ -58,15 +54,6 @@ struct PushToTalkView: View {
     @State private var offset: CGFloat = 0
 
     private let throttler5 = Throttler(delay: 0.5)
-
-    private var topshape: some Shape {
-        UnevenRoundedRectangle(
-            topLeadingRadius: 0,
-            bottomLeadingRadius: 35,
-            bottomTrailingRadius: 35,
-            topTrailingRadius: 0
-        )
-    }
 
     @State private var isEncryption: Bool = true
 
@@ -133,27 +120,7 @@ struct PushToTalkView: View {
     var body: some View {
         VStack {
             ZStack {
-                topshape
-                    .fill(
-                        LinearGradient(
-                            colors: [Color(#colorLiteral(red: 0.3, green: 0.5, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0.4, green: 0.8, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0.3728182146, green: 0.7853954082, blue: 0, alpha: 1))],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .overlay {
-                        if pttManager.powerState {
-                            topshape
-                                .stroke(.white, lineWidth: 5)
-                                .blur(radius: 10)
-                        }
-                    }
-                    .overlay {
-                        if !pttManager.powerState {
-                            Color.black
-                                .opacity(0.1)
-                        }
-                    }
+                GreenbackgroundView()
 
                 VStack {
                     HStack {
@@ -212,16 +179,9 @@ struct PushToTalkView: View {
                     .padding(.horizontal, 10)
                     .frame(height: 55)
                     .padding(.top, 5)
-                    HStack {
-                        ChannelUsersView()
 
-                        Spacer(minLength: 0)
-
-                        Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
-                            .font(.numberStyle(size: 20))
-                            .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
-                    }
-                    .padding(.horizontal, 15)
+                    ChannelUsersView()
+                        .padding(.horizontal, 15)
                     Spacer(minLength: 0)
                     HStack {
                         ZStack {
@@ -350,8 +310,15 @@ struct PushToTalkView: View {
                             }
 
                         Spacer(minLength: 0)
+                        
+                        
 
                         Picker(selection: $pttChannel.server) {
+                            var pttServers: [PushServerModel] {
+                                var servers = servers.filter { $0.status > 1 }
+                                servers.insert(PushServerModel.noServer, at: 0)
+                                return servers
+                            }
                             ForEach(pttServers, id: \.self) { server in
                                 Text(server.name)
                                     .tag(server)
@@ -362,6 +329,7 @@ struct PushToTalkView: View {
                             .offset(x: 10)
                     }
                     Spacer(minLength: 0)
+                    
                     HStack {
                         if isPlaying {
                             Text(verbatim: String(format: "%.1f", pttManager.currentPlayTime))
@@ -393,6 +361,7 @@ struct PushToTalkView: View {
                 .padding(.bottom, 10)
             }
             .frame(height: 320)
+
             CenterButtonsView()
 
             RoundedRectangle(cornerRadius: 5)
@@ -400,7 +369,7 @@ struct PushToTalkView: View {
                 .frame(height: 5)
                 .padding(.horizontal, 10)
 
-            bottonViews()
+            BottomBottonViews()
         }
         .background(.background)
         .ignoresSafeArea(.container, edges: .top)
@@ -437,6 +406,38 @@ struct PushToTalkView: View {
         }
     }
 
+    @ViewBuilder
+    func GreenbackgroundView() -> some View {
+        let topshape = UnevenRoundedRectangle(
+            topLeadingRadius: 0,
+            bottomLeadingRadius: 35,
+            bottomTrailingRadius: 35,
+            topTrailingRadius: 0
+        )
+
+        topshape
+            .fill(
+                LinearGradient(
+                    colors: [Color(#colorLiteral(red: 0.3, green: 0.5, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0.4, green: 0.8, blue: 0, alpha: 1)), Color(#colorLiteral(red: 0.3728182146, green: 0.7853954082, blue: 0, alpha: 1))],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay {
+                if pttManager.powerState {
+                    topshape
+                        .stroke(.white, lineWidth: 5)
+                        .blur(radius: 10)
+                }
+            }
+            .overlay {
+                if !pttManager.powerState {
+                    Color.black
+                        .opacity(0.1)
+                }
+            }
+    }
+
     private func scheduleAutoHide() {
         // 取消之前的任务
         hideWorkItem?.cancel()
@@ -452,35 +453,43 @@ struct PushToTalkView: View {
 
     @ViewBuilder
     func ChannelUsersView() -> some View {
-        HStack(alignment: .bottom, spacing: 0) {
-            Text(verbatim: String(format: "%02d", pttManager.channelUsers))
-                .font(.numberStyle(size: 20))
-                .offset(y: 2)
-                .foregroundStyle(pttManager.channelUsers > 0 ?
-                    Color.white : Color.white.opacity(0.3))
-                .fontWeight(.bold)
-                .tracking(3)
-                .offset(y: pttManager.state == .recording ? 30 : 0)
-                .opacity(pttManager.state == .recording ? 0 : 1)
-                .animation(.default, value: pttManager.state)
-                .animation(.default, value: pttManager.state)
+        HStack {
+            HStack(alignment: .bottom, spacing: 0) {
+                Text(verbatim: String(format: "%02d", pttManager.channelUsers))
+                    .font(.numberStyle(size: 20))
+                    .offset(y: 2)
+                    .foregroundStyle(pttManager.channelUsers > 0 ?
+                        Color.white : Color.white.opacity(0.3))
+                    .fontWeight(.bold)
+                    .tracking(3)
+                    .offset(y: pttManager.state == .recording ? 30 : 0)
+                    .opacity(pttManager.state == .recording ? 0 : 1)
+                    .animation(.default, value: pttManager.state)
+                    .animation(.default, value: pttManager.state)
 
-            ForEach(Array(0...2), id: \.self) { item in
-                Image(systemName: "person")
-                    .if(true) { view in
-                        Group {
-                            if item > pttManager.channelUsers - 1 {
-                                view
-                                    .foregroundStyle(.white.opacity(0.1))
-                            } else {
-                                view
-                                    .foregroundStyle(.black)
-                                    .symbolVariant(.fill)
+                ForEach(Array(0...2), id: \.self) { item in
+                    Image(systemName: "person")
+                        .if(true) { view in
+                            Group {
+                                if item > pttManager.channelUsers - 1 {
+                                    view
+                                        .foregroundStyle(.white.opacity(0.1))
+                                } else {
+                                    view
+                                        .foregroundStyle(.black)
+                                        .symbolVariant(.fill)
+                                }
                             }
                         }
-                    }
-                    .animation(.default, value: pttManager.channelUsers)
+                        .animation(.default, value: pttManager.channelUsers)
+                }
             }
+
+            Spacer(minLength: 0)
+
+            Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
+                .font(.numberStyle(size: 20))
+                .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
         }
     }
 
@@ -501,7 +510,7 @@ struct PushToTalkView: View {
                 }
                 .transition(.move(edge: .leading))
                 .padding(.trailing, 20)
-                .offset(x: buttonType == .prefix || buttonType == .suffix ? 0 : -100)
+                .offset(x: buttonType == .mhz || buttonType == .khz ? 0 : -100)
                 .animation(.easeInOut, value: buttonType)
                 Spacer()
 
@@ -526,7 +535,7 @@ struct PushToTalkView: View {
             }
             .padding(.horizontal)
             .padding(.top)
-            .opacity(buttonType == .prefix || buttonType == .suffix ? 1 : 0)
+            .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
             HStack(spacing: 20) {
                 Button {
                     if pttManager.powerState {
@@ -584,20 +593,18 @@ struct PushToTalkView: View {
     }
 
     @ViewBuilder
-    func bottonViews() -> some View {
+    func BottomBottonViews() -> some View {
         VStack {
             Spacer(minLength: 0)
             ZStack {
-                RotateButtonView {
-                    dotColor($0, $1)
-                } rotate: { changeTalkChannel($0) }
+                RotateButtonView { changeTalkChannel($0) }
                     .padding(50)
                     .frame(
                         maxWidth: .ISPAD ? minSize / 2 : windowWidth,
                         maxHeight: .ISPAD ? minSize / 2 : windowWidth
                     )
-                    .scaleEffect(buttonType == .prefix || buttonType == .suffix ? 1 : 0.5)
-                    .opacity(buttonType == .prefix || buttonType == .suffix ? 1 : 0)
+                    .scaleEffect(buttonType == .mhz || buttonType == .khz ? 1 : 0.5)
+                    .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
 
                 GeometryReader { proxy in
                     let size = proxy.size
@@ -658,8 +665,8 @@ struct PushToTalkView: View {
     @ViewBuilder
     func MhzAndKhzView() -> some View {
         HStack(alignment: .bottom, spacing: 0) {
-            Text(verbatim: "\(prefixTem == 0 ? pttChannel.prefix : prefixTem)")
-                .foregroundStyle(buttonType == .prefix ? .red : .white)
+            Text(verbatim: "\(mhzTem == -1 ? pttChannel.mhz : mhzTem)")
+                .foregroundStyle(buttonType == .mhz ? .red : .white)
                 .contentShape(Rectangle())
                 .VButton { _ in
                     guard !pttManager.powerState else {
@@ -667,7 +674,7 @@ struct PushToTalkView: View {
                         return false
                     }
                     withAnimation {
-                        self.buttonType = self.buttonType == .prefix ? .call : .prefix
+                        self.buttonType = self.buttonType == .mhz ? .call : .mhz
                     }
 
                     return true
@@ -675,20 +682,22 @@ struct PushToTalkView: View {
 
             Text(verbatim: ".")
                 .foregroundStyle(.white)
-            
-            Text(verbatim:  "\(suffixTem == 0 ? pttChannel.suffix.formatted(.number.precision(.integerLength(3))) : suffixTem.formatted(.number.precision(.integerLength(3))))")
-                .foregroundStyle(buttonType == .suffix ? .red : .white)
-                .contentShape(Rectangle())
-                .VButton { _ in
-                    guard !pttManager.powerState else {
-                        Toast.info(title: "请先关闭监听!")
-                        return false
-                    }
-                    withAnimation {
-                        self.buttonType = self.buttonType == .suffix ? .call : .suffix
-                    }
-                    return true
+
+            Text(
+                verbatim: "\(khzTem == -1 ? pttChannel.khz.KHZ() : khzTem.KHZ())"
+            )
+            .foregroundStyle(buttonType == .khz ? .red : .white)
+            .contentShape(Rectangle())
+            .VButton { _ in
+                guard !pttManager.powerState else {
+                    Toast.info(title: "请先关闭监听!")
+                    return false
                 }
+                withAnimation {
+                    self.buttonType = self.buttonType == .khz ? .call : .khz
+                }
+                return true
+            }
         }
         .font(.numberStyle(size: 70))
         .fontWeight(.black)
@@ -727,12 +736,12 @@ struct PushToTalkView: View {
     func changeTalkChannel(_ angle: Int) {
         if angle == 0 {
             switch buttonType {
-            case .prefix where prefixTem != 0:
-                pttChannel.prefix = prefixTem
-                prefixTem = 0
-            case .suffix where suffixTem != 0:
-                pttChannel.suffix = suffixTem
-                suffixTem = 0
+            case .mhz where mhzTem >= 0:
+                pttChannel.mhz = mhzTem
+                mhzTem = -1
+            case .khz where khzTem >= 0:
+                pttChannel.khz = khzTem
+                khzTem = -1
             default:
                 break
             }
@@ -755,41 +764,12 @@ struct PushToTalkView: View {
         Haptic.selection()
 
         switch buttonType {
-        case .prefix:
-            prefixTem = max(1, min(999, number + pttChannel.prefix))
-        case .suffix:
-            suffixTem = max(1, min(999, number + pttChannel.suffix))
+        case .mhz:
+            mhzTem = max(1, min(999, number + pttChannel.mhz))
+        case .khz:
+            khzTem = max(0, min(999, number + pttChannel.khz))
         case .call: break
         }
-    }
-
-    func btnStatus(_ isUP: Bool = true) -> Bool {
-        if prefixTem == 0 && suffixTem == 0 {
-            return false
-        }
-        switch buttonType {
-        case .prefix:
-            let status = prefixTem > pttChannel.prefix
-            return isUP ? status : !status
-        case .suffix:
-            let status = suffixTem > pttChannel.suffix
-            return isUP ? status : !status
-        case .call:
-            return false
-        }
-    }
-
-    func dotColor(_ upNumber: Int = 0, _ angle: Int) -> Color {
-        if buttonType == .suffix && (suffixTem >= 999 || suffixTem <= 1) && suffixTem > 0 {
-            return upNumber == 0 ? .gray : .red
-        } else if buttonType == .prefix && (prefixTem >= 999 || prefixTem <= 10) && prefixTem > 0 {
-            return upNumber == 0 ? .gray : .red
-        }
-
-        let colors: [Color] = [.gray, .green, .cyan, .blue, .yellow, .orange, .red]
-        let number = abs(Int(angle / 360)) + upNumber
-        let index = number % colors.count
-        return colors[index]
     }
 }
 
@@ -860,6 +840,33 @@ private struct SetVolumePeakView: View {
     }
 }
 
+struct HourAndMinuteView: View {
+    @State private var currentTime = Date()
+    private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
+    
+    
+    
+    var body: some View {
+        Text(timeString(from: currentTime))
+            .onReceive(timer) { _ in
+                currentTime = Date()
+            }
+    }
+    
+    private func timeString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"  // 24小时制，如果要12小时制改成 "hh:mm a"
+        return formatter.string(from: date)
+    }
+}
+
+
 #Preview {
     PushToTalkView()
+}
+
+extension Int {
+    func KHZ() -> String {
+        formatted(.number.precision(.integerLength(3)))
+    }
 }

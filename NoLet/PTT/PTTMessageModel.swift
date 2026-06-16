@@ -42,13 +42,13 @@ extension PttMessageModel {
     init?(remote address: URL) {
         let fileName = address.deletingPathExtension().lastPathComponent
         let params = fileName.split(separator: "-").compactMap { String($0) }
-        guard params.count == 5, let times = Int(params[4], radix: 32)
+        guard params.count == 4, let times = Int(params[3], radix: 32)
         else { return nil }
 
         self.timestamp = Date(timeIntervalSince1970: TimeInterval(times) / 1000)
         self.sign = params.first == "1"
-        self.from = params[3]
-        self.channel = params[1...2].joined(separator: "-")
+        self.from = params[2]
+        self.channel = params[1]
         self.remote = address.absoluteString
         self.file = params[1...].joined(separator: "-") + "." + address.pathExtension
     }

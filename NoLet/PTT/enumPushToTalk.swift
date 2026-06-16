@@ -10,27 +10,28 @@ import Foundation
 import SwiftUI
 
 enum TalkButtonType: String, CaseIterable {
-    case prefix
-    case suffix
+    case mhz
+    case khz
     case call
 }
 
 struct PTTChannel: Identifiable, Equatable, Codable {
-    var id: String { "\(prefix)-\(suffix)".toUUID() }
+    var id: String { "\(channel)".toUUID() }
     var timestamp: Date = .now
-    var prefix: Int = 50
-    var suffix: Int = 1
+    var mhz: Int = 98
+    var khz: Int = 1
     var server: PushServerModel = .noServer
-    
-    var serverOK: Bool{ server != .noServer }
+
+    var channel: Int { mhz * 1000 + khz }
+
+    var serverOK: Bool { server != .noServer }
 
     var channelID: UUID {
         UUID(uuidString: id) ?? UUID()
     }
 
     static func == (lhs: PTTChannel, rhs: PTTChannel) -> Bool {
-        return lhs.prefix == rhs.prefix &&
-            lhs.suffix == rhs.suffix
+        return lhs.channel == rhs.channel
     }
 
     func fileName(userID: String) -> String {
@@ -43,32 +44,18 @@ struct PTTChannel: Identifiable, Equatable, Codable {
         NCONFIG.getDir(.ptt)?.appendingPathComponent(fileName(userID: userID))
     }
 
-    func hex() -> String {
-        String(prefix, radix: 32) + "-" + String(suffix, radix: 32)
+    func hex() -> String { String(channel, radix: 32) }
+
+    static func from(_ channel: String) -> (Int, Int)? {
+        guard let channel = Int(channel, radix: 32) else { return nil }
+        let mhz = channel / 1000
+        let khz = channel % 1000
+        return (mhz, khz)
     }
 
-    static func from(_ string: String) -> (Int, Int)? {
-        let parts = string.split(separator: "-", maxSplits: 1)
-
-        guard parts.count == 2,
-              let prefix = Int(parts[0], radix: 32),
-              let suffix = Int(parts[1], radix: 32)
-        else {
-            return nil
-        }
-
-        return (prefix, suffix)
-    }
-
-    static func decimal(hexString: String) -> Self? {
-        let parts = hexString.lowercased().split(separator: "-")
-        guard parts.count == 2,
-              let prefix = Int(parts[0], radix: 32),
-              let suffix = Int(parts[1], radix: 32) else { return nil }
-        var data = Self()
-        data.prefix = prefix
-        data.suffix = suffix
-        return data
+    static func decimal(_ channel: String) -> Self? {
+        guard let channel = self.from(channel) else { return nil }
+        return Self(mhz: channel.0, khz: channel.1)
     }
 }
 

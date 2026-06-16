@@ -178,25 +178,6 @@ struct BackgroundClearView: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
-struct HourAndMinuteView: View {
-    @State private var currentTime = Date()
-    private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
-    
-    
-    
-    var body: some View {
-        Text(timeString(from: currentTime))
-            .onReceive(timer) { _ in
-                currentTime = Date()
-            }
-    }
-    
-    private func timeString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"  // 24小时制，如果要12小时制改成 "hh:mm a"
-        return formatter.string(from: date)
-    }
-}
 
 
 #Preview {

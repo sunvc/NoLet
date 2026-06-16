@@ -39,12 +39,12 @@ struct PTTVoiceListView: View {
 
                     } header: {
                         HStack {
-                            if let channel = PTTChannel.decimal(hexString: item.channel) {
+                            if let channel = PTTChannel.decimal(item.channel) {
                                 HStack {
                                     Image(systemName: "speaker.wave.2.bubble")
                                         .foregroundStyle(item.read ? .gray : .green)
 
-                                    Text(verbatim: "\(channel.prefix).\(channel.suffix)")
+                                    Text(verbatim: "\(channel.mhz).\(channel.khz)")
                                         .font(.numberStyle(size: 20))
                                         .fontWeight(.black)
                                 }

@@ -35,9 +35,9 @@ struct PTTChannelListView: View {
                                 .scaleEffect(0.9)
                                 .foregroundStyle(.gray)
                             HStack(spacing: 0){
-                                Text(verbatim: "\(item.prefix)")
+                                Text(verbatim: "\(item.mhz)")
                                 Text(verbatim: ".")
-                                Text(verbatim: "\(item.suffix)")
+                                Text(verbatim: "\(item.khz)")
                                 
                             }.font(.numberStyle(size: 28))
                             
@@ -59,9 +59,6 @@ struct PTTChannelListView: View {
                                 .shadow(group: false)
                         )
                         
-//                        .VButton{ _ in
-//                            return complete(item)
-//                        }
                         .padding(.horizontal)
                         .swipeActions(allowsFullSwipe: true) {
                             Button{
