@@ -24,7 +24,7 @@ enum SelectMessageViewMode: Int, Equatable {
 struct SelectMessageView: View {
     var message: Message
     var dismiss: () -> Void
-    @StateObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var chatManager = NoLetChatManager.shared
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.translateLang) var translateLang
 
@@ -36,7 +36,7 @@ struct SelectMessageView: View {
     @ScaledMetric(relativeTo: .subheadline) var baseSubtitleSize: CGFloat = 15
     @ScaledMetric(relativeTo: .footnote) var basedateSize: CGFloat = 13
 
-    @StateObject private var manager = AppManager.shared
+    @ObservedObject private var manager = AppManager.shared
 
     @State private var isDismiss: Bool = false
     @State private var messageShowMode: SelectMessageViewMode = .raw

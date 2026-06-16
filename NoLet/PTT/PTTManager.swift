@@ -35,7 +35,7 @@ final class PushTalkManager: ObservableObject {
 
     var channelManager: PTChannelManager?
 
-    private var audioHandler = CombinedAudioManager()
+    let audioHandler = CombinedAudioManager()
 
     private let database = DatabaseManager.shared
     private let network = NetworkManager()
@@ -96,11 +96,23 @@ final class PushTalkManager: ObservableObject {
     func joinConnect() async throws {
         self.powerState = true
         self.serverStatus = .connecting
-        self.setupAudio()
+
+        if !hasPermission {
+            audioHandler.requestAudioPermission()
+        }
+        audioHandler.setupAudio()
+
         let channel = Defaults[.pttChannel]
         self.setServerStatus(.connecting, id: channel.channelID)
 
-        let success = await self.connect(channel: channel, join: true)
+        let result = await self.connect(channel: channel, join: true)
+
+        if let data = result?.data {
+            self.channelUsers = data
+            logger.log("频道人数:\(data)")
+        }
+
+        let success = result?.code == 200
 
         self.serverStatus = success ? .online : .failed
 
@@ -116,8 +128,8 @@ final class PushTalkManager: ObservableObject {
         self.powerState = false
         self.serverStatus = .connecting
         let data = Defaults[.pttChannel]
-        let success = await self.connect(channel: data, join: false)
-        self.serverStatus = success ? .offline : .failed
+        let result = await self.connect(channel: data, join: false)
+        self.serverStatus = result?.code == 200 ? .offline : .failed
     }
 
     private func setServerStatus(_ status: PTServiceStatus, id: UUID) {
@@ -334,6 +346,13 @@ final class PushTalkManager: ObservableObject {
         self.audioHandler.setVolume(value)
     }
 
+    func changeEQ() {
+        self.audioHandler.changeEQ(
+            bands: Defaults[.eqBands],
+            globalGain: Float(Defaults[.globalGain])
+        )
+    }
+
     // MARK: - OTHER
 
     nonisolated func playTips(
@@ -409,13 +428,6 @@ final class PushTalkManager: ObservableObject {
         // 4. 按比例线性映射到 0~1
         return (abs(minDb) - abs(power)) / abs(minDb)
     }
-
-    func setupAudio() {
-        if !hasPermission {
-            audioHandler.requestAudioPermission()
-        }
-        audioHandler.setupAudio()
-    }
 }
 
 extension PushTalkManager: AudioHardwareDelegate {
@@ -452,15 +464,18 @@ extension PushTalkManager: AudioHardwareDelegate {
 }
 
 extension PushTalkManager {
-    func connect(channel: PTTChannel, join: Bool) async -> Bool {
-        guard let server = channel.server else { return false }
+    func connect(channel: PTTChannel, join: Bool) async -> baseResponse<Int>? {
+        guard channel.serverOK else {
+            Toast.info(title: "语音服务器错误")
+            return nil
+        }
 
         do {
             logger.log("channel:\(channel.hex())")
 
             guard let result: baseResponse<Int> =
                 try await self.network.fetch(
-                    url: server.url,
+                    url: channel.server.url,
                     path: "/ptt/connect",
                     method: .POST,
                     params: [
@@ -468,31 +483,34 @@ extension PushTalkManager {
                         "channel": channel.hex(),
                         "token": join ? Defaults[.pttToken] : "",
                     ],
-                    headers: [:],
+                    headers: [
+                        "Authorization": Defaults[.id],
+                        "channel": channel.hex(),
+                    ],
                     timeout: 5
                 )
             else {
                 throw "请求失败"
             }
 
-            if let data = result.data {
-                DispatchQueue.main.async {
-                    PushTalkManager.shared.channelUsers = data
-                }
-                logger.log("频道人数:\(data)")
-            }
-
-            return result.code == 200
+            return result
         } catch {
             logger.error("\(error)")
-            return false
+            Toast.error(title: "语音服务连接失败")
+            return nil
         }
     }
 
     func sendVoice(message: PttMessageModel) async -> Bool {
         let channel = Defaults[.pttChannel]
-        guard let server = channel.server,
-              let filePath = message.filePath() else { return false }
+        guard channel.serverOK else {
+            Toast.info(title: "语音服务器错误")
+            return false
+        }
+
+        guard let filePath = message.filePath() else {
+            return false
+        }
 
         do {
             var data = try Data(contentsOf: filePath)
@@ -507,15 +525,25 @@ extension PushTalkManager {
 
             let response = try await self.network.uploadFile(
                 data: data,
-                url: server.url,
+                url: channel.server.url,
                 path: "/ptt/voice",
-                headers: ["X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)"]
+                headers: [
+                    "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
+                    "Authorization": Defaults[.id],
+                    "channel": channel.hex(),
+                ]
             )
 
             let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
+
+            if let users = result.data, users >= 0 {
+                self.channelUsers = Int(users)
+            }
+
             return result.code == 200
         } catch {
             logger.error("\(error.localizedDescription)")
+            Toast.error(title: "发送语音失败")
             return false
         }
     }
@@ -523,7 +551,11 @@ extension PushTalkManager {
     private func getVoice(remote remoteFileURL: URL, decode: Bool = false) async -> Data? {
         do {
             let response = try await self.network.fetch(
-                url: remoteFileURL.absoluteString
+                url: remoteFileURL.absoluteString,
+                headers: [
+                    "Authorization": Defaults[.id],
+                    "channel": Defaults[.pttChannel].hex(),
+                ]
             )
 
             var data = response.data

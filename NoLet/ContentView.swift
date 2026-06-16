@@ -20,8 +20,8 @@ struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) var sizeClass
     @Default(.showGroup) private var showGroup
-    @StateObject private var manager = AppManager.shared
-    @StateObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
     @Default(.firstStart) private var firstStart
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.usePtt) var usePtt
@@ -49,7 +49,6 @@ struct ContentView: View {
             if sizeClass == .regular {
                 NavigationSplitView(columnVisibility: $HomeViewMode) {
                     SettingsPage()
-                        .environmentObject(manager)
                 } detail: {
                     NavigationStack(path: _page($manager.prouter)) {
                         MessagePage()
@@ -66,7 +65,7 @@ struct ContentView: View {
                     }
             }
         }
-        .environmentObject(manager)
+        
         .sheet(isPresented: $firstStart) {
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
@@ -259,7 +258,7 @@ struct ContentView: View {
                 }
             }
         }
-        .environmentObject(manager)
+        
     }
 
     @ViewBuilder
@@ -294,8 +293,6 @@ struct ContentView: View {
                     CloudServersView()
                         .presentationDetents([.medium])
                         .presentationDragIndicator(.visible)
-                        .environmentObject(manager)
-                        .environmentObject(NoLetChatManager.shared)
                 }
             case .authView:
                 AuthTestView()
@@ -309,7 +306,6 @@ struct ContentView: View {
                 }
             }
         }
-        .environmentObject(manager)
         .customPresentationCornerRadius(30)
     }
 }
@@ -370,7 +366,6 @@ extension View {
             }
             .toolbar(.hidden, for: .tabBar)
             .navigationBarTitleDisplayMode(.large)
-            .environmentObject(manager)
         }
     }
 }
@@ -384,5 +379,4 @@ struct ContentWidthKey: PreferenceKey {
 
 #Preview {
     ContentView()
-        .environmentObject(AppManager.shared)
 }

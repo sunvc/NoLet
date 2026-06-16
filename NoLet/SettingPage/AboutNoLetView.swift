@@ -15,7 +15,7 @@ import StoreKit
 import SwiftUI
 
 struct AboutNoLetView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @Default(.appIcon) private var setting_active_app_icon
     @Default(.deviceToken) private var deviceToken
     @Default(.id) private var id
@@ -254,7 +254,6 @@ struct AboutNoLetView: View {
         .task {
             await loadProduct()
         }
-        
     }
 
     func loadProduct() async {

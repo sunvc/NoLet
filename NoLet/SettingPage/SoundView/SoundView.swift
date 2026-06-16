@@ -18,7 +18,7 @@ import UIKit
 import Zip
 
 struct SoundView: View {
-    @StateObject private var tipsManager = AudioManager.shared
+    @ObservedObject private var tipsManager = AudioManager.shared
 
     @State private var showUpload: Bool = false
     @State private var uploadLoading: Bool = false

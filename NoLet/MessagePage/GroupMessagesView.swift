@@ -16,13 +16,12 @@ import GRDB
 import SwiftUI
 
 struct GroupMessagesView: View {
-    @EnvironmentObject private var messageManager: MessagesManager
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var manager = AppManager.shared
 
     var body: some View {
         ScrollViewReader { proxy in
             List {
-
                 ForEach(messageManager.groupMessages, id: \.id) { message in
                     MessageRow(message: message)
 
@@ -82,7 +81,7 @@ struct MessageRow: View {
     var message: Message
     var customIcon: String = ""
     @State private var unreadCount: Int = 0
-    @EnvironmentObject private var messageManager: MessagesManager
+    @ObservedObject private var messageManager = MessagesManager.shared
     var body: some View {
         HStack {
             if unreadCount > 0 {

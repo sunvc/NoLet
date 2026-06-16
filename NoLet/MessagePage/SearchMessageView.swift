@@ -21,8 +21,8 @@ struct SearchMessageView: View {
     @State private var messages: [Message] = []
     @State private var allCount: Int = 0
     @State private var searchTask: Task<Void, Never>?
-    @StateObject private var manager = AppManager.shared
-    @StateObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
     @Default(.assistantAccouns) var assistantAccouns
 
     @State private var searched: Bool = false

@@ -16,7 +16,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct MoreOperationsView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     @Default(.autoSaveToAlbum) var autoSaveToAlbum
 
@@ -28,8 +28,7 @@ struct MoreOperationsView: View {
 
     var body: some View {
         List {
-            
-            Section{
+            Section {
                 Toggle(isOn: $usePtt) {
                     Label {
                         Text("语音消息")
@@ -41,7 +40,7 @@ struct MoreOperationsView: View {
                             )
                     }
                 }
-                
+
                 ListButton {
                     Label {
                         Text("云图标")
@@ -64,14 +63,13 @@ struct MoreOperationsView: View {
                     }
                     return true
                 }.id("icloudPng")
-                
-            }header: {
+
+            } header: {
                 Text("附加功能")
                     .bold()
                     .font(.footnote)
             }
-            
-            
+
             Section {
                 Toggle(isOn: $feedbackSound) {
                     Label {
@@ -225,6 +223,5 @@ extension DefaultBrowserModel {
 #Preview {
     NavigationStack {
         MoreOperationsView()
-            .environmentObject(AppManager.shared)
     }
 }

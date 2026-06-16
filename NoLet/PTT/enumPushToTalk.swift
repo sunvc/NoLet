@@ -20,7 +20,9 @@ struct PTTChannel: Identifiable, Equatable, Codable {
     var timestamp: Date = .now
     var prefix: Int = 50
     var suffix: Int = 1
-    var server: PushServerModel? = nil
+    var server: PushServerModel = .noServer
+    
+    var serverOK: Bool{ server != .noServer }
 
     var channelID: UUID {
         UUID(uuidString: id) ?? UUID()
@@ -42,7 +44,7 @@ struct PTTChannel: Identifiable, Equatable, Codable {
     }
 
     func hex() -> String {
-        return String(prefix, radix: 32) + "-" + String(suffix, radix: 32)
+        String(prefix, radix: 32) + "-" + String(suffix, radix: 32)
     }
 
     static func from(_ string: String) -> (Int, Int)? {
@@ -87,6 +89,8 @@ extension Defaults.Keys {
 
 extension [PTTChannel] {
     mutating func set(_ data: PTTChannel) {
+        guard data.server.id != "000000"else { return }
+
         var data = data
         if let index = self.firstIndex(of: data) {
             self[index].timestamp = .now

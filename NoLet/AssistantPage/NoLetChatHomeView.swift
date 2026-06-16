@@ -21,8 +21,8 @@ struct NoLetChatHomeView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.showAssistantAnimation) var showAssistantAnimation
 
-    @EnvironmentObject private var manager: AppManager
-    @StateObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var manager =  AppManager.shared
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     @State private var inputText: String = ""
 
@@ -124,7 +124,6 @@ struct NoLetChatHomeView: View {
                 .customPresentationCornerRadius(30)
                 .presentationDetents([.medium, .large])
         }
-        .environmentObject(chatManager)
         .deleteTips($selectAction)
     }
 
@@ -373,5 +372,4 @@ struct NoLetChatHomeView: View {
 
 #Preview {
     NoLetChatHomeView()
-        .environmentObject(AppManager.shared)
 }

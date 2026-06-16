@@ -15,7 +15,7 @@ import AuthenticationServices
 import SwiftUI
 
 struct AuthTestView: View {
-    @StateObject private var wechat = WeChatManager.shared
+    @ObservedObject private var wechat = WeChatManager.shared
     var body: some View {
         NavigationStack {
             VStack {

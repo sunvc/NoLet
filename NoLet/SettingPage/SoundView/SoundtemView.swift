@@ -127,5 +127,4 @@ struct SoundItemView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(AppManager.shared)
 }

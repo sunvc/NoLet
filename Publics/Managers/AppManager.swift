@@ -499,11 +499,11 @@ extension AppManager {
 
             if let data = response.data {
                 server.key = data.deviceKey
-                server.status = true
+                server.status = data.core ?? 1
             }
             return server
         } catch {
-            server.status = false
+            server.status = 0
             logger.error("\(error)")
             return server
         }
@@ -525,7 +525,7 @@ extension AppManager {
         }
 
         let serverNew = await register(server: serverCopy)
-        if serverNew.status {
+        if serverNew.status > 0{
             if reset {
                 /// 重置后清空老的token
                 _ = await register(server: server, reset: true)
@@ -547,7 +547,7 @@ extension AppManager {
         }
 
         appending = false
-        return serverNew.status
+        return serverNew.status > 0
     }
 }
 

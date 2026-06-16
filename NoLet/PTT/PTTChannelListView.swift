@@ -79,8 +79,8 @@ struct PTTChannelListView: View {
                             Text(verbatim: "\(item.timestamp.agoFormatString())")
                                 .padding(.leading)
                             Spacer()
-                            if let server = item.server{
-                                Text(verbatim: "\(server.name)")
+                            if item.serverOK {
+                                Text(verbatim: "\(item.server.name)")
                                     .padding(.trailing)
                                     .textCase(.lowercase)
                             }
@@ -111,7 +111,7 @@ struct PTTChannelListView: View {
         .onAppear{
             var pttHisArr:[PTTChannel] = []
             for channel in pttHisChannel{
-                if let server = channel.server, servers.contains(server){
+                if channel.serverOK, servers.contains(channel.server){
                     pttHisArr.append(channel)
                 }
             }

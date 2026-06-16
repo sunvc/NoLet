@@ -24,7 +24,7 @@ enum IAPImage: String, CaseIterable {
 
 @available(iOS 17.0, *)
 struct PayWallHighView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @State private var loadingStatus: (Bool, Bool) = (false, false)
 
     var isLoadingCompleted: Bool {
@@ -210,10 +210,8 @@ struct PayWallHighView: View {
 @available(iOS 17.0, *)
 #Preview {
     PayWallHighView()
-        .environmentObject(AppManager.shared)
         .sheet(isPresented: .constant(true)) {
             PayWallHighView()
-                .environmentObject(AppManager.shared)
         }
 }
 

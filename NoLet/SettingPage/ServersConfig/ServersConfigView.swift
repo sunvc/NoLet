@@ -17,8 +17,8 @@ import SwiftUI
 struct ServersConfigView: View {
     @Default(.servers) var servers
 
-    @EnvironmentObject private var manager: AppManager
-    @StateObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var chatManager = NoLetChatManager.shared
     @State private var showNoServerMode: Bool = false
 
     var cloudServers: [PushServerModel] {
@@ -28,11 +28,11 @@ struct ServersConfigView: View {
     }
 
     var NormalServer: [PushServerModel] {
-        servers.filter { $0.status }
+        servers.filter { $0.status > 0 }
     }
 
     var ErrorServer: [PushServerModel] {
-        servers.filter { !$0.status }
+        servers.filter { $0.status <= 0 }
     }
 
     var body: some View {
@@ -72,7 +72,7 @@ struct ServersConfigView: View {
                                 servers.remove(at: index)
                                 Task {
                                     let server = await manager.register(server: item, reset: true)
-                                    if server.status {
+                                    if server.status > 0 {
                                         Toast.success(title: "操作成功")
                                     } else {
                                         Toast.question(title: "操作失败")
@@ -142,7 +142,7 @@ struct ServersConfigView: View {
                                             server: item,
                                             reset: true
                                         )
-                                        if server.status {
+                                        if server.status > 0 {
                                             Toast.success(title: "操作成功")
                                         } else {
                                             Toast.question(title: "操作失败")
@@ -186,7 +186,7 @@ struct ServersConfigView: View {
             if servers.count > 0 {
                 Task {
                     await manager.registers()
-                    let updateCount = servers.filter { $0.status }.count
+                    let updateCount = servers.filter { $0.status > 0 }.count
                     if updateCount == servers.count {
                         Toast.success(title: "更新成功")
                     } else if updateCount > 0 && updateCount < servers.count {
@@ -199,15 +199,13 @@ struct ServersConfigView: View {
             }
         }
         .toolbar {
-            
             ToolbarItem(placement: .secondaryAction) {
-                Section{
+                Section {
                     Button {
-                        
-                        Task{
-                            await  manager.appendServer(server: PushServerModel(url: NCONFIG.server))
+                        Task {
+                            await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
                         }
-                       
+
                     } label: {
                         Label("快速添加", systemImage: "point.3.connected.trianglepath.dotted")
                             .symbolRenderingMode(.palette)
@@ -216,9 +214,9 @@ struct ServersConfigView: View {
                     }
                 }
             }
-            
+
             ToolbarItem(placement: .secondaryAction) {
-                Section{
+                Section {
                     Button {
                         manager.open(sheet: nil)
                         manager.open(full: .customKey)
@@ -230,11 +228,10 @@ struct ServersConfigView: View {
                     }
                 }
             }
-            
-            
+
             if cloudServers.count > 0 {
                 ToolbarItem(placement: .secondaryAction) {
-                    Section{
+                    Section {
                         Button {
                             manager.open(sheet: .cloudServer)
                         } label: {
@@ -246,9 +243,9 @@ struct ServersConfigView: View {
                     }
                 }
             }
-            
+
             ToolbarItem(placement: .secondaryAction) {
-                Section{
+                Section {
                     Button {
                         manager.router = [.server, .appleServerInfo]
                         Haptic.impact()
@@ -266,13 +263,12 @@ struct ServersConfigView: View {
 
 #Preview {
     ServersConfigView()
-        .environmentObject(AppManager.shared)
 }
 
 struct CloudServersView: View {
     @Default(.servers) var servers
-    @EnvironmentObject private var manager: AppManager
-    @EnvironmentObject private var chatManager: NoLetChatManager
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     var cloudServers: [PushServerModel] {
         manager.servers.filter { item in
@@ -292,7 +288,7 @@ struct CloudServersView: View {
                         if success {
                             manager.open(sheet: nil)
                         }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.downID = nil
                         }
                     }
@@ -304,7 +300,6 @@ struct CloudServersView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
                         Task { @MainActor in
-                            
                             let success = await CloudManager.shared.delete(
                                 item.id,
                                 pub: false
@@ -313,7 +308,6 @@ struct CloudServersView: View {
                                 manager.servers.removeAll(where: { $0.id == item.id })
                                 Toast.success(title: "删除成功")
                             }
-                           
                         }
                     } label: {
                         Label("删除", systemImage: "trash")

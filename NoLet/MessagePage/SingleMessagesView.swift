@@ -19,13 +19,12 @@ struct SingleMessagesView: View {
     @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.assistantAccouns) var assistantAccouns
 
-
     @State private var isLoading: Bool = false
 
     @State private var showAllTTL: Bool = false
 
-    @EnvironmentObject private var manager: AppManager
-    @EnvironmentObject private var messageManager: MessagesManager
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
 
     @State private var showLoading: Bool = false
     @State private var scrollItem: String = ""
@@ -44,11 +43,9 @@ struct SingleMessagesView: View {
         messageManager.messages.elementFromEnd(5)
     }
 
-
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-               
                 LazyVGrid(columns: manager.messageColume) {
                     ForEach(messageManager.messages, id: \.id) { message in
                         MessageCard(
@@ -79,7 +76,7 @@ struct SingleMessagesView: View {
                         }
                     }
                 }
-                
+
                 if messagesCount == 0 && showLoading {
                     DataLoadingView()
                 }
@@ -155,7 +152,7 @@ struct SingleMessagesView: View {
         Task {
             let count = await messageManager.updateRead()
             logger.info("更新未读条数: \(count)")
-            
+
             let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
 
             await MainActor.run {
@@ -184,7 +181,7 @@ extension Array {
 }
 
 struct DataLoadingView: View {
-    var text: String = String(localized: "数据加载中...")
+    var text: String = .init(localized: "数据加载中...")
     var body: some View {
         HStack {
             Spacer()

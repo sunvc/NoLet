@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - StreamingLoadingView.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,14 +10,13 @@
 
 //  History:
 //    Created by Neo on 2026/1/7 08:54.
-    
 
 import SwiftUI
 
 struct StreamingLoadingView: View {
     var showLoading: Bool
 
-    @EnvironmentObject private var chatManager: NoLetChatManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     var body: some View {
         if showLoading {
@@ -25,7 +24,6 @@ struct StreamingLoadingView: View {
                 chatManager.cancellableRequest?.cancel()
             } label: {
                 HStack(spacing: 8) {
-
                     Spinner(tint: Color.orange, lineWidth: 3)
                         .frame(width: 20, height: 20, alignment: .center)
 

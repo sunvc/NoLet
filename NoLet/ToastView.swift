@@ -170,7 +170,7 @@ enum ToastSymbol: String {
 
 struct ToastGroup: View {
     @ObservedObject var model = Toast.shared
-    @StateObject private var manager = AppManager.shared
+    @ObservedObject private var manager = AppManager.shared
     @Default(.showAssistantAnimation) var showAssistantAnimation
     var body: some View {
         GeometryReader {

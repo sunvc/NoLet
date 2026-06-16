@@ -29,21 +29,18 @@ struct ReasonMessageView: View {
             .contentShape(Rectangle())
 
             ScrollView(.vertical) {
-                
-                
-                
                 VStack(spacing: 0) {
-                    if let result = message?.result, let text = result.text(){
+                    if let result = message?.result, let text = result.text() {
                         reasonView(
-                        """
-                        ```json
-                        \(text)
-                        ```
-                        """
+                            """
+                            ```json
+                            \(text)
+                            ```
+                            """
                         )
                     }
                     ForEach(reasons, id: \.self) { item in
-                      reasonView(item)
+                        reasonView(item)
                     }
                 }
                 .padding(.vertical)
@@ -56,9 +53,9 @@ struct ReasonMessageView: View {
             }
         }
     }
-    
+
     @ViewBuilder
-    func reasonView(_ item: String)-> some View{
+    func reasonView(_ item: String) -> some View {
         HStack(alignment: .top, spacing: 0) {
             // Left Track
             VStack(spacing: 0) {
@@ -108,7 +105,7 @@ struct ReasonButton: View {
     var message: ChatMessage?
     var openShow: Bool = true
     var close: (() -> Void)? = nil
-    @EnvironmentObject private var chatManager: NoLetChatManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     var show: Bool {
         chatManager.startReason == message?.id
@@ -120,9 +117,9 @@ struct ReasonButton: View {
         }
         return false
     }
-    
+
     var showReason: Bool {
-        if let reason = message?.reason, !reason.isEmpty  {
+        if let reason = message?.reason, !reason.isEmpty {
             return true
         }
         return false
@@ -138,15 +135,12 @@ struct ReasonButton: View {
                         self.close?()
                     }
                 } label: {
-                    
                     HStack(alignment: .center, spacing: 5) {
-                        
                         if !openShow {
                             Image(systemName: "chevron.left")
                         }
-                        
-                        if showReason{
-                           
+
+                        if showReason {
                             if show {
                                 Spinner(tint: Color.orange, lineWidth: 3)
                                     .frame(width: 15, height: 15, alignment: .center)
@@ -158,21 +152,19 @@ struct ReasonButton: View {
                                 Text(verbatim: "...")
                                     .frame(width: 18, alignment: .leading) // 防抖
                             }
-
                         }
-                        
-                        if showResult{
+
+                        if showResult {
                             Text(verbatim: "MCP")
                                 .font(.subheadline)
                                 .foregroundStyle(.orange)
                                 .padding(.horizontal, 10)
-                            
                         }
-                        
-                        if openShow{
+
+                        if openShow {
                             Image(systemName: "chevron.right")
                         }
-                        
+
                         Spacer()
                     }
                     .font(.subheadline)

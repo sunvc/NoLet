@@ -15,10 +15,10 @@ import Defaults
 import SwiftUI
 
 struct MessagePage: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @Default(.showGroup) private var showGroup
     @Default(.servers) private var servers
-    @StateObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
     @State private var showDeleteAction: Bool = false
     @State private var searchText: String = ""
     @State private var selectAction: MessageAction? = nil
@@ -85,7 +85,6 @@ struct MessagePage: View {
                 deleteButton
             }
         }
-        .environmentObject(messageManager)
     }
 
     private var exampleButton: some View {

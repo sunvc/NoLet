@@ -17,7 +17,7 @@ import Kingfisher
 struct AppIconView: View {
 
     @Default(.appIcon) var setting_active_app_icon
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in

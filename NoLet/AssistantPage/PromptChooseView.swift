@@ -23,7 +23,7 @@ struct PromptChooseView: View {
 
     @Binding var show: Bool
     @Environment(\.colorScheme) private var colorScheme
-    @EnvironmentObject private var chatManager: NoLetChatManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     @State private var prompts: [ChatPrompt] = []
 
@@ -122,7 +122,6 @@ struct PromptChooseView: View {
                             )
                         }
                     }
-                    .environmentObject(chatManager)
                 }
             }
             .sheet(isPresented: $isAddingPrompt) {

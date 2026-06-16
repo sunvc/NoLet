@@ -16,7 +16,7 @@ import QRScanner
 import SwiftUI
 
 struct ChangeKeyCenterView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     @State private var keyName: String = ""
     @State private var keyHost: String = ""
@@ -67,7 +67,7 @@ struct ChangeKeyCenterView: View {
                         }
                 }
                 .slideFadeIn(show: appear[0], offset: 30)
-                
+
                 Spacer()
             }
 
@@ -136,9 +136,9 @@ struct ChangeKeyCenterView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.accentColor)
                     .onTapGesture {
-                        if ProcessInfo.processInfo.isiOSAppOnMac{
+                        if ProcessInfo.processInfo.isiOSAppOnMac {
                             AppManager.openURL(url: NCONFIG.delpoydoc.url, .safari)
-                        }else{
+                        } else {
                             manager.router.append(.web(url: NCONFIG.delpoydoc.url))
                         }
                         Haptic.impact()
@@ -404,7 +404,7 @@ struct ChangeKeyCenterView: View {
 }
 
 struct ChangeKeyView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @State var appear = false
     @State var appearBackground = false

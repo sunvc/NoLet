@@ -18,8 +18,8 @@ import SwiftUI
 struct MessageDetailPage: View {
     let group: String
 
-    @EnvironmentObject private var manager: AppManager
-    @StateObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
 
     @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.assistantAccouns) var assistantAccouns
@@ -83,7 +83,6 @@ struct MessageDetailPage: View {
                     .scrollContentBackground(.hidden)
                     .background(.gray.opacity(0.1))
                     .animation(.easeInOut, value: messages)
-                    .environmentObject(messageManager)
                     .refreshable {
                         self.loadData(proxy: proxy, limit: messagePage)
                     }

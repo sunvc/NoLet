@@ -16,7 +16,7 @@ import SwiftUI
 struct CryptoConfigListView: View {
     @Default(.cryptoConfigs) var cryptoConfigs
     @State private var showAddView: Bool = false
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     var body: some View {
         List {

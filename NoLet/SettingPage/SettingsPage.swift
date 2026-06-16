@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 struct SettingsPage: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     @Default(.appIcon) var setting_active_app_icon
 
@@ -29,8 +29,8 @@ struct SettingsPage: View {
     @State private var buildDetail: Bool = false
 
     var serverTypeColor: Color {
-        let right = servers.filter(\.status == true).count
-        let left = servers.filter(\.status == false).count
+        let right = servers.filter { $0.status > 0 }.count
+        let left = servers.filter { $0.status == 0 }.count
 
         if right > 0 && left == 0 {
             return .green
@@ -272,6 +272,5 @@ struct SettingsPage: View {
 #Preview {
     NavigationStack {
         ContentView()
-            .environmentObject(AppManager.shared)
     }
 }

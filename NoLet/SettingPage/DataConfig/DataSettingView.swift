@@ -19,8 +19,8 @@ extension UTType {
 }
 
 struct DataSettingView: View {
-    @EnvironmentObject private var manager: AppManager
-    @StateObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
 
     @Default(.messageExpiration) var messageExpiration
     @Default(.imageSaveDays) var imageSaveDays
@@ -632,5 +632,4 @@ extension ExpirationTime {
 
 #Preview {
     DataSettingView()
-        .environmentObject(AppManager.shared)
 }

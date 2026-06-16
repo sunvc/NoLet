@@ -14,7 +14,7 @@ import Defaults
 import SwiftUI
 
 struct ExampleView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @State private var username: String = ""
     @State private var title: String = ""
     @State private var pickerSelection: PushServerModel? = nil
@@ -306,6 +306,5 @@ struct PushExampleModel: Identifiable {
 #Preview {
     NavigationStack {
         ExampleView()
-            .environmentObject(AppManager.shared)
     }
 }

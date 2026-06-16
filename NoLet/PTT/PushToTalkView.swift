@@ -14,7 +14,7 @@ struct PushToTalkView: View {
     @Environment(\.dismiss) var dismiss
     @State private var ispress: Bool = false
 
-    @StateObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PushTalkManager.shared
 
     @State private var buttonType: TalkButtonType = .call
 
@@ -31,6 +31,12 @@ struct PushToTalkView: View {
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
+
+    var pttServers: [PushServerModel] {
+        var servers = servers.filter { $0.status > 1 }
+        servers.insert(PushServerModel.noServer, at: 0)
+        return servers
+    }
 
     var iconVolume: String {
         if pttVoiceVolume <= 0 {
@@ -97,6 +103,9 @@ struct PushToTalkView: View {
     var isRecording: Bool { pttManager.state.isRecording }
 
     var networkIcon: (String, Color, Color) {
+        if !pttManager.powerState {
+            return ("network.slash", .red, .primary)
+        }
         switch pttManager.serverStatus {
         case .offline:
             return ("network.slash", .red, .primary)
@@ -251,7 +260,7 @@ struct PushToTalkView: View {
 
                         Spacer()
 
-                        showPrefixAndSuffix()
+                        MhzAndKhzView()
 
                         Spacer()
                         // TODO: -
@@ -343,18 +352,13 @@ struct PushToTalkView: View {
                         Spacer(minLength: 0)
 
                         Picker(selection: $pttChannel.server) {
-                            ForEach(servers, id: \.self) { server in
+                            ForEach(pttServers, id: \.self) { server in
                                 Text(server.name)
                                     .tag(server)
                             }
                         } label: { Text("切换服务器") }
                             .tint(.black)
                             .pickerStyle(MenuPickerStyle())
-                            .onAppear {
-                                if pttChannel.server == nil {
-                                    pttChannel.server = servers.first
-                                }
-                            }
                             .offset(x: 10)
                     }
                     Spacer(minLength: 0)
@@ -553,7 +557,7 @@ struct PushToTalkView: View {
                     self.showVoiceList.toggle()
                     Haptic.impact()
                 } label: {
-                    Image(systemName: "text.bubble.badge.clock")
+                    Image(systemName: "captions.bubble")
                         .foregroundStyle(.white, .accent)
                         .font(.largeTitle)
                 }
@@ -572,7 +576,6 @@ struct PushToTalkView: View {
                         .padding(.trailing, 10)
 
                 }.offset(x: buttonType == .call ? 0 : 100)
-                
             }
             .padding(.horizontal, 30)
             .opacity(buttonType == .call ? 1 : 0)
@@ -653,7 +656,7 @@ struct PushToTalkView: View {
     }
 
     @ViewBuilder
-    func showPrefixAndSuffix() -> some View {
+    func MhzAndKhzView() -> some View {
         HStack(alignment: .bottom, spacing: 0) {
             Text(verbatim: "\(prefixTem == 0 ? pttChannel.prefix : prefixTem)")
                 .foregroundStyle(buttonType == .prefix ? .red : .white)
@@ -672,8 +675,8 @@ struct PushToTalkView: View {
 
             Text(verbatim: ".")
                 .foregroundStyle(.white)
-
-            Text(verbatim: "\(suffixTem == 0 ? pttChannel.suffix : suffixTem)")
+            
+            Text(verbatim:  "\(suffixTem == 0 ? pttChannel.suffix.formatted(.number.precision(.integerLength(3))) : suffixTem.formatted(.number.precision(.integerLength(3))))")
                 .foregroundStyle(buttonType == .suffix ? .red : .white)
                 .contentShape(Rectangle())
                 .VButton { _ in
@@ -753,7 +756,7 @@ struct PushToTalkView: View {
 
         switch buttonType {
         case .prefix:
-            prefixTem = max(10, min(999, number + pttChannel.prefix))
+            prefixTem = max(1, min(999, number + pttChannel.prefix))
         case .suffix:
             suffixTem = max(1, min(999, number + pttChannel.suffix))
         case .call: break
@@ -787,17 +790,6 @@ struct PushToTalkView: View {
         let number = abs(Int(angle / 360)) + upNumber
         let index = number % colors.count
         return colors[index]
-    }
-
-    func selectServerHandler() {
-        guard let current = servers.filter({ $0.status }).first else {
-            AppManager.shared.router = []
-            return
-        }
-
-        if let server = pttChannel.server, !servers.contains(server) || pttChannel.server == nil {
-            pttChannel.server = current
-        }
     }
 }
 

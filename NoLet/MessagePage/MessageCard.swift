@@ -30,7 +30,7 @@ struct MessageCard: View {
 
     @State private var timeMode: Int = 0
 
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     var dateTime: String {
         if showAllTTL {

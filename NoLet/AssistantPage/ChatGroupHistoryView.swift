@@ -33,7 +33,7 @@ struct ChatGroupHistoryView: View {
 
     @State private var selectdChatGroup: ChatGroup? = nil
 
-    @EnvironmentObject private var chatManager: NoLetChatManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -84,7 +84,6 @@ struct ChatGroupHistoryView: View {
                 }
             }
             .toolbar {
-
                 ToolbarItem {
                     Menu {
                         Button {

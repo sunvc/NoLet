@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 struct ServerCardView: View {
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
 
     var item: PushServerModel
     var isCloud: Bool = false
@@ -23,7 +23,7 @@ struct ServerCardView: View {
     var complete: () -> Void
 
     var accessText: String {
-        item.status ? String(localized: "服务器") + ":" + item.url + String(localized: "状态正常") :
+        item.status > 0 ? String(localized: "服务器") + ":" + item.url + String(localized: "状态正常") :
             String(localized: "服务器") + ":" + item.url + String(localized: "状态异常")
     }
 
@@ -35,7 +35,7 @@ struct ServerCardView: View {
                         Image(systemName: "externaldrive.badge.wifi")
                             .scaleEffect(1.5)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(item.status ? .green : .red, Color.primary)
+                            .foregroundStyle(item.status > 0 ? .green : .red, Color.primary)
                             .padding(.horizontal, 5)
 
                     } else {
@@ -53,7 +53,7 @@ struct ServerCardView: View {
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
-                    guard item.group == nil, item.status else { return }
+                    guard item.group == nil, item.status > 0 else { return }
                     manager.router.append(.serverInfo(server: item))
                 }
 
@@ -163,5 +163,4 @@ struct ServerCardView: View {
         url: "https://asddf.asfadsf.com",
         group: "9999999999999999999999"
     ), complete: {})
-        .environmentObject(AppManager.shared)
 }

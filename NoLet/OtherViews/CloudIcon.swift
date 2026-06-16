@@ -18,7 +18,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct CloudIcon: View {
-    @EnvironmentObject var manager: AppManager
+    @ObservedObject var manager = AppManager.shared
 
     @State private var searchText: String = ""
 

@@ -11,7 +11,7 @@ import SwiftUI
 
 struct PTTVoiceListView: View {
     @Environment(\.dismiss) var dismiss
-    @StateObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PushTalkManager.shared
     @Default(.id) var id
     var body: some View {
         NavigationStack {
@@ -22,33 +22,39 @@ struct PTTVoiceListView: View {
                             if item.remote.isEmpty {
                                 Spacer(minLength: 0)
                             }
-                            
+
                             VoiceCard(message: item, manager: pttManager, isMe: item.remote.isEmpty)
                                 .VButton { _ in
                                     pttManager.send(.startPlay(item))
                                     return true
                                 }
+
                             if !item.remote.isEmpty {
                                 Spacer(minLength: 0)
                             }
                         }
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .padding(10)
 
                     } header: {
                         HStack {
                             if let channel = PTTChannel.decimal(hexString: item.channel) {
-                                Text(verbatim: "\(channel.prefix).\(channel.suffix)")
+                                HStack {
+                                    Image(systemName: "speaker.wave.2.bubble")
+                                        .foregroundStyle(item.read ? .gray : .green)
+
+                                    Text(verbatim: "\(channel.prefix).\(channel.suffix)")
+                                        .font(.numberStyle(size: 20))
+                                        .fontWeight(.black)
+                                }
                             }
                             Spacer()
-                            Text(item.timestamp.formatString())
+                            TimesSwitchView(timestamp: item.timestamp)
                                 .foregroundStyle(.gray)
                         }
-                        .padding(.horizontal, 10)
-                        .padding(.vertical)
                     }
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
                     .listSectionSeparator(.hidden)
-                 
                 }
             }
             .listStyle(.grouped)
@@ -71,6 +77,18 @@ struct PTTVoiceListView: View {
     }
 }
 
+private struct TimesSwitchView: View {
+    var timestamp: Date
+    @State private var show: Bool = false
+    var body: some View {
+        Text(show ? timestamp.formatString() : timestamp.agoFormatString())
+            .foregroundStyle(.gray)
+            .onTapGesture {
+                self.show.toggle()
+            }
+    }
+}
+
 struct VoiceCard: View {
     var message: PttMessageModel
     @ObservedObject var manager: PushTalkManager
@@ -81,8 +99,7 @@ struct VoiceCard: View {
             return 0
         }
 
-        let total = max(manager.totalPlayTime, 0.01)
-        let value = manager.currentPlayTime / total
+        let value = manager.currentPlayTime / max(manager.totalPlayTime, 0.001)
 
         guard value.isFinite else {
             return 0
@@ -93,12 +110,11 @@ struct VoiceCard: View {
 
     var body: some View {
         HStack {
-            if !isMe{
+            if !isMe {
                 Image(systemName: "dot.radiowaves.right")
                     .font(.title3)
                     .padding(.leading, 10)
             }
-            
 
             Spacer(minLength: 0)
 
@@ -106,8 +122,8 @@ struct VoiceCard: View {
                 .font(.headline)
 
             Spacer(minLength: 0)
-            
-            if isMe{
+
+            if isMe {
                 Image(systemName: "dot.radiowaves.right")
                     .font(.title3)
                     .padding(.leading, 10)
@@ -122,7 +138,7 @@ struct VoiceCard: View {
                 let size = $0.size
                 ZStack(alignment: .leading) {
                     Rectangle()
-                        .fill(Color.accent)
+                        .fill(Color.green)
                         .frame(width: size.width * progress)
                         .animation(.smooth, value: progress)
                     RoundedRectangle(cornerRadius: 20)
@@ -131,9 +147,14 @@ struct VoiceCard: View {
                 .clipShape(
                     RoundedRectangle(cornerRadius: 20)
                 )
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.message)
+                        .shadow(group: false)
+                )
             }
         )
-        
+
         .frame(height: 50)
         .padding(.horizontal, 10)
         .onAppear { self.getDuration() }
@@ -149,9 +170,14 @@ struct VoiceCard: View {
     }
 
     func calc(_ width: CGFloat) -> CGFloat {
-        let minW = width * 0.3
-        let wet: CGFloat = min(60, duration + 10)
-        return min(max(width / wet * duration, minW), width * 0.7)
+        let minWidth = width * 0.2
+        let maxWidth = width * 0.8
+
+        let maxDuration: CGFloat = 60
+
+        let progress = min(duration, maxDuration) / maxDuration
+
+        return minWidth + (maxWidth - minWidth) * sqrt(progress)
     }
 }
 

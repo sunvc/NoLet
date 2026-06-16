@@ -21,7 +21,7 @@ struct ScanView: View {
     @State private var isTorchOn = false
 
     @State private var code: String? = nil
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var manager = AppManager.shared
     @State private var scale: Double = 2.0
     @GestureState private var gestureScale: CGFloat = 1.0
 

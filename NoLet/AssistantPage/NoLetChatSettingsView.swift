@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 struct NoLetChatSettingsView: View {
-    @StateObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var chatManager = NoLetChatManager.shared
 
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.historyMessageCount) var historyMessageCount
@@ -221,14 +221,12 @@ struct NoLetChatSettingsView: View {
                 self.selectAccount = nil
             }
             .customPresentationCornerRadius(20)
-            .environmentObject(chatManager)
         }
         .sheet(item: $addAccount) { account in
             NoLetChatAccountDetail(account: account, isAdd: true) {
                 self.addAccount = nil
             }
             .customPresentationCornerRadius(20)
-            .environmentObject(chatManager)
         }
     }
 }

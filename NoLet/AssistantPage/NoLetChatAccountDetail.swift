@@ -13,7 +13,7 @@ import Defaults
 import SwiftUI
 
 struct NoLetChatAccountDetail: View {
-    @EnvironmentObject var chatManager: NoLetChatManager
+    @ObservedObject var chatManager = NoLetChatManager.shared
     @State private var data: AssistantAccount
     @Default(.assistantAccouns) var assistantAccouns
     @State private var isSecured: Bool = true

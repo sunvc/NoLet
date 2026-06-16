@@ -17,8 +17,8 @@ import GRDB
 import SwiftUI
 
 struct ChatMessageListView: View {
-    @EnvironmentObject private var chatManager: NoLetChatManager
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var manager = AppManager.shared
 
     @State private var showHistory: Bool = false
 

@@ -283,7 +283,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         let useragent = await self.customUserAgent()
         request.setValue(useragent, forHTTPHeaderField: "User-Agent")
-        request.setValue(await Defaults[.id], forHTTPHeaderField: "Authorization")
         request.timeoutInterval = 15
 
         let (data, response) = try await self.session.upload(for: request, from: data)

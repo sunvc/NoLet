@@ -71,7 +71,7 @@ struct PermissionsStartView: View {
     @State private var customServerAddress: String = "" // 自定义服务器地址
     @State private var urlValidationError: Bool = false // URL验证错误标志
     @State private var useAppServer = true // 是否使用自定义服务器
-    @StateObject private var appManager = AppManager.shared
+    @ObservedObject private var appManager = AppManager.shared
 
     var complete: (() -> Void)?
 
@@ -461,7 +461,6 @@ struct PermissionOptionCard: View {
 
 #Preview {
     ContentView()
-        .environmentObject(AppManager.shared)
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()
                 .presentationDetents([.large])

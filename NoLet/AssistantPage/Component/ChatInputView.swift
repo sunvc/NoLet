@@ -16,8 +16,8 @@ import GRDB
 import SwiftUI
 
 struct ChatInputView: View {
-    @EnvironmentObject private var chatManager: NoLetChatManager
-    @EnvironmentObject private var manager: AppManager
+    @ObservedObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var manager = AppManager.shared
     @Binding var text: String
 
     let onSend: (String) -> Void
