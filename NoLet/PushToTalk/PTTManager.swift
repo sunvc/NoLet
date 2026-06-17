@@ -736,22 +736,16 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
     private var hasMicrophonePermission: Bool = false
 
     var currentPlaybackTime: Double {
-        // 1. 安全守护：拿到 playerNode
         guard let playerNode = playbackPlayerNode else { return 0 }
 
-        // 2. 核心修复：检查当前节点是否依然和有效的引擎绑定，且引擎正在运行
-        // 如果引擎已经 stop 或者节点被 detach，直接安全返回 0
         guard let engine = playerNode.engine, engine.isRunning else {
             return 0
         }
-
-        // 3. 此时访问 lastRenderTime 才是绝对安全的
         guard let nodeTime = playerNode.lastRenderTime,
               let playerTime = playerNode.playerTime(forNodeTime: nodeTime)
         else {
             return 0
         }
-
         return Double(playerTime.sampleTime) / playerTime.sampleRate
     }
 
@@ -770,7 +764,7 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
 
             self.delegate?.audioManager(
                 self,
-                didUpdateCurrentTime: self.currentPlaybackTime,
+                didUpdateCurrentTime: max(self.currentPlaybackTime, 0),
                 duration: total
             )
         }
@@ -828,14 +822,11 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
                 return
             }
 
-            // Configura input node
             let inputNode = audioEngine.inputNode
             self.inputNode = inputNode
 
-            // Usa il formato nativo dell'input node direttamente
             let nativeFormat = inputNode.outputFormat(forBus: 0)
 
-            // Usa il formato nativo per evitare problemi di conversione
             audioFormat = nativeFormat
 
             guard audioFormat != nil else {
@@ -858,7 +849,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
             return
         }
 
-        // Ferma e resetta l'audio engine se già attivo
         if let audioEngine = audioEngine, audioEngine.isRunning {
             inputNode?.removeTap(onBus: 0)
             audioEngine.stop()
@@ -886,7 +876,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
 
             recordedAudioData = Data()
 
-            // Validazione formato prima di installare tap
             guard audioFormat.sampleRate > 0, audioFormat.channelCount > 0 else {
                 logger
                     .debug(
@@ -968,7 +957,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
         }
 
         do {
-            // Configura il formato audio usando la frequenza di campionamento nativa del sistema
             let audioFormat = playerNode.outputFormat(forBus: 0)
             guard let audioFile = try? AVAudioFile(forReading: filePath) else {
                 return
@@ -979,7 +967,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
 
             self.startTimer(total: duration)
 
-            // Configura audio engine — inserisce l'Equalizer Pro in catena se presente.
             audioEngine.attach(playerNode)
             self.eqAttach(
                 to: audioEngine,
@@ -1006,9 +993,10 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
             )
 
             logger.debug("Avviata riproduzione audio PCM: frames")
-
+            self.stopTimer()
         } catch {
             logger.debug("ERROR: Riproduzione audio PCM")
+
             self.stopPlay()
         }
     }
@@ -1019,7 +1007,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
         playbackAudioEngine = nil
         playbackPlayerNode = nil
         audioUnitEQ = nil
-
         self.stopTimer()
     }
 

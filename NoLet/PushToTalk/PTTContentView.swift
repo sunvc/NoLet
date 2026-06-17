@@ -306,6 +306,7 @@ struct PTTContentView: View {
                             .VButton { _ in
                                 // TODO: - 播放音乐
                                 pttManager.playWaitList()
+                                
                                 return true
                             }
 
@@ -329,27 +330,37 @@ struct PTTContentView: View {
                     Spacer(minLength: 0)
 
                     HStack {
+                        Text(verbatim: String(format: "%.1f", pttManager.currentPlayTime))
+                            .font(.numberStyle(size: 16))
+                            .fontWeight(.black)
+                            .lineLimit(1)
+                            .opacity(isPlaying ? 1 : 0.3)
+                        
                         if isPlaying {
-                            Text(verbatim: String(format: "%.1f", pttManager.currentPlayTime))
-                                .font(.numberStyle(size: 16))
-                                .fontWeight(.black)
-                                .lineLimit(1)
-                                .offset(x: isPlaying ? 0 : -100)
-                        }
-                        VolumePeakView(
-                            progress: currentProgress,
-                            activeTint: .primary,
-                            inActiveTint: .white.opacity(0.3),
-                            anchor: isPlaying ? .leading : .trailing
-                        )
-                        if isPlaying {
-                            Text(verbatim: String(format: "%.1f", pttManager.totalPlayTime))
-                                .font(.numberStyle(size: 16))
-                                .fontWeight(.black)
-                                .lineLimit(1)
-                                .opacity(isPlaying ? 1 : 0)
-                                .offset(x: isPlaying ? 0 : 100)
-                        }
+                                
+                                VolumePeakView(
+                                    progress: currentProgress,
+                                    activeTint: .primary,
+                                    inActiveTint: .white.opacity(0.3),
+                                    anchor: .leading
+                                )
+                                .transition(.opacity)
+                            } else {
+                                
+                                VolumePeakView(
+                                    progress: currentProgress,
+                                    activeTint: .primary,
+                                    inActiveTint: .white.opacity(0.3),
+                                    anchor: .trailing
+                                )
+                                .transition(.opacity)
+                            }
+                        
+                        Text(verbatim: String(format: "%.1f", pttManager.totalPlayTime))
+                            .font(.numberStyle(size: 16))
+                            .fontWeight(.black)
+                            .lineLimit(1)
+                            .opacity(isPlaying ? 1 : 0.3)
                     }
                     .frame(height: 12)
                     .padding(.bottom, 5)
@@ -599,9 +610,8 @@ struct PTTContentView: View {
             let minDimension = min(proxy.size.width, proxy.size.height)
             ZStack {
                 ZStack {
-                    RotateButtonView(geometry: proxy) { changeTalkChannel($0) }
-                        .padding(50)
-                        .frame(maxWidth: minDimension, maxHeight: minDimension)
+                    RotateButtonView { changeTalkChannel($0) }
+                        .padding(30)
                         .scaleEffect(buttonType == .mhz || buttonType == .khz ? 1 : 0.5)
                         .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
 
@@ -649,7 +659,7 @@ struct PTTContentView: View {
                     .scaleEffect(buttonType == .call ? 1 : 0.5)
                     .opacity(buttonType == .call ? 1 : 0)
                 }
-                .frame(maxWidth: sizeClass == .regular ? 400 : .infinity) // 限制 iPad
+                .frame(maxWidth: minDimension, maxHeight: minDimension) // 限制 iPad
                 .animation(.easeInOut(duration: 0.1), value: ispress)
             }
             .frame(width: size.width, height: size.height, alignment: .center)
@@ -698,14 +708,18 @@ struct PTTContentView: View {
     }
 
     func startRecording() {
-        if pttVibration { Haptic.impact(.heavy) }
+        
 
         if pttMusicPlay {
             pttManager.playTips(.cbegin) {}
         }
+        
+        if pttVibration { Haptic.impact(.heavy) }
 
         guard self.ispress else { return }
         pttManager.send(.startRecord(true))
+        
+        
     }
 
     func endRecording() {
