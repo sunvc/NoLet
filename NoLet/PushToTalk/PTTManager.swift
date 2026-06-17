@@ -10,9 +10,9 @@ import Combine
 import Foundation
 import GRDB
 import Opus
+import os
 import PushToTalk
 import UIKit
-import os
 
 final class PushTalkManager: ObservableObject {
     static let shared = PushTalkManager()
@@ -242,6 +242,7 @@ final class PushTalkManager: ObservableObject {
     func playWaitList() {
         guard let message = waitPlayList.first else {
             self.send(.stopPlay)
+            self.setRemoteOver()
             return
         }
         self.send(.startPlay(message))
@@ -276,6 +277,10 @@ final class PushTalkManager: ObservableObject {
     private func internalStopPlay() {
         logger.info("Stop Play")
         self.audioHandler.stopPlay()
+        self.setRemoteOver()
+    }
+
+    private func setRemoteOver() {
         self.channelManager?.setActiveRemoteParticipant(
             nil,
             channelUUID: Defaults[.pttChannel].channelID
@@ -524,15 +529,19 @@ extension PushTalkManager {
                 data = encryptedData
             }
 
+            let signHeaders = CryptoManager.signature(
+                sign: channel.server.sign,
+                server: channel.server.key
+            )
+            let fileHeaders = [
+                "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
+            ]
+
             let response = try await self.network.uploadFile(
                 data: data,
                 url: channel.server.url,
                 path: "/ptt/voice",
-                headers: [
-                    "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
-                    "Authorization": Defaults[.id],
-                    "channel": channel.hex(),
-                ]
+                headers: fileHeaders.merging(signHeaders) { current, _ in current }
             )
 
             let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
@@ -551,12 +560,14 @@ extension PushTalkManager {
 
     private func getVoice(remote remoteFileURL: URL, decode: Bool = false) async -> Data? {
         do {
+            let channel = Defaults[.pttChannel]
+
             let response = try await self.network.fetch(
                 url: remoteFileURL.absoluteString,
-                headers: [
-                    "Authorization": Defaults[.id],
-                    "channel": Defaults[.pttChannel].hex(),
-                ]
+                headers: CryptoManager.signature(
+                    sign: channel.server.sign,
+                    server: channel.server.key
+                )
             )
 
             var data = response.data
@@ -678,8 +689,8 @@ extension PushTalkManager {
 }
 
 /// AudioHardwareDelegate
-/// 
-/// 
+///
+///
 nonisolated protocol AudioHardwareDelegate: AnyObject {
     /// 实时回调播放进度
     func audioManager(
@@ -993,7 +1004,7 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
                 at: nil,
                 completionCallbackType: .dataPlayedBack
             )
-            
+
             logger.debug("Avviata riproduzione audio PCM: frames")
 
         } catch {
@@ -1198,8 +1209,8 @@ nonisolated extension String {
 }
 
 /// PTTChannelDelegate
-/// 
-/// 
+///
+///
 final nonisolated class PTTChannelDelegate: NSObject,
     PTChannelManagerDelegate,
     PTChannelRestorationDelegate, @unchecked Sendable

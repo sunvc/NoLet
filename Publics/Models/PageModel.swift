@@ -80,6 +80,7 @@ enum RouterPage: Hashable {
     case appleServerInfo
     case files(url: URL)
     case web(url: URL)
+    case ptt
 }
 
 extension RouterPage: Equatable {

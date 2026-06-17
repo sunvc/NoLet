@@ -29,15 +29,17 @@ struct MoreOperationsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: $usePtt) {
-                    Label {
-                        Text("语音消息")
-                    } icon: {
-                        Image(systemName: "message.badge.waveform")
-                            .foregroundStyle(
-                                usePtt ? Color.accentColor : Color.red,
-                                Color.primary
-                            )
+                if !ProcessInfo.processInfo.isiOSAppOnMac {
+                    Toggle(isOn: $usePtt) {
+                        Label {
+                            Text("语音消息")
+                        } icon: {
+                            Image(systemName: "message.badge.waveform")
+                                .foregroundStyle(
+                                    usePtt ? Color.accentColor : Color.red,
+                                    Color.primary
+                                )
+                        }
                     }
                 }
 

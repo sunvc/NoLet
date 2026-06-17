@@ -11,7 +11,7 @@ import Defaults
 import SwiftUI
 
 struct PTTContentView: View {
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.horizontalSizeClass) var sizeClass
     @State private var ispress: Bool = false
 
     @ObservedObject private var pttManager = PushTalkManager.shared
@@ -31,8 +31,6 @@ struct PTTContentView: View {
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
-
-    
 
     var iconVolume: String {
         if pttVoiceVolume <= 0 {
@@ -124,8 +122,10 @@ struct PTTContentView: View {
 
                 VStack {
                     HStack {
-                        HourAndMinuteView()
-                            .font(.numberStyle(size: 27))
+                        if sizeClass != .regular {
+                            HourAndMinuteView()
+                                .font(.numberStyle(size: 27))
+                        }
 
                         Spacer()
 
@@ -310,8 +310,6 @@ struct PTTContentView: View {
                             }
 
                         Spacer(minLength: 0)
-                        
-                        
 
                         Picker(selection: $pttChannel.server) {
                             var pttServers: [PushServerModel] {
@@ -329,7 +327,7 @@ struct PTTContentView: View {
                             .offset(x: 10)
                     }
                     Spacer(minLength: 0)
-                    
+
                     HStack {
                         if isPlaying {
                             Text(verbatim: String(format: "%.1f", pttManager.currentPlayTime))
@@ -526,7 +524,7 @@ struct PTTContentView: View {
                     Label {
                         Text("历史频道")
                     } icon: {
-                        Image(systemName: "text.pad.header.badge.clock")
+                        Image(systemName: "list.bullet.rectangle")
                             .foregroundStyle(.orange, .primary)
                             .font(.largeTitle)
                     }
@@ -576,11 +574,13 @@ struct PTTContentView: View {
                 Spacer(minLength: 0)
                 Button {
                     AppManager.shared.page = .message
+                    if sizeClass == .regular {
+                        AppManager.shared.homeViewMode = .all
+                    }
                     Haptic.impact()
                 } label: {
-                    Image(systemName: "apple.homekit")
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.orange, .yellow, .pink)
+                    Image(systemName: "door.right.hand.open")
+                        .foregroundStyle(.orange)
                         .font(.largeTitle)
                         .padding(.trailing, 10)
 
@@ -594,24 +594,21 @@ struct PTTContentView: View {
 
     @ViewBuilder
     func BottomBottonViews() -> some View {
-        VStack {
-            Spacer(minLength: 0)
+        GeometryReader { proxy in
+            let size = proxy.size
+            let minDimension = min(proxy.size.width, proxy.size.height)
             ZStack {
-                RotateButtonView { changeTalkChannel($0) }
-                    .padding(50)
-                    .frame(
-                        maxWidth: .ISPAD ? minSize / 2 : windowWidth,
-                        maxHeight: .ISPAD ? minSize / 2 : windowWidth
-                    )
-                    .scaleEffect(buttonType == .mhz || buttonType == .khz ? 1 : 0.5)
-                    .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
+                ZStack {
+                    RotateButtonView(geometry: proxy) { changeTalkChannel($0) }
+                        .padding(50)
+                        .frame(maxWidth: minDimension, maxHeight: minDimension)
+                        .scaleEffect(buttonType == .mhz || buttonType == .khz ? 1 : 0.5)
+                        .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
 
-                GeometryReader { proxy in
-                    let size = proxy.size
                     ZStack {
                         Circle()
                             .fill(buttonColor.gradient)
-                            .frame(width: size.width / 2, height: size.width / 2)
+                            .frame(width: minDimension / 2, height: minDimension / 2)
                             .blur(radius: 20)
 
                         Circle()
@@ -622,8 +619,8 @@ struct PTTContentView: View {
                         Image("voice")
                             .resizable()
                             .renderingMode((ispress && !isCancel) ? .template : .original)
-                            .frame(width: size.width, height: size.width)
                             .foregroundStyle(.black)
+                            .frame(width: minDimension, height: minDimension)
                             .scaleEffect(ispress ? 0.95 : 1)
 
                         Circle()
@@ -640,6 +637,7 @@ struct PTTContentView: View {
                             .foregroundStyle(ispress ? buttonColor : .white)
                             .scaleEffect(ispress ? 1.2 : 1)
                     }
+
                     .pbutton(
                         $isCancel,
                         $ispress,
@@ -648,17 +646,13 @@ struct PTTContentView: View {
                         onCancelled: cancelRecording
                     )
                     .disabled(!pttManager.powerState)
+                    .scaleEffect(buttonType == .call ? 1 : 0.5)
+                    .opacity(buttonType == .call ? 1 : 0)
                 }
-                .frame(
-                    maxWidth: .ISPAD ? minSize / 2 : windowWidth,
-                    maxHeight: .ISPAD ? minSize / 2 : windowWidth
-                )
-                .animation(Animation.easeInOut(duration: 0.1), value: ispress)
-                .scaleEffect(buttonType == .call ? 1 : 0.5)
-                .opacity(buttonType == .call ? 1 : 0)
+                .frame(maxWidth: sizeClass == .regular ? 400 : .infinity) // 限制 iPad
+                .animation(.easeInOut(duration: 0.1), value: ispress)
             }
-
-            Spacer(minLength: 0)
+            .frame(width: size.width, height: size.height, alignment: .center)
         }
     }
 
@@ -843,25 +837,21 @@ private struct SetVolumePeakView: View {
 struct HourAndMinuteView: View {
     @State private var currentTime = Date()
     private let timer = Timer.publish(every: 3, on: .main, in: .common).autoconnect()
-    
-    
-    
+
     var body: some View {
         Text(timeString(from: currentTime))
             .onReceive(timer) { _ in
                 currentTime = Date()
             }
     }
-    
+
     private func timeString(from date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"  // 24小时制，如果要12小时制改成 "hh:mm a"
+        formatter.dateFormat = "HH:mm" // 24小时制，如果要12小时制改成 "hh:mm a"
         return formatter.string(from: date)
     }
 }
 
-
 #Preview {
     PTTContentView()
 }
-

@@ -91,27 +91,6 @@ struct PttPlayInfo: Codable {
     }
 }
 
-extension View {
-    var windowSize: CGSize {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return UIScreen.main.bounds.size
-        }
-        return windowScene.screen.bounds.size
-    }
-
-    var minSize: CGFloat {
-        min(windowSize.width, windowSize.height)
-    }
-
-    var windowWidth: CGFloat {
-        windowSize.width
-    }
-
-    var windowHeight: CGFloat {
-        windowSize.height
-    }
-}
-
 extension Bool {
     static var ISPAD: Bool {
         UIDevice.current.userInterfaceIdiom == .pad

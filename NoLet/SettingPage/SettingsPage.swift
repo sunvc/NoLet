@@ -22,6 +22,7 @@ struct SettingsPage: View {
     @Default(.sound) var sound
     @Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
+    @Default(.usePtt) var usePtt
 
     @State private var webShow: Bool = false
     @State private var showLoading: Bool = false
@@ -65,6 +66,17 @@ struct SettingsPage: View {
                             }
                             return true
                         }.id("message")
+                    }
+
+                    if usePtt {
+                        ListButton {
+                            Label("语音", systemImage: "message.and.waveform")
+                        } action: {
+                            Task { @MainActor in
+                                manager.router = [.ptt]
+                            }
+                            return true
+                        }.id("messageVoice")
                     }
 
                     if manager.prouter.first != .noletChat {

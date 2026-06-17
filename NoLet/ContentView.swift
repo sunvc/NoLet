@@ -19,16 +19,15 @@ import UniformTypeIdentifiers
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) var sizeClass
-    
+
     @ObservedObject private var manager = AppManager.shared
     @ObservedObject private var messageManager = MessagesManager.shared
-    
+
     @Default(.firstStart) private var firstStart
     @Default(.showGroup) private var showGroup
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.usePtt) var usePtt
 
-    @State private var HomeViewMode: NavigationSplitViewVisibility = .detailOnly
 
     @Namespace private var selectMessageSpace
 
@@ -49,12 +48,12 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             if sizeClass == .regular {
-                NavigationSplitView(columnVisibility: $HomeViewMode) {
+                NavigationSplitView(columnVisibility: $manager.homeViewMode) {
                     SettingsPage()
                 } detail: {
                     NavigationStack(path: _page($manager.prouter)) {
                         MessagePage()
-                            .router(manager)
+                            .router()
                     }
                 }
                 .onAppear {
@@ -67,7 +66,7 @@ struct ContentView: View {
                     }
             }
         }
-        
+
         .sheet(isPresented: $firstStart) {
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
@@ -87,6 +86,7 @@ struct ContentView: View {
             .interactiveDismissDisabled(true)
         }
         .sheet(item: Binding(get: { manager.sheetPage }, set: { manager.open(sheet: $0) })) {
+            
             ContentSheetViewPage(value: $0)
         }
         .fullScreenCover(item: Binding(
@@ -114,12 +114,12 @@ struct ContentView: View {
         .background(
             GeometryReader { proxy in
                 Color.clear.preference(
-                    key: ContentWidthKey.self,
-                    value: proxy.frame(in: .global).width
+                    key: ContentSizeKey.self,
+                    value: proxy.frame(in: .global).size
                 )
             }
-            .onPreferenceChange(ContentWidthKey.self) { value in
-                manager.totalWidth = value
+            .onPreferenceChange(ContentSizeKey.self) { value in
+                manager.windowSize = value
             }
         )
     }
@@ -131,28 +131,27 @@ struct ContentView: View {
                 TabView(selection: updateTab) {
                     Tab(value: .message) {
                         NavigationStack(path: _page($manager.mrouter)) {
-                            MessagePage().router(manager)
+                            MessagePage().router()
                         }
                     } label: {
                         tabLabel(title: String(localized: "消息"), icon: "ellipsis.message")
                     }.badge(messageManager.unreadCount)
-                    
-                    if usePtt{
+
+                    if usePtt {
                         Tab(value: .ptt) {
                             NavigationStack(path: _page($manager.trouter)) {
                                 PTTContentView()
-                                    .router(manager)
+                                    .router()
                                     .toolbar(.hidden, for: .tabBar)
                             }
                         } label: {
                             tabLabel(title: String(localized: "语音"), icon: "message.and.waveform")
                         }
                     }
-                    
 
                     Tab(value: .setting) {
                         NavigationStack(path: _page($manager.srouter)) {
-                            SettingsPage().router(manager)
+                            SettingsPage().router()
                         }
                     } label: {
                         tabLabel(title: String(localized: "设置"), icon: "gear.badge.questionmark")
@@ -161,7 +160,7 @@ struct ContentView: View {
                     if assistantAccouns.count > 0 {
                         Tab(value: .assistant, role: .search) {
                             NavigationStack(path: _page($manager.arouter)) {
-                                NoLetChatHomeView().router(manager)
+                                NoLetChatHomeView().router()
                             }
                         } label: {
                             tabLabel(title: NCONFIG.AppName, icon: "apple.intelligence")
@@ -173,24 +172,27 @@ struct ContentView: View {
             } else {
                 TabView(selection: updateTab) {
                     NavigationStack(path: _page($manager.mrouter)) {
-                        MessagePage().router(manager)
+                        MessagePage().router()
                     }
                     .tabItem { tabLabel(title: String(localized: "消息"), icon: "ellipsis.message") }
                     .badge(messageManager.unreadCount)
                     .tag(TabPage.message)
-                    
-                    if usePtt{
+
+                    if usePtt {
                         NavigationStack(path: _page($manager.trouter)) {
                             PTTContentView()
-                                .router(manager)
+                                .router()
                                 .toolbar(.hidden, for: .tabBar)
                         }
-                        .tabItem { tabLabel(title: String(localized: "语音"), icon: "message.and.waveform")}
+                        .tabItem { tabLabel(
+                            title: String(localized: "语音"),
+                            icon: "message.and.waveform"
+                        ) }
                         .tag(TabPage.ptt)
                     }
 
                     NavigationStack(path: _page($manager.srouter)) {
-                        SettingsPage().router(manager)
+                        SettingsPage().router()
                     }
                     .tabItem { tabLabel(
                         title: String(localized: "设置"),
@@ -200,7 +202,7 @@ struct ContentView: View {
 
                     if assistantAccouns.count > 0 {
                         NavigationStack(path: _page($manager.arouter)) {
-                            NoLetChatHomeView().router(manager)
+                            NoLetChatHomeView().router()
                         }
                         .tabItem {
                             tabLabel(title: NCONFIG.AppName, icon: "atom")
@@ -260,7 +262,6 @@ struct ContentView: View {
                 }
             }
         }
-        
     }
 
     @ViewBuilder
@@ -298,7 +299,10 @@ struct ContentView: View {
                 }
             case .authView:
                 AuthTestView()
-                    .presentationDetents([ProcessInfo.processInfo.isiOSAppOnMac ? .height(600) : .medium, .large])
+                    .presentationDetents([
+                        ProcessInfo.processInfo.isiOSAppOnMac ? .height(600) : .medium,
+                        .large,
+                    ])
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -313,7 +317,7 @@ struct ContentView: View {
 }
 
 extension View {
-    func router(_ manager: AppManager) -> some View {
+    func router() -> some View {
         navigationDestination(for: RouterPage.self) { router in
             Group {
                 switch router {
@@ -356,7 +360,7 @@ extension View {
 
                 case .web(let url):
                     SFSafariView(url: url) {
-                        manager.router.removeLast()
+                        AppManager.shared.router.removeLast()
                         Haptic.impact()
                     }
                     .ignoresSafeArea()
@@ -364,6 +368,9 @@ extension View {
 
                 case .appleServerInfo:
                     AppleStatusView()
+
+                case .ptt:
+                    PTTContentView()
                 }
             }
             .toolbar(.hidden, for: .tabBar)
@@ -372,10 +379,12 @@ extension View {
     }
 }
 
-struct ContentWidthKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
+
+struct ContentSizeKey: PreferenceKey {
+    static var defaultValue: CGSize = .zero
+    
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        value = nextValue()
     }
 }
 

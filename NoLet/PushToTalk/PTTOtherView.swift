@@ -636,6 +636,7 @@ struct EQGlobalGainSlider: View {
 ///
 ///
 struct RotateButtonView: View {
+    var geometry: GeometryProxy
     // 旋转角度
     @State private var angle: Double = 0
     // 记录上一次的手势绝对角度
@@ -646,99 +647,99 @@ struct RotateButtonView: View {
     @State private var lastRotatedValue: Int = 0
 
     var rotate: (Int) -> Void
+    
+    var width: CGFloat{
+        geometry.size.width
+    }
+
 
     var body: some View {
-        GeometryReader { geometry in
-            let width = geometry.size.width
-            let center = width / 2 // 稳定的中心点
+        ZStack {
+            // 背景大圆
+            Circle()
+                .fill(Color.gray.opacity(0.15))
+                .frame(width: width, height: width)
 
             ZStack {
-                // 背景大圆
+                // 内层旋转旋钮主体
                 Circle()
-                    .fill(Color.gray.opacity(0.15))
-                    .frame(width: width, height: width)
+                    .fill(Color.black.gradient)
+                    .frame(width: width - 60, height: width - 60)
+                    .shadow(color: Color.white.opacity(0.2), radius: 5, x: 5, y: 5)
+                    .shadow(color: Color.white.opacity(0.2), radius: 5, x: -5, y: -5)
+                    .rotationEffect(.init(degrees: angle))
 
-                ZStack {
-                    // 内层旋转旋钮主体
-                    Circle()
-                        .fill(Color.black.gradient)
-                        .frame(width: width - 60, height: width - 60)
-                        .shadow(color: Color.white.opacity(0.2), radius: 5, x: 5, y: 5)
-                        .shadow(color: Color.white.opacity(0.2), radius: 5, x: -5, y: -5)
-                        .rotationEffect(.init(degrees: angle))
-
-                    // 旋钮上的小凹槽点（供手指触摸）
-                    Circle()
-                        .fill(.clear)
-                        .overlay(
-                            Circle()
-                                .stroke(Color.gray.opacity(0.5), lineWidth: 2)
-                                .overlay(
-                                    Circle()
-                                        .stroke(Color.gray.opacity(0.3), lineWidth: 6)
-                                        .blur(radius: 3)
-                                        .offset(x: 0, y: 3)
-                                        .mask(Circle().fill(LinearGradient(
-                                            gradient: Gradient(colors: [Color.black, Color.clear]),
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        )))
-                                )
-                        )
-                        .frame(width: 50, height: 50)
-                        .offset(x: (width - 150) / 2)
-                        .rotationEffect(.init(degrees: angle))
-                        // 初始摆放偏角偏转
-                        .rotationEffect(.init(degrees: -210))
-                }
-                // 【关键改动 1】：将手势挂在整个大容器 ZStack 上，或者利用透明蒙版捕获，
-                // 这样无论按钮怎么转，手势判断都在稳定的固定坐标系中进行。
-                .background(Circle().fill(Color.clear))
-                .gesture(
-                    DragGesture(minimumDistance: 0, coordinateSpace: .named("knobContainer"))
-                        .onChanged { value in
-                            onChanged(value: value, center: center)
-                        }
-                        .onEnded { _ in
-                            withAnimation(.bouncy(duration: 0.1, extraBounce: 0.3)) {
-                                self.angle = 0
-                                self.lastAngle = 0
-                            }
-                            isDragging = false
-                        }
-                )
-
-                // 周围的指示灯刻度圈
-                ZStack {
-                    let highlightCount = min(abs(Int(angle) % 360) / 12 + 1, 30)
-
-                    ForEach(0...29, id: \.self) { index in
-                        ZStack {
-                            Capsule()
-                                .fill(dotColor(0, Int(angle)))
-
-                            if angle > 0 {
-                                Capsule()
-                                    .fill((Int(angle) % 360 / 12 + 1) > index ? dotColor(
-                                        1,
-                                        Int(angle)
-                                    ) : .clear)
-                            } else {
-                                if index >= 30 - highlightCount {
-                                    Capsule()
-                                        .fill(dotColor(1, Int(angle)))
-                                }
-                            }
-                        }
-                        .frame(width: 10, height: 10)
-                        .offset(x: -(width + 10) / 2)
-                        .rotationEffect(.init(degrees: Double(index) * 12 - 24))
+                // 旋钮上的小凹槽点（供手指触摸）
+                Circle()
+                    .fill(.clear)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 2)
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 6)
+                                    .blur(radius: 3)
+                                    .offset(x: 0, y: 3)
+                                    .mask(Circle().fill(LinearGradient(
+                                        gradient: Gradient(colors: [Color.black, Color.clear]),
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )))
+                            )
+                    )
+                    .frame(width: 50, height: 50)
+                    .offset(x: (width - 150) / 2)
+                    .rotationEffect(.init(degrees: angle))
+                    // 初始摆放偏角偏转
+                    .rotationEffect(.init(degrees: -210))
+            }
+            // 【关键改动 1】：将手势挂在整个大容器 ZStack 上，或者利用透明蒙版捕获，
+            // 这样无论按钮怎么转，手势判断都在稳定的固定坐标系中进行。
+            .background(Circle().fill(Color.clear))
+            .gesture(
+                DragGesture(minimumDistance: 0, coordinateSpace: .named("knobContainer"))
+                    .onChanged { value in
+                        onChanged(value: value, center: width / 2)
                     }
+                    .onEnded { _ in
+                        withAnimation(.bouncy(duration: 0.1, extraBounce: 0.3)) {
+                            self.angle = 0
+                            self.lastAngle = 0
+                        }
+                        isDragging = false
+                    }
+            )
+
+            // 周围的指示灯刻度圈
+            ZStack {
+                let highlightCount = min(abs(Int(angle) % 360) / 12 + 1, 30)
+
+                ForEach(0...29, id: \.self) { index in
+                    ZStack {
+                        Capsule()
+                            .fill(dotColor(0, Int(angle)))
+
+                        if angle > 0 {
+                            Capsule()
+                                .fill((Int(angle) % 360 / 12 + 1) > index ? dotColor(
+                                    1,
+                                    Int(angle)
+                                ) : .clear)
+                        } else {
+                            if index >= 30 - highlightCount {
+                                Capsule()
+                                    .fill(dotColor(1, Int(angle)))
+                            }
+                        }
+                    }
+                    .frame(width: 10, height: 10)
+                    .offset(x: -(width + 10) / 2)
+                    .rotationEffect(.init(degrees: Double(index) * 12 - 24))
                 }
             }
-            // 【关键改动 2】：定义稳定的命名坐标空间
-            .coordinateSpace(name: "knobContainer")
         }
+        // 【关键改动 2】：定义稳定的命名坐标空间
+        .coordinateSpace(name: "knobContainer")
         .onChange(of: angle) { newValue in
             let roundedValue = Int(newValue)
             if roundedValue != lastRotatedValue {

@@ -24,6 +24,7 @@ final class AppManager: ObservableObject, Sendable {
     @Published var page: TabPage = .message
     @Published private(set) var sheetPage: SubPage? = nil
     @Published private(set) var fullPage: SubPage? = nil
+    @Published var homeViewMode: NavigationSplitViewVisibility = .detailOnly
 
     @Published var selectID: String? = nil
     @Published var selectGroup: String? = nil
@@ -56,14 +57,14 @@ final class AppManager: ObservableObject, Sendable {
     @Published var copyMessageId: String? = nil
     @Published var isWXAppInstalled: Bool = false
 
-    @Published var totalWidth: CGFloat = 0
+    @Published var windowSize: CGSize = .zero
 
     var network = NetworkManager()
 
     var messageColume: [GridItem] {
         Array(
             repeating: GridItem(.flexible(), spacing: 10),
-            count: sizeClass == .compact ? 1 : Int(totalWidth / 500)
+            count: sizeClass == .compact ? 1 : Int(windowSize.width / 500)
         )
     }
 
@@ -525,7 +526,7 @@ extension AppManager {
         }
 
         let serverNew = await register(server: serverCopy)
-        if serverNew.status > 0{
+        if serverNew.status > 0 {
             if reset {
                 /// 重置后清空老的token
                 _ = await register(server: server, reset: true)
