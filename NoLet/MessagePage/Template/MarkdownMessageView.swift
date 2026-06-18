@@ -1,5 +1,5 @@
 //
-//  MessageCard.swift
+//  MarkdownMessageView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -16,7 +16,7 @@ import Kingfisher
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct MessageCard: View {
+struct MarkdownMessageView: View {
     var message: Message
     var searchText: String = ""
     var showGroup: Bool = false
@@ -76,16 +76,7 @@ struct MessageCard: View {
                                 .frame(width: 30, height: 30, alignment: .center)
                                 .clipShape(RoundedRectangle(cornerRadius: 10))
                                 .padding(.bottom, 5)
-                                .overlay(alignment: .bottomTrailing) {
-                                    if message.level > 2 {
-                                        Image(systemName: "exclamationmark.triangle.fill")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 15)
-                                            .symbolRenderingMode(.palette)
-                                            .foregroundStyle(.white, .red)
-                                    }
-                                }
+                                
                         }
                         VStack {
                             if let title = message.title {
@@ -172,9 +163,9 @@ struct MessageCard: View {
                                 }
                         }
 
-                        if let body = message.body, !body.isEmpty {
+                        if !message.body.isEmpty {
                             MarkdownCustomView(
-                                content: body,
+                                content: message.body,
                                 searchText: searchText,
                                 select: manager.copyMessageId == message.id
                             )
@@ -216,7 +207,7 @@ struct MessageCard: View {
                     }
                 }
                 .frame(minHeight: 50)
-                .mbackground26(.message, radius: 15)
+                .glassCard(20)
                 .padding(10)
                 .contentShape(Rectangle())
                 .onTapGesture(count: 2) {
@@ -298,12 +289,9 @@ struct MessageCard: View {
     @ViewBuilder
     func MessageViewHeader() -> some View {
         HStack {
-            Text(dateTime)
-                .font(.subheadline)
-                .lineLimit(1)
-                .foregroundStyle(AppManager.shared.selectID?.uppercased() == message.id
-                    .uppercased() ?
-                    .white : message.createDate.colorForDate())
+            Text(message.createDate, format: .relative(presentation: .named))
+                .font(.footnote)
+                .foregroundColor(.secondary)
                 .padding(.leading, 10)
                 .VButton(onRelease: { _ in
                     withAnimation {
@@ -372,11 +360,11 @@ struct MessageCard: View {
                     }
                 }
 
-                if let body = message.body, !body.isEmpty {
+                if  !message.body.isEmpty {
                     Section {
                         Button {
                             manager.open(sheet: .share(
-                                contents: [body],
+                                contents: [message.body],
                                 preview: nil,
                                 title: String(localized: "文字消息")
                             ))
@@ -445,7 +433,7 @@ struct MessageCard: View {
 
 #Preview {
     List {
-        MessageCard(
+        MarkdownMessageView(
             message: MessagesManager.examples().first!,
             assistantAccounsCount: 0
         ) {}
@@ -465,9 +453,8 @@ extension MessagesManager {
                 group: "Markdown",
                 title: String(localized: "示例"),
                 body: "# NoLet \n## NoLet \n### NoLet",
-                level: 1,
                 ttl: 1,
-                isRead: false
+                read: false
             ),
 
             Message(
@@ -481,9 +468,8 @@ extension MessagesManager {
                     * 全屏查看，翻译，总结，朗读
                     * 左滑删除，右滑复制和智能解答。
                     """),
-                level: 1,
                 ttl: 1,
-                isRead: false
+                read: false
             ),
 
             Message(
@@ -493,9 +479,8 @@ extension MessagesManager {
                 title: String(localized: "点击跳转app"),
                 body: String(localized: "url属性可以打开URLScheme, 点击通知消息自动跳转，前台收到消息自动跳转"),
                 url: "weixin://",
-                level: 1,
                 ttl: 1,
-                isRead: false
+                read: false
             ),
         ]
     }
@@ -549,7 +534,7 @@ extension Message {
             text.append(String(localized: "副标题") + ":" + subtitle)
         }
 
-        if let body = body {
+        if !body.isEmpty{
             text.append(String(localized: "内容") + ":" + body)
         }
 

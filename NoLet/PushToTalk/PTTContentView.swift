@@ -11,7 +11,7 @@ import Defaults
 import SwiftUI
 
 struct PTTContentView: View {
-    @Environment(\.horizontalSizeClass) var sizeClass
+   
     @State private var ispress: Bool = false
 
     @ObservedObject private var pttManager = PushTalkManager.shared
@@ -122,7 +122,7 @@ struct PTTContentView: View {
 
                 VStack {
                     HStack {
-                        if sizeClass != .regular {
+                        if AppManager.shared.sizeClass != .regular {
                             HourAndMinuteView()
                                 .font(.numberStyle(size: 27))
                         }
@@ -306,7 +306,7 @@ struct PTTContentView: View {
                             .VButton { _ in
                                 // TODO: - 播放音乐
                                 pttManager.playWaitList()
-                                
+
                                 return true
                             }
 
@@ -335,27 +335,25 @@ struct PTTContentView: View {
                             .fontWeight(.black)
                             .lineLimit(1)
                             .opacity(isPlaying ? 1 : 0.3)
-                        
+
                         if isPlaying {
-                                
-                                VolumePeakView(
-                                    progress: currentProgress,
-                                    activeTint: .primary,
-                                    inActiveTint: .white.opacity(0.3),
-                                    anchor: .leading
-                                )
-                                .transition(.opacity)
-                            } else {
-                                
-                                VolumePeakView(
-                                    progress: currentProgress,
-                                    activeTint: .primary,
-                                    inActiveTint: .white.opacity(0.3),
-                                    anchor: .trailing
-                                )
-                                .transition(.opacity)
-                            }
-                        
+                            VolumePeakView(
+                                progress: currentProgress,
+                                activeTint: .primary,
+                                inActiveTint: .white.opacity(0.3),
+                                anchor: .leading
+                            )
+                            .transition(.opacity)
+                        } else {
+                            VolumePeakView(
+                                progress: currentProgress,
+                                activeTint: .primary,
+                                inActiveTint: .white.opacity(0.3),
+                                anchor: .trailing
+                            )
+                            .transition(.opacity)
+                        }
+
                         Text(verbatim: String(format: "%.1f", pttManager.totalPlayTime))
                             .font(.numberStyle(size: 16))
                             .fontWeight(.black)
@@ -379,6 +377,7 @@ struct PTTContentView: View {
                 .padding(.horizontal, 10)
 
             BottomBottonViews()
+            
         }
         .background(.background)
         .ignoresSafeArea(.container, edges: .top)
@@ -392,22 +391,12 @@ struct PTTContentView: View {
         .animation(.default, value: showVolume)
         .environment(\.colorScheme, .dark)
         .sheet(isPresented: $showVoiceList) {
-            PTTVoiceListView()
+            AudioMessageListView()
                 .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showChannelList) {
-            PTTChannelListView { item in
-                if !pttManager.powerState {
-                    var item = item
-                    item.timestamp = .now
-                    Defaults[.pttChannel] = item
-                    self.showChannelList = false
-                    return true
-                }
-                self.showChannelList = false
-                return false
-            }
-            .presentationDetents([.medium, .large])
+            PTTChannelHistoryListView()
+                .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showSettings) {
             PTTSettingsView()
@@ -464,10 +453,10 @@ struct PTTContentView: View {
     func ChannelUsersView() -> some View {
         HStack {
             HStack(alignment: .bottom, spacing: 0) {
-                Text(verbatim: String(format: "%02d", pttManager.channelUsers))
+                Text(verbatim: String(format: "%02d", pttChannel.users))
                     .font(.numberStyle(size: 20))
                     .offset(y: 2)
-                    .foregroundStyle(pttManager.channelUsers > 0 ?
+                    .foregroundStyle(pttChannel.users > 0 ?
                         Color.white : Color.white.opacity(0.3))
                     .fontWeight(.bold)
                     .tracking(3)
@@ -480,7 +469,7 @@ struct PTTContentView: View {
                     Image(systemName: "person")
                         .if(true) { view in
                             Group {
-                                if item > pttManager.channelUsers - 1 {
+                                if item > pttChannel.users - 1 {
                                     view
                                         .foregroundStyle(.white.opacity(0.1))
                                 } else {
@@ -490,7 +479,7 @@ struct PTTContentView: View {
                                 }
                             }
                         }
-                        .animation(.default, value: pttManager.channelUsers)
+                        .animation(.default, value: pttChannel.users)
                 }
             }
 
@@ -499,6 +488,37 @@ struct PTTContentView: View {
             Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
                 .font(.numberStyle(size: 20))
                 .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
+        }
+    }
+    
+    @ViewBuilder
+    func powerButton() -> some View{
+        Button {
+            let channelID = pttManager.kGlobalPTTChannelUUID
+            
+            if pttManager.powerState {
+                pttManager.channelManager?.leaveChannel(channelUUID: channelID)
+            }else{
+                pttHisChannel.set(pttChannel, active: true)
+                pttManager.channelManager?.requestJoinChannel(
+                    channelUUID: channelID,
+                    descriptor: .init(name: NCONFIG.AppName, image: "書".avatarImage())
+                )
+            }
+            
+            withAnimation {
+                self.buttonType = .call
+            }
+
+            Haptic.impact()
+        } label: {
+            Image(systemName: "power.circle.fill")
+                .foregroundStyle(pttManager.powerState ? Color.red.gradient : Color.green
+                    .gradient)
+                .font(.system(size: 50))
+                .opacity(buttonType == .call ? 1 : 0)
+                .scaleEffect(buttonType == .call ? 1 : 0.5)
+                .offset(x: buttonType == .call ? 0 : 100)
         }
     }
 
@@ -523,51 +543,13 @@ struct PTTContentView: View {
                 .animation(.easeInOut, value: buttonType)
                 Spacer()
 
-                Button {
-                    // TODO: - 总设置
-                    if pttHisChannel.count > 0 {
-                        self.showChannelList.toggle()
-                    } else {
-                        Toast.info(title: "没有历史频道")
-                    }
-
-                } label: {
-                    Label {
-                        Text("历史频道")
-                    } icon: {
-                        Image(systemName: "list.bullet.rectangle")
-                            .foregroundStyle(.orange, .primary)
-                            .font(.largeTitle)
-                    }
-                    .labelStyle(.iconOnly)
-                }
+                powerButton()
             }
             .padding(.horizontal)
             .padding(.top)
             .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
             HStack(spacing: 20) {
-                Button {
-                    if pttManager.powerState {
-                        pttManager.channelManager?.leaveChannel(channelUUID: pttChannel.channelID)
-                    } else {
-                        pttManager.channelManager?.requestJoinChannel(
-                            channelUUID: pttChannel.channelID,
-                            descriptor: .init(name: NCONFIG.AppName, image: "書".avatarImage())
-                        )
-
-                        Defaults[.pttHisChannel].set(pttChannel)
-                    }
-
-                    Haptic.impact()
-                } label: {
-                    Image(systemName: "power.circle.fill")
-                        .foregroundStyle(pttManager.powerState ? Color.red.gradient : Color.green
-                            .gradient)
-                        .font(.system(size: 50))
-                        .opacity(buttonType == .call ? 1 : 0)
-                        .scaleEffect(buttonType == .call ? 1 : 0.5)
-                        .offset(x: buttonType == .call ? 0 : 100)
-                }
+                powerButton()
 
                 Spacer()
 
@@ -583,19 +565,27 @@ struct PTTContentView: View {
                 .scaleEffect(buttonType == .call ? 1 : 0.5)
 
                 Spacer(minLength: 0)
+                
+                
                 Button {
-                    AppManager.shared.page = .message
-                    if sizeClass == .regular {
-                        AppManager.shared.homeViewMode = .all
+                    // TODO: - 总设置
+                    if pttHisChannel.count > 0 {
+                        self.showChannelList.toggle()
+                    } else {
+                        Toast.info(title: "没有历史频道")
                     }
-                    Haptic.impact()
-                } label: {
-                    Image(systemName: "door.right.hand.open")
-                        .foregroundStyle(.orange)
-                        .font(.largeTitle)
-                        .padding(.trailing, 10)
 
-                }.offset(x: buttonType == .call ? 0 : 100)
+                } label: {
+                    Label {
+                        Text("历史频道")
+                    } icon: {
+                        Image(systemName: "list.bullet.rectangle")
+                            .foregroundStyle(.white, .accent)
+                            .font(.largeTitle)
+                    }
+                    .labelStyle(.iconOnly)
+                }
+                .offset(x: buttonType == .call ? 0 : 100)
             }
             .padding(.horizontal, 30)
             .opacity(buttonType == .call ? 1 : 0)
@@ -708,18 +698,14 @@ struct PTTContentView: View {
     }
 
     func startRecording() {
-        
-
         if pttMusicPlay {
             pttManager.playTips(.cbegin) {}
         }
-        
+
         if pttVibration { Haptic.impact(.heavy) }
 
         guard self.ispress else { return }
         pttManager.send(.startRecord(true))
-        
-        
     }
 
     func endRecording() {

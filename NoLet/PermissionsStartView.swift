@@ -28,6 +28,7 @@ struct PermissionOption: Identifiable, Equatable {
         case base
         case critical
         case network
+        case server
     }
 }
 
@@ -50,7 +51,7 @@ struct PermissionsStartView: View {
     @State private var basePer = PermissionOption(
         mode: .base,
         title: String(localized: "普通通知权限"),
-        description: String(localized: "接收一般性的应用通知提醒"),
+        description: String(localized: "一般性的应用通知提醒"),
         iconName: "bell",
         isSelected: false,
         isRequired: true
@@ -59,8 +60,16 @@ struct PermissionsStartView: View {
     @State private var criticalPer = PermissionOption(
         mode: .critical,
         title: String(localized: "重要通知权限"),
-        description: String(localized: "接收高优先级的重要通知提醒"),
+        description: String(localized: "高穿透性通知提醒"),
         iconName: "bell.badge"
+    )
+
+    @State private var serverPer = PermissionOption(
+        mode: .server,
+        title: String(localized: "使用官方服务器"),
+        description: String(localized: "是否使用官方服务器"),
+        iconName: "server.rack",
+        isSelected: true
     )
 
     @State private var currentStep: PermissionStep = .networkPermission // 当前权限设置步骤
@@ -70,14 +79,13 @@ struct PermissionsStartView: View {
     @State private var alertTitle: String = "" // 警告提示标题
     @State private var customServerAddress: String = "" // 自定义服务器地址
     @State private var urlValidationError: Bool = false // URL验证错误标志
-    @State private var useAppServer = true // 是否使用自定义服务器
     @ObservedObject private var appManager = AppManager.shared
 
     var complete: (() -> Void)?
 
     // 获取当前使用的服务器地址
     private var currentServerURL: String {
-        if !useAppServer && !appManager.customServerURL.isEmpty {
+        if !serverPer.isSelected && !appManager.customServerURL.isEmpty {
             return appManager.customServerURL
         } else {
             return NCONFIG.server
@@ -140,53 +148,14 @@ struct PermissionsStartView: View {
                         .padding(.horizontal)
 
                     VStack(spacing: 10) {
-                        HStack {
-                            Image(systemName: "server.rack")
-                                .font(.title2)
-                                .foregroundColor(.blue)
-                                .frame(width: 36, height: 36)
-                                .background {
-                                    Circle()
-                                        .fill(Color.blue.opacity(0.1))
+                        PermissionOptionCard(option: $serverPer)
+                            .onChange(of: serverPer) { value in
+                                if value.isSelected {
+                                    self.customServerAddress = ""
                                 }
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("使用官方服务器")
-                                    .font(.headline)
-
-                                Text("切换使用官方服务器或自定义服务器")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
                             }
-
-                            Spacer()
-
-                            Toggle(isOn: $useAppServer) {}
-                                .toggleStyle(SwitchToggleStyle(tint: .green))
-                                .labelsHidden()
-                                .onChange(of: useAppServer) { value in
-                                    if value {
-                                        customServerAddress = ""
-                                    }
-                                }
-                        }
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 15)
-                        .background {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color(UIColor.systemBackground))
-                                .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
-                        }
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    useAppServer ? Color.blue.opacity(0.3) : Color.gray
-                                        .opacity(0.1),
-                                    lineWidth: 1
-                                )
-                        )
                         // 自定义服务器地址输入框 - 仅在开启自定义服务器时显示
-                        if !useAppServer {
+                        if !serverPer.isSelected {
                             HStack {
                                 Image(systemName: "link")
                                     .font(.title2)
@@ -250,7 +219,7 @@ struct PermissionsStartView: View {
                             return
                         }
                         // 检查如果开启了自定义服务器，需要验证URL
-                        if !useAppServer {
+                        if !serverPer.isSelected {
                             Task { @MainActor in
                                 let customServer = customServerAddress.normalizedURLString()
 
@@ -272,7 +241,6 @@ struct PermissionsStartView: View {
                                     )
                                 self.showAlert = true
                                 self.urlValidationError = true
-                                
                             }
 
                         } else {
@@ -289,7 +257,7 @@ struct PermissionsStartView: View {
                             .frame(maxWidth: .infinity)
                             .background {
                                 Capsule()
-                                    .fill(networkPer.isSelected ? Color.blue.gradient : Color
+                                    .fill(networkPer.isSelected ? Color.mint.gradient : Color
                                         .gray.gradient)
                             }
                     }
@@ -319,8 +287,10 @@ struct PermissionsStartView: View {
                             .frame(maxWidth: .infinity)
                             .background {
                                 Capsule()
-                                    .fill(basePer.isSelected && networkPer.isSelected ? Color.blue.gradient : Color
-                                        .gray.gradient)
+                                    .fill(
+                                        basePer.isSelected && networkPer.isSelected ? Color.mint.gradient :
+                                        Color.gray.gradient
+                                    )
                             }
                     }
                 }
@@ -344,6 +314,7 @@ struct PermissionsStartView: View {
         }
         .padding(.top, 70)
         .padding(.bottom, 30)
+        .background(TiffanyBlueBackground())
     }
 
     /// 组件初始化
@@ -351,7 +322,7 @@ struct PermissionsStartView: View {
         self.complete = complete
 
         // 加载已保存的服务器地址
-        if !useAppServer {
+        if !serverPer.isSelected {
             _customServerAddress = State(initialValue: appManager.customServerURL)
         } else {
             _customServerAddress = State(initialValue: "")
@@ -437,6 +408,8 @@ struct PermissionOptionCard: View {
                                 _ = await AppManager.shared.registerForRemoteNotifications(true)
                             case .network:
                                 option.isSelected = await NetworkManager().test()
+                            case .server:
+                                option.isSelected = true
                             }
                         }
                     }
@@ -444,27 +417,18 @@ struct PermissionOptionCard: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 15)
-        .background {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(Color(UIColor.systemBackground))
-                .shadow(color: Color.black.opacity(0.03), radius: 3, x: 0, y: 1)
-        }
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(
-                    option.isSelected ? Color.blue.opacity(0.3) : Color.gray.opacity(0.1),
-                    lineWidth: 1
-                )
-        )
+        .glassCard()
     }
 }
 
 #Preview {
+    
     ContentView()
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()
                 .presentationDetents([.large])
-                .interactiveDismissDisabled(true)
                 .customPresentationCornerRadius(30)
         }
 }
+
+

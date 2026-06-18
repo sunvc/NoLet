@@ -10,7 +10,7 @@ import GRDB
 import SwiftUI
 import UIKit
 
-struct PttMessageModel: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable,
+struct AudioMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable,
     Equatable
 {
     var id: String = UUID().uuidString
@@ -38,7 +38,7 @@ struct PttMessageModel: Codable, FetchableRecord, PersistableRecord, Identifiabl
     }
 }
 
-extension PttMessageModel {
+extension AudioMessage {
     init?(remote address: URL) {
         let fileName = address.deletingPathExtension().lastPathComponent
         let params = fileName.split(separator: "-").compactMap { String($0) }
@@ -54,10 +54,10 @@ extension PttMessageModel {
     }
 }
 
-extension PttMessageModel {
+extension AudioMessage {
     static func createInit(dbQueue: DatabaseQueue) throws {
         try dbQueue.write { db in
-            try db.create(table: "PttMessageModel", ifNotExists: true) { t in
+            try db.create(table: "AudioMessage", ifNotExists: true) { t in
                 t.column("id", .text).primaryKey()
                 t.column("timestamp", .datetime).notNull()
                 t.column("channel", .text).notNull()
@@ -117,8 +117,6 @@ enum TipsSound: String {
     case tabSelection
 }
 
-
-
 enum TalkButtonType: String, CaseIterable {
     case mhz
     case khz
@@ -129,24 +127,21 @@ struct PTTChannel: Identifiable, Equatable, Codable {
     var id: String { "\(channel)".toUUID() }
     var timestamp: Date = .now
     var mhz: Int = 98
-    var khz: Int = 1
+    var khz: Int = 100
     var server: PushServerModel = .noServer
+    var users: Int = 0
+    var active: Bool = false
 
     var channel: Int { mhz * 1000 + khz }
 
     var serverOK: Bool { server != .noServer }
 
-    var channelID: UUID {
-        UUID(uuidString: id) ?? UUID()
-    }
-
     static func == (lhs: PTTChannel, rhs: PTTChannel) -> Bool {
-        return lhs.channel == rhs.channel
+        return lhs.channel == rhs.channel && lhs.server.url == rhs.server.url
     }
 
     func fileName(userID: String) -> String {
         let bb = Int64(Date().timeIntervalSince1970 * 1000)
-
         return hex() + "-" + userID + "-" + String(bb, radix: 32) + ".ogg"
     }
 
@@ -171,6 +166,20 @@ struct PTTChannel: Identifiable, Equatable, Codable {
 
 extension PTTChannel: @MainActor Defaults.Serializable {}
 
+extension [PTTChannel] {
+    mutating func set(_ channel: PTTChannel, active: Bool) {
+        if let index = self.firstIndex(of: channel) {
+            self[index].active = active
+        } else {
+            var channel = channel
+            channel.active = active
+            self.append(channel)
+        }
+
+        self.sort { $0.timestamp > $1.timestamp }
+    }
+}
+
 extension Defaults.Keys {
     static let pttChannel = Key<PTTChannel>("pushTalkInteger", default: PTTChannel())
     static let pttHisChannel = Key<[PTTChannel]>("pttHisChannels", default: [])
@@ -184,27 +193,11 @@ extension Defaults.Keys {
     static let server = Key<String>("pttServer", default: "")
 }
 
-extension [PTTChannel] {
-    mutating func set(_ data: PTTChannel) {
-        guard data.server.id != "000000" else { return }
-
-        var data = data
-        if let index = self.firstIndex(of: data) {
-            self[index].timestamp = .now
-        } else {
-            data.timestamp = .now
-            self.insert(data, at: 0)
-        }
+extension Font {
+    static func numberStyle(size: CGFloat = 32, textStyle: Font.TextStyle? = nil) -> Self {
+        custom("Digital-7 Mono", size: size)
     }
 }
-
-
-extension Font{
-    static func numberStyle(size: CGFloat = 32) -> Self{
-        .custom("Digital-7 Mono", size: size)
-    }
-}
-
 
 struct EQBand: Identifiable, Codable, Equatable {
     var id: Int { index }
@@ -216,10 +209,6 @@ struct EQBand: Identifiable, Codable, Equatable {
 }
 
 extension EQBand: @MainActor Defaults.Serializable {}
-
-
-
-
 
 nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
     case flat
@@ -263,13 +252,17 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
         // 3. 使用 zip 将频率和增益合并，天然防御两个数组长度不一致的问题
         return zip(Self.bandFrequencies, currentGains).enumerated().map { index, element in
             let (frequencyValue, gainValue) = element
-            
+
             // 4. 优化频率字符转换，支持 2.4K 这种带小数的表现形式
             let frequencyStr: String
             if frequencyValue >= 1000 {
                 let khz = frequencyValue / 1000
                 // 如果能被 1 整除（如 4000 -> 4），就显示 4K；否则显示 2.4K
-                frequencyStr = khz.truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(khz))K" : String(format: "%.1fK", khz)
+                frequencyStr = khz
+                    .truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(khz))K" : String(
+                        format: "%.1fK",
+                        khz
+                    )
             } else {
                 frequencyStr = String(Int(frequencyValue))
             }
@@ -295,8 +288,8 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
         }
     }
 }
-extension EqualizerPreset: @MainActor Defaults.Serializable{ }
 
+extension EqualizerPreset: @MainActor Defaults.Serializable {}
 
 extension Defaults.Keys {
     static let eqBands = Key<[EQBand]>("EQBands", default: EqualizerPreset.flat.bands)
@@ -304,9 +297,10 @@ extension Defaults.Keys {
     static let globalGain = Key<Double>("EqualizerGlobalGain", default: 0.0)
 }
 
-
 extension Int {
     func KHZ() -> String {
         formatted(.number.precision(.integerLength(3)))
     }
 }
+
+

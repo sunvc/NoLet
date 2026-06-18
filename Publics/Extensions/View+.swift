@@ -56,12 +56,6 @@ struct CustomForegroundStyleModifier: ViewModifier {
     }
 }
 
-extension View {
-    func customForegroundStyle(_ s1: Color, _ s2: Color? = nil, _ s3: Color? = nil) -> some View {
-        modifier(CustomForegroundStyleModifier(s1: s1, s2: s2, s3: s3))
-    }
-}
-
 // MARK: - Line 视图
 
 struct OutlineModifier: ViewModifier {
@@ -214,29 +208,6 @@ struct ViewExtractHelper: UIViewRepresentable {
     func updateUIView(_: UIViewType, context _: Context) {}
 }
 
-enum sybolEffectType {
-    /// 跳动
-    case pulse
-    /// 弹跳
-    case bounce
-    /// 旋转
-    case rotate
-    /// 呼吸
-    case breathe
-    /// 缩放
-    case scale
-    /// 可变颜色
-    case variableColor
-    /// 替换
-    case replace
-
-    case wiggle
-
-    case replaceblack
-
-    case none
-}
-
 struct ListButton<LEFT: View, Trailing: View>: View {
     @ViewBuilder var leading: () -> LEFT
     @ViewBuilder var trailing: () -> Trailing
@@ -274,6 +245,54 @@ struct ListButton<LEFT: View, Trailing: View>: View {
         }
         .tint(.primary)
         .buttonStyle(.borderless)
+    }
+}
+
+struct CustomDragGesture: ViewModifier {
+    let direction: Edge
+    let amount: any RangeExpression<CGFloat>
+    let action: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .gesture(
+                DragGesture()
+                    .onEnded { val in
+                        switch direction {
+                        case .top:
+                            if amount.contains(-val.translation.height) { action() }
+                        case .leading:
+                            if amount.contains(-val.translation.width) { action() }
+                        case .bottom:
+                            if amount.contains(val.translation.height) { action() }
+                        case .trailing:
+                            if amount.contains(val.translation.width) { action() }
+                        }
+                    }
+            )
+    }
+}
+
+extension Dictionary {
+    static func + (lhs: inout Dictionary, rhs: Dictionary) {
+        lhs.merge(rhs) { _, new in new }
+    }
+
+    static func += (lhs: inout Dictionary, rhs: Dictionary) {
+        lhs.merge(rhs) { _, new in new }
+    }
+}
+
+extension Dictionary where Key == String, Value == String {
+    func text() -> String? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+
+        guard let data = try? encoder.encode(self) else {
+            return nil
+        }
+
+        return String(data: data, encoding: .utf8)
     }
 }
 
@@ -364,53 +383,11 @@ extension View {
             self
         }
     }
-}
 
-enum ScrollDirection {
-    case up, down
-}
-
-struct VerticalScrollDetector: ViewModifier {
-    var onScroll: (ScrollDirection, CGFloat) -> Void
-
-    @State private var lastOffset: CGFloat = 0
-
-    func body(content: Content) -> some View {
-        content
-            .background(GeometryReader { geo in
-                Color.clear
-                    .preference(
-                        key: ScrollOffsetPreferenceKey.self,
-                        value: geo.frame(in: .global).minY
-                    )
-            })
-            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { newY in
-                let delta = newY - lastOffset
-                if delta != 0 {
-                    let direction: ScrollDirection = delta > 0 ? .down : .up
-                    onScroll(direction, newY)
-                    lastOffset = newY
-                }
-            }
+    func customForegroundStyle(_ s1: Color, _ s2: Color? = nil, _ s3: Color? = nil) -> some View {
+        modifier(CustomForegroundStyleModifier(s1: s1, s2: s2, s3: s3))
     }
 
-    struct ScrollOffsetPreferenceKey: PreferenceKey {
-        static var defaultValue: CGFloat = 0
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = nextValue()
-        }
-    }
-}
-
-extension View {
-    func onVerticalScrollChange(
-        perform: @escaping (ScrollDirection, CGFloat) -> Void
-    ) -> some View {
-        modifier(VerticalScrollDetector(onScroll: perform))
-    }
-}
-
-extension View {
     @ViewBuilder
     func background26<S>(_ color: S, radius: CGFloat = 0) -> some View where S: ShapeStyle {
         if #available(iOS 26.0, *) {
@@ -419,34 +396,7 @@ extension View {
             background(RoundedRectangle(cornerRadius: radius).fill(color))
         }
     }
-}
 
-struct CustomDragGesture: ViewModifier {
-    let direction: Edge
-    let amount: any RangeExpression<CGFloat>
-    let action: () -> Void
-
-    func body(content: Content) -> some View {
-        content
-            .gesture(
-                DragGesture()
-                    .onEnded { val in
-                        switch direction {
-                        case .top:
-                            if amount.contains(-val.translation.height) { action() }
-                        case .leading:
-                            if amount.contains(-val.translation.width) { action() }
-                        case .bottom:
-                            if amount.contains(val.translation.height) { action() }
-                        case .trailing:
-                            if amount.contains(val.translation.width) { action() }
-                        }
-                    }
-            )
-    }
-}
-
-extension View {
     /// Adds a Drag Gesture listener on the View that will perform the provided action when a drag
     /// ofAmount pixels is performed in the direction indicated
     /// - Parameters:
@@ -473,27 +423,20 @@ extension View {
             }
         }
     }
-}
 
-extension Dictionary {
-    static func + (lhs: inout Dictionary, rhs: Dictionary) {
-        lhs.merge(rhs) { _, new in new }
-    }
-
-    static func += (lhs: inout Dictionary, rhs: Dictionary) {
-        lhs.merge(rhs) { _, new in new }
-    }
-}
-
-extension Dictionary where Key == String, Value == String {
-    func text() -> String? {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-
-        guard let data = try? encoder.encode(self) else {
-            return nil
-        }
-
-        return String(data: data, encoding: .utf8)
+    @ViewBuilder
+    func glassCard(
+        _ radius: CGFloat = 12,
+        padding: CGFloat = 0,
+        borderColor: Color = .mint
+    ) -> some View {
+        self.background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .stroke(borderColor.opacity(0.6), lineWidth: 1)
+            )
+            .padding(padding)
+            .shadow(color: Color.black.opacity(0.04), radius: 15, x: 0, y: 8)
     }
 }

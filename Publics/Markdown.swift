@@ -14,6 +14,11 @@ import cmark_gfm
 import cmark_gfm_extensions
 import Foundation
 
+
+extension String{
+    var plainText: String{ PBMarkdown.plain(self) }
+}
+
 enum PBMarkdown {
     static let extensionNames: Set<String> = [
         "autolink",

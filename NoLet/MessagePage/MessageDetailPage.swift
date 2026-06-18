@@ -49,14 +49,13 @@ struct MessageDetailPage: View {
                     ScrollView {
                         LazyVGrid(columns: manager.messageColume) {
                             ForEach(messages, id: \.id) { message in
-                                MessageCard(
+                                MessageCardView(
                                     message: message,
                                     searchText: searchText,
                                     showAllTTL: showAllTTL,
-                                    showAvatar: showMessageAvatar,
                                     assistantAccounsCount: assistantAccouns.count,
                                     selectID: manager.selectID
-                                ) {
+                                ){
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                         withAnimation(.default) {
                                             messages.removeAll(where: { $0.id == message.id })
@@ -81,7 +80,7 @@ struct MessageDetailPage: View {
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollContentBackground(.hidden)
-                    .background(.gray.opacity(0.1))
+                    .background(TiffanyBlueBackground())
                     .animation(.easeInOut, value: messages)
                     .refreshable {
                         self.loadData(proxy: proxy, limit: messagePage)
@@ -141,18 +140,18 @@ struct MessageDetailPage: View {
                     // 更新指定 group 的未读消息为已读
                     let count = try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.isRead == false)
+                        .filter(Message.Columns.read == false)
                         .fetchCount(db)
 
                     guard count > 0 else { return }
 
                     try Message
                         .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.isRead == false)
-                        .updateAll(db, [Message.Columns.isRead.set(to: true)])
+                        .filter(Message.Columns.read == false)
+                        .updateAll(db, [Message.Columns.read.set(to: true)])
 
                     let unRead = try Message
-                        .filter(Message.Columns.isRead == false)
+                        .filter(Message.Columns.read == false)
                         .fetchCount(db)
                     UNUserNotificationCenter.current().setBadgeCount(unRead)
                 }

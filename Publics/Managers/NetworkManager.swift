@@ -79,9 +79,7 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         return try response.decode() as T
     }
-    
-    
-   
+
     func fetch<P: Encodable & Sendable>(
         url: String,
         path: String = "",
@@ -135,10 +133,10 @@ final nonisolated class NetworkManager: NSObject, Sendable {
         let (data, response) = try await session.data(for: request)
         guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
 
-//        logger.debug("\(request.description)\(params)\(String(data: data, encoding: .utf8))")
+//        logger.debug("\(request.description)\(String(data: data, encoding: .utf8))")
         return Response(data: data, header: response)
     }
-    
+
     // 无 params
     func fetch<T: Codable>(
         url: String,
@@ -162,6 +160,7 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         return try response.decode() as T
     }
+
     // 无 params
     func fetch(
         url: String,
@@ -179,7 +178,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
             timeout: timeout
         )
     }
-    
 
     func test(url: String = "https://www.apple.com") async -> Bool {
         return (try? await fetch(url: url, method: .HEAD))?.check() ?? false
@@ -206,7 +204,7 @@ final nonisolated class NetworkManager: NSObject, Sendable {
         }
 
         request.timeoutInterval = timeout
-        
+
         // 创建下载任务
         let (downloadedURL, response) = try await session.download(for: request)
 
@@ -259,7 +257,7 @@ final nonisolated class NetworkManager: NSObject, Sendable {
     }
 
     struct EmptyParams: Codable, Sendable {}
-    
+
     func uploadFile(
         data: Data,
         url: String,
@@ -309,11 +307,21 @@ nonisolated extension Encodable {
             return []
         }
 
-        return dict.map {
-            URLQueryItem(
-                name: $0.key,
-                value: String(describing: $0.value)
-            )
+        return dict.compactMap { key, value in
+            let mirror = Mirror(reflecting: value)
+            if mirror.displayStyle == .optional {
+                if mirror.children.isEmpty { return nil }
+            }
+            let rawValue: Any
+            if let firstChild = mirror.children.first {
+                rawValue = firstChild.value
+            } else {
+                rawValue = value
+            }
+            let valueString = String(describing: rawValue)
+            guard valueString != "nil" else { return nil }
+
+            return URLQueryItem(name: key, value: valueString)
         }
     }
 }

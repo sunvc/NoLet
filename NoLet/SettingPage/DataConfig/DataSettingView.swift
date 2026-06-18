@@ -551,7 +551,7 @@ struct DataSettingView: View {
                         let message = Message(
                             id: UUID().uuidString, createDate: .now,
                             group: "\(k % 50)", title: "\(k) Test",
-                            body: "\(body)", level: 1, ttl: 1, isRead: true
+                            body: "\(body)", ttl: 1, read: true
                         )
                         try message.insert(db)
                     }

@@ -55,6 +55,8 @@ struct GroupMessagesView: View {
                 }
             }
             .navigationTitle("消息")
+            .scrollContentBackground(.hidden)
+            .background(TiffanyBlueBackground())
             .listStyle(.grouped)
             .animation(.default, value: messageManager.groupMessages)
             .onChange(of: messageManager.allCount) { _ in
@@ -94,16 +96,6 @@ struct MessageRow: View {
                 .frame(width: 45, height: 45)
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(alignment: .bottomTrailing) {
-                    if message.level > 2 {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 15)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, .red)
-                    }
-                }
 
             VStack(alignment: .leading) {
                 HStack {
@@ -173,7 +165,7 @@ struct MessageRow: View {
             let count = try await DatabaseManager.shared.dbQueue.read { db in
                 try Message
                     .filter(Message.Columns.group == message.group)
-                    .filter(Message.Columns.isRead == false)
+                    .filter(Message.Columns.read == false)
                     .fetchCount(db)
             }
             await MainActor.run {
@@ -193,9 +185,11 @@ struct MessageRow: View {
             text = text + Text(verbatim: "\(subtitle);").foregroundColor(.gray)
         }
 
-        if let body = message.body {
+        if !message.body.isEmpty {
             text = text +
-                Text(verbatim: "\(PBMarkdown.plain(body).replacingOccurrences(of: " ", with: ""))")
+                Text(
+                    verbatim: "\(PBMarkdown.plain(message.body).replacingOccurrences(of: " ", with: ""))"
+                )
                 .foregroundColor(.primary)
         }
 

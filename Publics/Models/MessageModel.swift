@@ -19,17 +19,16 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     var group: String
     var title: String?
     var subtitle: String?
-    var body: String?
+    var body: String
     var icon: String?
     var url: String?
     var image: String?
-    var from: String?
-    var host: String?
     var reply: String?
-    var level: Int
     var ttl: Int
-    var isRead: Bool
+    var read: Bool
+    var style: String?
     var other: String?
+    
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -41,18 +40,27 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
         static let icon = Column(CodingKeys.icon)
         static let url = Column(CodingKeys.url)
         static let image = Column(CodingKeys.image)
-        static let from = Column(CodingKeys.from)
-        static let host = Column(CodingKeys.host)
         static let reply = Column(CodingKeys.reply)
-        static let level = Column(CodingKeys.level)
         static let ttl = Column(CodingKeys.ttl)
-        static let isRead = Column(CodingKeys.isRead)
+        static let read = Column(CodingKeys.read)
+        static let style = Column(CodingKeys.style)
         static let other = Column(CodingKeys.other)
     }
 
     var search: String {
-        [group, title, subtitle, body, from, url].compactMap { $0 }.filter { !$0.isEmpty }
+        [group, title, subtitle, body,  url].compactMap { $0 }.filter { !$0.isEmpty }
             .joined(separator: ";") + ";"
+    }
+    
+    // 辅助计算：剩余生存比例 (0.0 - 1.0)
+    var lifePercent: Double {
+        let elapsed = Date().timeIntervalSince(createDate)
+        return max(0.0, min(1.0, 1.0 - (elapsed / Double(ttl))))
+    }
+    
+    // 辅助计算：判断通知是否过期
+    var isExpired: Bool {
+        Date().timeIntervalSince(createDate) > Double(ttl)
     }
 }
 

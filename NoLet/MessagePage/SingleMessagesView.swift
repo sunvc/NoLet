@@ -48,14 +48,11 @@ struct SingleMessagesView: View {
             ScrollView {
                 LazyVGrid(columns: manager.messageColume) {
                     ForEach(messageManager.messages, id: \.id) { message in
-                        MessageCard(
+                        MessageCardView(
                             message: message,
                             searchText: "",
-                            showAllTTL: showAllTTL,
-                            showAvatar: showMessageAvatar,
-                            assistantAccounsCount: assistantAccouns.count,
-                            selectID: manager.selectID
-                        ) {
+                            assistantAccounsCount: assistantAccouns.count
+                        ){
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                 withAnimation(.default) {
                                     messageManager.messages
@@ -70,7 +67,9 @@ struct SingleMessagesView: View {
                         }
                         .id(message.id)
                         .onAppear {
-                            if messagesCount < messageManager.allCount && lastMessage == message {
+                            if messagesCount < messageManager
+                                .allCount && lastMessage == message
+                            {
                                 self.loadData(proxy: proxy, limit: messagePage, item: message)
                             }
                         }
@@ -83,7 +82,7 @@ struct SingleMessagesView: View {
             }
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
-            .background(.gray.opacity(0.1))
+            .background(TiffanyBlueBackground())
             .navigationTitle("消息")
             .refreshable {
                 self.loadData(proxy: proxy, limit: messagePage)

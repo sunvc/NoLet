@@ -23,12 +23,12 @@ final class PushTalkManager: ObservableObject {
     @Published var elapsedTime: TimeInterval = 0
     @Published var state: State = .idle
     @Published var hasMicrophonePermission: Bool = false
-    @Published var channelUsers: Int = 0
-    @Published var lastFile: PttMessageModel? = nil
-    @Published var waitPlayList: [PttMessageModel] = []
-    @Published var messages: [PttMessageModel] = []
 
-    @Published var currentPlayFile: PttMessageModel? = nil
+    @Published var lastFile: AudioMessage? = nil
+    @Published var waitPlayList: [AudioMessage] = []
+    @Published var messages: [AudioMessage] = []
+
+    @Published var currentPlayFile: AudioMessage? = nil
 
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
@@ -43,9 +43,11 @@ final class PushTalkManager: ObservableObject {
 
     private var observationCancellable: AnyDatabaseCancellable?
 
+    let kGlobalPTTChannelUUID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+
     func deleteAll() {
         _ = try? DatabaseManager.shared.dbQueue.write { db in
-            try PttMessageModel.deleteAll(db)
+            try AudioMessage.deleteAll(db)
             if let path = NCONFIG.getDir(.ptt) {
                 try FileManager.default.removeItem(at: path)
             }
@@ -53,26 +55,51 @@ final class PushTalkManager: ObservableObject {
     }
 
     private init() {
-        try? PttMessageModel.createInit(dbQueue: DatabaseManager.shared.dbQueue)
+        try? AudioMessage.createInit(dbQueue: DatabaseManager.shared.dbQueue)
         audioHandler.delegate = self
         startObservingUnreadCount()
+        self.TaskHandler()
     }
 
     deinit {
         observationCancellable?.cancel()
+        loopTask?.cancel()
+    }
+
+    private var loopTask: Task<Void, Never>?
+
+    private func TaskHandler() {
+        self.loopTask = Task(priority: .utility) { [weak self] in
+            logger.info("🚀 后台常驻任务已在线程: \(Thread.current) 启动")
+            while !Task.isCancelled {
+                guard let self = self else { break }
+                if self.powerState {
+                    await self.publicJoinConnect()
+                }
+
+                do {
+                    try await Task.sleep(for: .seconds(15))
+                } catch {
+                    logger.info("Task 休眠被中断，准备退出")
+                    break
+                }
+            }
+
+            logger.info("🛑 后台常驻任务已安全退出")
+        }
     }
 
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (
-            [PttMessageModel],
-            [PttMessageModel]
+            [AudioMessage],
+            [AudioMessage]
         ) in
-            let messages = try PttMessageModel
-                .order(PttMessageModel.Columns.timestamp.desc)
+            let messages = try AudioMessage
+                .order(AudioMessage.Columns.timestamp.desc)
                 .limit(50)
                 .fetchAll(db)
-            let unreadMessages = try PttMessageModel
-                .order(PttMessageModel.Columns.timestamp.desc)
+            let unreadMessages = try AudioMessage
+                .order(AudioMessage.Columns.timestamp.desc)
                 .filter { !$0.read }
                 .fetchAll(db)
             return (messages, unreadMessages)
@@ -95,42 +122,102 @@ final class PushTalkManager: ObservableObject {
     }
 
     func joinConnect() async throws {
+        // 1. 状态前置
         self.powerState = true
         self.serverStatus = .connecting
+        self.setServerStatus(.connecting, id: self.kGlobalPTTChannelUUID)
 
+        // 2. ✨ 音频权限与初始化（注意：确保你的音频初始化有正确的容错）
         if !hasPermission {
             audioHandler.requestAudioPermission()
         }
         audioHandler.setupAudio()
 
-        let channel = Defaults[.pttChannel]
-        self.setServerStatus(.connecting, id: channel.channelID)
+        await self.publicJoinConnect()
 
-        let result = await self.connect(channel: channel, join: true)
-
-        if let data = result?.data {
-            self.channelUsers = data
-            logger.log("频道人数:\(data)")
-        }
-
-        let success = result?.code == 200
-
-        self.serverStatus = success ? .online : .failed
-
+        self.serverStatus = Defaults[.pttChannel].users > 0 ? .online : .offline
         try await channelManager?.setTransmissionMode(
             .fullDuplex,
-            channelUUID: channel.channelID
+            channelUUID: kGlobalPTTChannelUUID
         )
 
-        self.setServerStatus(success ? .ready : .unavailable, id: channel.channelID)
+        self.setServerStatus(
+            Defaults[.pttChannel].users > 0 ? .ready : .unavailable,
+            id: kGlobalPTTChannelUUID
+        )
     }
 
     func levelConnect() async {
         self.powerState = false
-        self.serverStatus = .connecting
-        let data = Defaults[.pttChannel]
-        let result = await self.connect(channel: data, join: false)
-        self.serverStatus = result?.code == 200 ? .offline : .failed
+        self.serverStatus = .offline
+
+        await self.publicLevelConnect(Defaults[.pttHisChannel])
+        Defaults[.pttChannel].users = 0
+    }
+
+    func publicLevelConnect(_ channels: [PTTChannel]) async {
+        let result = await self.connect(channels: channels, join: false)
+
+        var historyChannels = Defaults[.pttHisChannel]
+        for item in channels {
+            if let index = historyChannels.firstIndex(of: item) {
+                historyChannels[index].active = false
+                historyChannels[index].users = 0
+            }
+        }
+        Defaults[.pttHisChannel] = historyChannels
+
+        logger.log("LEVEL: \(result.count)")
+    }
+
+    func publicJoinConnect() async {
+        
+        Defaults[.pttHisChannel].set(Defaults[.pttChannel], active: true)
+        
+        var historyChannels = Defaults[.pttHisChannel]
+
+        let activeChannels = historyChannels.filter { $0.active }
+
+        let results = await self.connect(channels: activeChannels, join: true)
+
+        let resultMap = Dictionary(uniqueKeysWithValues: results.map {
+            ("\($0.host)_\($0.channel)", $0)
+        })
+
+        for index in historyChannels.indices {
+            let channel = historyChannels[index]
+            let cacheKey = "\(channel.server.url)_\(channel.hex())"
+
+            if let matchedResult = resultMap[cacheKey] {
+                historyChannels[index].users = matchedResult.users
+                historyChannels[index].timestamp = .now
+            } else if channel.active {
+                historyChannels[index].users = 0
+            }
+        }
+
+        Defaults[.pttHisChannel] = historyChannels
+
+        var currentChannel = Defaults[.pttChannel]
+        let currentKey = "\(currentChannel.server.url)_\(currentChannel.hex())"
+
+        if let matchedResult = resultMap[currentKey] {
+            currentChannel.timestamp = .now
+            currentChannel.users = matchedResult.users
+
+            Defaults[.pttChannel] = currentChannel
+            self.serverStatus = .online
+        } else {
+            currentChannel.users = 0
+            Defaults[.pttChannel] = currentChannel
+            if let firstRes = results.first,
+               let matchedChannel = historyChannels.first(where: {
+                   $0.hex() == firstRes.channel && $0.server.url == firstRes.host
+               })
+            {
+                Defaults[.pttChannel] = matchedChannel
+            }
+        }
     }
 
     private func setServerStatus(_ status: PTServiceStatus, id: UUID) {
@@ -224,10 +311,10 @@ final class PushTalkManager: ObservableObject {
     }
 
     @discardableResult
-    private func read(message: PttMessageModel) -> Bool {
+    private func read(message: AudioMessage) -> Bool {
         return (try? DatabaseManager.shared.dbQueue.write { db in
             do {
-                if var message = try PttMessageModel.fetchOne(db, id: message.id) {
+                if var message = try AudioMessage.fetchOne(db, id: message.id) {
                     message.read = true
                     try message.save(db)
                 }
@@ -248,7 +335,7 @@ final class PushTalkManager: ObservableObject {
         self.send(.startPlay(message))
     }
 
-    private func beginPlay(_ message: PttMessageModel) {
+    private func beginPlay(_ message: AudioMessage) {
         state = .preparingPlay(message)
 
         logger.info("Start Play:\(message.file)")
@@ -283,7 +370,7 @@ final class PushTalkManager: ObservableObject {
     private func setRemoteOver() {
         self.channelManager?.setActiveRemoteParticipant(
             nil,
-            channelUUID: Defaults[.pttChannel].channelID
+            channelUUID: kGlobalPTTChannelUUID
         )
     }
 
@@ -302,7 +389,7 @@ final class PushTalkManager: ObservableObject {
         }
     }
 
-    func saveVoice(data: Data) -> PttMessageModel? {
+    func saveVoice(data: Data) -> AudioMessage? {
         let id = Defaults[.id]
         let channel = Defaults[.pttChannel]
         guard let filePath = channel.filePath(userID: id) else { return nil }
@@ -310,7 +397,7 @@ final class PushTalkManager: ObservableObject {
         do {
             try data.write(to: filePath)
             let voice = try self.database.dbQueue.write { db in
-                let voice = PttMessageModel(
+                let voice = AudioMessage(
                     channel: channel.hex(),
                     from: id,
                     file: filePath.lastPathComponent,
@@ -326,10 +413,10 @@ final class PushTalkManager: ObservableObject {
         }
     }
 
-    func saveVoice(remoteUrl: String) async -> PttMessageModel? {
+    func saveVoice(remoteUrl: String) async -> AudioMessage? {
         do {
             guard let remoteFileUrl = URL(string: remoteUrl),
-                  let voice = PttMessageModel(remote: remoteFileUrl),
+                  let voice = AudioMessage(remote: remoteFileUrl),
                   let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(voice.file),
                   let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign)
             else {
@@ -470,29 +557,74 @@ extension PushTalkManager: AudioHardwareDelegate {
 }
 
 extension PushTalkManager {
-    func connect(channel: PTTChannel, join: Bool) async -> baseResponse<Int>? {
-        guard channel.serverOK else {
+    func connect(channels: [PTTChannel], join: Bool) async -> [JoinResponse] {
+        let groupedChannels = Dictionary(grouping: channels, by: { $0.server.url })
+
+        return await withTaskGroup(of: [JoinResponse]?.self) { group in
+            for (_, serverChannels) in groupedChannels {
+                group.addTask {
+                    if let data = await self._connect(channels: serverChannels, join: join) {
+                        return data.data
+                    }
+                    return nil
+                }
+            }
+            var allResponses: [JoinResponse] = []
+            for await response in group {
+                if let response = response {
+                    allResponses += response
+                }
+            }
+
+            return allResponses
+        }
+    }
+
+    nonisolated struct JoinParams: Codable, Sendable {
+        var id: String
+        var channels: [String]
+        var token: String
+        var host: String
+    }
+
+    nonisolated struct JoinResponse: Codable, Sendable {
+        var host: String
+        var channel: String
+        var users: Int
+    }
+
+    private func _connect(
+        channels: [PTTChannel],
+        join: Bool
+    ) async -> baseResponse<[JoinResponse]>? {
+        guard let channel = channels.first, channel.serverOK else {
             Toast.info(title: "语音服务器错误")
             return nil
         }
 
         do {
-            logger.log("channel:\(channel.hex())")
+            let hzs = channels.map { $0.hex() }
+            logger.log("channel:\(hzs)")
 
-            guard let result: baseResponse<Int> =
+            let signHeaders = CryptoManager.signature(
+                sign: channel.server.sign,
+                server: channel.server.key
+            )
+
+            let params = JoinParams(
+                id: Defaults[.id],
+                channels: hzs,
+                token: join ? Defaults[.pttToken] : "",
+                host: channel.server.url
+            )
+
+            guard let result: baseResponse<[JoinResponse]> =
                 try await self.network.fetch(
                     url: channel.server.url,
                     path: "/ptt/connect",
                     method: .POST,
-                    params: [
-                        "id": Defaults[.id],
-                        "channel": channel.hex(),
-                        "token": join ? Defaults[.pttToken] : "",
-                    ],
-                    headers: [
-                        "Authorization": Defaults[.id],
-                        "channel": channel.hex(),
-                    ],
+                    params: params,
+                    headers: signHeaders,
                     timeout: 5
                 )
             else {
@@ -507,7 +639,7 @@ extension PushTalkManager {
         }
     }
 
-    func sendVoice(message: PttMessageModel) async -> Bool {
+    func sendVoice(message: AudioMessage) async -> Bool {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else {
             Toast.info(title: "语音服务器错误")
@@ -545,10 +677,6 @@ extension PushTalkManager {
             )
 
             let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
-
-            if let users = result.data, users >= 0 {
-                self.channelUsers = Int(users)
-            }
 
             return result.code == 200
         } catch {
@@ -599,8 +727,8 @@ extension PushTalkManager {
     enum State: Equatable {
         case idle
 
-        case preparingPlay(PttMessageModel)
-        case playing(PttMessageModel)
+        case preparingPlay(AudioMessage)
+        case playing(AudioMessage)
 
         case recording
 
@@ -649,7 +777,7 @@ extension PushTalkManager {
     // MARK: - Event
 
     enum Event {
-        case startPlay(PttMessageModel)
+        case startPlay(AudioMessage)
         case stopPlay
 
         case startRecord(Bool)

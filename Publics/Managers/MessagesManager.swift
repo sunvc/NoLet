@@ -47,7 +47,7 @@ final class MessagesManager: ObservableObject {
 
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (Int, Int) in
-            let unRead = try Message.filter(Message.Columns.isRead == false).fetchCount(db)
+            let unRead = try Message.filter(Message.Columns.read == false).fetchCount(db)
             let count = try Message.fetchCount(db)
             return (unRead, count)
         }
@@ -117,15 +117,15 @@ extension MessagesManager {
         return (try? await DB.dbQueue.write { db in
             // 批量更新 read 字段为 true
             try Message
-                .filter(Message.Columns.isRead == false)
-                .updateAll(db, [Message.Columns.isRead.set(to: true)])
+                .filter(Message.Columns.read == false)
+                .updateAll(db, [Message.Columns.read.set(to: true)])
         }) ?? 0
     }
 
     nonisolated func unreadCount(group: String? = nil) async -> Int {
         do {
             return try await DB.dbQueue.read { db in
-                var request = Message.filter(Message.Columns.isRead == false)
+                var request = Message.filter(Message.Columns.read == false)
 
                 if let group = group {
                     request = request.filter(Message.Columns.group == group)
@@ -312,11 +312,11 @@ extension MessagesManager {
     nonisolated func markAllRead(group: String? = nil) async {
         do {
             try await DB.dbQueue.write { db in
-                var request = Message.filter(Message.Columns.isRead == false)
+                var request = Message.filter(Message.Columns.read == false)
                 if let group = group {
                     request = request.filter(Message.Columns.group == group)
                 }
-                try request.updateAll(db, [Message.Columns.isRead.set(to: true)])
+                try request.updateAll(db, [Message.Columns.read.set(to: true)])
             }
         } catch {
             logger.error("markAllRead error")
@@ -331,10 +331,10 @@ extension MessagesManager {
                 // 构建查询条件
                 if allRead, let date = date {
                     request = request
-                        .filter(Message.Columns.isRead == true)
+                        .filter(Message.Columns.read == true)
                         .filter(Message.Columns.createDate < date)
                 } else if allRead {
-                    request = request.filter(Message.Columns.isRead == true)
+                    request = request.filter(Message.Columns.read == true)
                 } else if let date = date {
                     request = request.filter(Message.Columns.createDate < date)
                 } else {

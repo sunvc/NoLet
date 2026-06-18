@@ -37,13 +37,22 @@ class ArchiveProcessor: NotificationContentProcessor {
             bestAttemptContent.categoryIdentifier = Identifiers.reply.rawValue
         }
 
+        var style: String? = userInfo.raw(.style)
+
         switch Identifiers(rawValue: bestAttemptContent.categoryIdentifier) {
-        case .markdown, .reply:
+        case .markdown:
+            if style == nil { style = "markdown" }
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
                 .joined(separator: ",")
                 .replacingOccurrences(of: "\n", with: "")
 
+            bestAttemptContent.body = plainText.markdownPre()
+        case .reply:
+            let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
+                .filter { !$0.isEmpty }
+                .joined(separator: ",")
+                .replacingOccurrences(of: "\n", with: "")
             bestAttemptContent.body = plainText.markdownPre()
         default:
             bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
@@ -58,9 +67,8 @@ class ArchiveProcessor: NotificationContentProcessor {
         let url: String? = userInfo.raw(.url)
         let icon: String? = userInfo.raw(.icon)
         let image: String? = userInfo.raw(.image)
-        let host: String? = userInfo.raw(.host)
         let messageID = bestAttemptContent.targetContentIdentifier
-        let level = bestAttemptContent.level.rawValue
+
         let other = userInfo.toJSONString(excluding: Params.names)
 
         //  获取保存时间
@@ -92,11 +100,10 @@ class ArchiveProcessor: NotificationContentProcessor {
             icon: icon,
             url: url,
             image: image,
-            host: host,
             reply: reply,
-            level: Int(level),
             ttl: saveDays,
-            isRead: false,
+            read: false,
+            style: style,
             other: other
         )
 

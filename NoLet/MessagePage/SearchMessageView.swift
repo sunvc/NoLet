@@ -65,13 +65,12 @@ struct SearchMessageView: View {
                     }
                 } else {
                     ForEach(messages, id: \.id) { message in
-                        MessageCard(
+                        MessageCardView(
                             message: message,
                             searchText: manager.searchText,
-                            showGroup: true,
                             assistantAccounsCount: assistantAccouns.count,
                             selectID: manager.selectID
-                        ) {
+                        ){
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 withAnimation(.default) {
                                     messages.removeAll(where: { $0.id == message.id })
@@ -96,7 +95,7 @@ struct SearchMessageView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
-        .background(.gray.opacity(0.1))
+        .background(TiffanyBlueBackground())
         .animation(.interactiveSpring, value: messages.count)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

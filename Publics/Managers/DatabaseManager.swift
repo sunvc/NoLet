@@ -50,15 +50,14 @@ final class DatabaseManager {
                 t.column("createDate", .datetime).notNull()
                 t.column("title", .text)
                 t.column("subtitle", .text)
-                t.column("body", .text)
+                t.column("body", .text).notNull()
                 t.column("icon", .text)
                 t.column("url", .text)
                 t.column("image", .text)
-                t.column("from", .text)
-                t.column("host", .text)
-                t.column("level", .integer).notNull()
+                t.column("reply", .text)
                 t.column("ttl", .integer).notNull()
                 t.column("read", .boolean).notNull()
+                t.column("style", .text)
                 t.column("other", .text)
             }
 
@@ -71,17 +70,6 @@ final class DatabaseManager {
                     CREATE INDEX IF NOT EXISTS idx_message_group_createdate
                     ON message("group", createDate DESC)
                 """)
-        }
-        migrator.registerMigration("rename_Message") { db in
-            try db.alter(table: self.messageTabelName) { t in
-                t.rename(column: "read", to: "isRead")
-            }
-        }
-        
-        migrator.registerMigration("add reply") { db in
-            try db.alter(table: self.messageTabelName) { t in
-                t.add(column: "reply", .text)
-            }
         }
     }
 

@@ -67,14 +67,8 @@ struct SelectMessageView: View {
 
                     VStack {
                         HStack {
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(message.createDate.formatString())
-
-                                if let host = message.host {
-                                    Text(host.removeHTTPPrefix())
-                                }
-                            }
-                            .font(.system(size: basedateSize * scaleFactor))
+                            Text(message.createDate.formatString())
+                                .font(.system(size: basedateSize * scaleFactor))
 
                             Spacer()
                         }
@@ -191,10 +185,10 @@ struct SelectMessageView: View {
                                 )
                                 .padding(.horizontal, 3)
 
-                            if let body = message.body, !body.isEmpty {
+                            if !message.body.isEmpty {
                                 HStack {
                                     MarkdownCustomView(
-                                        content: body,
+                                        content: message.body,
                                         searchText: "",
                                         scaleFactor: scaleFactor,
                                         select: showCopy
@@ -368,7 +362,7 @@ struct SelectMessageView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .background26(.background, radius: 0)
+            .background(TiffanyBlueBackground())
             .animation(.spring(), value: messageShowMode)
             .onAppear { self.hideKeyboard() }
             .onDisappear { chatManager.cancellableRequest?.cancel() }
@@ -397,7 +391,6 @@ struct SelectMessageView: View {
                             Image(systemName: "doc.on.clipboard")
                         }
                     }
-
 
                     MarkdownCustomView(
                         content: url,
@@ -431,8 +424,8 @@ struct SelectMessageView: View {
             datas += "\(subtitle) <br>"
         }
 
-        if let body = message.body, !body.isEmpty {
-            datas += "\(body)"
+        if  !message.body.isEmpty {
+            datas += "\(message.body)"
         }
 
         guard assistantAccouns.first(where: { $0.current }) != nil else {
@@ -502,9 +495,8 @@ struct SelectMessageView: View {
             ### 1231231231
             """,
         image: "https://s3.wzs.app/og.png",
-        level: 1,
         ttl: 7,
-        isRead: true,
+        read: true,
         other: ""
     )) {}
 }
