@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - CyberTerminalNotificationCard.swift
+//  NoLet - TerminalMessageCard.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -15,12 +15,18 @@ import SwiftUI
 
 // MARK: - 风格 2：极客极简 · HUD 动态终端卡片
 
-struct CyberTerminalNotificationCard: View {
+struct TerminalMessageCard: MessageCardProtocol {
     let message: Message
-    @State private var isCopied = false
+    var config: MessageCardConfiguration
+
+    @ObservedObject var manager = AppManager.shared
+    @Namespace private var messageNameSpace
+    @State private var replyText: String = ""
+    @FocusState private var showReply
+    @State private var showSnap: Bool = false
 
     var severityColor: Color {
-        switch message.group.lowercased() {
+        switch message.value(for: "severity", "success").lowercased() {
         case "error", "alert", "system": return .red
         case "warning": return .orange
         default: return .green
@@ -39,9 +45,9 @@ struct CyberTerminalNotificationCard: View {
 
                 Spacer()
 
-                Text("push-receiver://\(message.group.lowercased())")
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .foregroundColor(.gray)
+                Text(message.createDate, format: .relative(presentation: .named))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
 
                 Spacer()
 
@@ -79,57 +85,73 @@ struct CyberTerminalNotificationCard: View {
                         .padding(.leading, 14)
                 }
 
-                Text(message.body)
-                    .font(.system(size: 13))
-                    .foregroundColor(.primary.opacity(0.8))
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Color.primary.opacity(0.03))
-                    .cornerRadius(6)
-                    .padding(.leading, 14)
+                SCSelectableTextRepresentable(
+                    text: message.body.plainText,
+                    font: .systemFont(ofSize: 13, weight: .medium),
+                    textColor: UIColor.secondaryLabel,
+                    textAlignment: .left,
+                    lineLimit: 5
+                )
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Color.primary.opacity(0.03))
+                .cornerRadius(6)
+                .padding(.leading, 5)
+            }
+
+            if let image = message.image {
+                AsyncPhotoView(url: image, zoom: false, height: 200)
+                    .padding(5)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        self.showFull()
+                    }
             }
 
             // 3. 极客式底层元数据
             HStack(spacing: 12) {
                 // 精简小图标 + 接收时间
-                Label {
-                    Text(message.createDate, style: .time)
-                        .font(.system(size: 11, design: .monospaced))
-                } icon: {
-                    Image(systemName: message.icon ?? "")
-                        .foregroundColor(severityColor)
-                }
+
+                AvatarView(icon: message.icon)
+                    .frame(width: 30, height: 30, alignment: .center)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                Text(message.group)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 5)
 
                 Spacer()
 
                 // 操作选项：如果包含 Link 则提供快捷一键复制/打开
-                if let link = message.url {
-                    Button(action: {
-                        UIPasteboard.general.string = link
-                        withAnimation {
-                            isCopied = true
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            isCopied = false
-                        }
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: isCopied ? "checkmark" : "doc.on.clipboard")
-                            Text(isCopied ? "Copied!" : "复制Link")
-                        }
-                        .font(.system(size: 11, weight: .bold, design: .monospaced))
-                        .foregroundColor(isCopied ? .green : .primary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.primary.opacity(0.05))
-                        .cornerRadius(4)
+                if let link = message.url, let url = URL(string: link) {
+                    Link(destination: url) {
+                        Text(verbatim: "LINK")
+                            .font(.caption)
                     }
                 }
+
+                MessageActionMenu(
+                    message: message,
+                    assistantAccounsCount: config.accounts,
+                    manager: manager,
+                    showSnap: $showSnap,
+                    showReply: $showReply,
+                    onDelete: config.delete
+                )
             }
-            .foregroundColor(.secondary)
         }
         .padding(16)
         .glassCard()
+        .messageInteraction(
+            message: message,
+            in: messageNameSpace,
+            manager: manager,
+            replyText: $replyText,
+            showReply: $showReply,
+            showSnap: $showSnap,
+            onShowFull: showFull
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 14)
                 .stroke(severityColor.opacity(0.2), lineWidth: 1.5)
@@ -137,22 +159,28 @@ struct CyberTerminalNotificationCard: View {
         .shadow(color: severityColor.opacity(0.04), radius: 8, x: 0, y: 4)
         .padding(.horizontal)
     }
+
+    func showFull() {
+        manager.selectMessage = message
+
+        Haptic.impact(.light)
+    }
 }
 
 #Preview {
-    CyberTerminalNotificationCard(message: Message(
+    TerminalMessageCard(message: Message(
         id: "123",
-        createDate: .now,
-        group: "",
+        createDate: .now.addingTimeInterval(-1),
+        group: "服务器",
         title: "生产数据库磁盘过高报警",
         subtitle: "警告：/dev/sda1 剩余空间仅 8.5%",
         body: "收到 Prometheus 警报：宿主机 [Pro-db-04] 当前剩余空间 8.5G/100G，已连续 15 分钟呈递增趋势，请尽快处理日志堆积或挂载扩容。",
         icon: nil,
         url: "https://grafana.example.com/alerts",
-        image: nil,
+        image: "https://s3.wzs.app/nolet/logo.png",
         reply: nil,
         ttl: 2,
         read: true,
-        other: nil
-    ))
+        other: "{ \"severity\" : \"success\" }"
+    ), config: .init())
 }

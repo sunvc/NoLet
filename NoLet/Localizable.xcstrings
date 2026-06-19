@@ -141,9 +141,6 @@
     "%lld 人在线" : {
 
     },
-    "%llds" : {
-
-    },
     "%lld个月" : {
       "localizations" : {
         "en" : {
@@ -447,9 +444,6 @@
         }
       }
     },
-    "Copied!" : {
-
-    },
     "GET方法需要URIConponent编码" : {
       "localizations" : {
         "en" : {
@@ -648,16 +642,7 @@
         }
       }
     },
-    "push-receiver://%@" : {
-
-    },
     "Sarah Connor" : {
-
-    },
-    "TTL" : {
-
-    },
-    "TTL 剩余生命周期" : {
 
     },
     "UNIVERSAL SOCIAL CHANNELS" : {
@@ -1411,6 +1396,9 @@
         }
       }
     },
+    "全局背景样式" : {
+
+    },
     "全平台社交消息流" : {
 
     },
@@ -2109,9 +2097,6 @@
         }
       }
     },
-    "加急确认" : {
-
-    },
     "加载中" : {
       "localizations" : {
         "en" : {
@@ -2643,9 +2628,6 @@
         }
       }
     },
-    "回复内容:" : {
-
-    },
     "回复内容会拼接在用户指定的reply参数结尾" : {
       "localizations" : {
         "en" : {
@@ -2966,9 +2948,6 @@
         }
       }
     },
-    "复制Link" : {
-
-    },
     "复制Python示例" : {
       "localizations" : {
         "en" : {
@@ -3020,9 +2999,6 @@
         }
       }
     },
-    "媒体附件" : {
-
-    },
     "字符计数: %lld" : {
       "localizations" : {
         "en" : {
@@ -3054,9 +3030,6 @@
           }
         }
       }
-    },
-    "存活中" : {
-
     },
     "完成" : {
       "localizations" : {
@@ -3105,9 +3078,6 @@
           }
         }
       }
-    },
-    "实时接收并推送的自建消息流" : {
-
     },
     "密钥" : {
       "localizations" : {
@@ -3325,9 +3295,6 @@
           }
         }
       }
-    },
-    "已送达" : {
-
     },
     "应用信息" : {
       "localizations" : {
@@ -4618,6 +4585,7 @@
 
     },
     "是否收到消息自动保存图片" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4666,6 +4634,7 @@
       }
     },
     "显示图标" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4792,6 +4761,9 @@
           }
         }
       }
+    },
+    "暮色极光" : {
+
     },
     "更多" : {
       "localizations" : {
@@ -5897,9 +5869,6 @@
         }
       }
     },
-    "消息中心" : {
-
-    },
     "消息内容" : {
       "localizations" : {
         "en" : {
@@ -5933,6 +5902,7 @@
       }
     },
     "消息卡片未分组时是否显示logo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -6268,9 +6238,6 @@
         }
       }
     },
-    "点击打开关联链接" : {
-
-    },
     "点击查看更多" : {
       "localizations" : {
         "en" : {
@@ -6302,9 +6269,6 @@
           }
         }
       }
-    },
-    "点击跳转链接" : {
-
     },
     "点击进入分组列表" : {
       "localizations" : {
@@ -7211,6 +7175,12 @@
         }
       }
     },
+    "蒂芙尼" : {
+
+    },
+    "蒂芙尼蓝" : {
+
+    },
     "被动建连" : {
       "localizations" : {
         "en" : {
@@ -7340,6 +7310,7 @@
       }
     },
     "语音服务连接失败" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -7934,6 +7905,9 @@
         }
       }
     },
+    "退出" : {
+
+    },
     "选择" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8015,6 +7989,9 @@
         }
       }
     },
+    "选择样式" : {
+
+    },
     "选择翻译语言" : {
       "localizations" : {
         "en" : {
@@ -8046,6 +8023,9 @@
           }
         }
       }
+    },
+    "选择颜色" : {
+
     },
     "通知权限设置" : {
       "localizations" : {

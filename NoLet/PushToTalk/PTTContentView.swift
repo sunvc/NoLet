@@ -11,7 +11,6 @@ import Defaults
 import SwiftUI
 
 struct PTTContentView: View {
-   
     @State private var ispress: Bool = false
 
     @ObservedObject private var pttManager = PushTalkManager.shared
@@ -59,6 +58,10 @@ struct PTTContentView: View {
 
     @State private var showVolume: Bool = false
     @State private var hideWorkItem: DispatchWorkItem?
+
+    @State private var isButtonPressed = false
+    @State private var dragOffset: CGFloat = 0.0
+    private let maxDragDistance: CGFloat = 80.0
 
     var currentProgress: Double {
         switch pttManager.state {
@@ -377,7 +380,6 @@ struct PTTContentView: View {
                 .padding(.horizontal, 10)
 
             BottomBottonViews()
-            
         }
         .background(.background)
         .ignoresSafeArea(.container, edges: .top)
@@ -391,7 +393,7 @@ struct PTTContentView: View {
         .animation(.default, value: showVolume)
         .environment(\.colorScheme, .dark)
         .sheet(isPresented: $showVoiceList) {
-            AudioMessageListView()
+            PTTMessageView()
                 .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showChannelList) {
@@ -490,36 +492,121 @@ struct PTTContentView: View {
                 .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
         }
     }
-    
-    @ViewBuilder
-    func powerButton() -> some View{
-        Button {
-            let channelID = pttManager.kGlobalPTTChannelUUID
-            
-            if pttManager.powerState {
-                pttManager.channelManager?.leaveChannel(channelUUID: channelID)
-            }else{
-                pttHisChannel.set(pttChannel, active: true)
-                pttManager.channelManager?.requestJoinChannel(
-                    channelUUID: channelID,
-                    descriptor: .init(name: NCONFIG.AppName, image: "書".avatarImage())
-                )
-            }
-            
-            withAnimation {
-                self.buttonType = .call
-            }
 
-            Haptic.impact()
-        } label: {
-            Image(systemName: "power.circle.fill")
-                .foregroundStyle(pttManager.powerState ? Color.red.gradient : Color.green
-                    .gradient)
+    @State private var isAnimatingHint = false
+
+    @ViewBuilder
+    func powerButton() -> some View {
+        ZStack(alignment: .leading) {
+            Capsule()
+                .fill(Color.gray.opacity(dragOffset > 0 ? 0.15 : 0.06))
+                .frame(width: maxDragDistance + 50, height: 50)
+                .overlay(
+                    Capsule()
+                        .stroke(Color.black.opacity(0.08), lineWidth: 3)
+                        .blur(radius: 2)
+                        .offset(y: 2)
+                        .mask(Capsule())
+                )
+                .overlay(
+                    Capsule()
+                        .stroke(Color.white.opacity(0.6), lineWidth: 1)
+                        .offset(y: -0.5)
+                        .mask(Capsule())
+                )
+
+                .overlay(
+                    ZStack(alignment: .leading) {
+                        var tips: String {
+                            if dragOffset > 20 { return String(localized: "退出") }
+                            return pttManager
+                                .powerState ? String(localized: "关闭") : String(localized: "开启")
+                        }
+
+                        HStack(spacing: 4) {
+                            if dragOffset >= 20 {
+                                Image(systemName: "chevron.left.2")
+                                    .offset(x: isAnimatingHint ? -6 : 0)
+                            }
+                            Text(tips)
+
+                            if dragOffset < 20 {
+                                Image(systemName: "chevron.right.2")
+                                    .offset(x: isAnimatingHint ? 6 : 0)
+                            }
+                        }
+                        .font(.footnote)
+                        .bold()
+                        .foregroundColor(dragOffset > 20 ? .red : .secondary)
+                        .opacity(isAnimatingHint ? 0.3 : 0.8)
+                        .offset(x: dragOffset > 20 ? 10 : 60)
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.0)
+                                .repeatForever(autoreverses: true))
+                            {
+                                self.isAnimatingHint = true
+                            }
+                        }
+                    },
+                    alignment: .leading
+                )
+                .offset(x: 10)
+
+            Image(systemName: dragOffset < -20 ? "xmark.circle.fill" : "power.circle.fill")
+                .foregroundStyle(dragOffset < -20 ? Color.orange.gradient :
+                    (pttManager.powerState ? Color.red.gradient : Color.green.gradient))
                 .font(.system(size: 50))
-                .opacity(buttonType == .call ? 1 : 0)
-                .scaleEffect(buttonType == .call ? 1 : 0.5)
-                .offset(x: buttonType == .call ? 0 : 100)
+                .offset(x: buttonType == .call ? dragOffset : 0)
+                .gesture(
+                    DragGesture(
+                        minimumDistance: 0,
+                        coordinateSpace: .local
+                    )
+                    .onChanged { value in
+                        let currentWidth = value.translation.width
+                        self.dragOffset = max(-70, min(currentWidth, maxDragDistance + 15))
+                    }
+                    .onEnded { value in
+                        let draggedWidth = value.translation.width
+                      
+                        if draggedWidth >= maxDragDistance {
+                            let channelID = pttManager.kGlobalPTTChannelUUID
+                            if pttManager.powerState {
+                                pttManager.channelManager?.leaveChannel(channelUUID: channelID)
+                            } else {
+                                pttHisChannel.set(pttChannel, active: true)
+                                pttManager.channelManager?.requestJoinChannel(
+                                    channelUUID: channelID,
+                                    descriptor: .init(
+                                        name: NCONFIG.AppName,
+                                        image: "書".avatarImage()
+                                    )
+                                )
+                            }
+
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
+                                self.buttonType = .call
+                                self.dragOffset = 0.0
+                            }
+                            Haptic.impact()
+
+                        } else {
+                            if draggedWidth < -50 {
+                                AppManager.shared.page = .message
+                                Haptic.impact()
+                            }
+
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {
+                                self.dragOffset = 0.0
+                            }
+
+                            Haptic.notify(.error)
+                        }
+                    }
+                )
         }
+        .opacity(buttonType == .call ? 1 : 0)
+        .scaleEffect(buttonType == .call ? 1 : 0.5)
     }
 
     @ViewBuilder
@@ -542,52 +629,60 @@ struct PTTContentView: View {
                 .offset(x: buttonType == .mhz || buttonType == .khz ? 0 : -100)
                 .animation(.easeInOut, value: buttonType)
                 Spacer()
-
-                powerButton()
             }
             .padding(.horizontal)
             .padding(.top)
             .opacity(buttonType == .mhz || buttonType == .khz ? 1 : 0)
-            HStack(spacing: 20) {
-                powerButton()
 
-                Spacer()
+            ZStack {
+                HStack(spacing: 20) {
+                    powerButton()
 
-                Button {
-                    self.showVoiceList.toggle()
-                    Haptic.impact()
-                } label: {
-                    Image(systemName: "captions.bubble")
-                        .foregroundStyle(.white, .accent)
-                        .font(.largeTitle)
+                    Spacer()
                 }
-                .offset(x: buttonType == .call ? 0 : -100)
-                .scaleEffect(buttonType == .call ? 1 : 0.5)
+                HStack(spacing: 20) {
+                    Spacer()
 
-                Spacer(minLength: 0)
-                
-                
-                Button {
-                    // TODO: - 总设置
-                    if pttHisChannel.count > 0 {
-                        self.showChannelList.toggle()
-                    } else {
-                        Toast.info(title: "没有历史频道")
-                    }
-
-                } label: {
-                    Label {
-                        Text("历史频道")
-                    } icon: {
-                        Image(systemName: "list.bullet.rectangle")
+                    Button {
+                        self.showVoiceList.toggle()
+                        Haptic.impact()
+                    } label: {
+                        Image(systemName: "captions.bubble")
                             .foregroundStyle(.white, .accent)
                             .font(.largeTitle)
                     }
-                    .labelStyle(.iconOnly)
+                    .offset(x: buttonType == .call ? 0 : -100)
+                    .scaleEffect(buttonType == .call ? 1 : 0.5)
+
+                    Spacer(minLength: 0)
                 }
-                .offset(x: buttonType == .call ? 0 : 100)
+                HStack(spacing: 20) {
+                    Spacer(minLength: 0)
+
+                    Button {
+                        // TODO: - 总设置
+                        if pttHisChannel.count > 0 {
+                            self.showChannelList.toggle()
+                        } else {
+                            Toast.info(title: "没有历史频道")
+                        }
+                        Haptic.impact()
+
+                    } label: {
+                        Label {
+                            Text("历史频道")
+                        } icon: {
+                            Image(systemName: "list.bullet.rectangle")
+                                .foregroundStyle(.white, .accent)
+                                .font(.largeTitle)
+                        }
+                        .labelStyle(.iconOnly)
+                    }
+                    .offset(x: buttonType == .call ? 0 : 100)
+                }
             }
-            .padding(.horizontal, 30)
+
+            .padding(.horizontal, 10)
             .opacity(buttonType == .call ? 1 : 0)
             .animation(.easeInOut, value: buttonType)
         }

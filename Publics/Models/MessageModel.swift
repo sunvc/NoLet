@@ -28,7 +28,6 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
     var read: Bool
     var style: String?
     var other: String?
-    
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -47,20 +46,38 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
         static let other = Column(CodingKeys.other)
     }
 
+    // MARK: - Computed Properties
+
+    // 优化：Lazy 干净拼接，避免产生过多临时中间数组
     var search: String {
-        [group, title, subtitle, body,  url].compactMap { $0 }.filter { !$0.isEmpty }
+        [group, title, subtitle, body, url]
+            .lazy
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
             .joined(separator: ";") + ";"
     }
-    
-    // 辅助计算：剩余生存比例 (0.0 - 1.0)
-    var lifePercent: Double {
-        let elapsed = Date().timeIntervalSince(createDate)
-        return max(0.0, min(1.0, 1.0 - (elapsed / Double(ttl))))
+
+    // 优化：提取公共计算逻辑，保持 DRY (Don't Repeat Yourself)
+    private var elapsedSeconds: TimeInterval {
+        Date().timeIntervalSince(createDate)
     }
-    
-    // 辅助计算：判断通知是否过期
+
+    var lifePercent: Double {
+        guard ttl > 0 else { return 0.0 }
+        return max(0.0, min(1.0, 1.0 - (elapsedSeconds / Double(ttl))))
+    }
+
     var isExpired: Bool {
-        Date().timeIntervalSince(createDate) > Double(ttl)
+        elapsedSeconds > Double(ttl)
+    }
+
+    var otherDictionary: [String: Any]? {
+        guard let otherData = other?.data(using: .utf8) else { return nil }
+        return try? JSONSerialization.jsonObject(with: otherData) as? [String: Any]
+    }
+
+    func value<T>(for key: String, _ value: T) -> T {
+        return otherDictionary?[key] as? T ?? value
     }
 }
 

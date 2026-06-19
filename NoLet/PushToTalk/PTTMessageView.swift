@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - AudioMessageListView.swift
+//  NoLet - PTTMessageView.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -15,11 +15,11 @@ import AVFoundation
 import Defaults
 import SwiftUI
 
-///  AudioMessageListView
+///  PTTMessageView
 ///
 ///
 
-struct AudioMessageListView: View {
+struct PTTMessageView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject private var pttManager = PushTalkManager.shared
     @Default(.id) var id
@@ -27,7 +27,7 @@ struct AudioMessageListView: View {
         NavigationStack {
             List {
                 ForEach(pttManager.messages, id: \.id) { item in
-                    AudioMessageRow(message: item)
+                    PTTMessageRow(message: item)
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                         .padding(10)
@@ -36,7 +36,7 @@ struct AudioMessageListView: View {
             .listStyle(.grouped)
             .navigationTitle("消息列表")
             .scrollContentBackground(.hidden)
-            .background(TiffanyBlueBackground())
+            .background(ContentBackgroundView())
             .toolbar {
                 ToolbarItem {
                     Menu {
@@ -51,11 +51,10 @@ struct AudioMessageListView: View {
                 }
             }
         }
-        
     }
 }
 
-struct AudioMessageRow: View {
+struct PTTMessageRow: View {
     let message: AudioMessage
 
     let tiffanyColor = Color(red: 0.35, green: 0.78, blue: 0.80)
@@ -69,8 +68,8 @@ struct AudioMessageRow: View {
         }
         return false
     }
-    
-    var durationNow: Double{
+
+    var durationNow: Double {
         guard pttManager.currentPlayFile == message else {
             return duration
         }
@@ -96,21 +95,18 @@ struct AudioMessageRow: View {
             // 右侧核心气泡主体
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    
                     if message.remote.isEmpty {
                         Image(systemName: "paperplane")
                             .foregroundStyle(.mint)
-                    }else{
+                    } else {
                         Image(systemName: "radio")
                             .foregroundStyle(.orange)
                     }
-                    
+
                     if let channel = PTTChannel.decimal(message.channel) {
                         Text(verbatim: "\(channel.mhz).\(channel.khz)")
                             .font(.numberStyle(size: 20))
-                            
                     }
-                    
 
                     Spacer()
 
@@ -141,7 +137,7 @@ struct AudioMessageRow: View {
 
                     Text(verbatim: String(format: "%.1fs", durationNow))
                         .font(.system(size: 13, weight: .bold, design: .monospaced))
-                        .foregroundColor( .primary)
+                        .foregroundColor(.primary)
                 }
                 .padding(.vertical, 10)
                 .padding(.horizontal, 12)
@@ -157,7 +153,7 @@ struct AudioMessageRow: View {
                         }
                         .clipShape(
                             RoundedRectangle(cornerRadius: 20)
-                        )   
+                        )
                     }
                 )
             }

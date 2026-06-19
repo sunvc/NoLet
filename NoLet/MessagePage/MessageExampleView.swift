@@ -1,5 +1,5 @@
 //
-//  ExampleView.swift
+//  MessageExampleView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -13,7 +13,7 @@
 import Defaults
 import SwiftUI
 
-struct ExampleView: View {
+struct MessageExampleView: View {
     @ObservedObject private var manager = AppManager.shared
     @State private var username: String = ""
     @State private var title: String = ""
@@ -109,6 +109,8 @@ struct ExampleView: View {
             }
         }
         .listStyle(GroupedListStyle())
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("使用示例")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -136,7 +138,7 @@ struct ExampleView: View {
     }
 }
 
-extension ExampleView {
+extension MessageExampleView {
     func createExample(cryptoData: CryptoModelConfig) -> [PushExampleModel] {
         let ciphertext = CryptoManager(cryptoData).encrypt(NCONFIG.testData)?.replacingOccurrences(
             of: "+",
@@ -305,6 +307,6 @@ struct PushExampleModel: Identifiable {
 
 #Preview {
     NavigationStack {
-        ExampleView()
+        MessageExampleView()
     }
 }

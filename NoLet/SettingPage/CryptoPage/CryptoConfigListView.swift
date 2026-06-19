@@ -38,6 +38,8 @@ struct CryptoConfigListView: View {
         }
         .listStyle(.grouped)
         .navigationTitle("算法配置")
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

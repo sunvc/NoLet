@@ -48,6 +48,8 @@ struct ChatGroupHistoryView: View {
                 }
             }
             .scrollIndicators(.hidden)
+            .scrollContentBackground(.hidden)
+            .background(ContentBackgroundView())
             .navigationTitle("最近使用")
             .searchable(text: $text)
             .popView(isPresented: $showChangeGroupName) {

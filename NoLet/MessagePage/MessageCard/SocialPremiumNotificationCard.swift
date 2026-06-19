@@ -574,7 +574,7 @@ struct UniversalSocialShowcaseView: View {
 }
 
 // MARK: - 预览
-struct GitHubNotificationCard_Previews1: PreviewProvider {
+struct GitHubMessageCard_Previews1: PreviewProvider {
     static var previews: some View {
         UniversalSocialShowcaseView()
     }

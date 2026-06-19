@@ -18,28 +18,60 @@ struct MessageCardView: View {
     var searchText: String = ""
     var showGroup: Bool = true
     var showAllTTL: Bool = false
-    var showAvatar: Bool = true
     var assistantAccounsCount: Int
     var selectID: String? = nil
     var delete: () -> Void
 
+    var focusColor: Color {
+        guard let selectID = selectID else {
+            return .clear
+        }
+        return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
+    }
+
+    private var messageConfig: MessageCardConfiguration {
+        MessageCardConfiguration(
+            searchText: searchText,
+            showGroup: showGroup,
+            showAllTTL: showAllTTL,
+            accounts: assistantAccounsCount,
+            selectID: selectID,
+            delete: delete,
+            focusColor: focusColor
+        )
+    }
+
     var body: some View {
-        switch message.style {
+        switch message.style?.lowercased() {
         case "markdown":
-            MarkdownMessageView(
-                message: message,
-                searchText: searchText,
-                showAvatar: showAvatar,
-                assistantAccounsCount: assistantAccounsCount,
-                delete: delete
-            )
+            MarkdownMessageCard(message: message, config: messageConfig)
+
+        case "terminal":
+            TerminalMessageCard(message: message, config: messageConfig)
+
+        case "github":
+            GitHubMessageCard(message: message, config: messageConfig)
+        case "pay":
+            PaymentMessageCard(message: message, config: messageConfig)
+
         default:
-            PlainMessageView(
-                message: message,
-                searchText: searchText,
-                assistantAccouns: assistantAccounsCount,
-                delete: delete
-            )
+            PlainMessageCard(message: message, config: messageConfig)
         }
     }
+}
+
+protocol MessageCardProtocol: View {
+    // 1. 核心数据源
+    var message: Message { get }
+    var config: MessageCardConfiguration { get }
+}
+
+struct MessageCardConfiguration {
+    var searchText: String = ""
+    var showGroup: Bool = true
+    var showAllTTL: Bool = false
+    var accounts: Int = 0
+    var selectID: String? = nil
+    var delete: () -> Void = {}
+    var focusColor: Color = .clear
 }

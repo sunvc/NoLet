@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7 
-//  NoLet - TiffanyBlueBackground.swift
+//  NoLet - ContentBackgroundView.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -117,6 +117,66 @@ struct TiffanyBlueBackground: View {
             )),
             with: .color(.white)
         )
+    }
+}
+
+struct TiffanyBlueBackground2: View {
+    // 绑定用户自定的颜色
+    var colors: [Color] = [
+        Color(red: 0.35, green: 0.78, blue: 0.80),
+        Color(red: 0.55, green: 0.45, blue: 0.90),
+        Color(red: 0.95, green: 0.60, blue: 0.75),
+        Color(red: 0.20, green: 0.50, blue: 0.85)
+    ]
+    
+    var body: some View {
+        TimelineView(.animation) { context in
+            GeometryReader { geometry in
+                let w = geometry.size.width
+                let h = geometry.size.height
+                let t = context.date.timeIntervalSinceReferenceDate
+                
+                ZStack {
+                    // 底色：用第一个颜色打底
+                    colors[0].ignoresSafeArea()
+                    
+                    // 浮动光晕球组
+                    ZStack {
+                        // 气泡 1 (大，偏左上)
+                        Circle()
+                            .fill(colors[1])
+                            .frame(width: w * 1.2)
+                            .position(
+                                x: w * 0.1 + CGFloat(sin(t * 0.4)) * (w * 0.15),
+                                y: h * 0.2 + CGFloat(cos(t * 0.3)) * (h * 0.1)
+                            )
+                        
+                        // 气泡 2 (中，偏右下)
+                        Circle()
+                            .fill(colors[2])
+                            .frame(width: w * 1.0)
+                            .position(
+                                x: w * 0.8 + CGFloat(cos(t * 0.5 + 1.0)) * (w * 0.2),
+                                y: h * 0.7 + CGFloat(sin(t * 0.4 + 1.5)) * (h * 0.15)
+                            )
+                        
+                        // 气泡 3 (中，偏中下)
+                        Circle()
+                            .fill(colors[3])
+                            .frame(width: w * 0.9)
+                            .position(
+                                x: w * 0.5 + CGFloat(sin(t * 0.6 + 2.0)) * (w * 0.25),
+                                y: h * 0.5 + CGFloat(cos(t * 0.5 + 0.5)) * (h * 0.2)
+                            )
+                    }
+                    // 【灵魂一步】超高半径模糊，把生硬的圆球变成虚无的光晕
+                    .blur(radius: 90)
+                    // 用 blendMode 增加光影图层的亮度和质感
+                    .blendMode(.screen)
+                }
+            }
+        }
+        .ignoresSafeArea()
     }
 }
 

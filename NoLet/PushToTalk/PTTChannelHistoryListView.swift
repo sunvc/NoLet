@@ -95,7 +95,7 @@ struct PTTChannelHistoryListView: View {
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .navigationTitle("监听频道")
-                .background(TiffanyBlueBackground())
+                .background(ContentBackgroundView())
                 .toolbar {
                     ToolbarItem {
                         Menu {

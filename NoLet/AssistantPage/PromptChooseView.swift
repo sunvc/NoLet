@@ -148,6 +148,8 @@ struct PromptChooseView: View {
             .onChange(of: chatManager.promptCount) { _ in
                 loadData()
             }
+            .scrollContentBackground(.hidden)
+            .background(ContentBackgroundView())
         }
     }
 

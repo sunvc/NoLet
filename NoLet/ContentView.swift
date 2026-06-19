@@ -322,10 +322,10 @@ extension View {
             Group {
                 switch router {
                 case .example:
-                    ExampleView()
+                    MessageExampleView()
 
                 case .messageDetail(let group):
-                    MessageDetailPage(group: group)
+                    MessageDetailView(group: group)
                         .navigationTitle(group)
 
                 case .sound:

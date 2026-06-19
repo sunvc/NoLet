@@ -57,7 +57,6 @@ extension Defaults.Keys {
     static let muteSetting = Key<[String: Date]>("muteSetting", [:])
 
     static let imageSaves = Key<[String]>("imageSaves", [])
-    static let showMessageAvatar = Key<Bool>("showMessageAvatar", false)
     static let id = Key<String>("UserDeviceUniqueID", "")
     static let lang = Key<String>("LocalePreferredLanguagesFirst", "")
     static let allMessagecount = Key<Int>("allMessagecount", 0, iCloud: true)

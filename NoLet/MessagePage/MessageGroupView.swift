@@ -1,5 +1,5 @@
 //
-//  GroupMessagesView.swift
+//  MessageGroupView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -15,7 +15,7 @@ import Defaults
 import GRDB
 import SwiftUI
 
-struct GroupMessagesView: View {
+struct MessageGroupView: View {
     @ObservedObject private var messageManager = MessagesManager.shared
     @ObservedObject private var manager = AppManager.shared
 
@@ -56,7 +56,7 @@ struct GroupMessagesView: View {
             }
             .navigationTitle("消息")
             .scrollContentBackground(.hidden)
-            .background(TiffanyBlueBackground())
+            .background(ContentBackgroundView())
             .listStyle(.grouped)
             .animation(.default, value: messageManager.groupMessages)
             .onChange(of: messageManager.allCount) { _ in
@@ -121,7 +121,7 @@ struct MessageRow: View {
                 .imageScale(.small)
         }
         .padding(8)
-        .mbackground26(.message, radius: 15)
+        .glassCard(15)
         .padding(.vertical, 8)
         .padding(.bottom, 3)
         .padding(.horizontal, 15)
@@ -249,5 +249,5 @@ extension Date {
 }
 
 #Preview {
-    GroupMessagesView()
+    MessageGroupView()
 }

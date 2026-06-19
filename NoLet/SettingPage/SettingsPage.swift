@@ -265,6 +265,8 @@ struct SettingsPage: View {
                     .textCase(.none)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("设置")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

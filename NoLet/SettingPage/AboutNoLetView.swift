@@ -232,6 +232,8 @@ struct AboutNoLetView: View {
                 }
             }.listRowBackground(Color.clear)
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .toolbar {
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: .largeTitle) {

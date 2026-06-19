@@ -37,8 +37,8 @@ struct HistoryMessage: View {
                     .font(.caption)
                     .foregroundStyle(.gray)
             }
-            .background(.gray.opacity(0.1))
             .scrollContentBackground(.hidden)
+            .background(ContentBackgroundView())
             .navigationTitle("历史记录")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - PlainMessageView.swift
+//  NoLet - PlainMessageCard.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -13,24 +13,15 @@
 
 import SwiftUI
 
-struct PlainMessageView: View {
+struct PlainMessageCard: MessageCardProtocol {
     let message: Message
-    var searchText: String = ""
-    var assistantAccouns: Int
-    var delete: () -> Void
+    var config: MessageCardConfiguration
 
     @ObservedObject var manager = AppManager.shared
     @Namespace private var messageNameSpace
     @State private var replyText: String = ""
     @FocusState private var showReply
     @State private var showSnap: Bool = false
-
-    var selectIDColor: Color {
-        guard let selectID = manager.selectID else {
-            return .clear
-        }
-        return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
-    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -94,22 +85,20 @@ struct PlainMessageView: View {
                         .frame(width: 30, height: 30, alignment: .center)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                    VStack {
-                        Text(message.group)
-                            .font(.footnote)
-                            .fontWeight(.semibold)
-                            .padding(.horizontal, 5)
-                    }
+                    Text(message.group)
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .padding(.horizontal, 5)
 
                     Spacer()
 
                     MessageActionMenu(
                         message: message,
-                        assistantAccounsCount: assistantAccouns,
+                        assistantAccounsCount: config.accounts,
                         manager: manager,
                         showSnap: $showSnap,
                         showReply: $showReply,
-                        onDelete: delete
+                        onDelete: config.delete
                     )
                 }
             }
@@ -125,7 +114,7 @@ struct PlainMessageView: View {
             showSnap: $showSnap,
             onShowFull: showFull
         )
-        .shadow(color: selectIDColor, radius: 10, x: 0, y: 0)
+        .shadow(color: config.focusColor, radius: 10, x: 0, y: 0)
     }
 
     func showFull() {
@@ -136,7 +125,7 @@ struct PlainMessageView: View {
 }
 
 #Preview {
-    PlainMessageView(message: Message(
+    PlainMessageCard(message: Message(
         id: UUID().uuidString,
         createDate: .now.addingTimeInterval(-60000),
         group: "工作",
@@ -147,88 +136,6 @@ struct PlainMessageView: View {
 
         ttl: 1000,
         read: false
-    ), assistantAccouns: 0) {}
+    ), config: .init())
 }
 
-final class SelectableTextView: UITextView {
-
-    override func copy(_ sender: Any?) {
-        super.copy(sender)
-
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.selectedRange = NSRange(location: 0, length: 0)
-            self.resignFirstResponder()
-            Toast.copy()
-        }
-    }
-    
-    override func editMenu(
-        for textRange: UITextRange,
-        suggestedActions: [UIMenuElement]
-    ) -> UIMenu? {
-
-        let deselectAction = UIAction(
-            title: "取消",
-            image: UIImage(systemName: "xmark")
-        ) { [weak self] _ in
-            self?.selectedTextRange = nil
-        }
-        
-        var suggestedActions = suggestedActions
-        
-        suggestedActions.insert(deselectAction, at: 1)
-
-        return UIMenu(children: suggestedActions)
-    }
- 
-}
-
-struct SCSelectableTextRepresentable: UIViewRepresentable {
-    let text: String
-    let font: UIFont
-    let textColor: UIColor
-    let textAlignment: NSTextAlignment
-    let lineLimit: Int?
-
-    func makeUIView(context: Context) -> SelectableTextView {
-        let textView = SelectableTextView()
-        textView.backgroundColor = .clear
-        textView.isEditable = false
-        textView.isSelectable = true
-        textView.isScrollEnabled = false
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = 0
-        textView.textContainer.lineBreakMode = .byWordWrapping
-        textView.showsVerticalScrollIndicator = false
-        textView.showsHorizontalScrollIndicator = false
-        textView.adjustsFontForContentSizeCategory = true
-        textView.setContentHuggingPriority(.required, for: .vertical)
-        textView.setContentCompressionResistancePriority(.required, for: .vertical)
-        return textView
-    }
-
-    func updateUIView(_ uiView: SelectableTextView, context: Context) {
-        uiView.text = text
-        uiView.font = font
-        uiView.textColor = textColor
-        uiView.textAlignment = textAlignment
-        uiView.textContainer.maximumNumberOfLines = lineLimit ?? 0
-        uiView.textContainer.lineBreakMode = lineLimit == nil ? .byWordWrapping : .byTruncatingTail
-    }
-
-    func sizeThatFits(
-        _ proposal: ProposedViewSize,
-        uiView: SelectableTextView,
-        context: Context
-    ) -> CGSize? {
-        guard let width = proposal.width else {
-            return nil
-        }
-
-        let targetSize = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let fittedSize = uiView.sizeThatFits(targetSize)
-        return CGSize(width: width, height: ceil(fittedSize.height))
-    }
-    
-}

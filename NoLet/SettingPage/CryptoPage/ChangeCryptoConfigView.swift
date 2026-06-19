@@ -174,6 +174,8 @@ struct ChangeCryptoConfigView: View {
                 }
             }
             .navigationTitle(title)
+            .scrollContentBackground(.hidden)
+            .background(ContentBackgroundView())
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {

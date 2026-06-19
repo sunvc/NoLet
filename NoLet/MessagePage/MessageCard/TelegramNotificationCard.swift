@@ -411,7 +411,7 @@ struct GitHubShowcaseView1: View {
 
 // MARK: - 预览组件
 
-struct GitHubNotificationCard_Previews: PreviewProvider {
+struct GitHubMessageCard_Previews: PreviewProvider {
     static var previews: some View {
         GitHubShowcaseView1()
     }

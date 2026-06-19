@@ -20,11 +20,12 @@ struct MoreOperationsView: View {
 
     @Default(.autoSaveToAlbum) var autoSaveToAlbum
 
-    @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.defaultBrowser) var defaultBrowser
     @Default(.muteSetting) var muteSetting
     @Default(.feedbackSound) var feedbackSound
     @Default(.usePtt) var usePtt
+    @Default(.background) var background
+    @Default(.customColor) private var customColor
 
     var body: some View {
         List {
@@ -142,25 +143,42 @@ struct MoreOperationsView: View {
             }
 
             Section {
-                Toggle(isOn: $showMessageAvatar) {
+                
+                Picker(selection: $background) {
+                    ForEach(ContentBackgroundStyle.allCases, id: \.self) { item in
+                        Text(item.name)
+                            .tag(item)
+                    }
+                } label: {
                     Label {
-                        Text("显示图标")
+                        Text("选择样式")
                     } icon: {
-                        Image(systemName: "camera.macro.circle")
+                        Image(systemName: "paintpalette")
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(
-                                showMessageAvatar ? Color.accentColor : Color.red,
-                                Color.primary
-                            )
+                            .foregroundStyle(.mint)
+                            .scaleEffect(0.9)
                     }
                 }
+                if background == .custom{
+                    ColorPicker(selection: Binding(get: { customColor.color }, set: { value in
+                        customColor = GradientColorNode(color: value)
+                        
+                    })) { 
+            
+                        Label {
+                            Text("选择颜色")
+                        } icon: {
+                            Image(systemName: "paintpalette")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.red)
+                                .scaleEffect(0.9)
+                        }
+                    }
+                }
+                
 
             } header: {
-                Text("消息卡片未分组时是否显示logo")
-                    .bold()
-                    .font(.footnote)
-            } footer: {
-                Text("是否收到消息自动保存图片")
+                Text("全局背景样式")
                     .bold()
                     .font(.footnote)
             }
@@ -205,6 +223,8 @@ struct MoreOperationsView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("更多设置")
     }
 }

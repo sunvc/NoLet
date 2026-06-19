@@ -428,14 +428,23 @@ extension View {
     func glassCard(
         _ radius: CGFloat = 12,
         padding: CGFloat = 0,
-        borderColor: Color = .mint
+        borderColor: Color? = .primary
     ) -> some View {
         self.background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .stroke(borderColor.opacity(0.6), lineWidth: 1)
-            )
+            .diff { view in
+                Group {
+                    if let borderColor {
+                        view
+                            .overlay(
+                                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                                    .stroke(borderColor.opacity(0.6), lineWidth: 1)
+                            )
+                    } else {
+                        view
+                    }
+                }
+            }
             .padding(padding)
             .shadow(color: Color.black.opacity(0.04), radius: 15, x: 0, y: 8)
     }

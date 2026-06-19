@@ -1,5 +1,5 @@
 //
-//  MessageDetailPage.swift
+//  MessageDetailView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -15,13 +15,12 @@ import Defaults
 import GRDB
 import SwiftUI
 
-struct MessageDetailPage: View {
+struct MessageDetailView: View {
     let group: String
 
     @ObservedObject private var manager = AppManager.shared
     @ObservedObject private var messageManager = MessagesManager.shared
 
-    @Default(.showMessageAvatar) var showMessageAvatar
     @Default(.assistantAccouns) var assistantAccouns
 
     // 分页相关状态
@@ -80,7 +79,7 @@ struct MessageDetailPage: View {
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollContentBackground(.hidden)
-                    .background(TiffanyBlueBackground())
+                    .background(ContentBackgroundView())
                     .animation(.easeInOut, value: messages)
                     .refreshable {
                         self.loadData(proxy: proxy, limit: messagePage)
@@ -90,7 +89,7 @@ struct MessageDetailPage: View {
                     }
                 }
             } else {
-                SearchMessageView(group: group)
+                MessagSearchView(group: group)
             }
         }
         .searchable(text: $searchText)
@@ -198,5 +197,5 @@ struct MessageDetailPage: View {
 }
 
 #Preview {
-    MessageDetailPage(group: "")
+    MessageDetailView(group: "")
 }

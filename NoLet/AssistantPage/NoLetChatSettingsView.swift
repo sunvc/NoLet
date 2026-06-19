@@ -201,6 +201,8 @@ struct NoLetChatSettingsView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("智能助手")
         .toolbar(.hidden, for: .tabBar)
         .alert("确认删除", isPresented: $showDeleteOk) {

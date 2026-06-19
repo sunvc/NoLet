@@ -1,5 +1,5 @@
 //
-//  MarkdownMessageView.swift
+//  MarkdownMessageCard.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -16,15 +16,9 @@ import Kingfisher
 import SwiftUI
 import UniformTypeIdentifiers
 
-struct MarkdownMessageView: View {
-    var message: Message
-    var searchText: String = ""
-    var showGroup: Bool = false
-    var showAllTTL: Bool = false
-    var showAvatar: Bool = true
-    var assistantAccounsCount: Int
-    var selectID: String? = nil
-    var delete: () -> Void
+struct MarkdownMessageCard: MessageCardProtocol {
+    let message: Message
+    var config: MessageCardConfiguration
 
     @State private var showLoading: Bool = false
 
@@ -33,7 +27,7 @@ struct MarkdownMessageView: View {
     @ObservedObject private var manager = AppManager.shared
 
     var dateTime: String {
-        if showAllTTL {
+        if config.showAllTTL {
             message.expiredTime()
         } else {
             switch timeMode {
@@ -42,13 +36,6 @@ struct MarkdownMessageView: View {
             default: message.createDate.agoFormatString()
             }
         }
-    }
-
-    var linColor: Color {
-        guard let selectID = selectID else {
-            return .clear
-        }
-        return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
     }
 
     @Namespace private var sms
@@ -71,18 +58,16 @@ struct MarkdownMessageView: View {
             Section {
                 VStack {
                     HStack(alignment: .center) {
-                        if showAvatar {
-                            AvatarView(icon: message.icon)
-                                .frame(width: 30, height: 30, alignment: .center)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .padding(.bottom, 5)
-                                
-                        }
+                        AvatarView(icon: message.icon)
+                            .frame(width: 30, height: 30, alignment: .center)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(.bottom, 5)
+
                         VStack {
                             if let title = message.title {
                                 HighlightedText(
                                     text: title,
-                                    searchText: searchText
+                                    searchText: config.searchText
                                 )
                                 .font(.headline)
                                 .fontWeight(.bold)
@@ -92,7 +77,7 @@ struct MarkdownMessageView: View {
                             if let subtitle = message.subtitle {
                                 HighlightedText(
                                     text: subtitle,
-                                    searchText: searchText
+                                    searchText: config.searchText
                                 )
                                 .font(.subheadline)
                                 .fontWeight(.bold)
@@ -112,7 +97,7 @@ struct MarkdownMessageView: View {
 
                                 HighlightedText(
                                     text: urlstr,
-                                    searchText: searchText
+                                    searchText: config.searchText
                                 )
                                 .font(.subheadline)
                                 .fontWeight(.bold)
@@ -136,9 +121,7 @@ struct MarkdownMessageView: View {
                         }
                     }
 
-                    if message.title != nil || message.subtitle != nil || message
-                        .url != nil || showAvatar
-                    {
+                    if message.title != nil || message.subtitle != nil || message.url != nil{
                         Line()
                             .stroke(
                                 .gray,
@@ -166,7 +149,7 @@ struct MarkdownMessageView: View {
                         if !message.body.isEmpty {
                             MarkdownCustomView(
                                 content: message.body,
-                                searchText: searchText,
+                                searchText: config.searchText,
                                 select: manager.copyMessageId == message.id
                             )
                             .font(.body)
@@ -306,8 +289,8 @@ struct MarkdownMessageView: View {
 
             Spacer()
 
-            if showGroup {
-                HighlightedText(text: message.group, searchText: searchText)
+            if config.showGroup {
+                HighlightedText(text: message.group, searchText: config.searchText)
                     .textSelection(.enabled)
                     .accessibilityLabel("群组名")
                     .accessibilityValue(message.group)
@@ -360,7 +343,7 @@ struct MarkdownMessageView: View {
                     }
                 }
 
-                if  !message.body.isEmpty {
+                if !message.body.isEmpty {
                     Section {
                         Button {
                             manager.open(sheet: .share(
@@ -384,7 +367,7 @@ struct MarkdownMessageView: View {
                     }
                 }
 
-                if assistantAccounsCount > 0 {
+                if config.accounts > 0 {
                     Section {
                         Button {
                             Haptic.impact()
@@ -405,7 +388,7 @@ struct MarkdownMessageView: View {
 
                 Section {
                     Button {
-                        self.delete()
+                        config.delete()
                     } label: {
                         Label("删除", systemImage: "trash")
                             .symbolRenderingMode(.palette)
@@ -425,7 +408,7 @@ struct MarkdownMessageView: View {
                 .contentShape(Rectangle())
             }
         }
-        .background(linColor.gradient)
+        .background(config.focusColor.gradient)
         .clipShape(RoundedRectangle(cornerRadius: 5))
         .padding(.horizontal, 15)
     }
@@ -433,13 +416,12 @@ struct MarkdownMessageView: View {
 
 #Preview {
     List {
-        MarkdownMessageView(
-            message: MessagesManager.examples().first!,
-            assistantAccounsCount: 0
-        ) {}
-            .listRowBackground(Color.clear)
-            .listSectionSeparator(.hidden)
-            .listRowInsets(EdgeInsets())
+        MarkdownMessageCard(
+            message: MessagesManager.examples().first!, config: .init()
+        )
+        .listRowBackground(Color.clear)
+        .listSectionSeparator(.hidden)
+        .listRowInsets(EdgeInsets())
 
     }.listStyle(.grouped)
 }
@@ -534,7 +516,7 @@ extension Message {
             text.append(String(localized: "副标题") + ":" + subtitle)
         }
 
-        if !body.isEmpty{
+        if !body.isEmpty {
             text.append(String(localized: "内容") + ":" + body)
         }
 

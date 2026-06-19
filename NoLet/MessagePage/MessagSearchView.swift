@@ -1,5 +1,5 @@
 //
-//  SearchMessageView.swift
+//  MessagSearchView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -13,7 +13,7 @@
 import Defaults
 import SwiftUI
 
-struct SearchMessageView: View {
+struct MessagSearchView: View {
     var group: String?
 
     @Environment(\.colorScheme) var colorScheme
@@ -95,7 +95,7 @@ struct SearchMessageView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
-        .background(TiffanyBlueBackground())
+        .background(ContentBackgroundView())
         .animation(.interactiveSpring, value: messages.count)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
@@ -161,6 +161,6 @@ struct SearchMessageView: View {
 
 #Preview {
     NavigationStack {
-        SearchMessageView()
+        MessagSearchView()
     }
 }

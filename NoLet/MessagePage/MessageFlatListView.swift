@@ -1,5 +1,5 @@
 //
-//  SingleMessagesView.swift
+//  MessageFlatListView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -15,8 +15,7 @@ import Defaults
 import GRDB
 import SwiftUI
 
-struct SingleMessagesView: View {
-    @Default(.showMessageAvatar) var showMessageAvatar
+struct MessageFlatListView: View {
     @Default(.assistantAccouns) var assistantAccouns
 
     @State private var isLoading: Bool = false
@@ -82,7 +81,7 @@ struct SingleMessagesView: View {
             }
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
-            .background(TiffanyBlueBackground())
+            .background(ContentBackgroundView())
             .navigationTitle("消息")
             .refreshable {
                 self.loadData(proxy: proxy, limit: messagePage)
@@ -203,5 +202,5 @@ struct DataLoadingView: View {
 }
 
 #Preview {
-    SingleMessagesView()
+    MessageFlatListView()
 }

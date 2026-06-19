@@ -112,6 +112,8 @@ struct SoundView: View {
                 Text("内置铃声")
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("所有铃声")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

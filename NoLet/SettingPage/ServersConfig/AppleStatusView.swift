@@ -44,6 +44,8 @@ struct AppleStatusView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle(String("Apple Status"))
         .task {
             await viewModel.run()

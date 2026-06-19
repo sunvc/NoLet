@@ -357,6 +357,8 @@ struct DataSettingView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
         .navigationTitle("数据管理")
         .if(selectAction != nil) { view in
             view.deleteTips($selectAction)
@@ -459,6 +461,7 @@ struct DataSettingView: View {
             self.calculateSize()
         }
         .task { calculateSize() }
+        
     }
 
     fileprivate func resetApp() {

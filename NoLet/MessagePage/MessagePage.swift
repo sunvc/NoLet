@@ -27,12 +27,12 @@ struct MessagePage: View {
     var body: some View {
         ZStack {
             if !manager.searchText.isEmpty || searchFocused {
-                SearchMessageView()
+                MessagSearchView()
             } else {
                 if showGroup {
-                    GroupMessagesView()
+                    MessageGroupView()
                 } else {
-                    SingleMessagesView()
+                    MessageFlatListView()
                 }
             }
         }

@@ -258,6 +258,8 @@ struct ServersConfigView: View {
             }
         }
         .navigationTitle("服务器")
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
     }
 }
 

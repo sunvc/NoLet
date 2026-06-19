@@ -17,7 +17,6 @@ import OpenAI
 enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
     case autoSaveImages
-    case showMessageIcon
     case defaultBrowser
     case openSystemSettings
     case openServerSettings
@@ -88,10 +87,6 @@ enum NoLetChatAction: String, CaseIterable {
         case .autoSaveImages:
             guard let val = value as? Bool else { return paramsError }
             Defaults[.autoSaveToAlbum] = val
-
-        case .showMessageIcon:
-            guard let val = value as? Bool else { return paramsError }
-            Defaults[.showMessageAvatar] = val
 
         case .defaultBrowser:
             guard
@@ -188,12 +183,7 @@ enum NoLetChatAction: String, CaseIterable {
                 .type(.boolean),
                 .description("Whether to auto-save images to album")
             )
-
-        case .showMessageIcon:
-            return JSONSchema(
-                .type(.boolean),
-                .description("Whether to show app icon in message list")
-            )
+            
         case .defaultBrowser:
             return .init(fields: [
                 .type(.string),
