@@ -199,7 +199,7 @@ extension Font {
     }
 }
 
-struct EQBand: Identifiable, Codable, Equatable {
+nonisolated struct EQBand: Identifiable, Codable, Equatable {
     var id: Int { index }
     var frequency: String
     var min: Float
@@ -208,7 +208,7 @@ struct EQBand: Identifiable, Codable, Equatable {
     let index: Int
 }
 
-extension EQBand: @MainActor Defaults.Serializable {}
+nonisolated extension EQBand: Defaults.Serializable {}
 
 nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
     case flat
@@ -289,9 +289,9 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
     }
 }
 
-extension EqualizerPreset: @MainActor Defaults.Serializable {}
+nonisolated extension EqualizerPreset: Defaults.Serializable {}
 
-extension Defaults.Keys {
+nonisolated extension Defaults.Keys {
     static let eqBands = Key<[EQBand]>("EQBands", default: EqualizerPreset.flat.bands)
     static let eqPreset = Key<EqualizerPreset>("EqualizerPreset", default: .flat)
     static let globalGain = Key<Double>("EqualizerGlobalGain", default: 0.0)

@@ -14,7 +14,7 @@
 import Defaults
 import Foundation
 
-@MainActor
+
 extension Defaults.Keys {
    
     static let servers = Key<[PushServerModel]>("serverArrayStroage", [])

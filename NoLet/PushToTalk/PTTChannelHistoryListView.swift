@@ -18,7 +18,7 @@ import SwiftUI
 struct PTTChannelHistoryListView: View {
     @Environment(\.dismiss) var dismiss
     @State private var globalTime: Double = 0.0 // 驱动活跃频道的波形和绿灯闪烁
-    @ObservedObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PTTManager.shared
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttChannel) var pttChannel
     @Default(.servers) var servers
@@ -74,11 +74,11 @@ struct PTTChannelHistoryListView: View {
 
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
-                                if PushTalkManager.shared.powerState {
+                                if PTTManager.shared.powerState {
                                     pttHisChannel.set(channel, active: true)
 
                                     Task {
-                                        await PushTalkManager.shared.publicJoinConnect()
+                                        await PTTManager.shared.publicJoinConnect()
                                     }
                                 } else {
                                     pttHisChannel.set(channel, active: false)

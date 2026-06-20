@@ -13,7 +13,7 @@ import SwiftUI
 struct PTTContentView: View {
     @State private var ispress: Bool = false
 
-    @ObservedObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PTTManager.shared
 
     @State private var buttonType: TalkButtonType = .call
 
@@ -265,7 +265,8 @@ struct PTTContentView: View {
                                 .count > 0 ? 1 : 0)
                             .VButton { _ in
                                 // TODO: - 下一条
-                                true
+                                self.pttManager.playWaitList()
+                                return true
                             }
 
                         Image("music")

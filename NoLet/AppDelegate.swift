@@ -49,7 +49,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     restorationDelegate: PTTChannelDelegate.shared
                 )
                 
-                PushTalkManager.shared.channelManager = manager
+                PTTManager.shared.channelManager = manager
             }
         }
         return true

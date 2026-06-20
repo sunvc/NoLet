@@ -488,7 +488,7 @@ struct EQGlobalGainSlider: View {
 
     @State private var gain: Double = 0
 
-    @ObservedObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PTTManager.shared
     // 配置常量
     private let minGain: Double = -24.0
     private let maxGain: Double = 24.0

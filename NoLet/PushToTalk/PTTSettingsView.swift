@@ -13,7 +13,7 @@ import SwiftUI
 ///
 
 struct PTTSettingsView: View {
-    @ObservedObject var manager = PushTalkManager.shared
+    @ObservedObject var manager = PTTManager.shared
     @Environment(\.dismiss) var dismiss
     @Default(.eqBands) var eqBands
 

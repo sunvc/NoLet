@@ -21,7 +21,7 @@ import SwiftUI
 
 struct PTTMessageView: View {
     @Environment(\.dismiss) var dismiss
-    @ObservedObject private var pttManager = PushTalkManager.shared
+    @ObservedObject private var pttManager = PTTManager.shared
     @Default(.id) var id
     var body: some View {
         NavigationStack {
@@ -60,7 +60,7 @@ struct PTTMessageRow: View {
     let tiffanyColor = Color(red: 0.35, green: 0.78, blue: 0.80)
 
     @State private var duration: Double = 0
-    @ObservedObject var pttManager = PushTalkManager.shared
+    @ObservedObject var pttManager = PTTManager.shared
 
     var isPlaying: Bool {
         if case .playing = pttManager.state, pttManager.currentPlayFile == message {

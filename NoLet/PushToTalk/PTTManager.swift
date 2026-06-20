@@ -14,8 +14,8 @@ import os
 import PushToTalk
 import UIKit
 
-final class PushTalkManager: ObservableObject {
-    static let shared = PushTalkManager()
+final class PTTManager: ObservableObject {
+    static let shared = PTTManager()
 
     @Published var powerState: Bool = false
     @Published var serverStatus: ServerState = .offline
@@ -36,7 +36,10 @@ final class PushTalkManager: ObservableObject {
 
     var channelManager: PTChannelManager?
 
-    let audioHandler = CombinedAudioManager()
+//    let audioHandler = CombinedAudioManager()
+
+    let recorder = PTTRecorderManager()
+    let player = PTTPlayerManager()
 
     private let database = DatabaseManager.shared
     private let network = NetworkManager()
@@ -44,7 +47,7 @@ final class PushTalkManager: ObservableObject {
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 
-    let kGlobalPTTChannelUUID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+    let kGlobalPTTChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
 
     func deleteAll() {
         _ = try? DatabaseManager.shared.dbQueue.write { db in
@@ -57,7 +60,8 @@ final class PushTalkManager: ObservableObject {
 
     private init() {
         try? AudioMessage.createInit(dbQueue: DatabaseManager.shared.dbQueue)
-        audioHandler.delegate = self
+        player.delegate = self
+        recorder.delegate = self
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
@@ -279,7 +283,8 @@ final class PushTalkManager: ObservableObject {
            //==================================================
 
         default:
-            break
+            logger.info("Ignore-STATE: \(self.state.log)")
+            logger.info("Ignore-EVENT: \(event.log)")
         }
     }
 
@@ -291,9 +296,9 @@ final class PushTalkManager: ObservableObject {
 
         // 2. ✨ 音频权限与初始化（注意：确保你的音频初始化有正确的容错）
         if !hasPermission {
-            audioHandler.requestAudioPermission()
+            recorder.requestAudioPermission()
         }
-        audioHandler.setupAudio()
+        recorder.setupAudio()
 
         await self.publicJoinConnect()
 
@@ -403,10 +408,16 @@ final class PushTalkManager: ObservableObject {
         }) ?? false
     }
 
-    func playWaitList() {
+    func playWaitList(_ next: Bool = false) {
+        
+        if next{
+            self.state = .idle
+            self.internalStopPlay()
+        }
+        
         guard let message = waitPlayList.last else {
             self.send(.stopPlay)
-            self.setRemoteOver()
+            self.setRemote()
             return
         }
         self.send(.startPlay(message))
@@ -424,37 +435,55 @@ final class PushTalkManager: ObservableObject {
             // 实际接入你的播放器
             send(.playStarted)
             if let currentUrl = message.filePath() {
-                await self.audioHandler.playAudio(currentUrl)
+                // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
+                try await Task.sleep(for: .milliseconds(100))
+                await self.player.playAudio(currentUrl)
             }
             // 播放结束回调
             send(.playFinished)
         }
     }
 
+    private func setRemote(name: String? = nil, image: String? = nil) {
+        var user: PTParticipant? {
+            if let name = name, let image = image {
+                return PTParticipant(name: name, image: image.avatarImage())
+            }
+            return nil
+        }
+
+        self.channelManager?.setActiveRemoteParticipant(
+            user,
+            channelUUID: self.kGlobalPTTChannelUUID
+        ) { error in
+            logger.log("RemoteParticipant: \(error?.localizedDescription)")
+        }
+    }
+
     private func internalStopPlay() {
         logger.info("Stop Play")
-        self.audioHandler.stopPlay()
+        self.player.stopPlay()
 
         if case .interrupted = state {
-            self.setRemoteOver()
+            self.setRemote()
         }
 
         if self.waitPlayList.isEmpty {
-            self.setRemoteOver()
+            self.setRemote()
         }
     }
 
     private func beginRecord(_ activity: Bool = true) {
         state = .recording
         logger.info("Start Record")
-        audioHandler.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
+        recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
         send(.recordStarted)
     }
 
     private func internalStopRecord(isCancel: Bool) {
         logger.info("Stop Record")
 
-        if let data = audioHandler.stopRecording(), !isCancel {
+        if let data = recorder.stopRecording(), !isCancel {
             if let file = self.saveVoice(data: data) {
                 Task {
                     await self.sendVoice(message: file)
@@ -464,13 +493,6 @@ final class PushTalkManager: ObservableObject {
                 }
             }
         }
-    }
-
-    private func setRemoteOver() {
-        self.channelManager?.setActiveRemoteParticipant(
-            nil,
-            channelUUID: kGlobalPTTChannelUUID
-        )
     }
 
     func saveVoice(data: Data) -> AudioMessage? {
@@ -520,11 +542,11 @@ final class PushTalkManager: ObservableObject {
     }
 
     func setDB(_ value: Float) {
-        self.audioHandler.setVolume(value)
+        self.player.setVolume(value)
     }
 
     func changeEQ() {
-        self.audioHandler.changeEQ(
+        self.player.changeEQ(
             bands: Defaults[.eqBands],
             globalGain: Float(Defaults[.globalGain])
         )
@@ -598,42 +620,7 @@ final class PushTalkManager: ObservableObject {
     }
 }
 
-extension PushTalkManager: AudioHardwareDelegate {
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateCurrentTime currentTime: TimeInterval,
-        duration: TimeInterval
-    ) {
-        DispatchQueue.main.async {
-            self.totalPlayTime = duration
-            self.currentPlayTime = currentTime
-        }
-    }
-
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateRecordingPower power: CGFloat,
-        duration: TimeInterval
-    ) {
-        DispatchQueue.main.async {
-            self.micLevel = power
-            self.elapsedTime = duration
-        }
-    }
-
-    // MARK: - 麦克风权限
-
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateMicrophonePermission hasPermission: Bool
-    ) {
-        DispatchQueue.main.async {
-            self.hasPermission = hasPermission
-        }
-    }
-}
-
-extension PushTalkManager {
+extension PTTManager {
     func connect(channels: [PTTChannel], join: Bool) async -> [JoinResponse] {
         let groupedChannels = Dictionary(grouping: channels, by: { $0.server.url })
 
@@ -681,7 +668,6 @@ extension PushTalkManager {
 
         do {
             let hzs = channels.map { $0.hex() }
-            logger.log("channel:\(hzs)")
 
             let signHeaders = CryptoManager.signature(
                 sign: channel.server.sign,
@@ -790,7 +776,7 @@ extension PushTalkManager {
     }
 }
 
-extension PushTalkManager {
+extension PTTManager {
     // MARK: - State
 
     enum ServerState {
@@ -862,7 +848,6 @@ extension PushTalkManager {
 
         // 👈 新增：打断事件
         case interruptionBegan
-        /// 打断结束，携带系统是否建议自动恢复的参数
         case interruptionEnded(shouldResume: Bool)
         case resume
 
@@ -901,6 +886,41 @@ extension PushTalkManager {
             case .resume:
                 return String(localized: "恢复播放")
             }
+        }
+    }
+}
+
+extension PTTManager: PTTPlayerDelegate {
+    func playerManager(
+        _ manager: PTTPlayerManager,
+        didUpdateCurrentTime currentTime: TimeInterval,
+        duration: TimeInterval
+    ) {
+        DispatchQueue.main.async {
+            self.totalPlayTime = duration
+            self.currentPlayTime = currentTime
+        }
+    }
+}
+
+extension PTTManager: PTTRecorderDelegate {
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        didUpdateRecordingPower power: CGFloat,
+        duration: TimeInterval
+    ) {
+        DispatchQueue.main.async {
+            self.micLevel = power
+            self.elapsedTime = duration
+        }
+    }
+
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        didUpdateMicrophonePermission hasPermission: Bool
+    ) {
+        DispatchQueue.main.async {
+            self.hasPermission = hasPermission
         }
     }
 }

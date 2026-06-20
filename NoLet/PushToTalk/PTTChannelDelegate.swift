@@ -29,7 +29,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
 
     private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
     @MainActor
-    private var pttManager: PushTalkManager { PushTalkManager.shared }
+    private var pttManager: PTTManager { PTTManager.shared }
 
     // MARK: - Join
 
@@ -150,14 +150,13 @@ final nonisolated class PTTChannelDelegate: NSObject,
     ) {
         logger.debug("🔊 AudioSession Activated")
         let remote = isRemotePushIncoming.withLock { $0 }
-        if !remote {
-            Task {
+        Task {
+            if !remote {
                 await pttManager.send(.startRecord(false))
-            }
-        } else {
-            
-            Task {
-                await self.pttManager.send(.resume)
+            } else {
+                if case .interruptionEnded = await pttManager.state {
+                    await self.pttManager.send(.resume)
+                }
             }
         }
     }
@@ -181,7 +180,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
         restoredChannelUUID channelUUID: UUID
     ) -> PTChannelDescriptor {
         Task {
-            try await PushTalkManager.shared.joinConnect()
+            try await PTTManager.shared.joinConnect()
         }
 
         return PTChannelDescriptor(
