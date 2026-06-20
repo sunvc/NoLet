@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - PTTChannelDelegate.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -10,12 +10,11 @@
 
 //  History:
 //    Created by Neo on 2026/6/19 20:25.
-    
 
-import SwiftUI
 import AVFoundation
-import PushToTalk
 import os
+import PushToTalk
+import SwiftUI
 
 /// PTTChannelDelegate
 ///
@@ -155,6 +154,11 @@ final nonisolated class PTTChannelDelegate: NSObject,
             Task {
                 await pttManager.send(.startRecord(false))
             }
+        } else {
+            
+            Task {
+                await self.pttManager.send(.resume)
+            }
         }
     }
 
@@ -195,4 +199,3 @@ final nonisolated class PTTChannelDelegate: NSObject,
         Toast.error(title: "系统资源被占用")
     }
 }
-

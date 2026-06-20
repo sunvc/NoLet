@@ -53,7 +53,7 @@ struct PTTContentView: View {
 
     var currentProgress: Double {
         switch pttManager.state {
-        case .idle, .preparingPlay, .interrupted:
+        case .idle, .preparingPlay, .interrupted, .interruptionEnded:
             return 0
         case .playing:
             return pttManager.currentPlayTime / max(pttManager.totalPlayTime, 1)
@@ -108,7 +108,7 @@ struct PTTContentView: View {
                 pttManager.state.title
         }
     }
-    
+
     var iconVolume: String {
         if pttVoiceVolume <= 0 {
             return "speaker.fill"
@@ -595,8 +595,13 @@ struct PTTContentView: View {
 
                         } else {
                             if draggedWidth < -50 {
-                                AppManager.shared.page = .message
                                 Haptic.impact()
+
+                                AppManager.shared.page = .message
+
+                                if AppManager.shared.sizeClass == .regular {
+                                    AppManager.shared.homeViewMode = .all
+                                }
                             }
 
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {

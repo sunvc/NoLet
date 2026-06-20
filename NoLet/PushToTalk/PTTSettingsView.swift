@@ -73,24 +73,6 @@ struct PTTSettingsView: View {
                 equalizerView
             }
             .navigationTitle("PTT设置")
-            .toolbar {
-                ToolbarItem {
-                    Button {
-                        dismiss()
-                        
-                        AppManager.shared.page = .message
-                        if AppManager.shared.sizeClass == .regular {
-                            AppManager.shared.homeViewMode = .all
-                        }
-                        
-                        Haptic.impact()
-                    } label: {
-                        Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .foregroundStyle(.red)
-
-                    }.buttonStyle(.borderless)
-                }
-            }
         }
     }
 

@@ -244,26 +244,36 @@ final class PushTalkManager: ObservableObject {
 
         case (.playing(let message), .interruptionBegan),
              (.preparingPlay(let message), .interruptionBegan):
-            self.audioHandler.pause()
             self.state = .interrupted(message)
+            self.internalStopPlay()
 
         case (.recording, .interruptionBegan):
             self.send(.stopRecord(false))
 
         case (.interrupted(let message), .interruptionEnded(let shouldResume)):
             if shouldResume {
-                self.state = .playing(message)
-                self.resume()
+                self.state = .interruptionEnded(shouldResume, message)
+                self.channelManager?.setActiveRemoteParticipant(
+                    PTParticipant(name: "恢复播放", image: "字,FF9500".avatarImage()),
+                    channelUUID: self.kGlobalPTTChannelUUID
+                )
             } else {
                 // 系统不建议恢复，直接回到空闲
                 self.state = .idle
                 self.internalStopPlay()
             }
 
-        case (.interrupted, .stopPlay):
-            self.internalStopPlay()
-            self.state = .idle
+        case (.interruptionEnded(let resume, let message), .resume):
+            if resume {
+                beginPlay(message)
+            } else {
+                self.state = .idle
+                self.internalStopPlay()
+            }
 
+        case (.interrupted, .stopPlay):
+            self.state = .idle
+            self.internalStopPlay()
            //==================================================
            // Ignore
            //==================================================
@@ -402,16 +412,6 @@ final class PushTalkManager: ObservableObject {
         self.send(.startPlay(message))
     }
 
-    private func resume() {
-        do {
-            try AVAudioSession.sharedInstance().setActive(true)
-            self.audioHandler.resume()
-        } catch {
-            print("激活 Session 失败，无法恢复: \(error)")
-            self.state = .idle
-        }
-    }
-
     private func beginPlay(_ message: AudioMessage) {
         state = .preparingPlay(message)
 
@@ -434,6 +434,11 @@ final class PushTalkManager: ObservableObject {
     private func internalStopPlay() {
         logger.info("Stop Play")
         self.audioHandler.stopPlay()
+
+        if case .interrupted = state {
+            self.setRemoteOver()
+        }
+
         if self.waitPlayList.isEmpty {
             self.setRemoteOver()
         }
@@ -804,6 +809,7 @@ extension PushTalkManager {
         case recording
 
         case interrupted(AudioMessage)
+        case interruptionEnded(Bool, AudioMessage)
 
         var title: String {
             switch self {
@@ -817,6 +823,8 @@ extension PushTalkManager {
                 return String(localized: "正在说话...")
             case .interrupted:
                 return String(localized: "播放已打断...")
+            case .interruptionEnded:
+                return String(localized: "等待恢复...")
             }
         }
 
@@ -832,6 +840,8 @@ extension PushTalkManager {
                 return String(localized: "正在录音")
             case .interrupted(let value):
                 return String(localized: "播放被打断挂起: \(value.file)")
+            case .interruptionEnded(let resume, let value):
+                return String(localized: "播放等待恢复\(String(describing: resume)): \(value.file)")
             }
         }
     }
@@ -854,6 +864,7 @@ extension PushTalkManager {
         case interruptionBegan
         /// 打断结束，携带系统是否建议自动恢复的参数
         case interruptionEnded(shouldResume: Bool)
+        case resume
 
         var log: String {
             switch self {
@@ -886,6 +897,9 @@ extension PushTalkManager {
                 return String(
                     localized: "底层硬件: 收到音频打断结束信号 (建议恢复: \(String(describing: shouldResume)))"
                 )
+
+            case .resume:
+                return String(localized: "恢复播放")
             }
         }
     }

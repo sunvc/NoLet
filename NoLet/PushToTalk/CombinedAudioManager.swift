@@ -332,14 +332,6 @@ final nonisolated class CombinedAudioManager: @unchecked Sendable {
         }
     }
     
-    func pause(){
-        self.playbackPlayerNode?.pause()
-    }
-    
-    func resume(){
-        self.playbackPlayerNode?.play()
-    }
-
     func stopPlay() {
         playbackPlayerNode?.stop()
         playbackAudioEngine?.stop()
