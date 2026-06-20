@@ -42,6 +42,7 @@ final class PushTalkManager: ObservableObject {
     private let network = NetworkManager()
 
     private var observationCancellable: AnyDatabaseCancellable?
+    private var loopTask: Task<Void, Never>?
 
     let kGlobalPTTChannelUUID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 
@@ -59,14 +60,47 @@ final class PushTalkManager: ObservableObject {
         audioHandler.delegate = self
         startObservingUnreadCount()
         self.TaskHandler()
+        self.setupNotifications()
     }
 
     deinit {
         observationCancellable?.cancel()
         loopTask?.cancel()
+        NotificationCenter.default.removeObserver(self)
     }
 
-    private var loopTask: Task<Void, Never>?
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleInterruption),
+            name: AVAudioSession.interruptionNotification,
+            object: AVAudioSession.sharedInstance()
+        )
+    }
+
+    @objc private func handleInterruption(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue)
+        else {
+            return
+        }
+
+        switch type {
+        case .began:
+            self.send(.interruptionBegan)
+
+        case .ended:
+            let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            let shouldResume = options.contains(.shouldResume)
+
+            self.send(.interruptionEnded(shouldResume: shouldResume))
+
+        @unknown default:
+            break
+        }
+    }
 
     private func TaskHandler() {
         self.loopTask = Task(priority: .utility) { [weak self] in
@@ -121,6 +155,124 @@ final class PushTalkManager: ObservableObject {
         )
     }
 
+    func send(_ event: Event, remote: Bool = false) {
+        logger.info("STATE: \(self.state.log)")
+        logger.info("EVENT: \(event.log)")
+
+        switch (state, event) {
+           //==================================================
+           // Idle
+           //==================================================
+
+        case (.idle, .startPlay(let message)):
+            if let message {
+                beginPlay(message)
+            } else {
+                self.playWaitList()
+            }
+
+        case (.idle, .startRecord(let activity)):
+            beginRecord(activity)
+
+        case (.idle, .recordStarted):
+            internalStopRecord(isCancel: true)
+
+           //==================================================
+           // Preparing Play
+           //==================================================
+
+        case (.preparingPlay, .playStarted):
+            if case .preparingPlay(let message) = state {
+                state = .playing(message)
+            }
+
+        case (.preparingPlay, .stopPlay):
+            state = .idle
+            internalStopPlay()
+
+        case (.preparingPlay, .startRecord(let activity)):
+            internalStopPlay()
+            beginRecord(activity)
+
+           //==================================================
+           // Playing
+           //==================================================
+
+        case (.playing, .stopPlay):
+            internalStopPlay()
+            state = .idle
+
+        case (.playing, .playFinished):
+            currentPlayFile = nil
+            state = .idle
+            self.playWaitList()
+
+        case (.playing, .startPlay(let message)):
+            guard let message else { break }
+            if message == self.currentPlayFile {
+                internalStopPlay()
+                currentPlayFile = nil
+                return
+            }
+            // FIXME: -  处理连续播放, 如果是远程, 忽略打断
+            if !remote {
+                internalStopPlay()
+                beginPlay(message)
+            }
+
+        case (.playing, .startRecord(let activity)):
+            internalStopPlay()
+            currentPlayFile = nil
+            beginRecord(activity)
+
+           //==================================================
+           // Recording
+           //==================================================
+
+        case (.recording, .stopRecord(let cancel)):
+            internalStopRecord(isCancel: cancel)
+            state = .idle
+            self.playWaitList()
+
+        // 录音期间禁止播放
+        case (.recording, .startPlay):
+            logger.info("Ignore play while recording")
+
+            //==================================================
+            // interruptionBegan
+            //==================================================
+
+        case (.playing(let message), .interruptionBegan),
+             (.preparingPlay(let message), .interruptionBegan):
+            self.audioHandler.pause()
+            self.state = .interrupted(message)
+
+        case (.recording, .interruptionBegan):
+            self.send(.stopRecord(false))
+
+        case (.interrupted(let message), .interruptionEnded(let shouldResume)):
+            if shouldResume {
+                self.state = .playing(message)
+                self.resume()
+            } else {
+                // 系统不建议恢复，直接回到空闲
+                self.state = .idle
+                self.internalStopPlay()
+            }
+
+        case (.interrupted, .stopPlay):
+            self.internalStopPlay()
+            self.state = .idle
+
+           //==================================================
+           // Ignore
+           //==================================================
+
+        default:
+            break
+        }
+    }
+
     func joinConnect() async throws {
         // 1. 状态前置
         self.powerState = true
@@ -171,9 +323,8 @@ final class PushTalkManager: ObservableObject {
     }
 
     func publicJoinConnect() async {
-        
         Defaults[.pttHisChannel].set(Defaults[.pttChannel], active: true)
-        
+
         var historyChannels = Defaults[.pttHisChannel]
 
         let activeChannels = historyChannels.filter { $0.active }
@@ -226,92 +377,6 @@ final class PushTalkManager: ObservableObject {
         }
     }
 
-    func send(_ event: Event, remote: Bool = false) {
-        logger.info("STATE: \(self.state.log)")
-        logger.info("EVENT: \(event.log)")
-
-        switch (state, event) {
-           //==================================================
-           // Idle
-           //==================================================
-
-        case (.idle, .startPlay(let message)):
-            beginPlay(message)
-
-        case (.idle, .startRecord(let activity)):
-            beginRecord(activity)
-
-        case (.idle, .recordStarted):
-            internalStopRecord(isCancel: true)
-
-           //==================================================
-           // Preparing Play
-           //==================================================
-
-        case (.preparingPlay, .playStarted):
-            if case .preparingPlay(let message) = state {
-                state = .playing(message)
-            }
-
-        case (.preparingPlay, .stopPlay):
-            internalStopPlay()
-            state = .idle
-
-        case (.preparingPlay, .startRecord(let activity)):
-            internalStopPlay()
-            beginRecord(activity)
-
-           //==================================================
-           // Playing
-           //==================================================
-
-        case (.playing, .stopPlay):
-            internalStopPlay()
-            state = .idle
-
-        case (.playing, .playFinished):
-            currentPlayFile = nil
-            state = .idle
-            self.playWaitList()
-
-        case (.playing, .startPlay(let message)):
-            if message == self.currentPlayFile {
-                internalStopPlay()
-                currentPlayFile = nil
-                return
-            }
-            if !remote{
-                internalStopPlay()
-                beginPlay(message)
-            }
-            
-        case (.playing, .startRecord(let activity)):
-            internalStopPlay()
-            currentPlayFile = nil
-            beginRecord(activity)
-
-           //==================================================
-           // Recording
-           //==================================================
-
-        case (.recording, .stopRecord(let cancel)):
-            internalStopRecord(isCancel: cancel)
-            state = .idle
-            self.playWaitList()
-
-        // 录音期间禁止播放
-        case (.recording, .startPlay):
-            logger.info("Ignore play while recording")
-
-           //==================================================
-           // Ignore
-           //==================================================
-
-        default:
-            break
-        }
-    }
-
     @discardableResult
     private func read(message: AudioMessage) -> Bool {
         return (try? DatabaseManager.shared.dbQueue.write { db in
@@ -337,6 +402,16 @@ final class PushTalkManager: ObservableObject {
         self.send(.startPlay(message))
     }
 
+    private func resume() {
+        do {
+            try AVAudioSession.sharedInstance().setActive(true)
+            self.audioHandler.resume()
+        } catch {
+            print("激活 Session 失败，无法恢复: \(error)")
+            self.state = .idle
+        }
+    }
+
     private func beginPlay(_ message: AudioMessage) {
         state = .preparingPlay(message)
 
@@ -356,24 +431,19 @@ final class PushTalkManager: ObservableObject {
         }
     }
 
+    private func internalStopPlay() {
+        logger.info("Stop Play")
+        self.audioHandler.stopPlay()
+        if self.waitPlayList.isEmpty {
+            self.setRemoteOver()
+        }
+    }
+
     private func beginRecord(_ activity: Bool = true) {
         state = .recording
         logger.info("Start Record")
         audioHandler.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
         send(.recordStarted)
-    }
-
-    private func internalStopPlay() {
-        logger.info("Stop Play")
-        self.audioHandler.stopPlay()
-        self.setRemoteOver()
-    }
-
-    private func setRemoteOver() {
-        self.channelManager?.setActiveRemoteParticipant(
-            nil,
-            channelUUID: kGlobalPTTChannelUUID
-        )
     }
 
     private func internalStopRecord(isCancel: Bool) {
@@ -389,6 +459,13 @@ final class PushTalkManager: ObservableObject {
                 }
             }
         }
+    }
+
+    private func setRemoteOver() {
+        self.channelManager?.setActiveRemoteParticipant(
+            nil,
+            channelUUID: kGlobalPTTChannelUUID
+        )
     }
 
     func saveVoice(data: Data) -> AudioMessage? {
@@ -457,21 +534,12 @@ final class PushTalkManager: ObservableObject {
     ) {
         guard let url = Bundle.main
             .url(forResource: fileName.rawValue, withExtension: fileExtension) else { return }
-        // 先释放之前的 SystemSoundID（如果有），避免内存泄漏或重复播放
+
         var soundID: SystemSoundID = 0
-//        AudioServicesDisposeSystemSoundID(soundID)
 
         AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
-        // 播放音频，播放完成后执行回调
         AudioServicesPlaySystemSound(soundID)
-//        AudioServicesPlaySystemSoundWithCompletion(soundID) {
-//            // 释放资源
-//            AudioServicesDisposeSystemSoundID(soundID)
-//            complete?()
-//        }
     }
-
-    // MARK: - OTHER
 
     private func calculateLevelPercentage(from buffer: AVAudioPCMBuffer) -> Double {
         guard let channelData = buffer.floatChannelData else {
@@ -547,6 +615,8 @@ extension PushTalkManager: AudioHardwareDelegate {
             self.elapsedTime = duration
         }
     }
+
+    // MARK: - 麦克风权限
 
     func audioManager(
         _ manager: CombinedAudioManager,
@@ -733,32 +803,21 @@ extension PushTalkManager {
 
         case recording
 
+        case interrupted(AudioMessage)
+
         var title: String {
             switch self {
             case .idle:
                 return String(localized: "空闲中")
-
-            // 如果你希望播放和录音的准备阶段都显示“等待硬件”
             case .preparingPlay:
                 return String(localized: "等待硬件")
-
-            // 带有关联值的 case，如果用不到 url，可以直接写 .playing
             case .playing:
                 return String(localized: "正在播放...")
-
             case .recording:
                 return String(localized: "正在说话...")
+            case .interrupted:
+                return String(localized: "播放已打断...")
             }
-        }
-
-        var isPlaying: Bool {
-            if case .playing = self { return true }
-            return false
-        }
-
-        var isRecording: Bool {
-            if case .recording = self { return true }
-            return false
         }
 
         var log: String {
@@ -771,6 +830,8 @@ extension PushTalkManager {
                 return String(localized: "正在播放: \(value.file)")
             case .recording:
                 return String(localized: "正在录音")
+            case .interrupted(let value):
+                return String(localized: "播放被打断挂起: \(value.file)")
             }
         }
     }
@@ -778,7 +839,7 @@ extension PushTalkManager {
     // MARK: - Event
 
     enum Event {
-        case startPlay(AudioMessage)
+        case startPlay(AudioMessage?)
         case stopPlay
 
         case startRecord(Bool)
@@ -789,11 +850,16 @@ extension PushTalkManager {
 
         case recordStarted
 
+        // 👈 新增：打断事件
+        case interruptionBegan
+        /// 打断结束，携带系统是否建议自动恢复的参数
+        case interruptionEnded(shouldResume: Bool)
+
         var log: String {
             switch self {
-            case .startPlay(let model):
+            case .startPlay(let message):
                 // 建议打印出 model 的唯一标识（例如 id 或 msgId），方便排查具体是哪条语音
-                return String(localized: "请求播放 - 消息ID: \(model.file)")
+                return String(localized: "请求播放 - 消息ID: \(message?.file ?? "nil")")
 
             case .stopPlay:
                 return String(localized: "请求停止播放")
@@ -812,503 +878,16 @@ extension PushTalkManager {
 
             case .recordStarted:
                 return String(localized: "底层硬件: 录音已实际开始")
-            }
-        }
-    }
-}
 
-/// AudioHardwareDelegate
-///
-///
-nonisolated protocol AudioHardwareDelegate: AnyObject {
-    /// 实时回调播放进度
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateCurrentTime currentTime: TimeInterval,
-        duration: TimeInterval
-    )
+            case .interruptionBegan:
+                return String(localized: "底层硬件: 收到音频打断开始信号")
 
-    /// 实时回调录音音量和已录制时长 👈 【修改这里】
-    /// - Parameters:
-    ///   - power: 平均分贝值
-    ///   - duration: 当前已录制的总时长（秒数）
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateRecordingPower power: CGFloat,
-        duration: TimeInterval
-    )
-
-    /// 麦克风权限状态变化
-    func audioManager(
-        _ manager: CombinedAudioManager,
-        didUpdateMicrophonePermission hasPermission: Bool
-    )
-}
-
-final nonisolated class CombinedAudioManager: @unchecked Sendable {
-    var delegate: AudioHardwareDelegate?
-    /// walkie-talkie
-    private var audioEngine: AVAudioEngine?
-    private var inputNode: AVAudioInputNode?
-    private var audioFormat: AVAudioFormat?
-    private var recordedAudioData = Data()
-    private var oggWriter = OggOpusWriter()
-    private var dataItem = DataItem()
-    private var timer: DispatchSourceTimer?
-    // 跳过提示音的样本数
-    private var skippedSamplesCount: UInt32 = 0
-    // play
-    private var playbackAudioEngine: AVAudioEngine?
-    private var playbackPlayerNode: AVAudioPlayerNode?
-    private(set) var audioUnitEQ: AVAudioUnitEQ?
-
-    private var hasMicrophonePermission: Bool = false
-
-    var currentPlaybackTime: Double {
-        guard let playerNode = playbackPlayerNode else { return 0 }
-
-        guard let engine = playerNode.engine, engine.isRunning else {
-            return 0
-        }
-        guard let nodeTime = playerNode.lastRenderTime,
-              let playerTime = playerNode.playerTime(forNodeTime: nodeTime)
-        else {
-            return 0
-        }
-        return Double(playerTime.sampleTime) / playerTime.sampleRate
-    }
-
-    func startTimer(total: Double) {
-        stopTimer()
-
-        let timer = DispatchSource.makeTimerSource()
-
-        timer.schedule(
-            deadline: .now(),
-            repeating: .milliseconds(100)
-        )
-
-        timer.setEventHandler { [weak self] in
-            guard let self = self else { return }
-
-            self.delegate?.audioManager(
-                self,
-                didUpdateCurrentTime: max(self.currentPlaybackTime, 0),
-                duration: total
-            )
-        }
-
-        timer.resume()
-
-        self.timer = timer
-    }
-
-    private func stopTimer() {
-        self.delegate?.audioManager(self, didUpdateCurrentTime: 0, duration: 0)
-        timer?.cancel()
-        timer = nil
-    }
-
-    func setVolume(_ value: Float? = nil) {
-        if let value {
-            playbackPlayerNode?.volume = value
-        } else {
-            Task {
-                let volume = await Defaults[.pttVoiceVolume]
-                playbackPlayerNode?.volume = Float(volume)
-            }
-        }
-    }
-
-    func requestAudioPermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
-            guard let self = self else { return }
-            self.hasMicrophonePermission = granted
-            logger.debug("Permesso microfono: \(granted ? "concesso" : "negato")")
-            self.delegate?.audioManager(self, didUpdateMicrophonePermission: granted)
-        }
-    }
-
-    func setupAudio() {
-        logger.debug("Inizializzazione sistema audio...")
-
-        do {
-            let audioSession = AVAudioSession.sharedInstance()
-
-            try audioSession.setCategory(
-                .playAndRecord,
-                mode: .default,
-                options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
-            )
-
-            try audioSession.setPreferredSampleRate(48000.0)
-            try audioSession.setPreferredIOBufferDuration(0.06)
-
-            try audioSession.setActive(true)
-            audioEngine = AVAudioEngine()
-            guard let audioEngine = audioEngine else {
-                logger.debug("ERROR:  Inizializzazione audio engine")
-                return
-            }
-
-            let inputNode = audioEngine.inputNode
-            self.inputNode = inputNode
-
-            let nativeFormat = inputNode.outputFormat(forBus: 0)
-
-            audioFormat = nativeFormat
-
-            guard audioFormat != nil else {
-                logger.debug("ERROR: Configurazione formato audio")
-                return
-            }
-
-            logger.debug("Sistema audio inizializzato correttamente")
-
-        } catch {
-            logger.debug("Setup audio:\(error)")
-        }
-    }
-
-    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
-        logger.debug("Avvio trasmissione audio...")
-
-        guard self.hasMicrophonePermission else {
-            self.requestAudioPermission()
-            return
-        }
-
-        if let audioEngine = audioEngine, audioEngine.isRunning {
-            inputNode?.removeTap(onBus: 0)
-            audioEngine.stop()
-        }
-
-        setupAudio()
-
-        self.delegate?.audioManager(
-            self,
-            didUpdateRecordingPower: 0,
-            duration: 0
-        )
-
-        guard let audioEngine = audioEngine, let inputNode = inputNode,
-              let audioFormat = audioFormat
-        else {
-            return
-        }
-
-        do {
-            oggWriter = OggOpusWriter()
-            dataItem = DataItem()
-            oggWriter.inputSampleRate = Int32(audioFormat.sampleRate)
-            oggWriter.begin(with: dataItem)
-
-            recordedAudioData = Data()
-
-            guard audioFormat.sampleRate > 0, audioFormat.channelCount > 0 else {
-                logger
-                    .debug(
-                        "Formato audio non valido: SR=\(audioFormat.sampleRate), CH=\(audioFormat.channelCount)"
-                    )
-                return
-            }
-            self.skippedSamplesCount = 0
-            let targetSampleCount = UInt32(audioFormat.sampleRate * 0.26)
-
-            inputNode
-                .installTap(
-                    onBus: 0,
-                    bufferSize: 1024,
-                    format: audioFormat
-                ) { buffer, _ in
-                    let elapsedTime = self.oggWriter.encodedDuration()
-
-                    // 切除提示音
-                    if activity, pttMusicPlay, self.skippedSamplesCount < targetSampleCount {
-                        self.skippedSamplesCount += buffer.frameLength // 累加当前帧的样本数
-                        return
-                    }
-
-                    if elapsedTime > 60 { return }
-
-                    self.processAndDisposeAudioBuffer(buffer)
-
-                    let mic = self.calculateLevelPercentage(from: buffer)
-                    self.delegate?.audioManager(
-                        self,
-                        didUpdateRecordingPower: mic,
-                        duration: elapsedTime
-                    )
-                }
-            audioEngine.prepare()
-            try audioEngine.start()
-
-            logger.debug("Trasmissione audio avviata.")
-        } catch {
-            debugPrint(error.localizedDescription)
-            _ = self.stopRecording()
-        }
-    }
-
-    func stopRecording() -> Data? {
-        logger.debug("Arresto trasmissione audio...")
-
-        guard let audioEngine = audioEngine, let inputNode = inputNode else { return nil }
-
-        inputNode.removeTap(onBus: 0)
-        audioEngine.stop()
-
-        self.inputNode = nil
-        self.audioEngine = nil
-
-        if oggWriter.writeFrame(nil, frameByteCount: 0),
-           oggWriter.encodedDuration() > 0.2
-        {
-            return dataItem.data()
-        }
-
-        logger.debug("Trasmissione audio arrestata.")
-        return nil
-    }
-
-    func playAudio(_ filePath: URL) async {
-        // Ferma riproduzione precedente se in corso
-        stopPlay()
-
-        playbackAudioEngine = AVAudioEngine()
-        playbackPlayerNode = AVAudioPlayerNode()
-
-        guard let audioEngine = playbackAudioEngine,
-              let playerNode = playbackPlayerNode
-        else {
-            logger.debug("ERROR: Inizializzazione playback")
-            return
-        }
-
-        do {
-            let audioFormat = playerNode.outputFormat(forBus: 0)
-            guard let audioFile = try? AVAudioFile(forReading: filePath) else {
-                return
-            }
-            print("sampleRate: ", audioFile.processingFormat.sampleRate)
-
-            let duration = Double(audioFile.length) / audioFile.processingFormat.sampleRate
-
-            self.startTimer(total: duration)
-
-            audioEngine.attach(playerNode)
-            self.eqAttach(
-                to: audioEngine,
-                bands: await Defaults[.eqBands],
-                globalGain: await Defaults[.globalGain]
-            )
-
-            if let eq = self.audioUnitEQ {
-                audioEngine.connect(playerNode, to: eq, format: audioFormat)
-                audioEngine.connect(eq, to: audioEngine.mainMixerNode, format: audioFormat)
-            } else {
-                audioEngine.connect(playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
-            }
-
-            self.setVolume()
-            try audioEngine.start()
-
-            playerNode.play()
-
-            _ = await playerNode.scheduleFile(
-                audioFile,
-                at: nil,
-                completionCallbackType: .dataPlayedBack
-            )
-
-            logger.debug("Avviata riproduzione audio PCM: frames")
-            self.stopTimer()
-        } catch {
-            logger.debug("ERROR: Riproduzione audio PCM")
-
-            self.stopPlay()
-        }
-    }
-
-    func stopPlay() {
-        playbackPlayerNode?.stop()
-        playbackAudioEngine?.stop()
-        playbackAudioEngine = nil
-        playbackPlayerNode = nil
-        audioUnitEQ = nil
-        self.stopTimer()
-    }
-
-    private func eqAttach(to engine: AVAudioEngine, bands: [EQBand], globalGain: Double) {
-        let eq = AVAudioUnitEQ(numberOfBands:
-            EqualizerPreset.bandFrequencies.count
-        )
-        self.audioUnitEQ = eq
-        self.changeEQ(bands: bands, globalGain: Float(globalGain))
-        engine.attach(eq)
-    }
-
-    func changeEQ(bands: [EQBand], globalGain: Float = 0) {
-        guard let eq = audioUnitEQ else { return }
-        eq.globalGain = globalGain
-        for (index, frequency) in EqualizerPreset.bandFrequencies.enumerated() {
-            let eqBands = eq.bands[index]
-            eqBands.filterType = .parametric
-            eqBands.frequency = frequency
-            eqBands.bandwidth = 2.5
-            eqBands.bypass = false
-            eqBands.gain = bands[index].value
-        }
-    }
-
-    private func processAndDisposeAudioBuffer(_ buffer: AVAudioPCMBuffer) {
-        guard let bufferData = conversionFloat32ToInt16Buffer(buffer) else { return }
-        let buffer = bufferData.audioBufferList.pointee.mBuffers
-
-        let sampleRate = 16000
-        let frameDurationMs = 60
-        let bytesPerSample = 2
-        let encoderPacketSizeInBytes = sampleRate * frameDurationMs / 1000 * bytesPerSample
-
-        let currentEncoderPacket = malloc(encoderPacketSizeInBytes)!
-        defer { free(currentEncoderPacket) }
-
-        var bufferOffset = 0
-
-        while true {
-            var currentEncoderPacketSize = 0
-
-            while currentEncoderPacketSize < encoderPacketSizeInBytes {
-                if recordedAudioData.count != 0 {
-                    let takenBytes = min(
-                        recordedAudioData.count,
-                        encoderPacketSizeInBytes - currentEncoderPacketSize
-                    )
-                    if takenBytes != 0 {
-                        recordedAudioData.withUnsafeBytes { rawBytes in
-                            let bytes = rawBytes.baseAddress!.assumingMemoryBound(to: Int8.self)
-
-                            memcpy(
-                                currentEncoderPacket.advanced(by: currentEncoderPacketSize),
-                                bytes,
-                                takenBytes
-                            )
-                        }
-                        recordedAudioData.replaceSubrange(0..<takenBytes, with: Data())
-                        currentEncoderPacketSize += takenBytes
-                    }
-                } else if bufferOffset < Int(buffer.mDataByteSize) {
-                    let takenBytes = min(
-                        Int(buffer.mDataByteSize) - bufferOffset,
-                        encoderPacketSizeInBytes - currentEncoderPacketSize
-                    )
-                    if takenBytes != 0 {
-                        memcpy(
-                            currentEncoderPacket.advanced(by: currentEncoderPacketSize),
-                            buffer.mData?.advanced(by: bufferOffset),
-                            takenBytes
-                        )
-
-                        bufferOffset += takenBytes
-                        currentEncoderPacketSize += takenBytes
-                    }
-                } else {
-                    break
-                }
-            }
-
-            if currentEncoderPacketSize < encoderPacketSizeInBytes {
-                recordedAudioData.append(
-                    currentEncoderPacket.assumingMemoryBound(to: UInt8.self),
-                    count: currentEncoderPacketSize
-                )
-                break
-            } else {
-                oggWriter.writeFrame(
-                    currentEncoderPacket.assumingMemoryBound(to: UInt8.self),
-                    frameByteCount: UInt(currentEncoderPacketSize)
+            case .interruptionEnded(let shouldResume):
+                return String(
+                    localized: "底层硬件: 收到音频打断结束信号 (建议恢复: \(String(describing: shouldResume)))"
                 )
             }
         }
-    }
-
-    private func conversionFloat32ToInt16Buffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
-        guard let format = AVAudioFormat(
-            commonFormat: .pcmFormatInt16,
-            sampleRate: buffer.format.sampleRate,
-            channels: buffer.format.channelCount,
-            interleaved: true
-        ) else {
-            return nil
-        }
-
-        let frameLength = buffer.frameLength
-        guard let convertedBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameLength)
-        else {
-            return nil
-        }
-        convertedBuffer.frameLength = frameLength
-
-        // 获取输入 float32 样本指针
-        guard let sourcePointer = buffer.floatChannelData?[0] else {
-            return nil
-        }
-
-        // 获取目标 int16 样本指针
-        guard let destinationPointer = convertedBuffer.int16ChannelData?[0] else {
-            return nil
-        }
-
-        for index in 0..<Int(frameLength) {
-            let floatSample = min(max(sourcePointer[index], -1.0), 1.0)
-            destinationPointer[index] = Int16(clamping: Int(floatSample * 32767.0))
-        }
-
-        return convertedBuffer
-    }
-
-    private func calculateLevelPercentage(from buffer: AVAudioPCMBuffer) -> Double {
-        guard let channelData = buffer.floatChannelData else {
-            return 0.0
-        }
-
-        let channelDataValue = channelData.pointee
-        // 4
-        let channelDataValueArray = stride(
-            from: 0,
-            to: Int(buffer.frameLength),
-            by: buffer.stride
-        )
-        .map { channelDataValue[$0] }
-
-        // 5
-        let rms = sqrt(channelDataValueArray.map {
-            $0 * $0
-        }
-        .reduce(0, +) / Float(buffer.frameLength))
-
-        // 6
-        let avgPower = 20 * log10(rms)
-        // 7
-        let meterLevel = normalizedAudioLevel(from: avgPower)
-
-        return Double(meterLevel)
-    }
-
-    private func normalizedAudioLevel(from decibels: Float) -> Float {
-        guard decibels.isFinite else {
-            return 0
-        }
-
-        let minDb: Float = -80
-
-        guard decibels > minDb else {
-            return 0
-        }
-
-        let normalized = (decibels - minDb) / -minDb
-
-        return pow(normalized, 1.5)
     }
 }
 
@@ -1323,4 +902,3 @@ nonisolated extension String {
         return String(format: self.localized, arguments: arguments)
     }
 }
-

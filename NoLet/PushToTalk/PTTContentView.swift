@@ -31,18 +31,6 @@ struct PTTContentView: View {
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
 
-    var iconVolume: String {
-        if pttVoiceVolume <= 0 {
-            return "speaker.fill"
-        } else if pttVoiceVolume < 0.4 {
-            return "speaker.wave.1.fill"
-        } else if pttVoiceVolume < 0.7 {
-            return "speaker.wave.2.fill"
-        } else {
-            return "speaker.wave.3.fill"
-        }
-    }
-
     @State private var isCancel: Bool = false
 
     @State private var showChannelList: Bool = false
@@ -65,9 +53,7 @@ struct PTTContentView: View {
 
     var currentProgress: Double {
         switch pttManager.state {
-        case .idle:
-            return 0
-        case .preparingPlay:
+        case .idle, .preparingPlay, .interrupted:
             return 0
         case .playing:
             return pttManager.currentPlayTime / max(pttManager.totalPlayTime, 1)
@@ -87,8 +73,13 @@ struct PTTContentView: View {
         }
     }
 
-    var isPlaying: Bool { pttManager.state.isPlaying }
-    var isRecording: Bool { pttManager.state.isRecording }
+    var isPlaying: Bool {
+        if case .playing = pttManager.state { true } else { false }
+    }
+
+    var isRecording: Bool {
+        if case .recording = pttManager.state { true } else { false }
+    }
 
     var networkIcon: (String, Color, Color) {
         if !pttManager.powerState {
@@ -115,6 +106,18 @@ struct PTTContentView: View {
             return pttManager.serverStatus == .failed ?
                 String(localized: "服务器未连接") :
                 pttManager.state.title
+        }
+    }
+    
+    var iconVolume: String {
+        if pttVoiceVolume <= 0 {
+            return "speaker.fill"
+        } else if pttVoiceVolume < 0.4 {
+            return "speaker.wave.1.fill"
+        } else if pttVoiceVolume < 0.7 {
+            return "speaker.wave.2.fill"
+        } else {
+            return "speaker.wave.3.fill"
         }
     }
 
@@ -568,7 +571,7 @@ struct PTTContentView: View {
                     }
                     .onEnded { value in
                         let draggedWidth = value.translation.width
-                      
+
                         if draggedWidth >= maxDragDistance {
                             let channelID = pttManager.kGlobalPTTChannelUUID
                             if pttManager.powerState {
