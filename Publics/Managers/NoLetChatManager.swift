@@ -398,7 +398,7 @@ extension NoLetChatManager {
                 basePath: account.basePath
             )
 
-            return OpenAI(configuration: config)
+            return OpenAI( configuration: config )
         } else {
             guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
                 return nil

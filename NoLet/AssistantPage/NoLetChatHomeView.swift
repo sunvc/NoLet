@@ -291,7 +291,8 @@ struct NoLetChatHomeView: View {
 
         if let toolCalls = choice.delta.toolCalls {
             for toolCall in toolCalls {
-                guard let index = toolCall.index else { continue }
+                let index = toolCall.index
+                
                 var current = toolCallsMap[index] ?? ("", "")
 
                 if let name = toolCall.function?.name {

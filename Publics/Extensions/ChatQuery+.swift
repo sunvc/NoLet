@@ -16,7 +16,7 @@ import OpenAI
 
 typealias ReasoningEffort = ChatQuery.ReasoningEffort
 
-extension ReasoningEffort:  @retroactive Hashable {
+extension ReasoningEffort: @retroactive Hashable {
     var rawValue: String {
         switch self {
         case .none: return "none"
@@ -68,8 +68,8 @@ extension ReasoningEffort:  @retroactive Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(level)
     }
-    
-    var emptyData: Bool{
+
+    var emptyData: Bool {
         self == .none || self == .minimal
     }
 }

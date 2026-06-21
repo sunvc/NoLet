@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/OpenAI.git",
       "state" : {
-        "revision" : "50fe2d27e207e4c354524f4eef07f652a096bfa1",
-        "version" : "1.0.3"
+        "revision" : "b0a5412a6ed2af247274b4d5c34fdd298410d2e9",
+        "version" : "1.0.7"
       }
     },
     {
