@@ -11,6 +11,7 @@
 //  History:
 //    Created by Neo on 2026/6/20 18:40.
 
+import Accelerate
 import AVFoundation
 import Opus
 import SwiftUI
@@ -56,15 +57,13 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
     func setupAudio() {
         logger.debug("Inizializzazione sistema di registrazione...")
         do {
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(
                 .playAndRecord,
                 mode: .default,
                 options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
             )
-            try audioSession.setPreferredSampleRate(48000.0)
-            try audioSession.setPreferredIOBufferDuration(0.06)
-            try audioSession.setActive(true)
+            try session.setActive(true, options: .notifyOthersOnDeactivation)
 
             audioEngine = AVAudioEngine()
             guard let audioEngine = audioEngine else {
@@ -85,6 +84,9 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
             logger.debug("Setup audio recording:\(error)")
         }
     }
+
+    private let clock = ContinuousClock()
+    private var lastCallbackTime: ContinuousClock.Instant?
 
     func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
         logger.debug("Avvio trasmissione audio...")
@@ -135,6 +137,7 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
                     format: audioFormat
                 ) { [weak self] buffer, _ in
                     guard let self = self else { return }
+
                     let elapsedTime = self.oggWriter.encodedDuration()
 
                     // 切除提示音
@@ -186,10 +189,7 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
         guard let bufferData = conversionFloat32ToInt16Buffer(buffer) else { return }
         let buffer = bufferData.audioBufferList.pointee.mBuffers
 
-        let sampleRate = 16000
-        let frameDurationMs = 60
-        let bytesPerSample = 2
-        let encoderPacketSizeInBytes = sampleRate * frameDurationMs / 1000 * bytesPerSample
+        let encoderPacketSizeInBytes = 1920
 
         let currentEncoderPacket = malloc(encoderPacketSizeInBytes)!
         defer { free(currentEncoderPacket) }
@@ -251,11 +251,14 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
     }
 
     private func conversionFloat32ToInt16Buffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
+        guard buffer.format.commonFormat == .pcmFormatFloat32,
+              let sourcePointer = buffer.floatChannelData?[0] else { return nil }
+
         guard let format = AVAudioFormat(
             commonFormat: .pcmFormatInt16,
             sampleRate: buffer.format.sampleRate,
             channels: buffer.format.channelCount,
-            interleaved: true
+            interleaved: buffer.format.isInterleaved
         ) else { return nil }
 
         let frameLength = buffer.frameLength
@@ -263,33 +266,32 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
         else { return nil }
         convertedBuffer.frameLength = frameLength
 
-        guard let sourcePointer = buffer.floatChannelData?[0],
-              let destinationPointer = convertedBuffer.int16ChannelData?[0] else { return nil }
+        guard let destinationPointer = convertedBuffer.int16ChannelData?[0] else { return nil }
 
-        for index in 0..<Int(frameLength) {
-            let floatSample = min(max(sourcePointer[index], -1.0), 1.0)
-            destinationPointer[index] = Int16(clamping: Int(floatSample * 32767.0))
-        }
+        let frameCount = Int(frameLength)
+        var scale = Float(Int16.max)
+
+        var multipliedFactors = [Float](repeating: 0.0, count: frameCount)
+
+        vDSP_vsmul(sourcePointer, 1, &scale, &multipliedFactors, 1, vDSP_Length(frameCount))
+        vDSP_vfix16(multipliedFactors, 1, destinationPointer, 1, vDSP_Length(frameCount))
+
         return convertedBuffer
     }
 
+    @inline(__always)
     private func calculateLevelPercentage(from buffer: AVAudioPCMBuffer) -> Double {
-        guard let channelData = buffer.floatChannelData else { return 0.0 }
-        let channelDataValue = channelData.pointee
-        let channelDataValueArray = stride(from: 0, to: Int(buffer.frameLength), by: buffer.stride)
-            .map { channelDataValue[$0] }
-
-        let rms = sqrt(channelDataValueArray.map { $0 * $0 }
-            .reduce(0, +) / Float(buffer.frameLength))
-        let avgPower = 20 * log10(rms)
-        return Double(normalizedAudioLevel(from: avgPower))
-    }
-
-    private func normalizedAudioLevel(from decibels: Float) -> Float {
-        guard decibels.isFinite else { return 0 }
+        guard let samples = buffer.floatChannelData?[0] else { return 0 }
+        let frameLength = Int(buffer.frameLength)
+        guard frameLength > 0 else { return 0 }
+        var rms: Float = 0
+        vDSP_rmsqv(samples, 1, &rms, vDSP_Length(frameLength))
+        guard rms > 0 else { return 0 }
+        let decibels = 20 * log10f(rms)
         let minDb: Float = -80
-        guard decibels > minDb else { return 0 }
-        let normalized = (decibels - minDb) / -minDb
-        return pow(normalized, 1.5)
+        if decibels <= minDb { return 0 }
+        let normalized = (decibels - minDb) * 0.0125
+        let level = normalized * sqrtf(normalized)
+        return Double(level)
     }
 }

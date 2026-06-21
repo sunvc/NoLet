@@ -1391,7 +1391,7 @@
 			repositoryURL = "https://github.com/sunvc/Opus.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
+				minimumVersion = 1.0.2;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

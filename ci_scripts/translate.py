@@ -38,7 +38,7 @@ class Translate:
         parser.add_argument("--path", type=str, default="../", help="path")
         parser.add_argument("--key", type=str, default=None, help="key")
         parser.add_argument("--host", type=str, default="https://api.deepseek.com", help="host")
-        parser.add_argument("--model", type=str, default="deepseek-chat", help="mode")
+        parser.add_argument("--model", type=str, default="deepseek-v4-flash", help="mode")
         parser.add_argument("--mode", type=int, default=0, help="mode")
         parser.add_argument("--copy_lang", type=str, default="zh", help="language code to use key as value")
         args = parser.parse_args()

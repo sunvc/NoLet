@@ -33,38 +33,6 @@
         }
       }
     },
-    "@%@": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "@%@"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "@%@"
-          }
-        }
-      }
-    },
-    "@creative_sarah": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "@creative_sarah"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "@creative_sarah"
-          }
-        }
-      }
-    },
     "* 右上角功能菜单，使用示例，分组\n* 单击图片/双击消息全屏查看\n* 全屏查看，翻译，总结，朗读\n* 左滑删除，右滑复制和智能解答。": {
       "localizations": {
         "en": {
@@ -97,54 +65,6 @@
         }
       }
     },
-    "%1$d分钟前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d minutes ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d分钟前"
-          }
-        }
-      }
-    },
-    "%1$d小时%2$d分钟前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d hours %2$d minutes ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小时%2$d分钟前"
-          }
-        }
-      }
-    },
-    "%1$d小时前": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d hours ago"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d小时前"
-          }
-        }
-      }
-    },
     "%d条消息": {
       "localizations": {
         "en": {
@@ -157,22 +77,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d条消息"
-          }
-        }
-      }
-    },
-    "%lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld"
           }
         }
       }
@@ -305,38 +209,6 @@
         }
       }
     },
-    "•": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "•"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "•"
-          }
-        }
-      }
-    },
-    ">> [%@]": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ">> [%@]"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": ">> [%@]"
-          }
-        }
-      }
-    },
     "❗️需要配置大模型": {
       "localizations": {
         "en": {
@@ -461,38 +333,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "3月前"
-          }
-        }
-      }
-    },
-    "12.5k": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "12.5k"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "12.5k"
-          }
-        }
-      }
-    },
-    "380": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "380"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "380"
           }
         }
       }
@@ -657,22 +497,6 @@
         }
       }
     },
-    "INTELLIGENT PUSH STREAM": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INTELLIGENT PUSH STREAM"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "INTELLIGENT PUSH STREAM"
-          }
-        }
-      }
-    },
     "IO 等待": {
       "localizations": {
         "en": {
@@ -785,38 +609,6 @@
         }
       }
     },
-    "Sarah Connor": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sarah Connor"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sarah Connor"
-          }
-        }
-      }
-    },
-    "UNIVERSAL SOCIAL CHANNELS": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UNIVERSAL SOCIAL CHANNELS"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UNIVERSAL SOCIAL CHANNELS"
-          }
-        }
-      }
-    },
     "URL": {
       "localizations": {
         "en": {
@@ -865,22 +657,6 @@
         }
       }
     },
-    "Web Instant View": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Web Instant View"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Web Instant View"
-          }
-        }
-      }
-    },
     "一周前": {
       "localizations": {
         "en": {
@@ -909,22 +685,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "一般性的应用通知提醒"
-          }
-        }
-      }
-    },
-    "三维视觉设计师 & 独立开发者。终身学习者，探索科技与美学的无限交界处。": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "3D Visual Designer & Indie Developer. Lifelong learner, exploring the infinite intersection of technology and aesthetics."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "三维视觉设计师 & 独立开发者。终身学习者，探索科技与美学的无限交界处。"
           }
         }
       }
@@ -1633,22 +1393,6 @@
         }
       }
     },
-    "全平台社交消息流": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All-platform social messaging feed"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "全平台社交消息流"
-          }
-        }
-      }
-    },
     "关于%@": {
       "localizations": {
         "en": {
@@ -1661,22 +1405,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "关于%@"
-          }
-        }
-      }
-    },
-    "关注者": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Followers"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "关注者"
           }
         }
       }
@@ -2029,38 +1757,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "列表模式"
-          }
-        }
-      }
-    },
-    "刚刚": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Just now"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "刚刚"
-          }
-        }
-      }
-    },
-    "创作": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Creation"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "创作"
           }
         }
       }
@@ -2701,22 +2397,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "发生错误"
-          }
-        }
-      }
-    },
-    "发送快捷回复...": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Send quick reply..."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "发送快捷回复..."
           }
         }
       }
@@ -3377,22 +3057,6 @@
         }
       }
     },
-    "富媒体卡片": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "rich media card"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "富媒体卡片"
-          }
-        }
-      }
-    },
     "导入": {
       "localizations": {
         "en": {
@@ -3565,38 +3229,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "已用"
-          }
-        }
-      }
-    },
-    "已认证": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Verified"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已认证"
-          }
-        }
-      }
-    },
-    "已赞": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Liked"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已赞"
           }
         }
       }
@@ -5473,22 +5105,6 @@
         }
       }
     },
-    "未知时间": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown time"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知时间"
-          }
-        }
-      }
-    },
     "未知状态": {
       "localizations": {
         "en": {
@@ -6657,22 +6273,6 @@
         }
       }
     },
-    "点赞": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Like"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "点赞"
-          }
-        }
-      }
-    },
     "版本 %@": {
       "localizations": {
         "en": {
@@ -7505,22 +7105,6 @@
         }
       }
     },
-    "自建 Premium 通知通道": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Self-built Premium notification channel"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "自建 Premium 通知通道"
-          }
-        }
-      }
-    },
     "至少1个字符": {
       "localizations": {
         "en": {
@@ -8109,22 +7693,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "越南语"
-          }
-        }
-      }
-    },
-    "跳转源头": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jump to source"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "跳转源头"
           }
         }
       }
@@ -9085,22 +8653,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "静音分组1小时"
-          }
-        }
-      }
-    },
-    "静音该源": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Silent Source"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "静音该源"
           }
         }
       }

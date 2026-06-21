@@ -163,7 +163,7 @@ struct ChannelMonitorRow: View {
                         .padding(.vertical, 2)
                         .foregroundStyle(channel == currentChannel ? .mint : .primary)
 
-                    Text("MHz")
+                    Text(verbatim: "MHz")
                         .font(.system(size: 15, weight: .bold, design: .monospaced))
                         .foregroundStyle(.secondary)
                         .padding(2)

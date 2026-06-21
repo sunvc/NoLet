@@ -67,7 +67,7 @@ struct TerminalMessageCard: MessageCardProtocol {
             // 2. 主体终端输出式样
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("$")
+                    Text(verbatim: "$")
                         .foregroundColor(severityColor)
                         .font(.system(.body, design: .monospaced))
                         .fontWeight(.bold)
@@ -79,7 +79,7 @@ struct TerminalMessageCard: MessageCardProtocol {
                 }
 
                 if let subtitle = message.subtitle {
-                    Text(">> [\(subtitle)]")
+                    Text(verbatim: ">> [\(subtitle)]")
                         .font(.system(size: 13, design: .monospaced))
                         .foregroundColor(.secondary)
                         .padding(.leading, 14)

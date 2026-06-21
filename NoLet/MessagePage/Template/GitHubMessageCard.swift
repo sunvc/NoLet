@@ -65,7 +65,7 @@ struct GitHubMessageCard: View {
                             .foregroundColor(.primary)
                             .lineLimit(1)
 
-                        Text("•")
+                        Text(verbatim: "•")
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
                         Text(message.group)
