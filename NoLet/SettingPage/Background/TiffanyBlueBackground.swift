@@ -13,7 +13,6 @@
     
 import SwiftUI
 
-
 struct TiffanyBlueBackground: View {
     @State private var time: Double = 0.0
 

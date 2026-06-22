@@ -304,7 +304,7 @@ enum PaymentPlatform {
 }
 
 extension Color {
-    fileprivate init(hex: String) {
+    init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
         Scanner(string: hex).scanHexInt64(&int)

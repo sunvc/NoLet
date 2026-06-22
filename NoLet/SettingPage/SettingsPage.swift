@@ -57,29 +57,23 @@ struct SettingsPage: View {
         List(selection: $selectView) {
             if manager.sizeClass == .regular {
                 Section {
-                    if manager.prouter.count > 0 {
-                        ListButton {
-                            Label("消息", systemImage: "ellipsis.message")
-                        } action: {
-                            Task { @MainActor in
-                                manager.router = []
-                            }
-                            return true
-                        }.id("message")
-                    }
+                    ListButton {
+                        Label("消息", systemImage: "ellipsis.message")
+                    } action: {
+                        manager.router = []
+                        return true
+                    }.id("message")
 
                     if usePtt {
                         ListButton {
                             Label("语音", systemImage: "message.and.waveform")
                         } action: {
-                            Task { @MainActor in
-                                manager.router = [.ptt]
-                            }
+                            manager.router = [.ptt]
                             return true
                         }.id("messageVoice")
                     }
 
-                    if manager.prouter.first != .noletChat {
+                    if assistantAccouns.count > 0 {
                         Section {
                             ListButton {
                                 Label {
@@ -91,12 +85,9 @@ struct SettingsPage: View {
                                         .customForegroundStyle(.accent, .primary)
                                 }
                                 .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.green, .primary)
 
                             } action: {
-                                Task { @MainActor in
-                                    manager.router = [.noletChat]
-                                }
+                                manager.router = [.noletChat]
                                 return true
                             }.id("noletchat")
                         }
@@ -119,9 +110,7 @@ struct SettingsPage: View {
                         }
 
                     } action: {
-                        Task { @MainActor in
-                            manager.router = [.server]
-                        }
+                        manager.router = [.server]
                         return true
                     }.id("servers")
                 }
@@ -137,9 +126,7 @@ struct SettingsPage: View {
                     }
 
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.noletChatSetting(nil)]
-                    }
+                    manager.router = [.noletChatSetting(nil)]
                     return true
                 }.id("noletchatsettings")
 
@@ -155,9 +142,7 @@ struct SettingsPage: View {
                     Text(sound)
                         .foregroundStyle(.gray)
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.sound]
-                    }
+                    manager.router = [.sound]
                     return true
                 }.id("sounds")
 
@@ -171,9 +156,7 @@ struct SettingsPage: View {
                             .scaleEffect(0.9)
                     }
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.crypto]
-                    }
+                    manager.router = [.crypto]
                     return true
                 }.id("cryptoview")
 
@@ -187,9 +170,7 @@ struct SettingsPage: View {
                             .customForegroundStyle(.accent, Color.primary)
                     }
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.dataSetting]
-                    }
+                    manager.router = [.dataSetting]
                     return true
                 }.id("datamanager")
 
@@ -202,9 +183,7 @@ struct SettingsPage: View {
                             .customForegroundStyle(.accent, Color.primary)
                     }
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.more]
-                    }
+                    manager.router = [.more]
                     return true
                 }.id("moresettings")
             }
@@ -221,9 +200,7 @@ struct SettingsPage: View {
                             .customForegroundStyle(.accent, Color.primary)
                     }
                 } action: {
-                    Task { @MainActor in
-                        manager.router = [.about]
-                    }
+                    manager.router = [.about]
                     return true
                 }.id("aboutsetting")
 
@@ -252,9 +229,7 @@ struct SettingsPage: View {
                         if let vipInfo = manager.VipInfo, vipInfo.isVip {
                             AppManager.openURL(url: NCONFIG.telegram, .safari)
                         } else {
-                            Task { @MainActor in
-                                manager.open(sheet: .paywall)
-                            }
+                            manager.open(sheet: .paywall)
                         }
                         return true
                     }.id("store")

@@ -580,7 +580,9 @@ struct EQGlobalGainSlider: View {
                                 }
                                 .onEnded { _ in
                                     self.globalGain = gain
-                                    pttManager.changeEQ()
+                                    Task{
+                                        await pttManager.changeEQ()
+                                    }
                                 }
                         )
                 }
@@ -628,7 +630,10 @@ struct EQGlobalGainSlider: View {
     func quickSet(_ value: Double) {
         self.globalGain = value
         self.gain = value
-        pttManager.changeEQ()
+        Task{
+            await pttManager.changeEQ()
+        }
+        
     }
 }
 

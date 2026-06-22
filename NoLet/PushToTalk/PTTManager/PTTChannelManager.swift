@@ -21,26 +21,35 @@ import SwiftUI
 ///
 final nonisolated class PTTChannelManager: NSObject,
     PTChannelManagerDelegate,
-    PTChannelRestorationDelegate, @unchecked Sendable
+    PTChannelRestorationDelegate, Sendable
 {
     static let shared = PTTChannelManager()
 
     private override init() {}
 
     private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
-    
 
     static let ChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
-    var channelManager: PTChannelManager?
+//    var channelManager: PTChannelManager?
+
+    private let channelManagerLock = OSAllocatedUnfairLock<PTChannelManager?>(initialState: nil)
+
+    var channelManager: PTChannelManager? {
+        channelManagerLock.withLock { $0 }
+    }
 
     func start() async throws {
-        self.channelManager = try await PTChannelManager.channelManager(
+        let channelManager = try await PTChannelManager.channelManager(
             delegate: self,
             restorationDelegate: self
         )
+
+        channelManagerLock.withLock { value in
+            value = channelManager
+        }
     }
-    
-    func join(){
+
+    func join() {
         self.channelManager?.requestJoinChannel(
             channelUUID: Self.ChannelUUID,
             descriptor: PTChannelDescriptor(
@@ -49,7 +58,8 @@ final nonisolated class PTTChannelManager: NSObject,
             )
         )
     }
-    func leave(){
+
+    func leave() {
         self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
     }
 
@@ -66,13 +76,13 @@ final nonisolated class PTTChannelManager: NSObject,
             channelUUID: Self.ChannelUUID
         )
     }
-    
-    func setTransmissionMode(){
+
+    func setTransmissionMode() {
         self.channelManager?.setTransmissionMode(.fullDuplex, channelUUID: Self.ChannelUUID)
     }
-    
-   func setServerStatus(_ status: PTServiceStatus) {
-       self.channelManager?.setServiceStatus(status, channelUUID: Self.ChannelUUID)
+
+    func setServerStatus(_ status: PTServiceStatus) {
+        self.channelManager?.setServiceStatus(status, channelUUID: Self.ChannelUUID)
     }
 
     // MARK: - Join
@@ -152,10 +162,7 @@ final nonisolated class PTTChannelManager: NSObject,
             String(format: "%02x", $0)
         }.joined()
 
-        Task {
-            await Defaults[.pttToken] = token
-        }
-
+        Defaults[.pttToken] = token
         logger.debug("PTT Token: \(token)")
     }
 

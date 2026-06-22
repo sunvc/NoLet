@@ -169,9 +169,16 @@ struct ChangeKeyCenterView: View {
                 } track: { codes in
                     for code in codes {
                         let result = AppManager.shared.outParamsHandler(address: code)
-                        if result != .text("") || result != .otherURL("") {
+                        
+                        switch result {
+                        case .text:
+                            break
+                        case .otherURL:
+                            break
+                        default:
                             return code
                         }
+                        
                     }
                     return nil
                 } close: {

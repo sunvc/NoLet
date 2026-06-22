@@ -15,7 +15,7 @@ import AVFoundation
 import os
 import SwiftUI
 
-nonisolated protocol PTTPlayerDelegate: AnyObject {
+nonisolated protocol PTTPlayerDelegate: AnyObject, Sendable {
     /// 实时回调播放进度
     func playerManager(
         _ manager: PTTPlayerManager,
@@ -24,13 +24,17 @@ nonisolated protocol PTTPlayerDelegate: AnyObject {
     )
 }
 
-final nonisolated class PTTPlayerManager: @unchecked Sendable {
+actor PTTPlayerManager: Sendable {
     var delegate: PTTPlayerDelegate?
 
     private var playbackAudioEngine: AVAudioEngine?
     private var playbackPlayerNode: AVAudioPlayerNode?
-    private(set) var audioUnitEQ: AVAudioUnitEQ?
+    private var audioUnitEQ: AVAudioUnitEQ?
     private var timer: DispatchSourceTimer?
+    
+    func setDelegate(_ delegate: PTTPlayerDelegate?){
+        self.delegate = delegate
+    }
 
     var currentPlaybackTime: Double {
         guard let playerNode = playbackPlayerNode else { return 0 }
@@ -48,11 +52,14 @@ final nonisolated class PTTPlayerManager: @unchecked Sendable {
 
         timer.setEventHandler { [weak self] in
             guard let self = self else { return }
-            self.delegate?.playerManager(
-                self,
-                didUpdateCurrentTime: max(self.currentPlaybackTime, 0),
-                duration: total
-            )
+            Task{
+                await self.delegate?.playerManager(
+                    self,
+                    didUpdateCurrentTime: max(self.currentPlaybackTime, 0),
+                    duration: total
+                )
+            }
+            
         }
         timer.resume()
         self.timer = timer
@@ -68,15 +75,12 @@ final nonisolated class PTTPlayerManager: @unchecked Sendable {
         if let value {
             playbackPlayerNode?.volume = value
         } else {
-            Task {
-                let volume = await Defaults[.pttVoiceVolume]
-                playbackPlayerNode?.volume = Float(volume)
-            }
+            let volume = Defaults[.pttVoiceVolume]
+            self.playbackPlayerNode?.volume = Float(volume)
         }
     }
 
     func playAudio(_ filePath: URL) async {
-        
         playbackAudioEngine = AVAudioEngine()
         playbackPlayerNode = AVAudioPlayerNode()
 
@@ -130,7 +134,6 @@ final nonisolated class PTTPlayerManager: @unchecked Sendable {
             self.stopPlay()
         }
     }
-
 
     func stopPlay() {
         playbackPlayerNode?.stop()

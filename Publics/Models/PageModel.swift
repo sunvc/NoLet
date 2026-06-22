@@ -15,27 +15,6 @@ import UIKit
 // MARK: - Page model
 
 enum SubPage: Equatable, Identifiable {
-    static func == (lhs: SubPage, rhs: SubPage) -> Bool {
-        switch (lhs, rhs) {
-        case (.customKey, .customKey), (.scan, .scan), (.appIcon, .appIcon),
-             (.cloudIcon, .cloudIcon), (.paywall, .paywall), (.cloudServer, .cloudServer):
-            return true
-        case (.web(let a), .web(let b)):
-            return a == b
-        case (
-            .quickResponseCode(let ta, let tia, let pra),
-            .quickResponseCode(let tb, let tib, let prb)
-        ):
-            return ta == tb && tia == tib && pra == prb
-        case (.crypto(let a), .crypto(let b)):
-            return a == b
-        case (.share(let a, let b, let c), .share(let d, let f, let g)):
-            return a.count == d.count && b == f && c == g
-        default:
-            return false
-        }
-    }
-
     case customKey
     case scan
     case appIcon
@@ -44,7 +23,7 @@ enum SubPage: Equatable, Identifiable {
     case paywall
     case quickResponseCode(text: String, title: String?, preview: String?)
     case crypto(CryptoModelConfig)
-    case share(contents: [Any], preview: UIImage?, title: String?)
+    case share(contents: [AnyHashable], preview: UIImage?, title: String?)
     case cloudServer
     case authView
 
@@ -65,7 +44,7 @@ enum SubPage: Equatable, Identifiable {
     }
 }
 
-enum RouterPage: Hashable {
+enum RouterPage: Hashable, Equatable {
     case example
     case messageDetail(String)
     case sound
@@ -82,33 +61,6 @@ enum RouterPage: Hashable {
     case web(url: URL)
     case ptt
 }
-
-extension RouterPage: Equatable {
-    static func == (lhs: RouterPage, rhs: RouterPage) -> Bool {
-        switch (lhs, rhs) {
-        case (.example, .example),
-             (.sound, .sound),
-             (.crypto, .crypto),
-             (.server, .server),
-             (.more, .more),
-             (.about, .about),
-             (.dataSetting, .dataSetting):
-            return true
-
-        case (.messageDetail, .messageDetail),
-             (.noletChatSetting, .noletChatSetting),
-             (.noletChat, .noletChat),
-             (.serverInfo, .serverInfo),
-             (.files, .files),
-             (.web, .web):
-            return true
-
-        default:
-            return false
-        }
-    }
-}
-
 enum TabPage: String, Sendable, CaseIterable {
     case message
     case setting

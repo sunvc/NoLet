@@ -116,7 +116,9 @@ struct PTTMessageRow: View {
 
                 HStack(spacing: 12) {
                     Button {
-                        pttManager.send(.startPlay(message))
+                        Task{
+                            await pttManager.send(.startPlay(message))
+                        }
                     } label: {
                         Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                             .font(.system(size: 14, weight: .bold))

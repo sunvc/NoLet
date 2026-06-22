@@ -10,16 +10,16 @@
 //    Created by Neo on 2025/4/14.
 //
 
-import AppIntents
+@preconcurrency import AppIntents
 
-class NoLetShortcuts: AppShortcutsProvider, @unchecked Sendable {
-    static var appShortcuts: [AppShortcut] {
+final class NoLetShortcuts: AppShortcutsProvider {
+    static let appShortcuts: [AppShortcut] = [
         AppShortcut(
             intent: DeleteMessageIntent(),
             phrases:
             ["清除\(.applicationName)"],
             shortTitle: "清除过期通知",
             systemImageName: "trash"
-        )
-    }
+        ),
+    ]
 }

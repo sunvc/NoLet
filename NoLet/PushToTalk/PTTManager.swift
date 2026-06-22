@@ -35,6 +35,7 @@ final class PTTManager: ObservableObject {
     @Published var hasPermission: Bool = false
 
     let recorder = PTTRecorderManager()
+
     let player = PTTPlayerManager()
 
     private let database = DatabaseManager.shared
@@ -54,7 +55,9 @@ final class PTTManager: ObservableObject {
 
     private init() {
         try? AudioMessage.createInit(dbQueue: DatabaseManager.shared.dbQueue)
-        player.delegate = self
+        Task {
+            await player.setDelegate(self)
+        }
         recorder.delegate = self
         startObservingUnreadCount()
         self.TaskHandler()
@@ -86,14 +89,18 @@ final class PTTManager: ObservableObject {
 
         switch type {
         case .began:
-            self.send(.interruptionBegan)
+            Task{
+                await self.send(.interruptionBegan)
+            }
 
         case .ended:
             let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             let shouldResume = options.contains(.shouldResume)
 
-            self.send(.interruptionEnded(shouldResume: shouldResume))
+            Task{
+                await self.send(.interruptionEnded(shouldResume: shouldResume))
+            }
 
         @unknown default:
             break
@@ -153,7 +160,7 @@ final class PTTManager: ObservableObject {
         )
     }
 
-    func send(_ event: Event, remote: Bool = false) {
+    func send(_ event: Event, remote: Bool = false) async {
         logger.info("STATE: \(self.state.log)")
         logger.info("EVENT: \(event.log)")
 
@@ -166,11 +173,11 @@ final class PTTManager: ObservableObject {
             if let message {
                 beginPlay(message)
             } else {
-                self.playWaitList()
+                await self.playWaitList()
             }
 
         case (.idle, .startRecord(let activity)):
-            beginRecord(activity)
+            await beginRecord(activity)
 
         case (.idle, .recordStarted):
             internalStopRecord(isCancel: true)
@@ -186,42 +193,42 @@ final class PTTManager: ObservableObject {
 
         case (.preparingPlay, .stopPlay):
             state = .idle
-            internalStopPlay()
+            await internalStopPlay()
 
         case (.preparingPlay, .startRecord(let activity)):
-            internalStopPlay()
-            beginRecord(activity)
+            await internalStopPlay()
+            await beginRecord(activity)
 
            //==================================================
            // Playing
            //==================================================
 
         case (.playing, .stopPlay):
-            internalStopPlay()
+            await internalStopPlay()
             state = .idle
 
         case (.playing, .playFinished):
             currentPlayFile = nil
             state = .idle
-            self.playWaitList()
+            await self.playWaitList()
 
         case (.playing, .startPlay(let message)):
             guard let message else { break }
             if message == self.currentPlayFile {
-                internalStopPlay()
+                await internalStopPlay()
                 currentPlayFile = nil
                 return
             }
             // FIXME: -  处理连续播放, 如果是远程, 忽略打断
             if !remote {
-                internalStopPlay()
+                await internalStopPlay()
                 beginPlay(message)
             }
 
         case (.playing, .startRecord(let activity)):
-            internalStopPlay()
+            await internalStopPlay()
             currentPlayFile = nil
-            beginRecord(activity)
+            await beginRecord(activity)
 
            //==================================================
            // Recording
@@ -230,7 +237,7 @@ final class PTTManager: ObservableObject {
         case (.recording, .stopRecord(let cancel)):
             internalStopRecord(isCancel: cancel)
             state = .idle
-            self.playWaitList()
+            await self.playWaitList()
 
         // 录音期间禁止播放
         case (.recording, .startPlay):
@@ -243,10 +250,10 @@ final class PTTManager: ObservableObject {
         case (.playing(let message), .interruptionBegan),
              (.preparingPlay(let message), .interruptionBegan):
             self.state = .interrupted(message)
-            self.internalStopPlay()
+            await self.internalStopPlay()
 
         case (.recording, .interruptionBegan):
-            self.send(.stopRecord(false))
+            await self.send(.stopRecord(false))
 
         case (.interrupted(let message), .interruptionEnded(let shouldResume)):
             if shouldResume {
@@ -259,7 +266,7 @@ final class PTTManager: ObservableObject {
             } else {
                 // 系统不建议恢复，直接回到空闲
                 self.state = .idle
-                self.internalStopPlay()
+                await self.internalStopPlay()
             }
 
         case (.interruptionEnded(let resume, let message), .resume):
@@ -267,12 +274,12 @@ final class PTTManager: ObservableObject {
                 beginPlay(message)
             } else {
                 self.state = .idle
-                self.internalStopPlay()
+                await self.internalStopPlay()
             }
 
         case (.interrupted, .stopPlay):
             self.state = .idle
-            self.internalStopPlay()
+            await self.internalStopPlay()
            //==================================================
            // Ignore
            //==================================================
@@ -391,18 +398,18 @@ final class PTTManager: ObservableObject {
         }) ?? false
     }
 
-    func playWaitList(_ next: Bool = false) {
+    func playWaitList(_ next: Bool = false) async {
         if next {
             self.state = .idle
-            self.internalStopPlay()
+            await self.internalStopPlay()
         }
 
         guard let message = waitPlayList.last else {
-            self.send(.stopPlay)
+            await self.send(.stopPlay)
             PTTChannelManager.shared.setActiveRemoteParticipant()
             return
         }
-        self.send(.startPlay(message))
+        await self.send(.startPlay(message))
     }
 
     private func beginPlay(_ message: AudioMessage) {
@@ -415,20 +422,20 @@ final class PTTManager: ObservableObject {
 
         Task {
             // 实际接入你的播放器
-            send(.playStarted)
+            await send(.playStarted)
             if let currentUrl = message.filePath() {
                 // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
                 try await Task.sleep(for: .milliseconds(100))
                 await self.player.playAudio(currentUrl)
             }
             // 播放结束回调
-            send(.playFinished)
+            await send(.playFinished)
         }
     }
 
-    private func internalStopPlay() {
+    private func internalStopPlay() async {
         logger.info("Stop Play")
-        self.player.stopPlay()
+        await self.player.stopPlay()
 
         if case .interrupted = state {
             PTTChannelManager.shared.setActiveRemoteParticipant()
@@ -439,11 +446,11 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    private func beginRecord(_ activity: Bool = true) {
+    private func beginRecord(_ activity: Bool = true) async  {
         state = .recording
         logger.info("Start Record")
         recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
-        send(.recordStarted)
+        await self.send(.recordStarted)
     }
 
     private func internalStopRecord(isCancel: Bool) {
@@ -507,12 +514,12 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    func setDB(_ value: Float) {
-        self.player.setVolume(value)
+    func setDB(_ value: Float) async {
+        await self.player.setVolume(value)
     }
 
-    func changeEQ() {
-        self.player.changeEQ(
+    func changeEQ() async {
+        await self.player.changeEQ(
             bands: Defaults[.eqBands],
             globalGain: Float(Defaults[.globalGain])
         )
@@ -857,7 +864,7 @@ extension PTTManager {
 }
 
 extension PTTManager: PTTPlayerDelegate {
-    func playerManager(
+    nonisolated func playerManager(
         _ manager: PTTPlayerManager,
         didUpdateCurrentTime currentTime: TimeInterval,
         duration: TimeInterval

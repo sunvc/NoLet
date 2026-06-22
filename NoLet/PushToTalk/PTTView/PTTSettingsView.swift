@@ -73,6 +73,8 @@ struct PTTSettingsView: View {
                 equalizerView
             }
             .navigationTitle("PTT设置")
+            .scrollContentBackground(.hidden)
+            .background(ContentBackgroundView())
         }
     }
 
@@ -101,7 +103,9 @@ struct PTTSettingsView: View {
                     .pickerStyle(MenuPickerStyle())
                     .offset(x: 10)
                     .onChange(of: eqBands) { _ in
-                        manager.changeEQ()
+                        Task{
+                            await manager.changeEQ()
+                        }
                     }
             }
         }

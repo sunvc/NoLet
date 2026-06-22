@@ -106,7 +106,7 @@ struct MessageRow: View {
                     Spacer()
 
                     Text(message.createDate.agoFormatString())
-                        .foregroundStyle(message.createDate.colorForDate())
+                        .foregroundStyle(.secondary)
                         .font(.caption2)
                 }
 

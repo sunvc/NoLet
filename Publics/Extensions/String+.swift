@@ -30,14 +30,12 @@ public func NSLocalizedString(
 
 extension String: @retroactive Error {}
 
-nonisolated
-extension String {
+nonisolated extension String {
     /// 移除 URL 的 HTTP/HTTPS 前缀
     func removeHTTPPrefix() -> String {
         return replacingOccurrences(of: "^(https?:\\/\\/)?", with: "", options: .regularExpression)
     }
 
-    
     var hasHttp: Bool { ["http", "https"].contains { self.lowercased().hasPrefix($0) } }
 
     func sha256() -> String {
@@ -53,7 +51,6 @@ extension String {
         self.filter { !$0.isWhitespace }
     }
 
-    
     func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
         guard let textColor = removingAllWhitespace.decomposeTextAndColor() else { return nil }
 
@@ -137,8 +134,7 @@ extension String {
     }
 }
 
-nonisolated
-extension Character {
+nonisolated extension Character {
     var isEmoji: Bool {
         return unicodeScalars.contains { $0.properties.isEmoji } &&
             (unicodeScalars.first?.properties.isEmojiPresentation == true || unicodeScalars
@@ -197,23 +193,23 @@ extension String {
 }
 
 // MARK: - 字符串 MD5 转 UUID
-extension String {
+
+nonisolated extension String {
     /// 把当前字符串 MD5 后转为标准 UUID 格式
     func toUUID() -> String {
-        
         guard let data = self.data(using: .utf8) else {
             return ""
         }
         let md5Digest = Insecure.MD5.hash(data: data)
-        
+
         let md5Hex = md5Digest.map { String(format: "%02hhx", $0) }.joined()
-        
-        let start8    = md5Hex.prefix(8)
-        let part2     = md5Hex.dropFirst(8).prefix(4)
-        let part3     = md5Hex.dropFirst(12).prefix(4)
-        let part4     = md5Hex.dropFirst(16).prefix(4)
-        let last12    = md5Hex.dropFirst(20).prefix(12)
-        
+
+        let start8 = md5Hex.prefix(8)
+        let part2 = md5Hex.dropFirst(8).prefix(4)
+        let part3 = md5Hex.dropFirst(12).prefix(4)
+        let part4 = md5Hex.dropFirst(16).prefix(4)
+        let last12 = md5Hex.dropFirst(20).prefix(12)
+
         return "\(start8)-\(part2)-\(part3)-\(part4)-\(last12)"
     }
 }

@@ -28,7 +28,6 @@ struct ContentView: View {
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.usePtt) var usePtt
 
-
     @Namespace private var selectMessageSpace
 
     //  只能用 getValue: Binding 不然 16.0 不能pop
@@ -86,7 +85,6 @@ struct ContentView: View {
             .interactiveDismissDisabled(true)
         }
         .sheet(item: Binding(get: { manager.sheetPage }, set: { manager.open(sheet: $0) })) {
-            
             ContentSheetViewPage(value: $0)
         }
         .fullScreenCover(item: Binding(
@@ -253,7 +251,8 @@ struct ContentView: View {
                     return nil
                 }
             case .web(let url):
-                SFSafariView(url: url).ignoresSafeArea()
+                SFSafariView(url: url)
+                    .ignoresSafeArea()
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -360,11 +359,13 @@ extension View {
 
                 case .web(let url):
                     SFSafariView(url: url) {
-                        AppManager.shared.router.removeLast()
+                        if AppManager.shared.router.count > 0 {
+                            AppManager.shared.router.removeLast()
+                        }
                         Haptic.impact()
                     }
                     .ignoresSafeArea()
-                    .navigationBarBackButtonHidden()
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .appleServerInfo:
                     AppleStatusView()
@@ -379,10 +380,9 @@ extension View {
     }
 }
 
-
 struct ContentSizeKey: PreferenceKey {
     static var defaultValue: CGSize = .zero
-    
+
     static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
         value = nextValue()
     }

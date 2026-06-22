@@ -636,20 +636,6 @@ extension AppManager {
         case otherURL(String)
         case assistant(String)
         case cloudIcon
-
-        static func == (lhs: OutDataType, rhs: OutDataType) -> Bool {
-            switch (lhs, rhs) {
-            case (.text, .text),
-                 (.crypto, .crypto),
-                 (.server, .server),
-                 (.otherURL, .otherURL),
-                 (.assistant, .assistant),
-                 (.cloudIcon, .cloudIcon):
-                return true
-            default:
-                return false
-            }
-        }
     }
 
     struct SubscribeUser: Codable, Hashable, Identifiable {

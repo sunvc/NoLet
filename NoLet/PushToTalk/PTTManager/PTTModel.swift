@@ -123,7 +123,7 @@ enum TalkButtonType: String, CaseIterable {
     case call
 }
 
-struct PTTChannel: Identifiable, Equatable, Codable {
+nonisolated struct PTTChannel: Identifiable, Equatable, Codable {
     var id: String { "\(channel)".toUUID() }
     var timestamp: Date = .now
     var mhz: Int = 98
@@ -164,7 +164,7 @@ struct PTTChannel: Identifiable, Equatable, Codable {
     }
 }
 
-extension PTTChannel: @MainActor Defaults.Serializable {}
+nonisolated extension PTTChannel: Defaults.Serializable {}
 
 extension [PTTChannel] {
     mutating func set(_ channel: PTTChannel, active: Bool) {
@@ -180,7 +180,7 @@ extension [PTTChannel] {
     }
 }
 
-extension Defaults.Keys {
+nonisolated extension Defaults.Keys {
     static let pttChannel = Key<PTTChannel>("pushTalkInteger", default: PTTChannel())
     static let pttHisChannel = Key<[PTTChannel]>("pttHisChannels", default: [])
     static let pttVibration = Key<Bool>("pttVibration", default: true)
@@ -302,5 +302,3 @@ extension Int {
         formatted(.number.precision(.integerLength(3)))
     }
 }
-
-

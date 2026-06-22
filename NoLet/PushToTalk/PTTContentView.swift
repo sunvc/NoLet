@@ -250,7 +250,9 @@ struct PTTContentView: View {
                             .animation(.linear(duration: 0.2), value: pttManager.state)
                             .VButton { _ in
                                 // TODO: - 停止播放
-                                self.pttManager.send(.stopPlay)
+                                Task{
+                                    await self.pttManager.send(.stopPlay)
+                                }
                                 return true
                             }
                         Spacer(minLength: 0)
@@ -266,7 +268,9 @@ struct PTTContentView: View {
                                 .count > 0 ? 1 : 0)
                             .VButton { _ in
                                 // TODO: - 下一条
-                                self.pttManager.playWaitList()
+                                Task{
+                                    await self.pttManager.playWaitList()
+                                }
                                 return true
                             }
 
@@ -313,7 +317,9 @@ struct PTTContentView: View {
                             .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
                             .VButton { _ in
                                 // TODO: - 播放音乐
-                                pttManager.playWaitList()
+                                Task{
+                                    await  pttManager.playWaitList()
+                                }
 
                                 return true
                             }
@@ -392,7 +398,9 @@ struct PTTContentView: View {
         .overlay {
             SetVolumePeakView(show: $showVolume, volume: $pttVoiceVolume, icon: iconVolume)
                 .onChange(of: pttVoiceVolume) { value in
-                    pttManager.setDB(Float(value))
+                    Task{
+                        await pttManager.setDB(Float(value))
+                    }
                 }
         }
         .animation(.default, value: showVolume)
@@ -739,9 +747,21 @@ struct PTTContentView: View {
                     .pbutton(
                         $isCancel,
                         $ispress,
-                        onBegan: startRecording,
-                        onEnded: endRecording,
-                        onCancelled: cancelRecording
+                        onBegan: {
+                            Task{
+                                await startRecording()
+                            }
+                        },
+                        onEnded: {
+                            Task{
+                                await endRecording()
+                            }
+                        },
+                        onCancelled: {
+                            Task{
+                                await cancelRecording()
+                            }
+                        }
                     )
                     .disabled(!pttManager.powerState)
                     .scaleEffect(buttonType == .call ? 1 : 0.5)
@@ -795,7 +815,7 @@ struct PTTContentView: View {
         .fontWeight(.black)
     }
 
-    func startRecording() {
+    func startRecording()async  {
         if pttMusicPlay {
             pttManager.playTips(.cbegin) {}
         }
@@ -803,23 +823,23 @@ struct PTTContentView: View {
         if pttVibration { Haptic.impact(.heavy) }
 
         guard self.ispress else { return }
-        pttManager.send(.startRecord(true))
+        await pttManager.send(.startRecord(true))
     }
 
-    func endRecording() {
-        pttManager.send(.stopRecord(false))
+    func endRecording() async {
+        await pttManager.send(.stopRecord(false))
 
         if pttVibration {
             Haptic.notify(.success)
         }
 
         if pttMusicPlay {
-            pttManager.playTips(.pttnotifyend)
+           pttManager.playTips(.pttnotifyend)
         }
     }
 
-    func cancelRecording() {
-        pttManager.send(.stopRecord(true))
+    func cancelRecording() async {
+        await pttManager.send(.stopRecord(true))
         if pttVibration {
             Haptic.notify(.error)
         }

@@ -15,8 +15,8 @@ import Defaults
 import SwiftUI
 
 extension Defaults.Keys {
-    static let background = Key<ContentBackgroundStyle>("ContentBackgroundStyle", .tiffany)
-    static let customColor = Key<GradientColorNode>("GradientColorNode", .init(color: .gray))
+    static let background = Key<ContentBackgroundStyle>("ContentBackgroundStyle", .custom)
+    static let customColor = Key<GradientColorNode>("GradientColorNode", .init(color: Color.customNolet))
 }
 
 enum ContentBackgroundStyle: String, CaseIterable, Defaults.Serializable {

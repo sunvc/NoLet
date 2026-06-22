@@ -27,37 +27,6 @@ extension Date {
         return dateFormatter.string(from: self)
     }
 
-    // 计算日期与当前日期的差异，并根据差异生成颜色
-    func colorForDate() -> Color {
-        let now = Date()
-        let timeDifference = now.timeIntervalSince(self) // 获取过去的时间差（秒为单位）
-
-        let threeHours: TimeInterval = 3 * 60 * 60
-        let fiveHours: TimeInterval = 5 * 60 * 60
-        let twentyFourHours: TimeInterval = 24 * 60 * 60
-        let oneWeek: TimeInterval = 7 * twentyFourHours
-
-        // 根据过去时间的长短判断颜色
-        // 3小时以内，显示绿色
-        if timeDifference <= threeHours {
-            return Color.green
-        }
-        // 3小时到5小时之间，显示黄色
-        else if timeDifference <= fiveHours {
-            return Color.yellow
-        }
-        // 5小时到24小时之间，显示蓝色
-        else if timeDifference <= twentyFourHours {
-            return Color.blue
-        }
-        // 24小时到一周之间，显示灰色
-        else if timeDifference <= oneWeek {
-            return Color.gray
-        }
-        // 超过一周，显示深灰色
-        return Color(UIColor.darkGray)
-    }
-
     /// 计算给定天数减去（当前日期 - 自身日期）的天数
     /// - Parameter days: 给定的天数
     /// - Returns: 剩余的天数
