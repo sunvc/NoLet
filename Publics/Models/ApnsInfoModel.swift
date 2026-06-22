@@ -12,9 +12,16 @@
 //    Created by Neo on 2025/12/24 16:50.
 
 import CloudKit
+import Defaults
 import Foundation
 
-struct ApnsInfo: Codable {
+nonisolated extension Defaults.Keys {
+    static let apnsInfo = Key<ApnsInfo?>("ApnsInfo", nil)
+}
+
+nonisolated extension ApnsInfo: Defaults.Serializable {}
+
+nonisolated struct ApnsInfo: Codable, Sendable {
     var id: String
     var timestamp: Date
     var token: String

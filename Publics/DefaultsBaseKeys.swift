@@ -25,13 +25,11 @@ actor UniqueKeysChecker {
 }
 #endif
 
-
-
-func DEFAULTSTORE() -> UserDefaults {
-   return  UserDefaults(suiteName: NCONFIG.groupName)!
+nonisolated func DEFAULTSTORE() -> UserDefaults {
+    return UserDefaults(suiteName: NCONFIG.groupName)!
 }
 
-extension Defaults.Key {
+nonisolated extension Defaults.Key {
     convenience init(_ name: String, _ defaultValue: Value, iCloud: Bool = false) {
         #if DEBUG
         Task {

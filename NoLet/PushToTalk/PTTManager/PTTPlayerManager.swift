@@ -89,7 +89,6 @@ final nonisolated class PTTPlayerManager: @unchecked Sendable {
             guard let audioFile = try? AVAudioFile(forReading: filePath) else { return }
             let hardwareFormat = audioEngine.mainMixerNode.outputFormat(forBus: 0)
 
-            print("sampleRate: ", audioFile.processingFormat.sampleRate)
             let duration = Double(audioFile.length) / audioFile.processingFormat.sampleRate
 
             self.startTimer(total: duration)

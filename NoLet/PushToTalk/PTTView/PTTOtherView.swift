@@ -664,9 +664,7 @@ struct RotateButtonView: View {
                         .shadow(color: Color.white.opacity(0.2), radius: 5, x: 5, y: 5)
                         .shadow(color: Color.white.opacity(0.2), radius: 5, x: -5, y: -5)
                         .rotationEffect(.init(degrees: angle))
-                        .onAppear{
-                            debugPrint(width)
-                        }
+                        
                     
                     Circle()
                         .fill(.clear)

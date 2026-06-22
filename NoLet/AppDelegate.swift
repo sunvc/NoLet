@@ -42,14 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         AppManager.shared.isWXAppInstalled = WeChatManager.isWXAppInstalled()
         
         if !ProcessInfo.processInfo.isiOSAppOnMac {
-            
-            Task {
-                let manager = try await PTChannelManager.channelManager(
-                    delegate: PTTChannelDelegate.shared,
-                    restorationDelegate: PTTChannelDelegate.shared
-                )
-                
-                PTTManager.shared.channelManager = manager
+            Task{
+                try await PTTChannelManager.shared.start()
             }
         }
         return true

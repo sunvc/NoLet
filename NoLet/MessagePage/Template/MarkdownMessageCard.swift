@@ -382,7 +382,7 @@ struct MarkdownMessageCard: MessageCardProtocol {
                             }
                         } label: {
                             Label("智能助手", systemImage: "atom")
-                        }.tint(.green)
+                        }
                     }
                 }
 

@@ -31,7 +31,7 @@ nonisolated protocol PTTRecorderDelegate: AnyObject {
     )
 }
 
-final nonisolated class PTTRecorderManager: @unchecked Sendable {
+final nonisolated class PTTRecorderManager {
     var delegate: PTTRecorderDelegate?
 
     private var audioEngine: AVAudioEngine?
@@ -84,9 +84,6 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
             logger.debug("Setup audio recording:\(error)")
         }
     }
-
-    private let clock = ContinuousClock()
-    private var lastCallbackTime: ContinuousClock.Instant?
 
     func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
         logger.debug("Avvio trasmissione audio...")
@@ -162,7 +159,7 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
             try audioEngine.start()
             logger.debug("Trasmissione audio avviata.")
         } catch {
-            debugPrint(error.localizedDescription)
+            logger.error("\(error.localizedDescription)")
             _ = self.stopRecording()
         }
     }
@@ -176,6 +173,8 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
 
         self.inputNode = nil
         self.audioEngine = nil
+
+        self.flushAudioPacket()
 
         if oggWriter.writeFrame(nil, frameByteCount: 0), oggWriter.encodedDuration() > 0.2 {
             return dataItem.data()
@@ -248,6 +247,29 @@ final nonisolated class PTTRecorderManager: @unchecked Sendable {
                 )
             }
         }
+    }
+
+    private func flushAudioPacket() {
+        logger.debug("剩余数据: \(self.recordedAudioData.count)")
+        guard !recordedAudioData.isEmpty else { return }
+
+        var finalPacket = Data(count: 1920)
+
+        finalPacket.replaceSubrange(
+            0..<recordedAudioData.count,
+            with: recordedAudioData
+        )
+
+        _ = finalPacket.withUnsafeBytes {
+            oggWriter.writeFrame(
+                UnsafeMutablePointer(
+                    mutating: $0.bindMemory(to: UInt8.self).baseAddress!
+                ),
+                frameByteCount: UInt(1920)
+            )
+        }
+
+        recordedAudioData.removeAll()
     }
 
     private func conversionFloat32ToInt16Buffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {

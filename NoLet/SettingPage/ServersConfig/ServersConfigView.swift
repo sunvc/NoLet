@@ -283,7 +283,6 @@ struct CloudServersView: View {
         List {
             ForEach(cloudServers, id: \.id) { item in
                 ServerCardView(item: item, isCloud: true, loading: downID == item.id) {
-                    debugPrint(item)
                     Task { @MainActor in
                         self.downID = item.id
                         let success = await manager.appendServer(server: item)

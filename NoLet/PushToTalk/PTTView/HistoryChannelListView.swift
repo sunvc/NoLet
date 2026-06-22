@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - PTTChannelHistoryListView.swift
+//  NoLet - HistoryChannelListView.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -15,7 +15,7 @@ import AVFoundation
 import Defaults
 import SwiftUI
 
-struct PTTChannelHistoryListView: View {
+struct HistoryChannelListView: View {
     @Environment(\.dismiss) var dismiss
     @State private var globalTime: Double = 0.0 // 驱动活跃频道的波形和绿灯闪烁
     @ObservedObject private var pttManager = PTTManager.shared

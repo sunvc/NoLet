@@ -34,10 +34,6 @@ final class PTTManager: ObservableObject {
     @Published var totalPlayTime: Double = 0
     @Published var hasPermission: Bool = false
 
-    var channelManager: PTChannelManager?
-
-//    let audioHandler = CombinedAudioManager()
-
     let recorder = PTTRecorderManager()
     let player = PTTPlayerManager()
 
@@ -46,8 +42,6 @@ final class PTTManager: ObservableObject {
 
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
-
-    let kGlobalPTTChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
 
     func deleteAll() {
         _ = try? DatabaseManager.shared.dbQueue.write { db in
@@ -107,11 +101,11 @@ final class PTTManager: ObservableObject {
     }
 
     private func TaskHandler() {
-        self.loopTask = Task(priority: .utility) { [weak self] in
+        self.loopTask = Task.detached(priority: .utility) { [weak self] in
             logger.info("🚀 后台常驻任务已在线程: \(Thread.current) 启动")
             while !Task.isCancelled {
                 guard let self = self else { break }
-                if self.powerState {
+                if await self.powerState {
                     await self.publicJoinConnect()
                 }
 
@@ -257,9 +251,10 @@ final class PTTManager: ObservableObject {
         case (.interrupted(let message), .interruptionEnded(let shouldResume)):
             if shouldResume {
                 self.state = .interruptionEnded(shouldResume, message)
-                self.channelManager?.setActiveRemoteParticipant(
-                    PTParticipant(name: "恢复播放", image: "字,FF9500".avatarImage()),
-                    channelUUID: self.kGlobalPTTChannelUUID
+
+                PTTChannelManager.shared.setActiveRemoteParticipant(
+                    name: "恢复播放",
+                    avatar: "字,FF9500".avatarImage()
                 )
             } else {
                 // 系统不建议恢复，直接回到空闲
@@ -292,8 +287,8 @@ final class PTTManager: ObservableObject {
         // 1. 状态前置
         self.powerState = true
         self.serverStatus = .connecting
-        self.setServerStatus(.connecting, id: self.kGlobalPTTChannelUUID)
 
+        PTTChannelManager.shared.setServerStatus(.connecting)
         // 2. ✨ 音频权限与初始化（注意：确保你的音频初始化有正确的容错）
         if !hasPermission {
             recorder.requestAudioPermission()
@@ -303,15 +298,9 @@ final class PTTManager: ObservableObject {
         await self.publicJoinConnect()
 
         self.serverStatus = Defaults[.pttChannel].users > 0 ? .online : .offline
-        try await channelManager?.setTransmissionMode(
-            .fullDuplex,
-            channelUUID: kGlobalPTTChannelUUID
-        )
-
-        self.setServerStatus(
-            Defaults[.pttChannel].users > 0 ? .ready : .unavailable,
-            id: kGlobalPTTChannelUUID
-        )
+        PTTChannelManager.shared.setTransmissionMode()
+        PTTChannelManager.shared
+            .setServerStatus(Defaults[.pttChannel].users > 0 ? .ready : .unavailable)
     }
 
     func levelConnect() async {
@@ -386,12 +375,6 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    private func setServerStatus(_ status: PTServiceStatus, id: UUID) {
-        Task {
-            try? await channelManager?.setServiceStatus(status, channelUUID: id)
-        }
-    }
-
     @discardableResult
     private func read(message: AudioMessage) -> Bool {
         return (try? DatabaseManager.shared.dbQueue.write { db in
@@ -409,15 +392,14 @@ final class PTTManager: ObservableObject {
     }
 
     func playWaitList(_ next: Bool = false) {
-        
-        if next{
+        if next {
             self.state = .idle
             self.internalStopPlay()
         }
-        
+
         guard let message = waitPlayList.last else {
             self.send(.stopPlay)
-            self.setRemote()
+            PTTChannelManager.shared.setActiveRemoteParticipant()
             return
         }
         self.send(.startPlay(message))
@@ -444,32 +426,16 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    private func setRemote(name: String? = nil, image: String? = nil) {
-        var user: PTParticipant? {
-            if let name = name, let image = image {
-                return PTParticipant(name: name, image: image.avatarImage())
-            }
-            return nil
-        }
-
-        self.channelManager?.setActiveRemoteParticipant(
-            user,
-            channelUUID: self.kGlobalPTTChannelUUID
-        ) { error in
-            logger.log("RemoteParticipant: \(error?.localizedDescription)")
-        }
-    }
-
     private func internalStopPlay() {
         logger.info("Stop Play")
         self.player.stopPlay()
 
         if case .interrupted = state {
-            self.setRemote()
+            PTTChannelManager.shared.setActiveRemoteParticipant()
         }
 
         if self.waitPlayList.isEmpty {
-            self.setRemote()
+            PTTChannelManager.shared.setActiveRemoteParticipant()
         }
     }
 

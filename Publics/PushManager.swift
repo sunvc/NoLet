@@ -13,12 +13,10 @@ import CryptoKit
 import Foundation
 import Security
 
-class APNs {
+final nonisolated class APNs: Sendable {
     static let shared = APNs()
 
     private init() {}
-
-    private var apnsInfo: ApnsInfo?
 
     // MARK: - Generate JWT Token
 
@@ -101,7 +99,7 @@ class APNs {
         if deviceToken.isEmpty {
             throw "deviceToken is empty"
         }
-        //
+        let apnsInfo = Defaults[.apnsInfo]
         if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
             // apnsInfo 为 nil 或者已经过期
             let info = try await CloudManager.shared.pushToken { record in
@@ -109,7 +107,7 @@ class APNs {
                 let data = try self.generateAuthToken(apnsInfo)
                 return (data.token, data.timestamp)
             }
-            self.apnsInfo = ApnsInfo(record: info)
+            Defaults[.apnsInfo] = ApnsInfo(record: info)
         }
 
         guard let apnsInfo = apnsInfo else { throw "No Data" }
@@ -190,7 +188,7 @@ class APNs {
 
             // 1. 检查 HTTP 响应
             if let httpResponse = response as? HTTPURLResponse {
-                print("HTTP status code:", httpResponse.statusCode)
+                logger.debug("HTTP status code: \(httpResponse.statusCode)")
                 apnsResponse.apnsID = httpResponse.value(forHTTPHeaderField: "apns-id")
                 apnsResponse.apnsUniqueID = httpResponse.value(forHTTPHeaderField: "apns-unique-id")
                 if httpResponse.statusCode == 410,
@@ -224,7 +222,7 @@ class APNs {
 
 // MARK: - Base64URL Encode
 
-extension Data {
+nonisolated extension Data {
     fileprivate func base64URLEncodedString() -> String {
         return base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
@@ -233,7 +231,7 @@ extension Data {
     }
 }
 
-extension APNs {
+nonisolated extension APNs {
     struct PushPayload: Codable {
         struct APS: Codable {
             struct Alert: Codable {
@@ -335,12 +333,12 @@ extension APNs {
         var name: String
         var volume: Double
     }
-}
 
-struct APNsResponse: Codable {
-    var statusCode: Int?
-    var reason: String?
-    var apnsID: String?
-    var timestamp: Date?
-    var apnsUniqueID: String?
+    struct APNsResponse: Codable {
+        var statusCode: Int?
+        var reason: String?
+        var apnsID: String?
+        var timestamp: Date?
+        var apnsUniqueID: String?
+    }
 }

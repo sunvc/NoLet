@@ -100,6 +100,7 @@ struct PTTContentView: View {
     }
 
     var stateTitle: String {
+        
         if !pttManager.powerState && !isPlaying {
             return String(localized: "未启动监听")
         } else {
@@ -330,7 +331,7 @@ struct PTTContentView: View {
                                     .tag(server)
                             }
                         } label: { Text("切换服务器") }
-                            .tint(.black)
+                            .tint(pttChannel.serverOK ? .black : .red)
                             .pickerStyle(MenuPickerStyle())
                             .offset(x: 10)
                     }
@@ -401,7 +402,7 @@ struct PTTContentView: View {
                 .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showChannelList) {
-            PTTChannelHistoryListView()
+            HistoryChannelListView()
                 .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $showSettings) {
@@ -571,27 +572,22 @@ struct PTTContentView: View {
                         self.dragOffset = max(-70, min(currentWidth, maxDragDistance + 15))
                     }
                     .onEnded { value in
+                        
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
+                            self.dragOffset = 0.0
+                        }
+                        
                         let draggedWidth = value.translation.width
 
                         if draggedWidth >= maxDragDistance {
-                            let channelID = pttManager.kGlobalPTTChannelUUID
+                            
                             if pttManager.powerState {
-                                pttManager.channelManager?.leaveChannel(channelUUID: channelID)
+                                PTTChannelManager.shared.leave()
                             } else {
                                 pttHisChannel.set(pttChannel, active: true)
-                                pttManager.channelManager?.requestJoinChannel(
-                                    channelUUID: channelID,
-                                    descriptor: .init(
-                                        name: NCONFIG.AppName,
-                                        image: "書".avatarImage()
-                                    )
-                                )
+                                PTTChannelManager.shared.join()
                             }
 
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
-                                self.buttonType = .call
-                                self.dragOffset = 0.0
-                            }
                             Haptic.impact()
 
                         } else {
@@ -605,12 +601,9 @@ struct PTTContentView: View {
                                 }
                             }
 
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.55)) {
-                                self.dragOffset = 0.0
-                            }
-
                             Haptic.notify(.error)
                         }
+                        
                     }
                 )
         }
@@ -662,6 +655,7 @@ struct PTTContentView: View {
                     }
                     .offset(x: buttonType == .call ? 0 : -100)
                     .scaleEffect(buttonType == .call ? 1 : 0.5)
+                    .offset(x: 30)
 
                     Spacer(minLength: 0)
                 }

@@ -71,6 +71,15 @@ struct PermissionsStartView: View {
         iconName: "server.rack",
         isSelected: true
     )
+    
+    @State private var voicePer = PermissionOption(
+        mode: .server,
+        title: String(localized: "语音对讲"),
+        description: String(localized: "是否开启语音对讲服务"),
+        iconName: "message.and.waveform",
+        isSelected: false
+    )
+
 
     @State private var currentStep: PermissionStep = .networkPermission // 当前权限设置步骤
     @State private var showNextScreen: Bool = false
@@ -80,7 +89,8 @@ struct PermissionsStartView: View {
     @State private var customServerAddress: String = "" // 自定义服务器地址
     @State private var urlValidationError: Bool = false // URL验证错误标志
     @ObservedObject private var appManager = AppManager.shared
-
+    @Default(.usePtt) var usePtt
+    
     var complete: (() -> Void)?
 
     // 获取当前使用的服务器地址
@@ -198,6 +208,7 @@ struct PermissionsStartView: View {
                     VStack(spacing: 10) {
                         PermissionOptionCard(option: $basePer)
                         PermissionOptionCard(option: $criticalPer)
+                        PermissionOptionCard(option: $voicePer)
                     }
                     .padding(.vertical, 8)
                 }
@@ -279,6 +290,7 @@ struct PermissionsStartView: View {
                                 )
                             showAlert = true
                         }
+                        Defaults[.usePtt] = voicePer.isSelected
                     } label: {
                         Text("完成设置")
                             .fontWeight(.semibold)

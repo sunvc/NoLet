@@ -19,17 +19,61 @@ import SwiftUI
 /// PTTChannelDelegate
 ///
 ///
-final nonisolated class PTTChannelDelegate: NSObject,
+final nonisolated class PTTChannelManager: NSObject,
     PTChannelManagerDelegate,
     PTChannelRestorationDelegate, @unchecked Sendable
 {
-    static let shared = PTTChannelDelegate()
+    static let shared = PTTChannelManager()
 
     private override init() {}
 
     private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
-    @MainActor
-    private var pttManager: PTTManager { PTTManager.shared }
+    
+
+    static let ChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
+    var channelManager: PTChannelManager?
+
+    func start() async throws {
+        self.channelManager = try await PTChannelManager.channelManager(
+            delegate: self,
+            restorationDelegate: self
+        )
+    }
+    
+    func join(){
+        self.channelManager?.requestJoinChannel(
+            channelUUID: Self.ChannelUUID,
+            descriptor: PTChannelDescriptor(
+                name: NCONFIG.AppName,
+                image: "書".avatarImage()
+            )
+        )
+    }
+    func leave(){
+        self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
+    }
+
+    func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
+        var user: PTParticipant? {
+            if let name = name, let avatar = avatar {
+                return PTParticipant(name: name, image: avatar)
+            }
+            return nil
+        }
+
+        self.channelManager?.setActiveRemoteParticipant(
+            user,
+            channelUUID: Self.ChannelUUID
+        )
+    }
+    
+    func setTransmissionMode(){
+        self.channelManager?.setTransmissionMode(.fullDuplex, channelUUID: Self.ChannelUUID)
+    }
+    
+   func setServerStatus(_ status: PTServiceStatus) {
+       self.channelManager?.setServiceStatus(status, channelUUID: Self.ChannelUUID)
+    }
 
     // MARK: - Join
 
@@ -40,7 +84,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
     ) {
         logger.debug("Joined channel: \(channelUUID)")
         Task {
-            try await pttManager.joinConnect()
+            try await PTTManager.shared.joinConnect()
         }
     }
 
@@ -53,7 +97,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
     ) {
         logger.debug("Left channel: \(channelUUID)")
         Task {
-            await pttManager.levelConnect()
+            await PTTManager.shared.levelConnect()
         }
     }
 
@@ -128,8 +172,8 @@ final nonisolated class PTTChannelDelegate: NSObject,
 
         if let remote = pushPayload["url"] as? String {
             Task {
-                if let voice = await pttManager.saveVoice(remoteUrl: remote) {
-                    await pttManager.send(.startPlay(voice), remote: true)
+                if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote) {
+                    await PTTManager.shared.send(.startPlay(voice), remote: true)
                 }
             }
         }
@@ -152,10 +196,10 @@ final nonisolated class PTTChannelDelegate: NSObject,
         let remote = isRemotePushIncoming.withLock { $0 }
         Task {
             if !remote {
-                await pttManager.send(.startRecord(false))
+                await PTTManager.shared.send(.startRecord(false))
             } else {
-                if case .interruptionEnded = await pttManager.state {
-                    await self.pttManager.send(.resume)
+                if case .interruptionEnded = await PTTManager.shared.state {
+                    await PTTManager.shared.send(.resume)
                 }
             }
         }
@@ -169,7 +213,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
         let remote = isRemotePushIncoming.withLock { $0 }
         if !remote {
             Task {
-                await pttManager.send(.stopRecord(false))
+                await PTTManager.shared.send(.stopRecord(false))
             }
         }
     }
@@ -194,7 +238,7 @@ final nonisolated class PTTChannelDelegate: NSObject,
         failedToJoinChannel channelUUID: UUID,
         error: any Error
     ) {
-        debugPrint(error.localizedDescription)
+        logger.error("\(error.localizedDescription)")
         Toast.error(title: "系统资源被占用")
     }
 }
