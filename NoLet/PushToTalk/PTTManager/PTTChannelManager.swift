@@ -181,6 +181,8 @@ final nonisolated class PTTChannelManager: NSObject,
             Task {
                 if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote) {
                     await PTTManager.shared.send(.startPlay(voice), remote: true)
+                }else{
+                    self.setActiveRemoteParticipant()
                 }
             }
         }

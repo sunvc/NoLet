@@ -459,7 +459,7 @@ final class PTTManager: NSObject, ObservableObject {
             await send(.playStarted)
             if let currentUrl = message.filePath() {
                 // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
-                
+
                 self.setMapUserStatus(message: message)
                 try await Task.sleep(for: .milliseconds(100))
                 await self.player.playAudio(currentUrl)
@@ -469,19 +469,20 @@ final class PTTManager: NSObject, ObservableObject {
             await send(.playFinished)
         }
     }
+
     // 设置谁在说话
     func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
         var users = Defaults[.pttChannel].users
-        
+
         for index in users.indices {
-            if stop{
+            if stop {
                 users[index].active = false
-            }else{
+            } else {
                 users[index].active = (users[index].id == message.from)
             }
             debugPrint(users[index].active)
         }
-        
+
         Defaults[.pttChannel].users = users
     }
 
@@ -889,6 +890,8 @@ extension PTTManager {
                     server: channel.server.key
                 )
             )
+            // FIXME: - 404存为了文件
+            guard response.check() else { return nil }
 
             var data = response.data
             /// 解密
