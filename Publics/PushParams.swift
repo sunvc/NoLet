@@ -15,10 +15,10 @@ import UserNotifications
 enum Params: String, CaseIterable {
     case id, title, subtitle, body, group, url, category, level, ttl, markdown,
          sound, volume, badge, call, autoCopy, copy, icon, image, saveAlbum,
-         cipherText, cipherNumber, iv, aps, alert, caf, reply, style
+         cipherText, cipherNumber, iv, aps, alert, caf, reply, style, location
 
     var name: String { rawValue.lowercased() }
-    static var names: [String] { Self.allCases.compactMap { $0.name } }
+    static var names: [String] { allCases.prefix(27).compactMap { $0.name } }
 }
 
 extension Dictionary where Key == AnyHashable, Value == Any {

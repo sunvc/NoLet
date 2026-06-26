@@ -13,6 +13,7 @@
 
 import Defaults
 import Foundation
+import MapKit
 import MarkdownUI
 import StoreKit
 import SwiftUI
@@ -668,5 +669,15 @@ extension AppManager {
             case onece
             case none
         }
+    }
+}
+
+extension AppManager {
+    nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = destinationName
+        mapItem.openInMaps(launchOptions: [:])
     }
 }

@@ -17,7 +17,7 @@ import SwiftUI
 
 struct HistoryChannelListView: View {
     @Environment(\.dismiss) var dismiss
-    @State private var globalTime: Double = 0.0 // 驱动活跃频道的波形和绿灯闪烁
+    @State private var globalTime: Double = 0.0 
     @ObservedObject private var pttManager = PTTManager.shared
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttChannel) var pttChannel
@@ -184,21 +184,21 @@ struct ChannelMonitorRow: View {
                 if channel.active {
                     HStack(spacing: 8) {
                         Circle()
-                            .fill(channel.users > 0 ? Color.green : Color.orange)
+                            .fill(channel.users.count > 0 ? Color.green : Color.orange)
                             .frame(width: 8, height: 8)
                             .shadow(color: .green.opacity(0.6), radius: 4)
                             .opacity(0.4 + (sin(globalTime * 8) + 1) * 0.3) // 👈 呼吸频率
 
                         Text(channel.server.name)
                             .font(.system(size: 12, weight: .black, design: .monospaced))
-                            .foregroundColor(channel.users > 0 ? Color.mint : Color.orange)
+                            .foregroundColor(channel.users.count > 0 ? Color.mint : Color.orange)
                     }
 
                     Spacer()
 
                     HStack(spacing: 4) {
                         Image(systemName: "person.2.fill")
-                        Text("\(channel.users) 人在线")
+                        Text("\(channel.users.count) 人在线")
                     }
                     .font(.system(size: 12))
                     .foregroundColor(.secondary)

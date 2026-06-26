@@ -273,6 +273,7 @@ struct CustomDragGesture: ViewModifier {
     }
 }
 
+
 extension Dictionary {
     static func + (lhs: inout Dictionary, rhs: Dictionary) {
         lhs.merge(rhs) { _, new in new }
@@ -314,7 +315,7 @@ extension View {
         }
     }
 
-    @ViewBuilder func `if`<Content: View>(
+    @ViewBuilder nonisolated func `if`<Content: View>(
         _ condition: Bool,
         _ transform: () -> Content
     ) -> some View {
@@ -325,7 +326,7 @@ extension View {
         }
     }
 
-    @ViewBuilder func diff<Content: View>(_ transform: (Self) -> Content) -> some View {
+    @ViewBuilder nonisolated func diff<Content: View>(_ transform: (Self) -> Content) -> some View {
         transform(self)
     }
 
@@ -425,7 +426,7 @@ extension View {
     }
 
     @ViewBuilder
-    func glassCard(
+    nonisolated func glassCard(
         _ radius: CGFloat = 12,
         padding: CGFloat = 0,
         borderColor: Color? = .primary

@@ -11,9 +11,12 @@
 //    Created by Neo 2024/10/25.
 //
 
-import Foundation
+
 import UIKit
+import OSLog
+import Foundation
 import UniformTypeIdentifiers
+
 
 nonisolated let CONTAINER = FileManager.default
     .containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
@@ -23,6 +26,8 @@ typealias NURL = String
 extension NURL {
     nonisolated var url: URL { URL(string: self)! }
 }
+
+nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "main")
 
 nonisolated class NCONFIG {
     static let appSymbol = "NoLet"
@@ -44,7 +49,7 @@ nonisolated class NCONFIG {
     static let serverSource: NURL = "https://github.com/sunvc/NoLets"
     static let telegram: NURL = "https://t.me/PushToMe"
     static let appStore: NURL = "https://apps.apple.com/app/id6615073345"
-    static let soundsRemoteURL: NURL = "http://s3.wzs.app/cafs.zip"
+    static let soundsRemoteURL: NURL = "http://s3.wzs.app/sounds.aar"
     static let logoImage: NURL = "https://s3.wzs.app/avatar.png"
     static let ogImage: NURL = "https://s3.wzs.app/og.png"
 

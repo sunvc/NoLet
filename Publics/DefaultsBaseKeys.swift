@@ -55,7 +55,7 @@ extension Defaults.Keys {
     static let muteSetting = Key<[String: Date]>("muteSetting", [:])
 
     static let imageSaves = Key<[String]>("imageSaves", [])
-    static let id = Key<String>("UserDeviceUniqueID", "")
+    nonisolated static let id = Key<String>("UserDeviceUniqueID", "")
     static let lang = Key<String>("LocalePreferredLanguagesFirst", "")
     static let allMessagecount = Key<Int>("allMessagecount", 0, iCloud: true)
 

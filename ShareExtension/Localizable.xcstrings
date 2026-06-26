@@ -225,18 +225,18 @@
         }
       }
     },
-    "图片key重复": {
+    "图片key重复，请提供新图片以覆盖": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Image key duplicate"
+            "value": "Image key duplicated, please provide a new image to overwrite."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "图片key重复"
+            "value": "图片key重复，请提供新图片以覆盖"
           }
         }
       }

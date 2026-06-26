@@ -14,11 +14,9 @@
 import Defaults
 import Foundation
 
-
 extension Defaults.Keys {
-   
     static let servers = Key<[PushServerModel]>("serverArrayStroage", [])
-    static let appIcon = Key<AppIconEnum>("setting_active_app_icon", .nolet)
+
     static let messageExpiration = Key<ExpirationTime>("messageExpirtionTime", .forever)
     static let defaultBrowser = Key<DefaultBrowserModel>("defaultBrowserOpen", .auto)
     static let imageSaveDays = Key<ExpirationTime>("imageSaveDays", .forever)
@@ -26,10 +24,14 @@ extension Defaults.Keys {
     static let customReasoningEffort = Key<String>("customReasoningEffort", "custom")
 }
 
+nonisolated extension Defaults.Keys {
+    static let appIcon = Key<AppIconEnum>("setting_active_app_icon", .nolet)
+}
+
 extension ExpirationTime: @MainActor Defaults.Serializable {}
 extension DefaultBrowserModel: @MainActor Defaults.Serializable {}
 extension Identifiers: @MainActor Defaults.Serializable {}
-extension AppIconEnum: @MainActor Defaults.Serializable {}
+nonisolated extension AppIconEnum: Defaults.Serializable {}
 extension PushServerModel: @MainActor Defaults.Serializable {}
 
 struct MoreMessage: Codable, Hashable, @MainActor Defaults.Serializable {

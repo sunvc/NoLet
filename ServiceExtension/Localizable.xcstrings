@@ -97,18 +97,12 @@
         }
       }
     },
-    "图片key重复": {
+    "图片key重复，请提供新图片以覆盖": {
       "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Image key duplicate"
-          }
-        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "图片key重复"
+            "value": "图片key重复，请提供新图片以覆盖"
           }
         }
       }
@@ -195,16 +189,16 @@
     },
     "无服务器": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无服务器"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "No server"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无服务器"
           }
         }
       }

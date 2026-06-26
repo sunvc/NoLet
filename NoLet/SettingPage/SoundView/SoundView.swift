@@ -15,7 +15,6 @@
 import AVFoundation
 import SwiftUI
 import UIKit
-import Zip
 
 struct SoundView: View {
     @ObservedObject private var tipsManager = AudioManager.shared
@@ -140,6 +139,28 @@ struct SoundView: View {
                         }
                     }
 
+                    Section {
+                        Button {
+                            guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
+                                return
+                            }
+                            
+                            do{
+                                try FileManager.default.removeItem(at: soundsDirURL)
+                                tipsManager.updateFileList()
+                                Toast.success(title: "删除成功")
+                            }catch{
+                                Toast.error(title: "删除失败")
+                            }
+
+                        } label: {
+                            Label("删除下载铃声", systemImage: "trash")
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(.red, .primary)
+                                .accessibilityLabel("删除下载铃声")
+                        }
+                    }
+
                 } label: {
                     if downLoading {
                         ProgressView()
@@ -156,21 +177,23 @@ struct SoundView: View {
     }
 
     func downloadSounds() async throws {
-
         let fileManager = FileManager.default
 
-        // 1️⃣ 下载 zip 文件
-        let zipURL = try await tipsManager.network.download(
+        let fromURL = try await tipsManager.network.download(
             from: NCONFIG.soundsRemoteURL.url
         )
 
-        // 2️⃣ 解压 zip
-        let unzipURL = try Zip.quickUnzipFile(zipURL)
+        let soundsTem = FileManager.default.temporaryDirectory
+            .appending(
+                path: fromURL.deletingPathExtension().lastPathComponent,
+                directoryHint: .isDirectory
+            )
 
-        // 3️⃣ sounds 目录
         guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
             throw "Not Dir"
         }
+
+        try AppleArchiveManager.extractArchive(from: fromURL, to: soundsTem)
 
         if !fileManager.fileExists(atPath: soundsDirURL.path) {
             try fileManager.createDirectory(
@@ -179,9 +202,8 @@ struct SoundView: View {
             )
         }
 
-        // 4️⃣ 枚举解压后的文件
         guard let enumerator = fileManager.enumerator(
-            at: unzipURL,
+            at: soundsTem,
             includingPropertiesForKeys: [.isDirectoryKey],
             options: [.skipsHiddenFiles]
         ) else {
@@ -191,7 +213,6 @@ struct SoundView: View {
         let skipFiles = tipsManager.allSounds()
 
         while let item = enumerator.nextObject() as? URL {
-
             let values = try item.resourceValues(forKeys: [.isDirectoryKey])
             if values.isDirectory == true { continue }
 
@@ -205,7 +226,6 @@ struct SoundView: View {
                 continue
             }
 
-            // 5️⃣ 优先走转码
             if (try? await AudioConversion().toCAFShort(
                 inputURL: item,
                 outputURL: outputURL
@@ -213,20 +233,16 @@ struct SoundView: View {
                 continue
             }
 
-            // 6️⃣ 本身就是 caf，直接移动
             if item.pathExtension.lowercased() == "caf" {
                 try fileManager.moveItem(at: item, to: outputURL)
             }
         }
 
-        // 7️⃣ 更新列表
         tipsManager.updateFileList()
 
-        // 8️⃣ 清理临时文件
-        try? fileManager.removeItem(at: unzipURL)
-        try? fileManager.removeItem(at: zipURL)
+        try? fileManager.removeItem(at: soundsTem)
+        try? fileManager.removeItem(at: fromURL)
     }
-
 
     /// 通用文件保存方法
     func saveSound(

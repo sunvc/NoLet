@@ -9,12 +9,14 @@ import AVFoundation
 import Combine
 import Foundation
 import GRDB
+import MapKit
 import Opus
 import os
 import PushToTalk
+import SwiftUI
 import UIKit
 
-final class PTTManager: ObservableObject {
+final class PTTManager: NSObject, ObservableObject {
     static let shared = PTTManager()
 
     @Published var powerState: Bool = false
@@ -33,6 +35,19 @@ final class PTTManager: ObservableObject {
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
     @Published var hasPermission: Bool = false
+    @Published var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(
+            latitude: 31.2397,
+            longitude: 121.4998
+        ),
+        span: MKCoordinateSpan(
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05
+        )
+    )
+
+    @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
+    @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     let recorder = PTTRecorderManager()
 
@@ -40,7 +55,7 @@ final class PTTManager: ObservableObject {
 
     private let database = DatabaseManager.shared
     private let network = NetworkManager()
-
+    private let locationManager = CLLocationManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 
@@ -53,15 +68,22 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    private init() {
+    private override init() {
+        super.init()
         try? AudioMessage.createInit(dbQueue: DatabaseManager.shared.dbQueue)
-        Task {
-            await player.setDelegate(self)
+
+        Task { @MainActor in
+            await self.player.setDelegate(self)
+            self.recorder.delegate = self
         }
-        recorder.delegate = self
+
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
+        self.locationManager.delegate = self
+        self.authorizationStatus = locationManager.authorizationStatus
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        self.requestLocationPush()
     }
 
     deinit {
@@ -89,7 +111,7 @@ final class PTTManager: ObservableObject {
 
         switch type {
         case .began:
-            Task{
+            Task {
                 await self.send(.interruptionBegan)
             }
 
@@ -98,7 +120,7 @@ final class PTTManager: ObservableObject {
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             let shouldResume = options.contains(.shouldResume)
 
-            Task{
+            Task {
                 await self.send(.interruptionEnded(shouldResume: shouldResume))
             }
 
@@ -112,12 +134,13 @@ final class PTTManager: ObservableObject {
             logger.info("🚀 后台常驻任务已在线程: \(Thread.current) 启动")
             while !Task.isCancelled {
                 guard let self = self else { break }
-                if await self.powerState {
-                    await self.publicJoinConnect()
-                }
 
                 do {
-                    try await Task.sleep(for: .seconds(15))
+                    if await self.powerState {
+                        await self.requestLocation()
+                        await self.publicJoinConnect()
+                    }
+                    try await Task.sleep(for: .seconds(10))
                 } catch {
                     logger.info("Task 休眠被中断，准备退出")
                     break
@@ -304,10 +327,10 @@ final class PTTManager: ObservableObject {
 
         await self.publicJoinConnect()
 
-        self.serverStatus = Defaults[.pttChannel].users > 0 ? .online : .offline
+        self.serverStatus = Defaults[.pttChannel].users.count > 0 ? .online : .offline
         PTTChannelManager.shared.setTransmissionMode()
         PTTChannelManager.shared
-            .setServerStatus(Defaults[.pttChannel].users > 0 ? .ready : .unavailable)
+            .setServerStatus(Defaults[.pttChannel].users.count > 0 ? .ready : .unavailable)
     }
 
     func levelConnect() async {
@@ -315,7 +338,7 @@ final class PTTManager: ObservableObject {
         self.serverStatus = .offline
 
         await self.publicLevelConnect(Defaults[.pttHisChannel])
-        Defaults[.pttChannel].users = 0
+        Defaults[.pttChannel].users = []
     }
 
     func publicLevelConnect(_ channels: [PTTChannel]) async {
@@ -325,7 +348,7 @@ final class PTTManager: ObservableObject {
         for item in channels {
             if let index = historyChannels.firstIndex(of: item) {
                 historyChannels[index].active = false
-                historyChannels[index].users = 0
+                historyChannels[index].users = []
             }
         }
         Defaults[.pttHisChannel] = historyChannels
@@ -354,7 +377,7 @@ final class PTTManager: ObservableObject {
                 historyChannels[index].users = matchedResult.users
                 historyChannels[index].timestamp = .now
             } else if channel.active {
-                historyChannels[index].users = 0
+                historyChannels[index].users = []
             }
         }
 
@@ -370,7 +393,7 @@ final class PTTManager: ObservableObject {
             Defaults[.pttChannel] = currentChannel
             self.serverStatus = .online
         } else {
-            currentChannel.users = 0
+            currentChannel.users = []
             Defaults[.pttChannel] = currentChannel
             if let firstRes = results.first,
                let matchedChannel = historyChannels.first(where: {
@@ -379,15 +402,26 @@ final class PTTManager: ObservableObject {
             {
                 Defaults[.pttChannel] = matchedChannel
             }
+            self.serverStatus = .failed
         }
+
+        self.zoomToFitAllUsers()
     }
 
     @discardableResult
-    private func read(message: AudioMessage) -> Bool {
+    func setStatus(
+        message: AudioMessage,
+        read: Bool? = false,
+        status: AudioMessage.Status? = nil
+    ) -> Bool {
+        guard read != nil || status != nil else { return false }
         return (try? DatabaseManager.shared.dbQueue.write { db in
             do {
                 if var message = try AudioMessage.fetchOne(db, id: message.id) {
                     message.read = true
+                    if let status {
+                        message.status = status
+                    }
                     try message.save(db)
                 }
                 return true
@@ -418,19 +452,37 @@ final class PTTManager: ObservableObject {
         logger.info("Start Play:\(message.file)")
 
         currentPlayFile = message
-        self.read(message: message)
+        self.setStatus(message: message, read: true)
 
         Task {
             // 实际接入你的播放器
             await send(.playStarted)
             if let currentUrl = message.filePath() {
                 // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
+                
+                self.setMapUserStatus(message: message)
                 try await Task.sleep(for: .milliseconds(100))
                 await self.player.playAudio(currentUrl)
+                self.setMapUserStatus(message: message, stop: true)
             }
             // 播放结束回调
             await send(.playFinished)
         }
+    }
+    // 设置谁在说话
+    func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
+        var users = Defaults[.pttChannel].users
+        
+        for index in users.indices {
+            if stop{
+                users[index].active = false
+            }else{
+                users[index].active = (users[index].id == message.from)
+            }
+            debugPrint(users[index].active)
+        }
+        
+        Defaults[.pttChannel].users = users
     }
 
     private func internalStopPlay() async {
@@ -446,7 +498,7 @@ final class PTTManager: ObservableObject {
         }
     }
 
-    private func beginRecord(_ activity: Bool = true) async  {
+    private func beginRecord(_ activity: Bool = true) async {
         state = .recording
         logger.info("Start Record")
         recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
@@ -458,7 +510,7 @@ final class PTTManager: ObservableObject {
 
         if let data = recorder.stopRecording(), !isCancel {
             if let file = self.saveVoice(data: data) {
-                Task {
+                Task.detached(priority: .userInitiated) {
                     await self.sendVoice(message: file)
                 }
                 if !isCancel {
@@ -593,6 +645,106 @@ final class PTTManager: ObservableObject {
     }
 }
 
+extension PTTManager: CLLocationManagerDelegate {
+    func zoomToFitAllUsers() {
+        // 1. 依然要严格过滤掉 (0,0) 的无效坐标
+        let onlineUsers = Defaults[.pttChannel].users.filter { user in
+            user.latitude != 0.0 && user.longitude != 0.0
+        }
+
+        guard !onlineUsers.isEmpty else { return }
+
+        let latitudes = onlineUsers.map(\.latitude)
+        let longitudes = onlineUsers.map(\.longitude)
+
+        guard
+            let minLat = latitudes.min(),
+            let maxLat = latitudes.max(),
+            let minLng = longitudes.min(),
+            let maxLng = longitudes.max()
+        else {
+            return
+        }
+
+        let latDelta = maxLat - minLat
+        let lngDelta = maxLng - minLng
+
+        var finalLatDelta: CLLocationDegrees
+        var finalLngDelta: CLLocationDegrees
+
+        if latDelta < 0.0005, lngDelta < 0.0005 {
+            finalLatDelta = 0.0015
+            finalLngDelta = 0.0015
+        } else {
+            finalLatDelta = max(latDelta * 1.5, 0.002)
+            finalLngDelta = max(lngDelta * 1.5, 0.002)
+        }
+
+        withAnimation(.easeInOut(duration: 0.5)) {
+            region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(
+                    latitude: (minLat + maxLat) / 2,
+                    longitude: (minLng + maxLng) / 2
+                ),
+                span: MKCoordinateSpan(
+                    latitudeDelta: finalLatDelta,
+                    longitudeDelta: finalLngDelta
+                )
+            )
+        }
+    }
+
+    func requestAuthorization() {
+        locationManager.requestAlwaysAuthorization()
+    }
+
+    func requestLocation() async {
+        switch authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.requestLocation()
+        default:
+            if let local = await AddressGeocoder().queryLocation(),
+               self.location.coordinate.latitude == .zero ||
+               self.location.coordinate.longitude == .zero
+            {
+                self.location = local
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor in
+            if let lastLocation = locations.last {
+                self.location = lastLocation
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("定位失败: \(error.localizedDescription)")
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        DispatchQueue.main.async {
+            self.authorizationStatus = manager.authorizationStatus
+        }
+    }
+
+    func requestLocationPush() {
+        self.locationManager.startMonitoringLocationPushes { token, error in
+            guard let deviceToken = token else {
+                logger.error("获取位置Token失败!")
+                return
+            }
+            let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+            debugPrint("位置TOKEN:", token)
+            if let error {
+                debugPrint("获取失败地理位置TOKEN:", error.localizedDescription)
+            }
+        }
+    }
+}
+
 extension PTTManager {
     func connect(channels: [PTTChannel], join: Bool) async -> [JoinResponse] {
         let groupedChannels = Dictionary(grouping: channels, by: { $0.server.url })
@@ -619,7 +771,10 @@ extension PTTManager {
 
     nonisolated struct JoinParams: Codable, Sendable {
         var id: String
+        var name: String
         var channels: [String]
+        var latitude: Double
+        var longitude: Double
         var token: String
         var host: String
     }
@@ -627,7 +782,7 @@ extension PTTManager {
     nonisolated struct JoinResponse: Codable, Sendable {
         var host: String
         var channel: String
-        var users: Int
+        var users: [ChannelUser]
     }
 
     private func _connect(
@@ -635,7 +790,6 @@ extension PTTManager {
         join: Bool
     ) async -> baseResponse<[JoinResponse]>? {
         guard let channel = channels.first, channel.serverOK else {
-            Toast.info(title: "语音服务器错误")
             return nil
         }
 
@@ -649,7 +803,10 @@ extension PTTManager {
 
             let params = JoinParams(
                 id: Defaults[.id],
+                name: Defaults[.pttNickname],
                 channels: hzs,
+                latitude: self.location.coordinate.latitude,
+                longitude: self.location.coordinate.longitude,
                 token: join ? Defaults[.pttToken] : "",
                 host: channel.server.url
             )
@@ -666,23 +823,23 @@ extension PTTManager {
             else {
                 throw "请求失败"
             }
-
             return result
         } catch {
             logger.error("\(error)")
+            Toast.info(title: "语音服务器错误")
             return nil
         }
     }
 
-    func sendVoice(message: AudioMessage) async -> Bool {
-        let channel = Defaults[.pttChannel]
-        guard channel.serverOK else {
-            Toast.info(title: "语音服务器错误")
-            return false
-        }
+    func sendVoice(message: AudioMessage) async {
+        // 重发机制,先重置一下状态
+        self.setStatus(message: message, status: .send)
 
-        guard let filePath = message.filePath() else {
-            return false
+        let channel = Defaults[.pttChannel]
+
+        guard channel.serverOK, let filePath = message.filePath() else {
+            self.setStatus(message: message, status: .failed)
+            return
         }
 
         do {
@@ -713,11 +870,11 @@ extension PTTManager {
 
             let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
 
-            return result.code == 200
+            self.setStatus(message: message, status: result.code == 200 ? .success : .failed)
         } catch {
             logger.error("\(error.localizedDescription)")
             Toast.error(title: "发送语音失败")
-            return false
+            self.setStatus(message: message, status: .failed)
         }
     }
 

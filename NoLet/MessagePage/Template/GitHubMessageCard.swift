@@ -151,16 +151,20 @@ struct GitHubMessageCard: View {
                         }
                     }
 
-                    // 如果存在回复 (reply)，渲染引用样式气泡
+     
                     if !message.body.isEmpty {
                         HStack(spacing: 8) {
                             Rectangle()
                                 .fill(levelColor.opacity(0.5))
                                 .frame(width: 2)
 
-                            Text(message.body)
-                                .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(.primary.opacity(0.8))
+                            SCSelectableTextRepresentable(
+                                text: message.body.plainText,
+                                font: .systemFont(ofSize: 11, weight: .medium),
+                                textColor: .textBlack,
+                                textAlignment: .left,
+                                lineLimit: 5
+                            )
                         }
                         .padding(8)
                         .background(Color.primary.opacity(0.03))

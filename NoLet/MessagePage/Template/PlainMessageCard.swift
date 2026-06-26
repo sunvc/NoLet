@@ -36,11 +36,32 @@ struct PlainMessageCard: MessageCardProtocol {
             }
 
             VStack(alignment: .leading, spacing: 12) {
-                HStack {
+                HStack(spacing: 12) {
                     if let url = message.url, let url = URL(string: url) {
-                        Link("打开链接", destination: url)
-                            .font(.footnote)
-                            .tint(.blue)
+                        Button{
+                            AppManager.openURL(url: url, .auto)
+                        }label: {
+                            Image(systemName: "link.circle")
+                                .foregroundStyle(.primary, .blue)
+                                .font(.title2)
+                        }
+                    }
+
+                    if let location = message.value(for: "location", ""),
+                       let location = location.location()
+                    {
+                        Button {
+                            AppManager.openMap(
+                                latitude: location.0,
+                                longitude: location.1,
+                                destinationName: message.title ?? String(localized: "未知位置")
+                            )
+                        } label: {
+                            Image(systemName: "map.circle")
+                                .foregroundStyle(.primary, .green)
+                                .font(.title2)
+                        }
+                        .buttonStyle(.borderless)
                     }
 
                     Spacer()
@@ -138,4 +159,3 @@ struct PlainMessageCard: MessageCardProtocol {
         read: false
     ), config: .init())
 }
-

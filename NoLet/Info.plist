@@ -36,6 +36,17 @@
 		<string>weixinURLParamsAPI</string>
 		<string>photos-redirect</string>
 	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>ip.360.cn</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_nolet._tcp</string>
@@ -73,6 +84,7 @@
 		<string>remote-notification</string>
 		<string>audio</string>
 		<string>push-to-talk</string>
+		<string>location</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
 	<array>

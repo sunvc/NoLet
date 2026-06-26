@@ -81,7 +81,6 @@ struct MessageGroupView: View {
 
 struct MessageRow: View {
     var message: Message
-    var customIcon: String = ""
     @State private var unreadCount: Int = 0
     @ObservedObject private var messageManager = MessagesManager.shared
     var body: some View {
@@ -92,7 +91,7 @@ struct MessageRow: View {
                     .frame(width: 10, height: 10)
             }
 
-            AvatarView(icon: message.icon, customIcon: customIcon)
+            AvatarView(icon: message.icon)
                 .frame(width: 45, height: 45)
                 .clipped()
                 .clipShape(RoundedRectangle(cornerRadius: 10))

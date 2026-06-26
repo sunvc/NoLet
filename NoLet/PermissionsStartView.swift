@@ -208,6 +208,11 @@ struct PermissionsStartView: View {
                     VStack(spacing: 10) {
                         PermissionOptionCard(option: $basePer)
                         PermissionOptionCard(option: $criticalPer)
+                            .onChange(of: criticalPer) { newValue in
+                                if newValue.isSelected && !basePer.isSelected{
+                                    self.basePer.isSelected = true
+                                }
+                            }
                         PermissionOptionCard(option: $voicePer)
                     }
                     .padding(.vertical, 8)
@@ -275,6 +280,7 @@ struct PermissionsStartView: View {
                 } else {
                     // 第二步：完成按钮
                     Button {
+                        
                         if basePer.isSelected && networkPer.isSelected {
                             // 完成并进入下一个界面
                             withAnimation {
@@ -419,9 +425,12 @@ struct PermissionOptionCard: View {
                             case .critical:
                                 _ = await AppManager.shared.registerForRemoteNotifications(true)
                             case .network:
-                                option.isSelected = await NetworkManager().test()
+                                let success = await NetworkManager().test()
+                                if !success{
+                                    option.isSelected = false
+                                }
                             case .server:
-                                option.isSelected = true
+                                break
                             }
                         }
                     }

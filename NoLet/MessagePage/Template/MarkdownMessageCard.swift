@@ -193,68 +193,15 @@ struct MarkdownMessageCard: MessageCardProtocol {
                 .glassCard(20)
                 .padding(10)
                 .contentShape(Rectangle())
-                .onTapGesture(count: 2) {
-                    self.showFull()
-                }
-                .accessibilityAction(named: "显示全屏") {
-                    showFull()
-                }
-                .diff { view in
-                    Group {
-                        if #available(iOS 18.0, *) {
-                            view
-                                .matchedTransitionSource(id: message.id, in: sms)
-                                .fullScreenCover(isPresented: Binding(get: {
-                                    manager.selectMessage?.id == message.id
-                                }, set: { _ in
-                                    manager.selectMessage = nil
-                                })) {
-                                    SelectMessageView(message: message) {
-                                        manager.selectMessage = nil
-                                    }
-                                    .navigationTransition(
-                                        .zoom(sourceID: message.id, in: sms)
-                                    )
-                                    .interactiveDismissDisabled(true)
-                                }
-                        } else {
-                            view
-                        }
-                    }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    if let reply = message.reply {
-                        TextField("回复", text: $replyText)
-                            .customField(icon: "text.bubble")
-                            .focused($showReply)
-                            .opacity(showReply ? 1 : 0.0001) // 透明
-                            .frame(height: showReply ? 50 : 1)
-                            .keyboardType(.default)
-                            .animation(.default, value: showReply)
-                            .onSubmit(of: .text) {
-                                Task { @MainActor in
-                                    do {
-                                        let result = try await NetworkManager()
-                                            .fetch(url: reply + replyText)
-                                        Toast.success(title: result.check() ? "回复成功" : "回复失败")
-                                    } catch {
-                                        Toast.shared.present(
-                                            title: error.localizedDescription,
-                                            symbol: .error
-                                        )
-                                    }
-                                    self.replyText = ""
-                                }
-                            }
-                    }
-                }
-                .snapshot(trigger: showSnap) { item in
-                    manager.open(sheet: .share(
-                        contents: [item],
-                        preview: item,
-                        title: String(localized: "消息截图")
-                    ))
-                }
+                .messageInteraction(
+                    message: message,
+                    in: sms,
+                    manager: manager,
+                    replyText: $replyText,
+                    showReply: $showReply,
+                    showSnap: $showSnap,
+                    onShowFull: showFull
+                )
             } header: {
                 MessageViewHeader()
             }
@@ -297,116 +244,14 @@ struct MarkdownMessageCard: MessageCardProtocol {
                 Spacer()
             }
 
-            Menu {
-                Section {
-                    Button {
-                        if manager.copyMessageId != message.id {
-                            withAnimation {
-                                manager.copyMessageId = message.id
-                            }
-                        } else {
-                            withAnimation {
-                                manager.copyMessageId = nil
-                            }
-                        }
-
-                    } label: {
-                        Label("选择复制", systemImage: "doc.on.doc")
-                    }
-                }
-                Section {
-                    Button {
-                        self.showSnap.toggle()
-                    } label: {
-                        Label("分享截图", systemImage: "crop")
-                    }
-                }
-
-                if let image = message.image, !image.isEmpty {
-                    Section {
-                        Button {
-                            Task {
-                                if let image = await ImageManager.downloadImage(image),
-                                   let image = UIImage(contentsOfFile: image)
-                                {
-                                    manager.open(sheet: .share(
-                                        contents: [image],
-                                        preview: image,
-                                        title: String(localized: "图片消息")
-                                    ))
-                                }
-                            }
-
-                        } label: {
-                            Label("分享图片", systemImage: "photo.circle")
-                        }
-                    }
-                }
-
-                if !message.body.isEmpty {
-                    Section {
-                        Button {
-                            manager.open(sheet: .share(
-                                contents: [message.body],
-                                preview: nil,
-                                title: String(localized: "文字消息")
-                            ))
-                        } label: {
-                            Label("分享内容", systemImage: "doc.append")
-                        }
-                    }
-                }
-
-                if let reply = message.reply, !reply.isEmpty {
-                    Section {
-                        Button {
-                            self.showReply = true
-                        } label: {
-                            Label("回复", systemImage: "text.bubble")
-                        }
-                    }
-                }
-
-                if config.accounts > 0 {
-                    Section {
-                        Button {
-                            Haptic.impact()
-                            DispatchQueue.main.async {
-                                AppManager.shared.askMessageID = message.id
-                                AppManager.shared.page = .assistant
-                                if manager.sizeClass == .compact {
-                                    AppManager.shared.router = []
-                                } else {
-                                    AppManager.shared.router = [.noletChat]
-                                }
-                            }
-                        } label: {
-                            Label("智能助手", systemImage: "atom")
-                        }
-                    }
-                }
-
-                Section {
-                    Button {
-                        config.delete()
-                    } label: {
-                        Label("删除", systemImage: "trash")
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(.white, Color.primary)
-
-                    }.tint(.red)
-                }
-
-            } label: {
-                HStack {
-                    Spacer()
-                    Image(systemName: "ellipsis")
-                        .imageScale(.large)
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
-                }
-                .contentShape(Rectangle())
-            }
+            MessageActionMenu(
+                message: message,
+                assistantAccounsCount: config.accounts,
+                manager: manager,
+                showSnap: $showSnap,
+                showReply: $showReply,
+                onDelete: config.delete
+            )
         }
         .background(config.focusColor.gradient)
         .clipShape(RoundedRectangle(cornerRadius: 5))

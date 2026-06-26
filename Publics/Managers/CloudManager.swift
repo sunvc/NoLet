@@ -37,7 +37,7 @@ final class CloudManager {
     static let deviceTokenName = "DeviceToken"
     static let apnsInfoName = "ApnsInfo"
     static let serverName = "PushServerModal"
-    static let weChatInfo = "WeChatInfo"
+    static let member = "Member"
 
     func checkAccount() async -> (Bool, String) {
         var message = (false, String(localized: "未知 iCloud 状态"))
@@ -150,32 +150,53 @@ final class CloudManager {
     }
 
     // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
+    
+    func savePushIconModel(_ record: CKRecord?, file: URL? = nil) async -> (Bool, String) {
+        // 1. 基础防错校验
+        guard let record = record else { 
+            return (false, String(localized: "没有文件")) 
+        }
 
-    func savePushIconModel(_ record: CKRecord?) async -> (Bool, String) {
-        guard let record = record else { return (false, String(localized: "没有文件")) }
+        let (accountValid, accountMessage) = await checkAccount()
+        guard accountValid else { 
+            return (false, accountMessage) 
+        }
 
-        let (success, message) = await checkAccount()
-
-        guard success else { return (false, message) }
-
-        guard let name = record["name"] as? String,
-              !name.isEmpty else { return (false, String(localized: "参数不全")) }
+        guard let name = record["name"] as? String, !name.isEmpty else { 
+            return (false, String(localized: "参数不全")) 
+        }
 
         let description = record["description"] as? [String]
+        logger.info("开始处理图标: \(name)-\(String(describing: description))")
 
-        logger.info("\(name)-\(String(describing: description))")
-
+        // 2. 查询云端是否存在已有记录
         let records = await queryIcons(name: name)
+        
+        let recordToSave: CKRecord
 
-        guard records.count == 0 else { return (false, String(localized: "图片key重复")) }
-
+        if let cloudRecord = records.first {
+            guard let file = file else {
+                return (false, String(localized: "图片key重复，请提供新图片以覆盖"))
+            }
+            
+            cloudRecord["data"] = CKAsset(fileURL: file)
+            if let description = description {
+                cloudRecord["description"] = description
+            }
+            recordToSave = cloudRecord
+        } else {
+            if let file = file {
+                record["data"] = CKAsset(fileURL: file)
+            }
+            recordToSave = record
+        }
         do {
-            let recordRes = try await database.save(record)
-            logger.error("\(recordRes)")
+            let recordRes = try await database.save(recordToSave)
+            logger.info("CloudKit 保存成功: \(recordRes)")
             return (true, String(localized: "保存成功"))
         } catch {
-            logger.error("\(error)")
-            return (false, String(localized: "保存失败") + "：\(error)")
+            logger.error("CloudKit 保存失败: \(error.localizedDescription)")
+            return (false, String(localized: "保存失败") + "：\(error.localizedDescription)")
         }
     }
 
@@ -248,7 +269,7 @@ final class CloudManager {
 
         // 调用 update 获取新 token
         let (token, date) = try update(record)
-        
+
         record["token"] = token
         record["timestamp"] = date
 
@@ -312,8 +333,50 @@ final class CloudManager {
             return cloudRecords
         }
     }
-    
-    func downloadWeChatInfo() async {
-        
+
+    func queryMember(id: String) async -> MemberModel? {
+        do {
+            let id = CKRecord.ID(recordName: id)
+            let record = try await database.record(for: id)
+            return MemberModel(record: record)
+        } catch {
+            return nil
+        }
+    }
+
+    func saveMember(data: MemberModel) async -> (Bool, String) {
+        let (success, message) = await checkAccount()
+
+        guard success else { return (false, message) }
+
+        let database = CKContainer.default().publicCloudDatabase
+        let recordID = CKRecord.ID(recordName: data.id)
+
+        do {
+            var record: CKRecord
+
+            do {
+                record = try await database.record(for: recordID)
+            } catch {
+                record = CKRecord(
+                    recordType: MemberModel.recordType,
+                    recordID: recordID
+                )
+            }
+
+            record["name"] = data.name
+            record["token"] = data.token
+
+            if let avatarUrl = data.newAvatar {
+                record["avatar"] = CKAsset(fileURL: avatarUrl)
+            }
+
+            _ = try await database.save(record)
+
+            return (true, "保存成功")
+
+        } catch {
+            return (false, error.localizedDescription)
+        }
     }
 }

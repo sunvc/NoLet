@@ -193,70 +193,6 @@
         }
       }
     },
-    "已授权访问照片库": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Authorized Access to Photo Library"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已授权访问照片库"
-          }
-        }
-      }
-    },
-    "拒绝了访问权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Access denied"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "拒绝了访问权限"
-          }
-        }
-      }
-    },
-    "无": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nothing"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无"
-          }
-        }
-      }
-    },
-    "无服务器": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No server"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无服务器"
-          }
-        }
-      }
-    },
     "是否将图片保存到相册？": {
       "localizations": {
         "en": {
@@ -269,54 +205,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "是否将图片保存到相册？"
-          }
-        }
-      }
-    },
-    "有限的访问权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Limited access permissions"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "有限的访问权限"
-          }
-        }
-      }
-    },
-    "未知状态": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unknown Status"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知状态"
-          }
-        }
-      }
-    },
-    "未选择权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permissions Not Selected"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未选择权限"
           }
         }
       }

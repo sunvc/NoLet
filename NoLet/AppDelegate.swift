@@ -22,10 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        if Defaults[.id] == "" {
-            Defaults[.id] = KeychainHelper.shared.getDeviceID()
-        }
-
+        Defaults[.id] = IDManager.ID()
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
 
@@ -162,4 +159,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         completionHandler(.newData)
     }
+    
 }

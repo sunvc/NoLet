@@ -22,7 +22,7 @@ class ArchiveProcessor: NotificationContentProcessor {
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
 
-        let body: String = {
+        var body: String = {
             if let body: String = userInfo.raw(.body) {
                 /// 解决换行符渲染问题
                 return ensureMarkdownLineBreaks(body)
@@ -39,6 +39,17 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         var style: String? = userInfo.raw(.style)
 
+        if let location: String = userInfo.raw(.location), let location = location.location() {
+            debugPrint(location)
+            let address = await AddressGeocoder().getFormattedAddress(
+                latitude: location.0,
+                longitude: location.1
+            )
+            debugPrint("地址:",address)
+            body += "[\(address)]"
+            bestAttemptContent.body = body
+        }
+
         switch Identifiers(rawValue: bestAttemptContent.categoryIdentifier) {
         case .markdown:
             if style == nil { style = "markdown" }
@@ -48,12 +59,14 @@ class ArchiveProcessor: NotificationContentProcessor {
                 .replacingOccurrences(of: "\n", with: "")
 
             bestAttemptContent.body = plainText.markdownPre()
+
         case .reply:
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
                 .joined(separator: ",")
                 .replacingOccurrences(of: "\n", with: "")
             bestAttemptContent.body = plainText.markdownPre()
+
         default:
             bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
         }

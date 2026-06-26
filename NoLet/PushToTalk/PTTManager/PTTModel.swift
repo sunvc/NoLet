@@ -18,9 +18,35 @@ struct AudioMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, 
     var channel: String
     var from: String
     var file: String
-    var remote: String = ""
+    var url: String = ""
     var read: Bool = false
     var sign: Bool = false
+    var status: Status = .ready
+
+    enum Status: Int, Codable {
+        case ready
+        case send
+        case success
+        case failed
+
+        var name: String {
+            switch self {
+            case .ready: return String(localized: "就绪")
+            case .send: return String(localized: "发送中...")
+            case .success: return String(localized: "发送成功")
+            case .failed: return String(localized: "发送失败")
+            }
+        }
+
+        var color: Color {
+            switch self {
+            case .ready: .blue
+            case .send: .green
+            case .success:.mint
+            case .failed: .red
+            }
+        }
+    }
 
     enum Columns {
         static let id = Column(CodingKeys.id)
@@ -28,9 +54,10 @@ struct AudioMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, 
         static let channel = Column(CodingKeys.channel)
         static let from = Column(CodingKeys.from)
         static let file = Column(CodingKeys.file)
-        static let remote = Column(CodingKeys.remote)
+        static let url = Column(CodingKeys.url)
         static let read = Column(CodingKeys.read)
         static let sign = Column(CodingKeys.sign)
+        static let status = Column(CodingKeys.status)
     }
 
     func filePath() -> URL? {
@@ -49,8 +76,9 @@ extension AudioMessage {
         self.sign = params.first == "1"
         self.from = params[2]
         self.channel = params[1]
-        self.remote = address.absoluteString
+        self.url = address.absoluteString
         self.file = params[1...].joined(separator: "-") + "." + address.pathExtension
+        self.status = .success
     }
 }
 
@@ -63,9 +91,10 @@ extension AudioMessage {
                 t.column("channel", .text).notNull()
                 t.column("from", .text).notNull()
                 t.column("file", .text).notNull() // URL存为字符串
-                t.column("remote", .text).notNull() // URL存为字符串
+                t.column("url", .text).notNull() // URL存为字符串
                 t.column("read", .boolean).notNull()
                 t.column("sign", .boolean).notNull()
+                t.column("status", .integer).notNull()
             }
         }
     }
@@ -129,7 +158,7 @@ nonisolated struct PTTChannel: Identifiable, Equatable, Codable {
     var mhz: Int = 98
     var khz: Int = 100
     var server: PushServerModel = .noServer
-    var users: Int = 0
+    var users: [ChannelUser] = []
     var active: Bool = false
 
     var channel: Int { mhz * 1000 + khz }
@@ -188,6 +217,7 @@ nonisolated extension Defaults.Keys {
 
     static let pttSignature = Key<Bool>("pttSignature", default: false)
     static let pttVoiceVolume = Key<CGFloat>("pttVoiceVolume", default: 1)
+    static let pttNickname = Key<String>("pttNickname", default: "")
 
     static let pttToken = Key<String>("pttToken", default: "")
     static let server = Key<String>("pttServer", default: "")

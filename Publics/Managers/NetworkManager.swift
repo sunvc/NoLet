@@ -293,6 +293,8 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         return data
     }
+    
+ 
 }
 
 nonisolated extension Encodable {
@@ -325,3 +327,5 @@ nonisolated extension Encodable {
         }
     }
 }
+
+

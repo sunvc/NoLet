@@ -13,6 +13,7 @@
 
 import Foundation
 import Kingfisher
+import MapKit
 import Photos
 import UIKit
 
@@ -27,7 +28,7 @@ enum ImageManager {
     }()
 
     static func storeImage(
-        cache: ImageCache? = nil, data: Data, key: String, expiration: StorageExpiration = .never
+        data: Data, key: String, expiration: StorageExpiration = .never
     ) async {
         return await withCheckedContinuation { continuation in
             customCache.storeToDisk(data, forKey: key, expiration: expiration) { _ in
@@ -47,19 +48,14 @@ enum ImageManager {
 
         guard let imageResource = URL(string: imageURL) else { return nil }
 
-        let cacheKey = imageResource.cacheKey
-
-        if customCache.diskStorage
-            .isCached(forKey: cacheKey) { return customCache.cachePath(forKey: cacheKey) }
-
         guard let result = try? await downloadImage(url: imageResource).get() else { return nil }
 
         // Cache downloaded image
         await storeImage(
-            cache: customCache, data: result.originalData, key: cacheKey, expiration: expiration
+            data: result.originalData, key: imageURL, expiration: expiration
         )
 
-        return customCache.cachePath(forKey: cacheKey)
+        return customCache.cachePath(forKey: imageURL)
     }
 
     static func downloadImage(
@@ -230,3 +226,104 @@ extension ImageManager {
         return (success, status, msg)
     }
 }
+
+extension ImageManager {
+    /// 异步解析经纬度并在地图截图上绘制圆形定位点
+    /// - Parameters:
+    ///   - locationString: 经纬度字符串 (例如 "41.3414, 126.1852")
+    ///   - mapSize: 期望的地图图片尺寸
+    /// - Returns: 绘制好定位点的 UIImage，若解析或截图失败则返回 nil
+    static func generateMapSnapshot(
+        from locationString: String,
+        mapSize: CGSize
+    ) async -> String? {
+        let separators = CharacterSet(charactersIn: ",，:")
+        let components = locationString.components(separatedBy: separators)
+
+        guard components.count >= 2,
+              let latitude = Double(components[0].trimmingCharacters(in: .whitespaces)),
+              let longitude = Double(components[1].trimmingCharacters(in: .whitespaces))
+        else {
+            return nil
+        }
+
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+
+        let options = MKMapSnapshotter.Options()
+        options.region = MKCoordinateRegion(
+            center: coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        )
+        options.size = mapSize
+        let scale = await MainActor.run { UIScreen.main.scale }
+        options.scale = scale
+        options.mapType = .standard
+
+        let snapshotter = MKMapSnapshotter(options: options)
+
+        let finalImage: UIImage? =
+            await withCheckedContinuation { (continuation: CheckedContinuation<
+                UIImage?,
+                Never
+            >) in
+                snapshotter.start { snapshot, error in
+                    guard let snapshot = snapshot, error == nil else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    UIGraphicsBeginImageContextWithOptions(
+                        snapshot.image.size,
+                        true,
+                        snapshot.image.scale
+                    )
+
+                    snapshot.image.draw(at: .zero)
+                    if let context = UIGraphicsGetCurrentContext() {
+                        let point = snapshot.point(for: coordinate)
+                        let outerRadius: CGFloat = 11.0
+                        let innerRadius: CGFloat = 7.0
+                        context.saveGState()
+                        context.setShadow(
+                            offset: CGSize(width: 0, height: 2),
+                            blur: 4,
+                            color: UIColor.black.withAlphaComponent(0.35).cgColor
+                        )
+                        context.setFillColor(UIColor.white.cgColor)
+                        context.addArc(
+                            center: point,
+                            radius: outerRadius,
+                            startAngle: 0,
+                            endAngle: .pi * 2,
+                            clockwise: true
+                        )
+                        context.fillPath()
+                        context
+                            .setFillColor(UIColor(red: 0.0, green: 0.478, blue: 1.0, alpha: 1.0)
+                                .cgColor)
+                        context.addArc(
+                            center: point,
+                            radius: innerRadius,
+                            startAngle: 0,
+                            endAngle: .pi * 2,
+                            clockwise: true
+                        )
+                        context.fillPath()
+
+                        context.restoreGState()
+                    }
+
+                    let imageWithPin = UIGraphicsGetImageFromCurrentImageContext()
+                    UIGraphicsEndImageContext()
+                    continuation.resume(returning: imageWithPin)
+                }
+            }
+
+        guard let image = finalImage, let data = image.pngData() else {
+            return nil
+        }
+
+        await Self.storeImage(data: data, key: locationString)
+        return await Self.downloadImage(locationString)
+    }
+}
+

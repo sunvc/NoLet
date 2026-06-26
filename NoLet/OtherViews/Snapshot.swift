@@ -31,7 +31,7 @@ private struct SnaphotModifier: ViewModifier {
             content
                 .background(ViewExtractor(view: view))
                 .compositingGroup()
-                .onChange(of: trigger) { _, _ in
+                .onChange(of: trigger) { _ in
                     generateSnapshot()
                 }
         } else {

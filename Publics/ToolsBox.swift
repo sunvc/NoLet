@@ -11,7 +11,6 @@
 //
 
 import os
-import OSLog
 import UIKit
 import UniformTypeIdentifiers
 
@@ -107,4 +106,4 @@ public enum Haptic {
     }
 }
 
-nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "main")
+

@@ -11,6 +11,7 @@
 //
 
 import Defaults
+import MapKit
 import UIKit
 import UserNotifications
 import UserNotificationsUI
@@ -85,8 +86,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             }
         }
 
-        let imageList = mediaHandler(userInfo: userInfo, name: Params.image.name)
-        if let imageURL = imageList.first {
+        let attachments = notification.request.content.attachments
+        if let imageURL = attachments.first?.url {
             ImageHandler(imageURL: imageURL)
         } else {
             // 无图 → 隐藏
@@ -104,9 +105,9 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
            let html = convertMarkdownToHTML(body),
            let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css")
         {
-            let baseURL = URL(fileURLWithPath: cssPath).deletingLastPathComponent()
+            let cssURL = URL(fileURLWithPath: cssPath).deletingLastPathComponent()
             web.isHidden = false
-            web.loadHTMLString(html, baseURL: baseURL)
+            web.loadHTMLString(html, baseURL: cssURL)
         } else {
             // 非 markdown 分类 → WebView 高度为 0
             web.isHidden = true
@@ -266,55 +267,43 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 }
 
 extension NotificationViewController {
-    func ImageHandler(imageURL: String) {
-        let day = Defaults[.imageSaveDays].rawValue
-        Task.detached(priority: .high) {
-            if let localPath = await ImageManager.downloadImage(
-                imageURL,
-                expiration: .days(day)
-            ),
-                let image = UIImage(contentsOfFile: localPath)
-            {
-                let size = await self.sizecalculation(size: image.size)
+    func ImageHandler(imageURL: URL) {
 
-                await MainActor.run { [weak self] in
-                    guard let self = self else { return }
+        if imageURL.startAccessingSecurityScopedResource() {
+            if let image = UIImage(contentsOfFile: imageURL.path()) {
+                let size = self.sizecalculation(size: image.size)
 
-                    self.imageView.isHidden = false
-                    self.imageView.image = image
-                    self.imageView.frame = CGRect(
-                        x: 0,
-                        y: self.tipsView.frame.maxY,
-                        width: size.width,
-                        height: size.height
-                    )
+                self.imageView.isHidden = false
+                self.imageView.image = image
+                self.imageView.frame = CGRect(
+                    x: 0,
+                    y: self.tipsView.frame.maxY,
+                    width: size.width,
+                    height: size.height
+                )
 
-                    // ✅ 赋值 imageHeight
-                    self.imageHeight = size.height
+                self.imageHeight = size.height
 
-                    let longPressGesture = UILongPressGestureRecognizer(
-                        target: self,
-                        action: #selector(self.handleLongPressOnImage(_:))
-                    )
-                    self.imageView.addGestureRecognizer(longPressGesture)
+                let longPressGesture = UILongPressGestureRecognizer(
+                    target: self,
+                    action: #selector(self.handleLongPressOnImage(_:))
+                )
+                self.imageView.addGestureRecognizer(longPressGesture)
 
-                    self.updateLayout(webHeight: self.markdownHeight)
-                }
+                self.updateLayout(webHeight: self.markdownHeight)
             } else {
-                // 无图片 → 高度置 0
-                await MainActor.run { [weak self] in
-                    guard let self = self else { return }
-                    self.imageView.isHidden = true
-                    self.imageHeight = 0
-                    self.imageView.frame = CGRect(
-                        x: 0,
-                        y: self.tipsView.frame.maxY,
-                        width: self.view.bounds.width,
-                        height: 0
-                    )
-                    self.updateLayout(webHeight: self.markdownHeight)
-                }
+                self.imageView.isHidden = true
+                self.imageHeight = 0
+                self.imageView.frame = CGRect(
+                    x: 0,
+                    y: self.tipsView.frame.maxY,
+                    width: self.view.bounds.width,
+                    height: 0
+                )
+                self.updateLayout(webHeight: self.markdownHeight)
             }
+
+            imageURL.stopAccessingSecurityScopedResource()
         }
     }
 
@@ -397,15 +386,6 @@ extension NotificationViewController {
         DispatchQueue.main.async {
             self.present(alertController, animated: true, completion: nil)
         }
-    }
-
-    func mediaHandler(userInfo: [AnyHashable: Any], name: String) -> [String] {
-        if let media = userInfo[name] as? String {
-            return [media]
-        } else if let medias = userInfo[name] as? [String] {
-            return medias
-        }
-        return []
     }
 }
 

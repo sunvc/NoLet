@@ -90,84 +90,99 @@ struct PTTMessageRow: View {
         return min(max(value, 0), 1)
     }
 
+    @State private var sendStatus: Bool = false
+
     var body: some View {
-        HStack(alignment: .top, spacing: 14) {
-            // 右侧核心气泡主体
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    if message.remote.isEmpty {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                if message.url.isEmpty {
+                    HStack{
                         Image(systemName: "paperplane")
-                            .foregroundStyle(.mint)
-                    } else {
-                        Image(systemName: "radio")
-                            .foregroundStyle(.orange)
+                            .font(.title3)
+                            .foregroundStyle(message.status.color)
+                            
+                        
+                        if message.status == .failed, !sendStatus {
+                            Text("重试")
+                                .font(.numberStyle(size: 17))
+                                .foregroundStyle(.red)
+                        }
                     }
-
-                    if let channel = PTTChannel.decimal(message.channel) {
-                        Text(verbatim: "\(channel.mhz).\(channel.khz)")
-                            .font(.numberStyle(size: 20))
+                    .VButton { _ in
+                        guard !sendStatus, message.status == .failed else { return false}
+                        self.sendStatus = true
+                        Task {
+                            await pttManager.sendVoice(message: message)
+                            self.sendStatus = false
+                        }
+                        return true
                     }
-
-                    Spacer()
-
-                    Text(message.timestamp, format: .relative(presentation: .named))
-                        .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .disabled(sendStatus)
+                } else {
+                    Image(systemName: "radio")
+                        .foregroundStyle(.orange)
+                        .font(.title)
                 }
 
-                HStack(spacing: 12) {
-                    Button {
-                        Task{
-                            await pttManager.send(.startPlay(message))
-                        }
-                    } label: {
-                        Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Circle().fill(tiffanyColor))
-                            .shadow(color: tiffanyColor.opacity(0.3), radius: 6, x: 0, y: 3)
-                    }.buttonStyle(.borderless)
-                    if let filePath = message.filePath() {
-                        WaveformScrubber(
-                            config: .init(activeTint: .mint),
-                            url: filePath,
-                            progress: Binding(get: { CGFloat(progress) }, set: { _ in })
-                        )
-                        .scaleEffect(0.8)
-                        .disabled(progress == 0.0)
-                    }
-
-                    Text(verbatim: String(format: "%.1fs", durationNow))
-                        .font(.system(size: 13, weight: .bold, design: .monospaced))
-                        .foregroundColor(.primary)
+                if let channel = PTTChannel.decimal(message.channel) {
+                    Text(verbatim: "\(channel.mhz).\(channel.khz)")
+                        .font(.numberStyle(size: 20))
                 }
-                .padding(.vertical, 10)
-                .padding(.horizontal, 12)
-                .background(
-                    GeometryReader {
-                        let size = $0.size
-                        ZStack(alignment: .leading) {
-                            Rectangle()
-                                .fill(Color.mint)
-                                .frame(width: size.width * progress)
-                                .animation(.smooth, value: progress)
-                            RoundedRectangle(cornerRadius: 16).fill(Color.black.opacity(0.1))
-                        }
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 20)
-                        )
-                    }
-                )
+                
+                Spacer()
+                
+                Text(message.timestamp, format: .relative(presentation: .named))
+                    .font(.system(size: 11, weight: .medium, design: .monospaced))
+                    .padding(.trailing, 10)
             }
-            .padding(16)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .stroke(Color.white.opacity(0.6), lineWidth: 1)
+
+            HStack(spacing: 12) {
+                Button {
+                    Task {
+                        await pttManager.send(.startPlay(message))
+                    }
+                } label: {
+                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(tiffanyColor))
+                        .shadow(color: tiffanyColor.opacity(0.3), radius: 6, x: 0, y: 3)
+                }.buttonStyle(.borderless)
+                if let filePath = message.filePath() {
+                    WaveformScrubber(
+                        config: .init(activeTint: .mint),
+                        url: filePath,
+                        progress: Binding(get: { CGFloat(progress) }, set: { _ in })
+                    )
+                    .scaleEffect(0.8)
+                    .disabled(progress == 0.0)
+                }
+
+                Text(verbatim: String(format: "%.1fs", durationNow))
+                    .font(.system(size: 13, weight: .bold, design: .monospaced))
+                    .foregroundColor(.primary)
+            }
+            .padding(.vertical, 10)
+            .padding(.horizontal, 12)
+            .background(
+                GeometryReader {
+                    let size = $0.size
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color.mint)
+                            .frame(width: size.width * progress)
+                            .animation(.smooth, value: progress)
+                        RoundedRectangle(cornerRadius: 16).fill(Color.black.opacity(0.1))
+                    }
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 20)
+                    )
+                }
             )
-            .shadow(color: Color.black.opacity(0.02), radius: 12, x: 0, y: 6)
         }
+        .padding(15)
+        .glassCard(20, borderColor: message.status.color)
         .onAppear { self.getDuration() }
     }
 
@@ -179,4 +194,9 @@ struct PTTMessageRow: View {
             self.duration = CMTimeGetSeconds(duration)
         }
     }
+}
+
+#Preview {
+    PTTMessageRow(message: AudioMessage(channel: "923", from: "123", file: "file", status: .failed))
+        .frame(height: 100)
 }

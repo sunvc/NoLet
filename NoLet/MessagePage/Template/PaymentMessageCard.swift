@@ -62,11 +62,14 @@ struct PaymentMessageCard: View {
                         Link("打开链接", destination: url)
                             .font(.footnote)
                     }
-
-                    Text(message.body)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
+                    
+                    SCSelectableTextRepresentable(
+                        text: message.body.plainText,
+                        font: .systemFont(ofSize: 11, weight: .medium),
+                        textColor: .textBlack,
+                        textAlignment: .left,
+                        lineLimit: 2
+                    )
                 }
 
                 Spacer()

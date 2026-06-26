@@ -17,23 +17,23 @@ import SwiftUI
 
 struct AvatarView: View {
     var icon: String?
-    var customIcon: String = ""
-
+    var defaultAvatar: String? = nil
+    var refreshId: UUID? = nil
+    var textImage: Bool = true
+   
     @Default(.appIcon) private var appicon
-
-    @State private var loadTask: Task<Void, Never>?
-
+    
+    @State private var avatarImage: UIImage? = nil
+    
     var body: some View {
-        Group {
-            if let icon, !icon.isEmpty, customIcon.isEmpty {
-                if icon.hasHttp { // 在线头像
-                    KFImage(URL(string: icon))
-                        .targetCache(ImageManager.customCache)
+        ZStack {
+            if let icon, !icon.isEmpty {
+                if let avatarImage {
+                    Image(uiImage: avatarImage)
                         .resizable()
-                        .fade(duration: 0.25)
-                        .loadTransition(.move(edge: .leading))
+                        .aspectRatio(contentMode: .fill)
 
-                } else if let uiImage = icon.avatarImage() { // 本地头像
+                } else if let uiImage = icon.avatarImage(), textImage {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -41,26 +41,52 @@ struct AvatarView: View {
                 } else {
                     defaultImage()
                 }
-            }
-
-            // 自定义 icon（资源文件）
-            else if !customIcon.isEmpty {
-                Image(customIcon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            }
-
-            else {
+            } else {
                 defaultImage()
             }
         }
         .clipped()
+        .task(id: "\(icon ?? "")-\(refreshId ?? UUID())") {
+            await loadImage()
+        }
     }
 
     private func defaultImage() -> some View {
-        Image(appicon.logo)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
+        Group {
+            if let defaultAvatar {
+                Image(systemName: defaultAvatar)
+                    .resizable()
+            } else {
+                Image(appicon.logo)
+                    .resizable()
+            }
+        }
+        .aspectRatio(contentMode: .fill)
+    }
+
+    func loadImage() async {
+
+        guard let icon = icon else { return }
+        
+        if let path = await ImageManager.downloadImage(icon),
+           let image = UIImage(contentsOfFile: path)
+        {
+            await MainActor.run {
+                avatarImage = image
+            }
+            return 
+        }
+        
+        if let image = await CloudManager.shared.queryIcons(name: icon).first,
+           let icon = PushIcon(from: image),
+           let previewImage = icon.previewImage,
+           let data = previewImage.pngData()
+        {
+            await MainActor.run {
+                avatarImage = UIImage(data: data)
+            }
+        }
+        
     }
 }
 

@@ -1,5 +1,5 @@
 {
-  "originHash" : "afeb33082c4bd45b385d1a225e57e334cba6b503cee59c7571982ef12fd33697",
+  "originHash" : "b057191d99577191ba4c295a2e98d92586c80f278ee358e3407b522805fd0ad8",
   "pins" : [
     {
       "identity" : "defaults",
@@ -98,15 +98,6 @@
       "state" : {
         "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
         "version" : "602.0.0"
-      }
-    },
-    {
-      "identity" : "zip",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sunvc/Zip.git",
-      "state" : {
-        "revision" : "bca30f6d6c7d37cbc4aa8f6b0002e281dcc36195",
-        "version" : "2.1.2"
       }
     }
   ],

@@ -47,6 +47,7 @@ struct MessageFlatListView: View {
             ScrollView {
                 LazyVGrid(columns: manager.messageColume) {
                     ForEach(messageManager.messages, id: \.id) { message in
+                        EmptyView()
                         MessageCardView(
                             message: message,
                             searchText: "",

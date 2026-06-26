@@ -27,6 +27,8 @@
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
+		BA5D59F02FECE05200F89D1A /* LocationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BA5D59E92FECE05200F89D1A /* LocationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BA5D59F82FED176A00F89D1A /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = BA5D59F72FED176A00F89D1A /* Defaults */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
 		BA66AB692F2CC02E00ADEDF5 /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D792DEDFFF90066B32E /* cmark-gfm-extensions */; };
 		BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E95DF2F3991C200B6DF1B /* WechatOpenSDK.xcframework */; };
@@ -51,7 +53,6 @@
 		BAAA19462F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6342F31FCC600866562 /* Splash */; };
 		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
 		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
-		BAB479812ED2392C00EE84AC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = BAB479802ED2392C00EE84AC /* Zip */; };
 		BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = BAC9B9EF2FD6B35200E9ABDE /* Opus */; };
 		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
 		BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAED8C502FE21F56008FF77C /* PushToTalk.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -79,6 +80,13 @@
 			remoteGlobalIDString = B5835B202DEDE0930066B32E;
 			remoteInfo = ContentExtension;
 		};
+		BA5D59EE2FECE05200F89D1A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B58357EF2DEDD3B10066B32E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BA5D59E82FECE05200F89D1A;
+			remoteInfo = LocationExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -99,6 +107,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				B58359F12DEDDF860066B32E /* ShareExtension.appex in Embed Foundation Extensions */,
+				BA5D59F02FECE05200F89D1A /* LocationExtension.appex in Embed Foundation Extensions */,
 				B5835B2D2DEDE0930066B32E /* ContentExtension.appex in Embed Foundation Extensions */,
 				B5835B182DEDE07C0066B32E /* ServiceExtension.appex in Embed Foundation Extensions */,
 			);
@@ -129,6 +138,7 @@
 		B5AA557B2E6D63FF000F3042 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		B5AA557F2E6D71D8000F3042 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		B5AA55802E6D71F3000F3042 /* ci_post_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_xcodebuild.sh; sourceTree = "<group>"; };
+		BA5D59E92FECE05200F89D1A /* LocationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA66AD902F2E2B3A00ADEDF5 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		BA9E95DF2F3991C200B6DF1B /* WechatOpenSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = WechatOpenSDK.xcframework; sourceTree = "<group>"; };
 		BA9E96DE2F3993A100B6DF1B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -188,6 +198,7 @@
 				"Extensions/View+.swift",
 				Managers/CloudManager.swift,
 				Managers/cryptoManager.swift,
+				Models/MemberModel.swift,
 				Models/PushIconModel.swift,
 				ToolsBox.swift,
 			);
@@ -198,25 +209,11 @@
 			membershipExceptions = (
 				BaseConfig.swift,
 				DefaultsBaseKeys.swift,
-				DefaultsModelKeys.swift,
-				Domap.swift,
-				Enums/AppIconEnum.swift,
 				Enums/IdentifiersEnum.swift,
-				Enums/PBSchemeEnum.swift,
-				Enums/SettingsEnum.swift,
-				"Extensions/Color+.swift",
-				"Extensions/Data+.swift",
-				"Extensions/Date+.swift",
-				"Extensions/Encodable+.swift",
-				"Extensions/Image+.swift",
 				"Extensions/String+.swift",
-				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
-				Managers/cryptoManager.swift,
-				Managers/ImageManager.swift,
 				Managers/NetworkManager.swift,
 				Markdown.swift,
-				Models/PushServerModel.swift,
 				PushParams.swift,
 				ToolsBox.swift,
 			);
@@ -242,6 +239,7 @@
 				"Extensions/String+.swift",
 				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
+				Managers/AddressGeocoder.swift,
 				Managers/CloudManager.swift,
 				Managers/cryptoManager.swift,
 				Managers/DatabaseManager.swift,
@@ -249,6 +247,7 @@
 				Managers/MessagesManager.swift,
 				Managers/NetworkManager.swift,
 				Markdown.swift,
+				Models/MemberModel.swift,
 				Models/MessageModel.swift,
 				Models/PushIconModel.swift,
 				Models/PushServerModel.swift,
@@ -310,6 +309,23 @@
 				xiu.caf,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
+		};
+		BA5D59F42FECE05200F89D1A /* Exceptions for "LocationExtension" folder in "LocationExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
+		};
+		BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BaseConfig.swift,
+				"Extensions/Color+.swift",
+				"Extensions/String+.swift",
+				Managers/NetworkManager.swift,
+			);
+			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
 		};
 		BA7B13A22EFC5D84000288F8 /* Exceptions for "NoLet" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -400,6 +416,7 @@
 				B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */,
 				B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */,
 				B5835D272DEDF0830066B32E /* Exceptions for "Publics" folder in "ContentExtension" target */,
+				BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */,
 			);
 			path = Publics;
 			sourceTree = "<group>";
@@ -432,6 +449,14 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		BA5D59EA2FECE05200F89D1A /* LocationExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BA5D59F42FECE05200F89D1A /* Exceptions for "LocationExtension" folder in "LocationExtension" target */,
+			);
+			path = LocationExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -460,7 +485,6 @@
 				BA9E96DF2F3993A100B6DF1B /* QuartzCore.framework in Frameworks */,
 				BA9E96E32F3993BD00B6DF1B /* CoreGraphics.framework in Frameworks */,
 				B58358982DEDD5790066B32E /* Kingfisher in Frameworks */,
-				BAB479812ED2392C00EE84AC /* Zip in Frameworks */,
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				BAAA191F2F390F3300E0D66F /* MarkdownUI in Frameworks */,
 				BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */,
@@ -508,6 +532,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BA5D59E62FECE05200F89D1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BA5D59F82FED176A00F89D1A /* Defaults in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -520,6 +552,7 @@
 				B58359E82DEDDF860066B32E /* ShareExtension */,
 				B5835B122DEDE07C0066B32E /* ServiceExtension */,
 				B5835B242DEDE0930066B32E /* ContentExtension */,
+				BA5D59EA2FECE05200F89D1A /* LocationExtension */,
 				B58359B82DEDDB170066B32E /* Frameworks */,
 				B58357F82DEDD3B10066B32E /* Products */,
 				B5835BC12DEDE1020066B32E /* Sounds */,
@@ -533,6 +566,7 @@
 				B58359E72DEDDF860066B32E /* ShareExtension.appex */,
 				B5835B112DEDE07C0066B32E /* ServiceExtension.appex */,
 				B5835B212DEDE0930066B32E /* ContentExtension.appex */,
+				BA5D59E92FECE05200F89D1A /* LocationExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -585,6 +619,7 @@
 				B58359F02DEDDF860066B32E /* PBXTargetDependency */,
 				B5835B172DEDE07C0066B32E /* PBXTargetDependency */,
 				B5835B2C2DEDE0930066B32E /* PBXTargetDependency */,
+				BA5D59EF2FECE05200F89D1A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				B58357F92DEDD3B10066B32E /* NoLet */,
@@ -598,7 +633,6 @@
 				B583589A2DEDD5980066B32E /* OpenAI */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
-				BAB479802ED2392C00EE84AC /* Zip */,
 				BA2F863D2F2311AC00CEBC4F /* MarkdownUI */,
 				BA2F863F2F2311AC00CEBC4F /* Splash */,
 				BA71767C2F233E4900D1BF03 /* MarkdownUI */,
@@ -699,6 +733,29 @@
 			productReference = B5835B212DEDE0930066B32E /* ContentExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		BA5D59E82FECE05200F89D1A /* LocationExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BA5D59F12FECE05200F89D1A /* Build configuration list for PBXNativeTarget "LocationExtension" */;
+			buildPhases = (
+				BA5D59E52FECE05200F89D1A /* Sources */,
+				BA5D59E62FECE05200F89D1A /* Frameworks */,
+				BA5D59E72FECE05200F89D1A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BA5D59EA2FECE05200F89D1A /* LocationExtension */,
+			);
+			name = LocationExtension;
+			packageProductDependencies = (
+				BA5D59F72FED176A00F89D1A /* Defaults */,
+			);
+			productName = LocationExtension;
+			productReference = BA5D59E92FECE05200F89D1A /* LocationExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -706,7 +763,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2620;
+				LastSwiftUpdateCheck = 2630;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					B58357F62DEDD3B10066B32E = {
@@ -721,6 +778,9 @@
 					B5835B202DEDE0930066B32E = {
 						CreatedOnToolsVersion = 16.3;
 						LastSwiftMigration = 1630;
+					};
+					BA5D59E82FECE05200F89D1A = {
+						CreatedOnToolsVersion = 26.3;
 					};
 				};
 			};
@@ -740,7 +800,6 @@
 				B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
-				BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */,
 				BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */,
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
@@ -754,6 +813,7 @@
 				B58359E62DEDDF860066B32E /* ShareExtension */,
 				B5835B102DEDE07C0066B32E /* ServiceExtension */,
 				B5835B202DEDE0930066B32E /* ContentExtension */,
+				BA5D59E82FECE05200F89D1A /* LocationExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -781,6 +841,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B5835B1F2DEDE0930066B32E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BA5D59E72FECE05200F89D1A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -818,6 +885,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BA5D59E52FECE05200F89D1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -835,6 +909,11 @@
 			isa = PBXTargetDependency;
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 			targetProxy = B5835B2B2DEDE0930066B32E /* PBXContainerItemProxy */;
+		};
+		BA5D59EF2FECE05200F89D1A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
+			targetProxy = BA5D59EE2FECE05200F89D1A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -862,6 +941,8 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "It is used to continuously update your location in the background so that channel members can view your real-time location.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to display your and channel members' locations on the map.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to access your microphone for pushtalk";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo album！";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photo library to select pictures and send notifications";
@@ -920,6 +1001,8 @@
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "It is used to continuously update your location in the background so that channel members can view your real-time location.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Used to display your and channel members' locations on the map.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need to access your microphone for pushtalk";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "We need access to your photo album！";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need to access your photo library to select pictures and send notifications";
@@ -1271,6 +1354,66 @@
 			};
 			name = Release;
 		};
+		BA5D59F22FECE05200F89D1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LocationExtension/LocationExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocationExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocationExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.2.7;
+				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BA5D59F32FECE05200F89D1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = LocationExtension/LocationExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LocationExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LocationExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 2.2.7;
+				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1315,6 +1458,15 @@
 			buildConfigurations = (
 				B5835B2F2DEDE0930066B32E /* Debug */,
 				B5835B302DEDE0930066B32E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BA5D59F12FECE05200F89D1A /* Build configuration list for PBXNativeTarget "LocationExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BA5D59F22FECE05200F89D1A /* Debug */,
+				BA5D59F32FECE05200F89D1A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1376,14 +1528,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.2.3;
-			};
-		};
-		BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/Zip.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.2;
 			};
 		};
 		BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */ = {
@@ -1517,6 +1661,11 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
 		};
+		BA5D59F72FED176A00F89D1A /* Defaults */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */;
+			productName = Defaults;
+		};
 		BA66AD762F2CD8D800ADEDF5 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MarkdownUI;
@@ -1551,11 +1700,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */;
 			productName = QRScanner;
-		};
-		BAB479802ED2392C00EE84AC /* Zip */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BAB4797F2ED2392C00EE84AC /* XCRemoteSwiftPackageReference "Zip" */;
-			productName = Zip;
 		};
 		BAC9B9EF2FD6B35200E9ABDE /* Opus */ = {
 			isa = XCSwiftPackageProductDependency;

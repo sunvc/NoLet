@@ -11,15 +11,41 @@ import UIKit
 import UniformTypeIdentifiers
 
 class AttachmentProcessor: NotificationContentProcessor {
-    
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
-        
-        let days = await MainActor.run{ Defaults[.imageSaveDays].days }
-        
+
+        let days = await MainActor.run { Defaults[.imageSaveDays].days }
+
+        if let location: String = userInfo.raw(.location),
+           let localPath = await ImageManager.generateMapSnapshot(
+               from: location,
+               mapSize: CGSize(width: 500, height: 350)
+           )
+        {
+            let copyDestURL = URL(fileURLWithPath: localPath).appendingPathExtension(".tmp")
+            // 将图片缓存复制一份，推送使用完后会自动删除，但图片缓存需要留着以后在历史记录里查看
+            try? FileManager.default.copyItem(
+                at: URL(fileURLWithPath: localPath),
+                to: copyDestURL
+            )
+
+            // MARK: - 此处提示按照下面修改
+
+            ///  import MobileCoreServices
+            ///  import UniformTypeIdentifiers
+            ///  'kUTTypePNG' was deprecated in iOS 15.0: Use  UTType.png.identifier
+            let attachment = try UNNotificationAttachment(
+                identifier: Params.image.name,
+                url: copyDestURL,
+                options: [UNNotificationAttachmentOptionsTypeHintKey: UTType.png.identifier]
+            )
+
+            bestAttemptContent.attachments = [attachment]
+        }
+
         if let imageURL: String = userInfo.raw(.image) {
             guard let localPath = await ImageManager.downloadImage(
                 imageURL,
