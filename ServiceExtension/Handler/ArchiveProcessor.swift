@@ -41,7 +41,7 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         if let location: String = userInfo.raw(.location), let location = location.location() {
             debugPrint(location)
-            let address = await AddressGeocoder().getFormattedAddress(
+            let address = await GeocoderManager().getFormattedAddress(
                 latitude: location.0,
                 longitude: location.1
             )

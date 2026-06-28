@@ -17,7 +17,7 @@ import SwiftUI
 struct AboutNoLetView: View {
     @ObservedObject private var manager = AppManager.shared
     @Default(.appIcon) private var setting_active_app_icon
-    @Default(.deviceToken) private var deviceToken
+    @Default(.token) private var token
     @Default(.id) private var id
     @Default(.nearbyShow) private var nearbyShow
     @Default(.allMessagecount) var allMessagecount
@@ -96,7 +96,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.primary, .accent)
                     }
                 }, trailing: {
-                    HackerTextView(text: maskString(deviceToken), trigger: false)
+                    HackerTextView(text: maskString(token.token), trigger: false)
                         .foregroundStyle(.gray)
 
                     Image(systemName: "doc.on.doc")
@@ -104,8 +104,8 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.accent, Color.primary)
 
                 }, showRight: false) {
-                    if deviceToken != "" {
-                        Clipboard.set(deviceToken)
+                    if !token.token.isEmpty {
+                        Clipboard.set(token.token)
                         Toast.copy(title: "复制成功")
 
                     } else {

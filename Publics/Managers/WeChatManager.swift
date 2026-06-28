@@ -20,6 +20,7 @@ final class WeChatManager: NSObject, ObservableObject {
 
     @Published var QRCodeImage: UIImage? = nil
     @Published var QRCodeLoading: Bool = false
+    @Published var isWXAppInstalled: Bool = false
 
     private let network = NetworkManager()
 
@@ -250,6 +251,8 @@ extension WeChatManager: WXApiDelegate {
 //            print("\(step.rawValue), \(result.success), \(result.errorInfo),\(result.suggestion)")
 //        }
 //        #endif
+
+        self.isWXAppInstalled = WeChatManager.isWXAppInstalled()
     }
 
     func handleOpenUniversalLink(continue userActivity: NSUserActivity) {

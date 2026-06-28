@@ -255,7 +255,7 @@ nonisolated enum Tone {
         fileExtension: String = "aac"
     ) async {
         // 1. 检查设置
-        guard await Defaults[.feedbackSound] else { return }
+        guard  Defaults[.feedbackSound] else { return }
         var localSoundID: SystemSoundID = 0
 
         AudioServicesDisposeSystemSoundID(localSoundID)

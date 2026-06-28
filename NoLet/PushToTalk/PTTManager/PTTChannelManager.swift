@@ -12,6 +12,7 @@
 //    Created by Neo on 2026/6/19 20:25.
 
 import AVFoundation
+@preconcurrency import CoreLocation
 import os
 import PushToTalk
 import SwiftUI
@@ -30,7 +31,6 @@ final nonisolated class PTTChannelManager: NSObject,
     private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
 
     static let ChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
-//    var channelManager: PTChannelManager?
 
     private let channelManagerLock = OSAllocatedUnfairLock<PTChannelManager?>(initialState: nil)
 
@@ -38,15 +38,14 @@ final nonisolated class PTTChannelManager: NSObject,
         channelManagerLock.withLock { $0 }
     }
 
+    private let locationManager = CLLocationManager()
+
     func start() async throws {
         let channelManager = try await PTChannelManager.channelManager(
             delegate: self,
             restorationDelegate: self
         )
-
-        channelManagerLock.withLock { value in
-            value = channelManager
-        }
+        channelManagerLock.withLock { $0 = channelManager }
     }
 
     func join() {
@@ -61,6 +60,17 @@ final nonisolated class PTTChannelManager: NSObject,
 
     func leave() {
         self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
+    }
+
+    func startMonitoringLocationPushes() async {
+        do {
+            let data = try await self.locationManager.startMonitoringLocationPushes()
+            let token = data.map { String(format: "%02.2hhx", $0) }.joined()
+            Defaults[.token].location = token
+            logger.info("位置TOKEN: \(token)")
+        } catch {
+            logger.error("\(error.localizedDescription)")
+        }
     }
 
     func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
@@ -162,7 +172,7 @@ final nonisolated class PTTChannelManager: NSObject,
             String(format: "%02x", $0)
         }.joined()
 
-        Defaults[.pttToken] = token
+        Defaults[.token].talk = token
         logger.debug("PTT Token: \(token)")
     }
 
@@ -181,7 +191,7 @@ final nonisolated class PTTChannelManager: NSObject,
             Task {
                 if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote) {
                     await PTTManager.shared.send(.startPlay(voice), remote: true)
-                }else{
+                } else {
                     self.setActiveRemoteParticipant()
                 }
             }

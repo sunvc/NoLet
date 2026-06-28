@@ -14,9 +14,8 @@
 import Defaults
 import Foundation
 
-extension Defaults.Keys {
+nonisolated extension Defaults.Keys {
     static let servers = Key<[PushServerModel]>("serverArrayStroage", [])
-
     static let messageExpiration = Key<ExpirationTime>("messageExpirtionTime", .forever)
     static let defaultBrowser = Key<DefaultBrowserModel>("defaultBrowserOpen", .auto)
     static let imageSaveDays = Key<ExpirationTime>("imageSaveDays", .forever)
@@ -28,16 +27,8 @@ nonisolated extension Defaults.Keys {
     static let appIcon = Key<AppIconEnum>("setting_active_app_icon", .nolet)
 }
 
-extension ExpirationTime: @MainActor Defaults.Serializable {}
-extension DefaultBrowserModel: @MainActor Defaults.Serializable {}
-extension Identifiers: @MainActor Defaults.Serializable {}
+nonisolated extension ExpirationTime: Defaults.Serializable {}
+nonisolated extension DefaultBrowserModel: Defaults.Serializable {}
+nonisolated extension Identifiers: Defaults.Serializable {}
 nonisolated extension AppIconEnum: Defaults.Serializable {}
-extension PushServerModel: @MainActor Defaults.Serializable {}
-
-struct MoreMessage: Codable, Hashable, @MainActor Defaults.Serializable {
-    var createDate: Date
-    var id: String
-    var body: String
-    var index: Int
-    var count: Int
-}
+nonisolated extension PushServerModel: Defaults.Serializable {}

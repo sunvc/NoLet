@@ -75,7 +75,7 @@ final class ChannelUserAnnotation: NSObject, MKAnnotation {
 }
 
 private let mapRegionTolerance = 0.0001
-private let normalUserNameVisibilityThreshold = 0.03
+private let normalUserNameVisibilityThreshold = 0.5
 
 private func regionMatches(
     _ lhs: MKCoordinateRegion,

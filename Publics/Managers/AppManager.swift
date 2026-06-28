@@ -47,17 +47,11 @@ final class AppManager: ObservableObject, Sendable {
 
     /// 问智能助手
     @Published var askMessageID: String? = nil
-
     @Published var customServerURL: String = ""
     @Published var VipInfo: SubscribeUser? = nil
-
     @Published var servers: [PushServerModel] = []
-
     @Published var sizeClass: UserInterfaceSizeClass?
-
     @Published var copyMessageId: String? = nil
-    @Published var isWXAppInstalled: Bool = false
-
     @Published var windowSize: CGSize = .zero
 
     var network = NetworkManager()
@@ -230,6 +224,7 @@ extension AppManager {
 
     // MARK: 注册设备以接收远程推送通知
 
+    @discardableResult
     func registerForRemoteNotifications(_ isCriticalAlert: Bool = false) async -> Bool {
         var auths: UNAuthorizationOptions = [
             .alert,
@@ -479,10 +474,13 @@ extension AppManager {
         var server = server
 
         do {
-            let deviceToken = reset ? UUID().uuidString : Defaults[.deviceToken]
+            let deviceToken = reset ? UUID().uuidString : Defaults[.token].token
             let params = DeviceInfo(
                 deviceKey: server.key,
                 deviceToken: deviceToken,
+                talk: Defaults[.token].talk,
+                location: Defaults[.token].location,
+                voip: Defaults[.token].voip,
                 group: server.group
             )
 
@@ -512,7 +510,7 @@ extension AppManager {
     }
 
     func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
-        guard !appending && !Defaults[.deviceToken].isEmpty else { return false }
+        guard !appending && !Defaults[.token].token.isEmpty else { return false }
         appending = true
 
         var serverCopy = server
@@ -611,10 +609,9 @@ extension AppManager {
     }
 
     nonisolated static func syncServer() async {
-        let pushServerDatas = await Defaults[.servers]
-
+        
         let serverName = await CloudManager.serverName
-        let datas = pushServerDatas.compactMap { server in
+        let datas = Defaults[.servers].compactMap { server in
             server.toCKRecord(recordType: serverName)
         }
 

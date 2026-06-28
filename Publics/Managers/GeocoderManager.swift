@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - AddressGeocoder.swift
+//  NoLet - GeocoderManager.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -14,7 +14,7 @@
 import Contacts
 import MapKit
 
-nonisolated class AddressGeocoder {
+nonisolated class GeocoderManager {
     private let geocoder = CLGeocoder()
 
     func getFormattedAddress(latitude: Double, longitude: Double) async -> String {

@@ -13,17 +13,6 @@
 @_exported import Defaults
 import Foundation
 
-#if DEBUG
-actor UniqueKeysChecker {
-    static let shared = UniqueKeysChecker()
-    private var keys = Set<String>()
-
-    func checkAndInsert(_ key: String) {
-        assert(!keys.contains(key), "错误：\(key) 已经存在！")
-        keys.insert(key)
-    }
-}
-#endif
 
 nonisolated func DEFAULTSTORE() -> UserDefaults {
     return UserDefaults(suiteName: NCONFIG.groupName)!
@@ -31,19 +20,12 @@ nonisolated func DEFAULTSTORE() -> UserDefaults {
 
 nonisolated extension Defaults.Key {
     convenience init(_ name: String, _ defaultValue: Value, iCloud: Bool = false) {
-        #if DEBUG
-        Task {
-            await UniqueKeysChecker.shared.checkAndInsert(name)
-        }
-        #endif
-
         self.init(name, default: defaultValue, suite: DEFAULTSTORE(), iCloud: iCloud)
     }
 }
 
-extension Defaults.Keys {
-    static let deviceToken = Key<String>("deviceToken", "")
-    static let voipDeviceToken = Key<String>("voipDeviceToken", "")
+nonisolated extension Defaults.Keys {
+  
     static let firstStart = Key<Bool>("firstStartApp", true)
     static let autoSaveToAlbum = Key<Bool>("autoSaveImageToPhotoAlbum", false)
     static let sound = Key<String>("defaultSound", "nolet")
@@ -55,7 +37,7 @@ extension Defaults.Keys {
     static let muteSetting = Key<[String: Date]>("muteSetting", [:])
 
     static let imageSaves = Key<[String]>("imageSaves", [])
-    nonisolated static let id = Key<String>("UserDeviceUniqueID", "")
+    static let id = Key<String>("UserDeviceUniqueID", "")
     static let lang = Key<String>("LocalePreferredLanguagesFirst", "")
     static let allMessagecount = Key<Int>("allMessagecount", 0, iCloud: true)
 

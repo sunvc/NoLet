@@ -25,13 +25,19 @@ nonisolated struct baseResponse<T>: Sendable, Codable where T: Codable & Sendabl
 nonisolated struct DeviceInfo: Codable, Sendable {
     var deviceKey: String
     var deviceToken: String
+    var talk: String?
+    var location: String?
+    var voip: String?
     var group: String?
-    var core:Int?
+    var core: Int?
 
     // 使用 `CodingKeys` 枚举来匹配 JSON 键和你的变量命名
     enum CodingKeys: String, CodingKey {
         case deviceKey = "key"
         case deviceToken = "token"
+        case talk
+        case location
+        case voip
         case group
         case core
     }

@@ -527,7 +527,7 @@ struct PTTContentView: View {
                 if showUserMap {
                     ChannelUserMapUIKitView(
                         region: $pttManager.region,
-                        onlineUsers: pttChannel.users
+                        onlineUsers: pttManager.onlineUsers
                     )
                 }
             }

@@ -48,25 +48,17 @@ final class PTTManager: NSObject, ObservableObject {
 
     @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    @Published var onlineUsers: [ChannelUser] = []
 
-    let recorder = PTTRecorderManager()
-
-    let player = PTTPlayerManager()
-
+    private let recorder = PTTRecorderManager()
+    private let player = PTTPlayerManager()
     private let database = DatabaseManager.shared
     private let network = NetworkManager()
     private let locationManager = CLLocationManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 
-    func deleteAll() {
-        _ = try? DatabaseManager.shared.dbQueue.write { db in
-            try AudioMessage.deleteAll(db)
-            if let path = NCONFIG.getDir(.ptt) {
-                try FileManager.default.removeItem(at: path)
-            }
-        }
-    }
+    
 
     private override init() {
         super.init()
@@ -83,7 +75,6 @@ final class PTTManager: NSObject, ObservableObject {
         self.locationManager.delegate = self
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        self.requestLocationPush()
     }
 
     deinit {
@@ -148,6 +139,15 @@ final class PTTManager: NSObject, ObservableObject {
             }
 
             logger.info("🛑 后台常驻任务已安全退出")
+        }
+    }
+    
+    func deleteAll() {
+        _ = try? DatabaseManager.shared.dbQueue.write { db in
+            try AudioMessage.deleteAll(db)
+            if let path = NCONFIG.getDir(.ptt) {
+                try FileManager.default.removeItem(at: path)
+            }
         }
     }
 
@@ -353,6 +353,7 @@ final class PTTManager: NSObject, ObservableObject {
         }
         Defaults[.pttHisChannel] = historyChannels
 
+        self.onlineUsers = []
         logger.log("LEVEL: \(result.count)")
     }
 
@@ -389,7 +390,11 @@ final class PTTManager: NSObject, ObservableObject {
         if let matchedResult = resultMap[currentKey] {
             currentChannel.timestamp = .now
             currentChannel.users = matchedResult.users
-
+            let activeUser = self.onlineUsers.first(where: { $0.active })
+            self.onlineUsers = matchedResult.users
+            if let index = self.onlineUsers.firstIndex(where: { $0.id == activeUser?.id }) {
+                self.onlineUsers[index].active = true
+            }
             Defaults[.pttChannel] = currentChannel
             self.serverStatus = .online
         } else {
@@ -472,7 +477,7 @@ final class PTTManager: NSObject, ObservableObject {
 
     // 设置谁在说话
     func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
-        var users = Defaults[.pttChannel].users
+        var users = onlineUsers
 
         for index in users.indices {
             if stop {
@@ -483,7 +488,7 @@ final class PTTManager: NSObject, ObservableObject {
             debugPrint(users[index].active)
         }
 
-        Defaults[.pttChannel].users = users
+        self.onlineUsers = users
     }
 
     private func internalStopPlay() async {
@@ -704,7 +709,7 @@ extension PTTManager: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
         default:
-            if let local = await AddressGeocoder().queryLocation(),
+            if let local = await GeocoderManager().queryLocation(),
                self.location.coordinate.latitude == .zero ||
                self.location.coordinate.longitude == .zero
             {
@@ -728,20 +733,6 @@ extension PTTManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         DispatchQueue.main.async {
             self.authorizationStatus = manager.authorizationStatus
-        }
-    }
-
-    func requestLocationPush() {
-        self.locationManager.startMonitoringLocationPushes { token, error in
-            guard let deviceToken = token else {
-                logger.error("获取位置Token失败!")
-                return
-            }
-            let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-            debugPrint("位置TOKEN:", token)
-            if let error {
-                debugPrint("获取失败地理位置TOKEN:", error.localizedDescription)
-            }
         }
     }
 }
@@ -808,7 +799,7 @@ extension PTTManager {
                 channels: hzs,
                 latitude: self.location.coordinate.latitude,
                 longitude: self.location.coordinate.longitude,
-                token: join ? Defaults[.pttToken] : "",
+                token: join ? Defaults[.token].talk : "",
                 host: channel.server.url
             )
 
@@ -987,7 +978,6 @@ extension PTTManager {
         var log: String {
             switch self {
             case .startPlay(let message):
-                // 建议打印出 model 的唯一标识（例如 id 或 msgId），方便排查具体是哪条语音
                 return String(localized: "请求播放 - 消息ID: \(message?.file ?? "nil")")
 
             case .stopPlay:

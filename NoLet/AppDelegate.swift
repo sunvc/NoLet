@@ -22,27 +22,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
         Defaults[.id] = IDManager.ID()
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
-
         Identifiers.setCategories()
         Multilingual.resetTransLang()
 
-        if !Defaults[.firstStart] {
-            Task {
+        Task {
+            
+            if !ProcessInfo.processInfo.isiOSAppOnMac {
+                try await PTTChannelManager.shared.start()
+            }
+            await PTTChannelManager.shared.startMonitoringLocationPushes()
+            
+            if !Defaults[.firstStart] {
                 await AppManager.shared.registerForRemoteNotifications()
             }
         }
 
         WeChatManager.shared.register()
-        AppManager.shared.isWXAppInstalled = WeChatManager.isWXAppInstalled()
-        
-        if !ProcessInfo.processInfo.isiOSAppOnMac {
-            Task{
-                try await PTTChannelManager.shared.start()
-            }
-        }
+
         return true
     }
 
@@ -51,28 +51,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-
-        Defaults[.deviceToken] = token
+        Defaults[.token].token = token
+        
         Task.detached(priority: .userInitiated) {
             _ = await CloudManager.shared.queryOrUpdateDeviceToken(Defaults[.id], token: token)
-        }
-
-        let manager = AppManager.shared
-        if Defaults[.servers].count == 0 {
-            Task.detached(priority: .userInitiated) {
+            
+            let manager = await AppManager.shared
+            if Defaults[.servers].count == 0 {
                 if await !manager.customServerURL.isEmpty {
                     _ = await manager
                         .appendServer(server: PushServerModel(url: manager.customServerURL))
                 } else {
                     _ = await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
                 }
-            }
-        } else {
-            Task {
+            } else {
                 await manager.registers()
             }
         }
-
+        
         logger.info("获取到设备Token: \(token)")
     }
 
@@ -100,7 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) {
         let content = response.notification.request.content
 
-        DispatchQueue.main.async {
+        Task {
             AppManager.shared.page = .message
             AppManager.shared.router = []
             AppManager.shared.selectID = response.notification.request.content
@@ -136,7 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 
     func userNotificationCenter(_: UNUserNotificationCenter, openSettingsFor _: UNNotification?) {
-        DispatchQueue.main.async {
+        Task {
             AppManager.shared.page = .setting
             AppManager.shared.router = [.more]
         }
@@ -159,5 +155,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         completionHandler(.newData)
     }
-    
 }
