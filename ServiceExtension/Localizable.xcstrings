@@ -104,6 +104,12 @@
             "state": "translated",
             "value": "图片key重复，请提供新图片以覆盖"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Image key duplicate, please provide a new image to overwrite."
+          }
         }
       }
     },
