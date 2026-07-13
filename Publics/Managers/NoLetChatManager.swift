@@ -398,7 +398,7 @@ extension NoLetChatManager {
                 basePath: account.basePath
             )
 
-            return OpenAI( configuration: config )
+            return OpenAI(configuration: config)
         } else {
             guard let account = Defaults[.assistantAccouns].first(where: { $0.current }) else {
                 return nil
@@ -423,6 +423,7 @@ extension NoLetChatManager {
             text: text, messageID: messageID,
             tips: tips, rounds: rounds
         )
+
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
                 continuation.finish(throwing: "No Account Or Query")

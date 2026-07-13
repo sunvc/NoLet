@@ -53,6 +53,7 @@
 		BAAA19462F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6342F31FCC600866562 /* Splash */; };
 		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
 		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
+		BAB264353004C5380082E8D9 /* MessagingUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB264343004C5380082E8D9 /* MessagingUI */; };
 		BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = BAC9B9EF2FD6B35200E9ABDE /* Opus */; };
 		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
 		BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAED8C502FE21F56008FF77C /* PushToTalk.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -471,6 +472,7 @@
 				BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BAAA19442F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19432F391CB200E0D66F /* MarkdownUI in Frameworks */,
+				BAB264353004C5380082E8D9 /* MessagingUI in Frameworks */,
 				BAAA19422F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19412F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */,
@@ -652,6 +654,7 @@
 				BAAA19202F390F3300E0D66F /* Splash */,
 				BAAA19232F390F5600E0D66F /* QRScanner */,
 				BAC9B9EF2FD6B35200E9ABDE /* Opus */,
+				BAB264343004C5380082E8D9 /* MessagingUI */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -803,6 +806,7 @@
 				BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */,
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
+				BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1530,6 +1534,14 @@
 				minimumVersion = 1.2.3;
 			};
 		};
+		BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sunvc/swiftui-messaging-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/Opus.git";
@@ -1700,6 +1712,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */;
 			productName = QRScanner;
+		};
+		BAB264343004C5380082E8D9 /* MessagingUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */;
+			productName = MessagingUI;
 		};
 		BAC9B9EF2FD6B35200E9ABDE /* Opus */ = {
 			isa = XCSwiftPackageProductDependency;

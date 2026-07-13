@@ -153,7 +153,7 @@ enum TalkButtonType: String, CaseIterable {
 }
 
 nonisolated struct PTTChannel: Identifiable, Equatable, Codable {
-    var id: String { "\(channel)".toUUID() }
+    var id: String { "\(channel)\(server.url)".toUUID() }
     var timestamp: Date = .now
     var mhz: Int = 98
     var khz: Int = 100

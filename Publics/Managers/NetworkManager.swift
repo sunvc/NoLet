@@ -16,9 +16,11 @@ import Compression
 import Defaults
 import Foundation
 import UIKit
+import OSLog
 import UniformTypeIdentifiers
 
 final nonisolated class NetworkManager: NSObject, Sendable {
+    nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "NetworkManager")
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
