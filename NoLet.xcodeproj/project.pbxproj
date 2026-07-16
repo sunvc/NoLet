@@ -10,7 +10,6 @@
 		B58358922DEDD4E10066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B58358912DEDD4E10066B32E /* Defaults */; };
 		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
-		B583589B2DEDD5980066B32E /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = B583589A2DEDD5980066B32E /* OpenAI */; };
 		B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A32DEDD6090066B32E /* cmark-gfm */; };
 		B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A52DEDD6090066B32E /* cmark-gfm-extensions */; };
 		B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B58359B92DEDDB170066B32E /* StoreKit.framework */; };
@@ -27,6 +26,7 @@
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
+		BA4350313008C8820062B2FE /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = BA4350303008C8820062B2FE /* OpenAI */; };
 		BA5D59F02FECE05200F89D1A /* LocationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BA5D59E92FECE05200F89D1A /* LocationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BA5D59F82FED176A00F89D1A /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = BA5D59F72FED176A00F89D1A /* Defaults */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
@@ -467,6 +467,7 @@
 			files = (
 				BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */,
 				BAAA19482F391CB200E0D66F /* Splash in Frameworks */,
+				BA4350313008C8820062B2FE /* OpenAI in Frameworks */,
 				BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BAAA19462F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */,
@@ -490,7 +491,6 @@
 				B58358922DEDD4E10066B32E /* Defaults in Frameworks */,
 				BAAA191F2F390F3300E0D66F /* MarkdownUI in Frameworks */,
 				BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */,
-				B583589B2DEDD5980066B32E /* OpenAI in Frameworks */,
 				BAAA19242F390F5600E0D66F /* QRScanner in Frameworks */,
 				BAAA19212F390F3300E0D66F /* Splash in Frameworks */,
 				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
@@ -632,7 +632,6 @@
 				B58358912DEDD4E10066B32E /* Defaults */,
 				B58358942DEDD55B0066B32E /* GRDB */,
 				B58358972DEDD5790066B32E /* Kingfisher */,
-				B583589A2DEDD5980066B32E /* OpenAI */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
 				BA2F863D2F2311AC00CEBC4F /* MarkdownUI */,
@@ -655,6 +654,7 @@
 				BAAA19232F390F5600E0D66F /* QRScanner */,
 				BAC9B9EF2FD6B35200E9ABDE /* Opus */,
 				BAB264343004C5380082E8D9 /* MessagingUI */,
+				BA4350303008C8820062B2FE /* OpenAI */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -801,12 +801,12 @@
 				B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */,
 				B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */,
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
 				BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */,
+				BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1502,20 +1502,20 @@
 				minimumVersion = 8.6.2;
 			};
 		};
-		B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/OpenAI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/swiftlang/swift-cmark";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.7.1;
+			};
+		};
+		BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sunvc/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
 			};
 		};
 		BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
@@ -1567,11 +1567,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		B583589A2DEDD5980066B32E /* OpenAI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B58358992DEDD5980066B32E /* XCRemoteSwiftPackageReference "OpenAI" */;
-			productName = OpenAI;
 		};
 		B58358A32DEDD6090066B32E /* cmark-gfm */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1640,6 +1635,11 @@
 		BA2F863F2F2311AC00CEBC4F /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
+		};
+		BA4350303008C8820062B2FE /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
 		};
 		BA47C6162F305FF900866562 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;

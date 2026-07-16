@@ -133,6 +133,10 @@ struct NoLetChatHomeView: View {
                     .scaledToFit()
                     .frame(width: 200)
                     .minimumScaleFactor(0.5)
+                
+                
+                Text("Less Talk, More Action.")
+                    .font(.custom("SavoyeLetPlain", size: 39))
             }
 
             Spacer()
@@ -235,10 +239,9 @@ struct NoLetChatHomeView: View {
                 return
             } catch {
                 // Handle chunk error here
-                logger.error("\(error)")
                 logger.error("\(error.localizedDescription)")
                 Task { @MainActor in
-                    Toast.error(title: "发生错误")
+                    Toast.shared.present(title: error.localizedDescription, symbol: .error)
                     self.clearCurrent()
                 }
                 return

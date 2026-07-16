@@ -61,7 +61,7 @@ struct ChatInputView: View {
 
     private var inputField: some View {
         HStack {
-            TextField("给智能助手发消息", text: $text, axis: .vertical)
+            TextField("请开始你的哔哔", text: $text, axis: .vertical)
                 .lineLimit(5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -112,20 +112,7 @@ struct ChatInputView: View {
     @ViewBuilder
     func PromptLabelView() -> some View {
         HStack(spacing: 10) {
-            if !chatManager.reasoningEffort.emptyData {
-                Menu {
-                    Button(role: .destructive) {
-                        chatManager.reasoningEffort = .minimal
-                    } label: {
-                        Label("清除", systemImage: "eraser")
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                } label: {
-                    QuoteView(message: String(localized: "深度思考"))
-                }
-            }
             Spacer()
-
             if let quote = quote {
                 Menu {
                     Button(role: .destructive) {

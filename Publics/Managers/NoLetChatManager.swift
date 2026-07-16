@@ -314,7 +314,7 @@ extension NoLetChatManager {
                 return ChatQuery(
                     messages: params,
                     model: account.model,
-                    reasoningEffort: reasoningEffort,
+                    reasoningEffort: reasoningEffort == .none ? nil : reasoningEffort ,
                     temperature: temperature,
                     tools: NoLetChatAction.funcs().map { .init(function: $0) },
                     webSearchOptions: webSearchConfig
@@ -341,7 +341,7 @@ extension NoLetChatManager {
         return ChatQuery(
             messages: params,
             model: account.model,
-            reasoningEffort: reasoningEffort,
+            reasoningEffort: reasoningEffort == .none ? nil : reasoningEffort ,
             temperature: temperature,
             webSearchOptions: webSearchConfig
         )
@@ -393,7 +393,8 @@ extension NoLetChatManager {
             let config = OpenAI.Configuration(
                 token: account.key,
                 host: account.host,
-                basePath: account.basePath
+                basePath: account.basePath,
+                parsingOptions: .relaxed
             )
 
             return OpenAI(configuration: config)
@@ -404,7 +405,8 @@ extension NoLetChatManager {
             let config = OpenAI.Configuration(
                 token: account.key,
                 host: account.host,
-                basePath: account.basePath
+                basePath: account.basePath,
+                parsingOptions: .relaxed
             )
 
             return OpenAI(configuration: config)
@@ -546,7 +548,7 @@ extension ChatPromptMode {
                 timestamp: .now,
                 title: String(localized: "APP助手"),
                 content: String(
-                    localized: "你是由 NoLet App 集成的智能助手. 你可以使用 manage_app 工具来控制应用(设置、导航、数据、缓存、消息管理).当用户要求执行此工具支持的任何操作(例如: 打开设置,清除缓存,更改图标,删除上周的消息)时，你必须立即调用 'manage_app' 并提供正确的参数."
+                    localized: "你是本APP内部的智能助手. 你可以使用 manage_app 工具来控制应用(设置、导航、数据、缓存、消息管理).当用户要求执行此工具支持的任何操作(例如: 打开设置,清除缓存,更改图标,删除上周的消息)时，你必须立即调用 'manage_app' 并提供正确的参数."
                 ),
                 inside: true,
                 mode: .call
