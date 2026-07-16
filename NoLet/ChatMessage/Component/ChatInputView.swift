@@ -32,6 +32,7 @@ struct ChatInputView: View {
         return MessagesManager.shared.query(id: messageID)
     }
 
+    @State private var show: Bool = false
     var body: some View {
         VStack {
             HStack {
@@ -42,11 +43,12 @@ struct ChatInputView: View {
             HStack(spacing: 10) {
                 if !chatManager.isFocusedInput && manager.sizeClass == .compact {
                     backupButton()
-                        .transition(.move(edge: .leading))
+                        .offset(x: show ? 0 : 100)
                 }
                 if !manager.isLoading {
                     inputField
-                        .transition(.move(edge: .trailing))
+                        .offset(x: show ? 0 : 500)
+                    
                 } else {
                     Spacer()
                 }
@@ -55,6 +57,25 @@ struct ChatInputView: View {
             .animation(.default, value: text)
         }
         .padding(.bottom, isFocusedInput ? (ProcessInfo.processInfo.isiOSAppOnMac ? 30 : 10) : 30)
+        .onAppear{
+            withAnimation(.spring(
+                response: 0.3, 
+                dampingFraction: 0.5,
+                blendDuration: 0
+            )) {
+                self.show = true
+            }
+            
+        }
+        .onDisappear{
+            withAnimation(.spring(
+                response: 0.3, 
+                dampingFraction: 0.5,
+                blendDuration: 0
+            )) {
+                self.show = false
+            }
+        }
     }
 
     // MARK: - Subviews

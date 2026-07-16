@@ -46,15 +46,13 @@ final class PTTManager: NSObject, ObservableObject {
         )
     )
 
-    @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
-    @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+
     @Published var onlineUsers: [ChannelUser] = []
 
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
     private let database = DatabaseManager.shared
     private let network = NetworkManager()
-    private let locationManager = CLLocationManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 
@@ -72,9 +70,7 @@ final class PTTManager: NSObject, ObservableObject {
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
-        self.locationManager.delegate = self
-        self.authorizationStatus = locationManager.authorizationStatus
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+       
     }
 
     deinit {
@@ -128,7 +124,8 @@ final class PTTManager: NSObject, ObservableObject {
 
                 do {
                     if await self.powerState {
-                        await self.requestLocation()
+                        
+                        await LocManager.shared.requestLocation()
                         await self.publicJoinConnect()
                     }
                     try await Task.sleep(for: .seconds(10))
@@ -700,41 +697,7 @@ extension PTTManager: CLLocationManagerDelegate {
         }
     }
 
-    func requestAuthorization() {
-        locationManager.requestAlwaysAuthorization()
-    }
-
-    func requestLocation() async {
-        switch authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            locationManager.requestLocation()
-        default:
-            if let local = await GeocoderManager().queryLocation(),
-               self.location.coordinate.latitude == .zero ||
-               self.location.coordinate.longitude == .zero
-            {
-                self.location = local
-            }
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        Task { @MainActor in
-            if let lastLocation = locations.last {
-                self.location = lastLocation
-            }
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("定位失败: \(error.localizedDescription)")
-    }
-
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        DispatchQueue.main.async {
-            self.authorizationStatus = manager.authorizationStatus
-        }
-    }
+  
 }
 
 extension PTTManager {
@@ -797,8 +760,8 @@ extension PTTManager {
                 id: Defaults[.id],
                 name: Defaults[.pttNickname],
                 channels: hzs,
-                latitude: self.location.coordinate.latitude,
-                longitude: self.location.coordinate.longitude,
+                latitude: LocManager.shared.location.coordinate.latitude,
+                longitude: LocManager.shared.location.coordinate.longitude,
                 token: join ? Defaults[.token].talk : "",
                 host: channel.server.url
             )

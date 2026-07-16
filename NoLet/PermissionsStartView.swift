@@ -71,7 +71,7 @@ struct PermissionsStartView: View {
         iconName: "server.rack",
         isSelected: true
     )
-    
+
     @State private var voicePer = PermissionOption(
         mode: .server,
         title: String(localized: "语音对讲"),
@@ -79,7 +79,6 @@ struct PermissionsStartView: View {
         iconName: "message.and.waveform",
         isSelected: false
     )
-
 
     @State private var currentStep: PermissionStep = .networkPermission // 当前权限设置步骤
     @State private var showNextScreen: Bool = false
@@ -90,7 +89,7 @@ struct PermissionsStartView: View {
     @State private var urlValidationError: Bool = false // URL验证错误标志
     @ObservedObject private var appManager = AppManager.shared
     @Default(.usePtt) var usePtt
-    
+
     var complete: (() -> Void)?
 
     // 获取当前使用的服务器地址
@@ -164,6 +163,7 @@ struct PermissionsStartView: View {
                                     self.customServerAddress = ""
                                 }
                             }
+
                         // 自定义服务器地址输入框 - 仅在开启自定义服务器时显示
                         if !serverPer.isSelected {
                             HStack {
@@ -209,11 +209,13 @@ struct PermissionsStartView: View {
                         PermissionOptionCard(option: $basePer)
                         PermissionOptionCard(option: $criticalPer)
                             .onChange(of: criticalPer) { newValue in
-                                if newValue.isSelected && !basePer.isSelected{
+                                if newValue.isSelected && !basePer.isSelected {
                                     self.basePer.isSelected = true
                                 }
                             }
-                        PermissionOptionCard(option: $voicePer)
+                        if !ProcessInfo.processInfo.isiOSAppOnMac {
+                            PermissionOptionCard(option: $voicePer)
+                        }
                     }
                     .padding(.vertical, 8)
                 }
@@ -280,7 +282,6 @@ struct PermissionsStartView: View {
                 } else {
                     // 第二步：完成按钮
                     Button {
-                        
                         if basePer.isSelected && networkPer.isSelected {
                             // 完成并进入下一个界面
                             withAnimation {
@@ -306,8 +307,9 @@ struct PermissionsStartView: View {
                             .background {
                                 Capsule()
                                     .fill(
-                                        basePer.isSelected && networkPer.isSelected ? Color.mint.gradient :
-                                        Color.gray.gradient
+                                        basePer.isSelected && networkPer.isSelected ? Color.mint
+                                            .gradient :
+                                            Color.gray.gradient
                                     )
                             }
                     }
@@ -426,7 +428,7 @@ struct PermissionOptionCard: View {
                                 _ = await AppManager.shared.registerForRemoteNotifications(true)
                             case .network:
                                 let success = await NetworkManager().test()
-                                if !success{
+                                if !success {
                                     option.isSelected = false
                                 }
                             case .server:
@@ -443,7 +445,6 @@ struct PermissionOptionCard: View {
 }
 
 #Preview {
-    
     ContentView()
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()
@@ -451,5 +452,3 @@ struct PermissionOptionCard: View {
                 .customPresentationCornerRadius(30)
         }
 }
-
-

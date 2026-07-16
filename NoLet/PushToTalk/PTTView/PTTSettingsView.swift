@@ -15,6 +15,7 @@ import SwiftUI
 
 struct PTTSettingsView: View {
     @ObservedObject private var manager = PTTManager.shared
+    @ObservedObject private var locManager = LocManager.shared
     @Environment(\.dismiss) private var dismiss
     @Default(.eqBands) private var eqBands
     @Default(.pttVibration) private var pttVibration
@@ -155,10 +156,10 @@ struct PTTSettingsView: View {
     private var locationView: some View {
         Section {
             // 1. 根据不同的权限状态显示不同的 UI
-            switch manager.authorizationStatus {
+            switch locManager.authorizationStatus {
             case .notDetermined:
                 Button("授权定位") {
-                    manager.requestAuthorization()
+                    locManager.requestAuthorization()
                 }
                 .buttonStyle(.borderedProminent)
 
@@ -210,7 +211,7 @@ struct PTTSettingsView: View {
             }
         } header: {
             // 1. 根据不同的权限状态显示不同的 UI
-            switch manager.authorizationStatus {
+            switch locManager.authorizationStatus {
             case .notDetermined:
                 Text("需要您的位置信息")
 

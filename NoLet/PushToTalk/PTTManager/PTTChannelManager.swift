@@ -38,7 +38,7 @@ final nonisolated class PTTChannelManager: NSObject,
         channelManagerLock.withLock { $0 }
     }
 
-    private let locationManager = CLLocationManager()
+
 
     func start() async throws {
         let channelManager = try await PTChannelManager.channelManager(
@@ -62,16 +62,7 @@ final nonisolated class PTTChannelManager: NSObject,
         self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
     }
 
-    func startMonitoringLocationPushes() async {
-        do {
-            let data = try await self.locationManager.startMonitoringLocationPushes()
-            let token = data.map { String(format: "%02.2hhx", $0) }.joined()
-            Defaults[.token].location = token
-            logger.info("位置TOKEN: \(token)")
-        } catch {
-            logger.error("\(error.localizedDescription)")
-        }
-    }
+
 
     func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
         var user: PTParticipant? {

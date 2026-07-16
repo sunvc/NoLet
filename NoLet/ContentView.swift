@@ -32,9 +32,7 @@ struct ContentView: View {
 
     //  只能用 getValue: Binding 不然 16.0 不能pop
     private func _page(_ getValue: Binding<[RouterPage]>) -> Binding<[RouterPage]> {
-        Binding { getValue.wrappedValue } set: {
-            manager.router = $0
-        }
+        Binding { getValue.wrappedValue } set: { manager.router = $0 }
     }
 
     @ViewBuilder

@@ -22,20 +22,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
         Defaults[.id] = IDManager.ID()
         // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
         Multilingual.resetTransLang()
 
+        // FIXME: - 修复MAC不能使用PushToTalk崩溃
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            Defaults[.usePtt] = false
+        }
+
         Task {
-            
-            if !ProcessInfo.processInfo.isiOSAppOnMac {
+            if let token = await LocManager.shared.startMonitoringLocationPushes() {
+                Defaults[.token].location = token
+            }
+        }
+
+        if !ProcessInfo.processInfo.isiOSAppOnMac {
+            Task {
                 try await PTTChannelManager.shared.start()
             }
-            await PTTChannelManager.shared.startMonitoringLocationPushes()
-            
+        }
+
+        Task {
             if !Defaults[.firstStart] {
                 await AppManager.shared.registerForRemoteNotifications()
             }
@@ -52,10 +62,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
         Defaults[.token].token = token
-        
+
         Task.detached(priority: .userInitiated) {
             _ = await CloudManager.shared.queryOrUpdateDeviceToken(Defaults[.id], token: token)
-            
+
             let manager = await AppManager.shared
             if Defaults[.servers].count == 0 {
                 if await !manager.customServerURL.isEmpty {
@@ -68,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await manager.registers()
             }
         }
-        
+
         logger.info("获取到设备Token: \(token)")
     }
 

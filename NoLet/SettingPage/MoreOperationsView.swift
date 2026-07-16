@@ -30,6 +30,7 @@ struct MoreOperationsView: View {
     var body: some View {
         List {
             Section {
+                // FIXME: - 修复MAC不能使用PushToTalk崩溃
                 if !ProcessInfo.processInfo.isiOSAppOnMac {
                     Toggle(isOn: $usePtt) {
                         Label {

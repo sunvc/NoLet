@@ -39,13 +39,12 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         var style: String? = userInfo.raw(.style)
 
-        if let location: String = userInfo.raw(.location), let location = location.location() {
-            debugPrint(location)
-            let address = await GeocoderManager().getFormattedAddress(
+        if let location: String = userInfo.raw(.location), let location = location.location(){
+            let location = normalizeToLatLngGlobal(location)
+            let address = await LocManager.shared.getFormattedAddress(
                 latitude: location.0,
                 longitude: location.1
             )
-            debugPrint("地址:",address)
             body += "[\(address)]"
             bestAttemptContent.body = body
         }
@@ -141,6 +140,28 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         // 使用 \n 连接回去
         return processedLines.joined(separator: "\n")
+    }
+    
+
+    func normalizeToLatLngGlobal(_ coordinates: (Double,Double)) -> (Double,Double) {
+        
+        let a = coordinates.0
+        let b = coordinates.1
+        
+        let aCanBeLat = abs(a) <= 90.0
+        let bCanBeLat = abs(b) <= 90.0
+        let aCanBeLng = abs(a) <= 180.0
+        let bCanBeLng = abs(b) <= 180.0
+        
+        if !aCanBeLat && bCanBeLat && aCanBeLng {
+            return (b, a)
+        }
+        
+        if !bCanBeLat && aCanBeLat && bCanBeLng {
+            return (a, b)
+        }
+        
+        return coordinates
     }
 }
 

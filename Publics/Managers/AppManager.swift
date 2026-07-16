@@ -19,6 +19,8 @@ import StoreKit
 import SwiftUI
 import UIKit
 
+
+
 final class AppManager: ObservableObject, Sendable {
     static let shared = AppManager()
 
@@ -83,6 +85,7 @@ final class AppManager: ObservableObject, Sendable {
 
     private init() {
         updates = newTransactionListenerTask()
+       
     }
 
     @MainActor
@@ -609,7 +612,6 @@ extension AppManager {
     }
 
     nonisolated static func syncServer() async {
-        
         let serverName = await CloudManager.serverName
         let datas = Defaults[.servers].compactMap { server in
             server.toCKRecord(recordType: serverName)
@@ -666,15 +668,5 @@ extension AppManager {
             case onece
             case none
         }
-    }
-}
-
-extension AppManager {
-    nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
-        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = destinationName
-        mapItem.openInMaps(launchOptions: [:])
     }
 }

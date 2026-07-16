@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - GeocoderManager.swift
+//  NoLet - LocManager.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -9,14 +9,84 @@
 //  Description:
 
 //  History:
-//    Created by Neo on 2026/6/25 19:21.
+//    Created by Neo on 2026/7/16 21:51.
 
 import Contacts
+import CoreLocation
+import Foundation
 import MapKit
 
-nonisolated class GeocoderManager {
-    private let geocoder = CLGeocoder()
+final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+    static let shared = LocManager()
 
+    @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
+    @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+
+    private let locationManager = CLLocationManager()
+    private let geocoder = CLGeocoder()
+    private override init() {
+        super.init()
+        self.locationManager.delegate = self
+        self.authorizationStatus = locationManager.authorizationStatus
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+    }
+
+    nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = destinationName
+        mapItem.openInMaps(launchOptions: [:])
+    }
+
+    func startMonitoringLocationPushes() async -> String?{
+        do {
+            let data = try await self.locationManager.startMonitoringLocationPushes()
+            let token = data.map { String(format: "%02.2hhx", $0) }.joined()
+            logger.info("位置TOKEN: \(token)")
+            return token
+        } catch {
+            logger.error("\(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    func requestAuthorization() {
+        locationManager.requestAlwaysAuthorization()
+    }
+
+    func requestLocation() async {
+        switch authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.requestLocation()
+        default:
+            if let local = await LocManager.shared.queryLocation(),
+               self.location.coordinate.latitude == .zero ||
+               self.location.coordinate.longitude == .zero
+            {
+                self.location = local
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        Task { @MainActor in
+            if let lastLocation = locations.last {
+                self.location = lastLocation
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("定位失败: \(error.localizedDescription)")
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        self.authorizationStatus = manager.authorizationStatus
+    }
+}
+
+extension LocManager {
     func getFormattedAddress(latitude: Double, longitude: Double) async -> String {
         let location = CLLocation(latitude: latitude, longitude: longitude)
         let geocoder = CLGeocoder()
@@ -97,7 +167,6 @@ nonisolated class GeocoderManager {
             case locClient = "loc_client"
         }
     }
-
 }
 
 extension String {
@@ -107,8 +176,7 @@ extension String {
               let latitude = Double(localStrs[0]),
               let longitude = Double(localStrs[1])
         else { return nil }
-        
+
         return (latitude, longitude)
     }
-    
 }

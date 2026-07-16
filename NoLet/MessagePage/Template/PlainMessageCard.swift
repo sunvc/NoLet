@@ -51,7 +51,7 @@ struct PlainMessageCard: MessageCardProtocol {
                        let location = location.location()
                     {
                         Button {
-                            AppManager.openMap(
+                            LocManager.openMap(
                                 latitude: location.0,
                                 longitude: location.1,
                                 destinationName: message.title ?? String(localized: "未知位置")

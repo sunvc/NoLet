@@ -273,7 +273,6 @@ struct CustomDragGesture: ViewModifier {
     }
 }
 
-
 extension Dictionary {
     static func + (lhs: inout Dictionary, rhs: Dictionary) {
         lhs.merge(rhs) { _, new in new }
@@ -431,22 +430,37 @@ extension View {
         padding: CGFloat = 0,
         borderColor: Color? = .primary
     ) -> some View {
-        self.background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .diff { view in
-                Group {
-                    if let borderColor {
-                        view
-                            .overlay(
-                                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                                    .stroke(borderColor.opacity(0.6), lineWidth: 1)
-                            )
-                    } else {
-                        view
-                    }
+        Group {
+            if #available(iOS 26.0, *) {
+                self.glassEffect(.regular.interactive(), in: .rect(cornerRadius: radius))
+            } else {
+                self.background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            }
+        }
+        .diff { view in
+            Group {
+                if let borderColor {
+                    view
+                        .overlay(
+                            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                                .stroke(borderColor.opacity(0.6), lineWidth: 1)
+                        )
+                } else {
+                    view
                 }
             }
-            .padding(padding)
-            .shadow(color: Color.black.opacity(0.04), radius: 15, x: 0, y: 8)
+        }
+        .padding(padding)
+        .diff { view in
+            Group {
+                if #available(iOS 26.0, *) {
+                    view
+                } else {
+                    view
+                        .shadow(color: Color.black.opacity(0.04), radius: 15, x: 0, y: 8)
+                }
+            }
+        }
     }
 }
