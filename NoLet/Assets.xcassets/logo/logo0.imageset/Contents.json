@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "NoletLogo_8.png",
+      "filename" : "NoletLogo_2.png",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "NoletLogo_6.png",
+      "filename" : "NoletLogo_0.png",
       "idiom" : "universal"
     },
     {
@@ -21,7 +21,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "NoletLogo_7.png",
+      "filename" : "NoletLogo.png",
       "idiom" : "universal"
     }
   ],

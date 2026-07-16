@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "NoletLogo_6.png",
+      "filename" : "NoletLogo_0.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "NoletLogo_7.png",
+      "filename" : "NoletLogo.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,7 +25,7 @@
           "value" : "tinted"
         }
       ],
-      "filename" : "NoletLogo_8.png",
+      "filename" : "NoletLogo_2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

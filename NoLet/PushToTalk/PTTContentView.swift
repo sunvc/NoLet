@@ -38,8 +38,6 @@ struct PTTContentView: View {
 
     @State private var offset: CGFloat = 0
 
-    private let throttler5 = Throttler(delay: 0.5)
-
     @State private var isEncryption: Bool = true
 
     @State private var newMessages: Int = 0

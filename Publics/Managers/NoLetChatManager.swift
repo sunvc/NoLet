@@ -29,7 +29,7 @@ final class NoLetChatManager: ObservableObject {
     @Published var isFocusedInput: Bool = false
 
     @Published var groupsCount: Int = 0
-    @Published var currentMessagesCount: Int = 0
+    @Published var messagesCount: Int = 0
     @Published var promptCount: Int = 0
 
     @Published var chatPrompt: ChatPrompt? = nil
@@ -39,11 +39,12 @@ final class NoLetChatManager: ObservableObject {
     @Published var showPromptChooseView: Bool = false
     @Published var showAllHistory: Bool = false
 
-    @Published var reasoningEffort: ReasoningEffort = .minimal
+    @Published var reasoningEffort: ReasoningEffort = .low
 
     @Published var startReason: String? = nil
 
     @Published var showReason: ChatMessage? = nil
+    @Published var page: Int = 1
 
     lazy var contentActor = StreamTextAggregator { [weak self] chunk in
         Task { @MainActor in
@@ -105,7 +106,6 @@ final class NoLetChatManager: ObservableObject {
     private func startObservingUnreadCount() {
         let observation = ValueObservation.tracking { db -> (
             Int,
-            [ChatMessage],
             Int,
             ChatGroup?,
             Int
@@ -117,13 +117,8 @@ final class NoLetChatManager: ObservableObject {
                 .filter(ChatMessage.Columns.chat == current?.id)
                 .fetchCount(db)
 
-            let messages: [ChatMessage] = try ChatMessage
-                .filter(ChatMessage.Columns.chat == current?.id)
-                .order(\.timestamp.desc)
-                .limit(6)
-                .fetchAll(db)
             let promptCount: Int = try ChatPrompt.fetchCount(db)
-            return (groupsCount, messages.reversed(), promptCount, current, messageCount)
+            return (groupsCount, promptCount, current, messageCount)
         }
 
         observationCancellable = observation.start(
@@ -135,31 +130,33 @@ final class NoLetChatManager: ObservableObject {
             onChange: { [weak self] datas in
                 guard let self else { return }
                 self.groupsCount = datas.0
-
-                if self.chatMessages.count == 0 || datas.1.count == 0 {
-                    self.chatMessages = datas.1
+                self.promptCount = datas.1
+                self.chatGroup = datas.2
+                self.messagesCount = datas.3
+                
+                Task{
+                    await self.updateMessage()
                 }
-                self.promptCount = datas.2
-                self.chatGroup = datas.3
-                self.currentMessagesCount = datas.4
             }
         )
     }
 
-    func getCurrentMessages() -> [ChatMessage] {
-        do {
-            return try DB.dbQueue.read { db in
-                let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
-                return try ChatMessage
-                    .filter(ChatMessage.Columns.chat == current?.id)
-                    .order(\.timestamp)
-                    .limit(10)
-                    .fetchAll(db)
-            }
-        } catch {
-            return []
+    func updateMessage() async {
+        let page = self.page
+        let messages = try? await DB.dbQueue.read { db in
+            let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
+            return try ChatMessage
+                .filter(ChatMessage.Columns.chat == current?.id)
+                .order(\.timestamp)
+                .limit(page * 50)
+                .fetchAll(db)
+        }
+        
+        if let messages{
+            self.chatMessages = messages
         }
     }
+
 
     func setPoint() async -> Bool {
         guard let chatGroup else { return false }
@@ -178,6 +175,8 @@ final class NoLetChatManager: ObservableObject {
     }
 
     func setGroup(group: ChatGroup? = nil) {
+        self.page = 1
+        self.chatMessages = []
         do {
             _ = try DB.dbQueue.write { [weak self] db in
                 if let group = group {
@@ -216,6 +215,7 @@ final class NoLetChatManager: ObservableObject {
     }
 
     func delete(groupID: String? = nil) async {
+        self.page = 1
         try? await DB.dbQueue.write { db in
             var group: ChatGroup? {
                 if let groupID {
@@ -277,9 +277,7 @@ extension NoLetChatManager {
 
         let temperature = Double(Defaults[.temperatureChat]) / 10
 
-        var params: [ChatQuery.ChatCompletionMessageParam] = [
-            .system(.init(content: .textContent("如果有数学公式请使用$$ ... $$ 格式"))),
-        ]
+        var params: [ChatQuery.ChatCompletionMessageParam] = []
 
         if let tips {
             params.append(.system(.init(
@@ -296,7 +294,7 @@ extension NoLetChatManager {
             return ChatQuery(
                 messages: params,
                 model: account.model,
-                reasoningEffort: reasoningEffort,
+                reasoningEffort: reasoningEffort == .none ? nil : reasoningEffort ,
                 temperature: temperature,
                 webSearchOptions: webSearchConfig
             )
