@@ -45,7 +45,6 @@ struct MessageInteractiveModifier: ViewModifier {
                                     manager.selectMessage = nil
                                 }
                                 .navigationTransition(.zoom(sourceID: message.id, in: namespace))
-                                .interactiveDismissDisabled(true)
                             }
                     } else {
                         view
@@ -258,7 +257,7 @@ extension MessagesManager {
                 group: String(localized: "示例"),
                 title: String(localized: "默认样式"),
                 body: String(localized: "这是一段示例内容"),
-                ttl: 1,
+                ttl: 600,
                 read: false
             ),
             Message(
@@ -267,7 +266,7 @@ extension MessagesManager {
                 group: String(localized: "示例"),
                 title: String(localized: "MD样式"),
                 body: "# NoLet \n## NoLet \n### NoLet",
-                ttl: 1,
+                ttl: 600,
                 read: false,
                 style: "markdown"
             ),
@@ -278,36 +277,50 @@ extension MessagesManager {
                 group: String(localized: "示例"),
                 title: String(localized: "终端样式"),
                 body: String(localized: "这是一段示例内容") + " style=terminal",
-                ttl: 1,
+                ttl: 600,
                 read: false,
                 style: "terminal"
             ),
 
             Message(
                 id: UUID().uuidString,
-                createDate: .now,
-                group: String(localized: "示例"),
-                title: String(localized: "GITHUB 样式"),
-                body: String(localized: "这是一段示例内容") + " style=github",
-                ttl: 1,
+                createDate: Date().addingTimeInterval(-1), // 15秒前
+                group: String(localized: "主机通知"),
+                title: "Merge pull request #157 from feature/jwt-auth",
+                subtitle: String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。"),
+                body: String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。支持自动令牌刷新与设备白名单校验。"),
+                icon: "",
+                url: "https://github.com/apple/swift",
+                image: nil,
+                reply: "https://wzs.app/reply",
+                ttl: 600,
                 read: false,
-                style: "github"
+                style: "github",
+                other: """
+                    {
+                        "footer" : "SHA:alksdjfklaj", 
+                        "header" : "GITHUB/REPO", 
+                        "from" : "https://api.githun.com",
+                        "branch" : "main <- jwt-auth",
+                        "severity" : "success",
+                    }
+                    """
             ),
 
             Message(
                 id: UUID().uuidString,
                 createDate: Date(),
                 group: "wechat",
-                title: "收款通知",
+                title: String(localized: "收款通知"),
                 subtitle: "+¥18.50",
-                body: "二维码收款已到账",
+                body: String(localized: "二维码收款已到账"),
                 icon: "https://favicon.wzs.app/wechat.com",
-                ttl: 20000,
+                ttl: 600,
                 read: false,
                 style: "pay",
                 other: """
                     {
-                        "ticket":"订单号: 999999999999"
+                        "ticket":"NO: 999999999999"
                     }
                     """
             ),

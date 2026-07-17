@@ -65,6 +65,7 @@ struct MessageFlatListView: View {
                             }
                             Toast.success(title: "删除成功")
                         }
+                        
                         .id(message.id)
                         .onAppear {
                             if messagesCount < messageManager

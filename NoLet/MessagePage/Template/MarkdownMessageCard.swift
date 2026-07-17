@@ -191,7 +191,7 @@ struct MarkdownMessageCard: MessageCardProtocol {
         }
         .frame(minHeight: 50)
         .padding(5)
-        .glassCard(20)
+        .glassCard(12)
         .padding(10)
         .contentShape(Rectangle())
         .messageInteraction(

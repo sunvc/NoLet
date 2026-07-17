@@ -141,6 +141,7 @@ struct TerminalMessageCard: MessageCardProtocol {
             }
             .padding(16)
             .glassCard()
+            .contentShape(Rectangle())
             .messageInteraction(
                 message: message,
                 in: messageNameSpace,

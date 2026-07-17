@@ -123,7 +123,8 @@ struct PlainMessageCard: MessageCardProtocol {
             }
             .padding(20)
         }
-        .glassCard(24, padding: 10)
+        .glassCard(12, padding: 10)
+        .contentShape(Rectangle())
         .messageInteraction(
             message: message,
             in: messageNameSpace,

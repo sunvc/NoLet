@@ -226,12 +226,12 @@ struct SelectMessageView: View {
                                         }
 
                                         HStack {
-                                            MarkdownCustomView(
-                                                content: other,
-                                                searchText: "",
-                                                scaleFactor: scaleFactor
+                                            SCSelectableTextRepresentable(
+                                                text: other,
+                                                font: .systemFont(ofSize: 16, weight: .medium),
+                                                textColor: .textBlack,
+                                                textAlignment: .left, lineLimit: nil
                                             )
-                                            .textSelection(.enabled)
                                             Spacer(minLength: 0)
                                         }
                                     }
@@ -424,7 +424,7 @@ struct SelectMessageView: View {
             datas += "\(subtitle) <br>"
         }
 
-        if  !message.body.isEmpty {
+        if !message.body.isEmpty {
             datas += "\(message.body)"
         }
 

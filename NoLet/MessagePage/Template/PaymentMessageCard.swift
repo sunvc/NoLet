@@ -123,12 +123,28 @@ struct PaymentMessageCard: View {
         }
         .glassCard(20)
         .padding(10)
+        .contentShape(Rectangle())
+        .messageInteraction(
+            message: message,
+            in: messageNameSpace,
+            manager: manager,
+            replyText: $replyText,
+            showReply: $showReply,
+            showSnap: $showSnap,
+            onShowFull: showFull
+        )
         .onReceive(timeTicker) { _ in
             updateLifeCycle()
         }
         .onAppear {
             updateLifeCycle()
         }
+    }
+    
+    func showFull() {
+        manager.selectMessage = message
+
+        Haptic.impact(.light)
     }
 
     // MARK: - 辅助方法

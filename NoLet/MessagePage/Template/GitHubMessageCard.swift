@@ -200,6 +200,7 @@ struct GitHubMessageCard: View {
             .background(Color(.secondarySystemGroupedBackground))
         }
         .glassCard(12, padding: 0, borderColor: nil)
+        .contentShape(Rectangle())
         .messageInteraction(
             message: message,
             in: messageNameSpace,
