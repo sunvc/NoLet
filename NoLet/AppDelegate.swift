@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         Defaults[.id] = IDManager.ID()
-        // Override point for customization after application launch.
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
         Multilingual.resetTransLang()
@@ -34,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         // FIXME: - 必须保证在主线程执行
-        Task {@MainActor in
+        Task { @MainActor in
             if let token = await LocManager.shared.startMonitoringLocationPushes() {
                 Defaults[.token].location = token
             }
@@ -62,21 +61,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+
         Defaults[.token].token = token
 
         Task.detached(priority: .userInitiated) {
-            _ = await CloudManager.shared.queryOrUpdateDeviceToken(Defaults[.id], token: token)
+            _ = await CloudManager.shared
+                .queryOrUpdateDeviceToken(Defaults[.id], token: token)
 
-            let manager = await AppManager.shared
             if Defaults[.servers].count == 0 {
-                if await !manager.customServerURL.isEmpty {
-                    _ = await manager
-                        .appendServer(server: PushServerModel(url: manager.customServerURL))
+                if await !AppManager.shared.customServerURL.isEmpty {
+                    _ = await AppManager.shared
+                        .appendServer(server:
+                            PushServerModel(url: AppManager.shared.customServerURL)
+                        )
                 } else {
-                    _ = await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
+                    _ = await AppManager.shared.appendServer(server:
+                        PushServerModel(url: NCONFIG.server)
+                    )
                 }
             } else {
-                await manager.registers()
+                await AppManager.shared.registers()
             }
         }
 

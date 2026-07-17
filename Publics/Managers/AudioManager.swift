@@ -41,7 +41,7 @@ final class AudioManager: ObservableObject {
 
     private var endObserver: NSObjectProtocol?
     
-    var network = NetworkManager()
+    let network = NetworkManager()
 
     private init() {
         updateFileList()

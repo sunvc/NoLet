@@ -19,9 +19,7 @@ import StoreKit
 import SwiftUI
 import UIKit
 
-
-
-final class AppManager: ObservableObject, Sendable {
+final class AppManager: ObservableObject {
     static let shared = AppManager()
 
     @Published var page: TabPage = .message
@@ -56,7 +54,7 @@ final class AppManager: ObservableObject, Sendable {
     @Published var copyMessageId: String? = nil
     @Published var windowSize: CGSize = .zero
 
-    var network = NetworkManager()
+    let network = NetworkManager()
 
     var messageColume: [GridItem] {
         Array(
@@ -85,10 +83,9 @@ final class AppManager: ObservableObject, Sendable {
 
     private init() {
         updates = newTransactionListenerTask()
-       
     }
 
-    @MainActor
+    
     deinit {
         self.updates?.cancel()
     }
@@ -417,8 +414,14 @@ extension AppManager {
 }
 
 extension AppManager {
-    func restore(address: String, deviceKey: String, sign: String? = nil) async -> Bool {
+    nonisolated func restore(
+        address: String,
+        deviceKey: String,
+        sign: String? = nil
+    ) async -> Bool {
         do {
+            
+            
             let response: baseResponse<String> =
                 try await self.network.fetch(
                     url: address,
@@ -427,7 +430,7 @@ extension AppManager {
                 )
 
             guard 200...299 ~= response.code else {
-                Toast.shared.present(title: response.message, symbol: .error)
+                await Toast.shared.present(title: response.message, symbol: .error)
                 return false
             }
 
@@ -446,7 +449,8 @@ extension AppManager {
         }
     }
 
-    func registers() async {
+    nonisolated func registers() async {
+        
         guard Defaults[.servers].count > 0 else { return }
         let servers = Defaults[.servers]
         let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -470,12 +474,11 @@ extension AppManager {
         }
     }
 
-    func register(
+    nonisolated func register(
         server: PushServerModel,
         reset: Bool = false
     ) async -> PushServerModel {
         var server = server
-
         do {
             let deviceToken = reset ? UUID().uuidString : Defaults[.token].token
             let params = DeviceInfo(
@@ -496,7 +499,7 @@ extension AppManager {
             )
 
             guard 200...299 ~= response.code else {
-                Toast.shared.present(title: response.message, symbol: .error)
+                await Toast.shared.present(title: response.message, symbol: .error)
                 throw response.message
             }
 
@@ -512,9 +515,11 @@ extension AppManager {
         }
     }
 
-    func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
-        guard !appending && !Defaults[.token].token.isEmpty else { return false }
-        appending = true
+    nonisolated func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
+        guard await !appending && !Defaults[.token].token.isEmpty else { return false }
+        await MainActor.run {
+            appending = true
+        }
 
         var serverCopy = server
         if reset {
@@ -548,8 +553,9 @@ extension AppManager {
         } else {
             Toast.success(title: "注册失败")
         }
-
-        appending = false
+        await MainActor.run {
+            appending = false
+        }
         return serverNew.status > 0
     }
 }

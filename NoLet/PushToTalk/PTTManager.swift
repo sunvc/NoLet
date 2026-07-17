@@ -51,7 +51,7 @@ final class PTTManager: NSObject, ObservableObject {
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
     private let database = DatabaseManager.shared
-    private let network = NetworkManager()
+    private nonisolated let network = NetworkManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 

@@ -28,7 +28,9 @@ nonisolated struct MessageParams: Codable, Sendable {
     }
 }
 
-class LocationPushService: NSObject, CLLocationPushServiceExtension, CLLocationManagerDelegate {
+class LocationPushService: NSObject, CLLocationPushServiceExtension,
+    CLLocationManagerDelegate
+{
     var completion: (() -> Void)?
     var locationManager: CLLocationManager?
     var params = MessageParams()
