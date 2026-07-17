@@ -462,5 +462,6 @@ extension View {
                 }
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: radius))
     }
 }

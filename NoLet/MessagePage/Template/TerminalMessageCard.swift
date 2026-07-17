@@ -34,130 +34,128 @@ struct TerminalMessageCard: MessageCardProtocol {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            // 1. Terminal 顶部命令样式栏
-            HStack {
-                HStack(spacing: 6) {
-                    Circle().fill(Color.red).frame(width: 8, height: 8)
-                    Circle().fill(Color.yellow).frame(width: 8, height: 8)
-                    Circle().fill(Color.green).frame(width: 8, height: 8)
+        
+            VStack(alignment: .leading, spacing: 14) {
+                // 1. Terminal 顶部命令样式栏
+                HStack {
+                    HStack(spacing: 6) {
+                        Circle().fill(Color.red).frame(width: 8, height: 8)
+                        Circle().fill(Color.yellow).frame(width: 8, height: 8)
+                        Circle().fill(Color.green).frame(width: 8, height: 8)
+                    }
+
+                    Spacer()
+
+                    MessageActionMenu(
+                        message: message,
+                        assistantAccounsCount: config.accounts,
+                        manager: manager,
+                        showSnap: $showSnap,
+                        showReply: $showReply,
+                        onDelete: config.delete
+                    )
+
+                    Spacer()
+
+                    // 生存环 (TTL 倒计时)
+                    ZStack {
+                        Circle()
+                            .stroke(Color.gray.opacity(0.2), lineWidth: 2)
+                            .frame(width: 16, height: 16)
+                        Circle()
+                            .trim(from: 0.0, to: CGFloat(message.lifePercent))
+                            .stroke(severityColor, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                            .frame(width: 16, height: 16)
+                            .rotationEffect(.degrees(-90))
+                    }
                 }
 
-                Spacer()
+                // 2. 主体终端输出式样
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text(verbatim: "$")
+                            .foregroundColor(severityColor)
+                            .font(.system(.body, design: .monospaced))
+                            .fontWeight(.bold)
 
-                Text(message.createDate, format: .relative(presentation: .named))
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
+                        Text(message.title ?? "没有标题")
+                            .font(.system(.body, design: .monospaced))
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                    }
 
-                Spacer()
+                    if let subtitle = message.subtitle {
+                        Text(verbatim: ">> [\(subtitle)]")
+                            .font(.system(size: 13, design: .monospaced))
+                            .foregroundColor(.secondary)
+                            .padding(.leading, 14)
+                    }
 
-                // 生存环 (TTL 倒计时)
-                ZStack {
-                    Circle()
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 2)
-                        .frame(width: 16, height: 16)
-                    Circle()
-                        .trim(from: 0.0, to: CGFloat(message.lifePercent))
-                        .stroke(severityColor, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                        .frame(width: 16, height: 16)
-                        .rotationEffect(.degrees(-90))
+                    SCSelectableTextRepresentable(
+                        text: message.body.plainText,
+                        font: .systemFont(ofSize: 13, weight: .medium),
+                        textColor: UIColor.secondaryLabel,
+                        textAlignment: .left,
+                        lineLimit: 5
+                    )
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color.primary.opacity(0.03))
+                    .cornerRadius(6)
+                    .padding(.leading, 5)
                 }
-            }
 
-            // 2. 主体终端输出式样
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(verbatim: "$")
-                        .foregroundColor(severityColor)
-                        .font(.system(.body, design: .monospaced))
-                        .fontWeight(.bold)
+                if let image = message.image {
+                    AsyncPhotoView(url: image, zoom: false, height: 200)
+                        .padding(5)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            self.showFull()
+                        }
+                }
 
-                    Text(message.title ?? "没有标题")
-                        .font(.system(.body, design: .monospaced))
+                // 3. 极客式底层元数据
+                HStack(spacing: 12) {
+                    // 精简小图标 + 接收时间
+
+                    AvatarView(icon: message.icon)
+                        .frame(width: 30, height: 30, alignment: .center)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Text(message.group)
+                        .font(.footnote)
                         .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                }
+                        .padding(.horizontal, 5)
 
-                if let subtitle = message.subtitle {
-                    Text(verbatim: ">> [\(subtitle)]")
-                        .font(.system(size: 13, design: .monospaced))
-                        .foregroundColor(.secondary)
-                        .padding(.leading, 14)
-                }
+                    Spacer()
 
-                SCSelectableTextRepresentable(
-                    text: message.body.plainText,
-                    font: .systemFont(ofSize: 13, weight: .medium),
-                    textColor: UIColor.secondaryLabel,
-                    textAlignment: .left,
-                    lineLimit: 5
-                )
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(Color.primary.opacity(0.03))
-                .cornerRadius(6)
-                .padding(.leading, 5)
-            }
-
-            if let image = message.image {
-                AsyncPhotoView(url: image, zoom: false, height: 200)
-                    .padding(5)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        self.showFull()
+                    // 操作选项：如果包含 Link 则提供快捷一键复制/打开
+                    if let link = message.url, let url = URL(string: link) {
+                        Link(destination: url) {
+                            Text(verbatim: "LINK")
+                                .font(.caption)
+                        }
                     }
-            }
 
-            // 3. 极客式底层元数据
-            HStack(spacing: 12) {
-                // 精简小图标 + 接收时间
-
-                AvatarView(icon: message.icon)
-                    .frame(width: 30, height: 30, alignment: .center)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                Text(message.group)
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, 5)
-
-                Spacer()
-
-                // 操作选项：如果包含 Link 则提供快捷一键复制/打开
-                if let link = message.url, let url = URL(string: link) {
-                    Link(destination: url) {
-                        Text(verbatim: "LINK")
-                            .font(.caption)
-                    }
                 }
-
-                MessageActionMenu(
-                    message: message,
-                    assistantAccounsCount: config.accounts,
-                    manager: manager,
-                    showSnap: $showSnap,
-                    showReply: $showReply,
-                    onDelete: config.delete
-                )
             }
-        }
-        .padding(16)
-        .glassCard()
-        .messageInteraction(
-            message: message,
-            in: messageNameSpace,
-            manager: manager,
-            replyText: $replyText,
-            showReply: $showReply,
-            showSnap: $showSnap,
-            onShowFull: showFull
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(severityColor.opacity(0.2), lineWidth: 1.5)
-        )
-        .shadow(color: severityColor.opacity(0.04), radius: 8, x: 0, y: 4)
-        .padding(.horizontal)
+            .padding(16)
+            .glassCard()
+            .messageInteraction(
+                message: message,
+                in: messageNameSpace,
+                manager: manager,
+                replyText: $replyText,
+                showReply: $showReply,
+                showSnap: $showSnap,
+                onShowFull: showFull
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 14)
+                    .stroke(severityColor.opacity(0.2), lineWidth: 1.5)
+            )
+            .shadow(color: severityColor.opacity(0.04), radius: 8, x: 0, y: 4)
+            .padding(10)
     }
 
     func showFull() {

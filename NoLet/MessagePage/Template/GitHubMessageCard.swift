@@ -74,9 +74,14 @@ struct GitHubMessageCard: View {
 
                         Spacer()
 
-                        Text(message.createDate, format: .relative(presentation: .named))
-                            .font(.footnote)
-                            .foregroundColor(.secondary)
+                        MessageActionMenu(
+                            message: message,
+                            assistantAccounsCount: config.accounts,
+                            manager: manager,
+                            showSnap: $showSnap,
+                            showReply: $showReply,
+                            onDelete: config.delete
+                        )
 
                         // TTL 进度指示器
                         if message.ttl > 0 && !message.isExpired {
@@ -151,7 +156,6 @@ struct GitHubMessageCard: View {
                         }
                     }
 
-     
                     if !message.body.isEmpty {
                         HStack(spacing: 8) {
                             Rectangle()
@@ -189,15 +193,6 @@ struct GitHubMessageCard: View {
                                     .font(.caption)
                             }
                         }
-
-                        MessageActionMenu(
-                            message: message,
-                            assistantAccounsCount: config.accounts,
-                            manager: manager,
-                            showSnap: $showSnap,
-                            showReply: $showReply,
-                            onDelete: config.delete
-                        )
                     }
                 }
                 .padding(16)
@@ -215,6 +210,7 @@ struct GitHubMessageCard: View {
             onShowFull: showFull
         )
         .shadow(color: config.focusColor, radius: 10, x: 0, y: 0)
+        .padding(10)
     }
 
     func showFull() {
@@ -225,7 +221,7 @@ struct GitHubMessageCard: View {
 }
 
 #Preview {
-    ScrollView { 
+    ScrollView {
         GitHubMessageCard(message: Message(
             id: UUID().uuidString,
             createDate: Date().addingTimeInterval(-1), // 15秒前

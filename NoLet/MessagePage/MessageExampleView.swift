@@ -144,7 +144,7 @@ extension MessageExampleView {
             of: "+",
             with: "%2B"
         ) ?? ""
-
+        let location = LocManager.shared.location.coordinate
         return [
             PushExampleModel(
                 header: Text("点击右上角按钮可以复制测试URL、预览推送效果"),
@@ -263,13 +263,21 @@ extension MessageExampleView {
                 params: "?ciphertext=\(ciphertext)",
                 index: 10
             ),
-            
+
             PushExampleModel(
                 header: Text("快捷回复"),
                 footer: Text("回复内容会拼接在用户指定的reply参数结尾"),
                 title: String(localized: "快捷回复"),
                 params: "\(String(localized: "快捷回复"))?reply=\(NCONFIG.server)?text=",
                 index: 11
+            ),
+
+            PushExampleModel(
+                header: Text("地图预览"),
+                footer: Text("传递纬度,经度, 解析地址, 生成地图预览"),
+                title: String(localized: "地图预览"),
+                params: "\(String(localized: "地图预览"))?location=\(location.latitude),\(location.longitude)",
+                index: 12
             ),
         ]
     }

@@ -31,10 +31,9 @@ struct PaymentMessageCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // 1. 头部信息 (平台来源 & 紧急级别)
+           
             HStack(spacing: 8) {
-                // 动态获取图标，这里用系统图标兜底
-
+                
                 AvatarView(icon: message.icon)
                     .frame(width: 30, height: 30, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -48,10 +47,14 @@ struct PaymentMessageCard: View {
 
                 Spacer()
 
-                // 时间显示
-                Text(message.createDate, format: .relative(presentation: .named))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                MessageActionMenu(
+                    message: message,
+                    assistantAccounsCount: config.accounts,
+                    manager: manager,
+                    showSnap: $showSnap,
+                    showReply: $showReply,
+                    onDelete: config.delete
+                )
             }
             .padding([.top, .horizontal], 16)
 
@@ -119,6 +122,7 @@ struct PaymentMessageCard: View {
             }
         }
         .glassCard(20)
+        .padding(10)
         .onReceive(timeTicker) { _ in
             updateLifeCycle()
         }

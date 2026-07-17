@@ -36,11 +36,65 @@ struct PlainMessageCard: MessageCardProtocol {
             }
 
             VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 12) {
+                if message.title != nil || message.subtitle != nil {
+                    VStack(alignment: .leading, spacing: 2) {
+                        // 主标题
+                        HStack {
+                            if let title = message.title {
+                                Text(title)
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                                    .lineLimit(2)
+                            }
+
+                            Spacer()
+                            MessageActionMenu(
+                                message: message,
+                                assistantAccounsCount: config.accounts,
+                                manager: manager,
+                                showSnap: $showSnap,
+                                showReply: $showReply,
+                                onDelete: config.delete
+                            )
+                        }
+                        if let subtitle = message.subtitle {
+                            Text(subtitle)
+                                .font(.subheadline)
+                                .fontWeight(.heavy)
+                                .foregroundColor(.secondary)
+                                .tracking(1) // 字间距
+                        }
+                    }
+                }
+
+                SCSelectableTextRepresentable(
+                    text: message.body.plainText,
+                    font: .systemFont(ofSize: 15, weight: .medium),
+                    textColor: .textBlack,
+                    textAlignment: .left,
+                    lineLimit: 5
+                )
+
+                Divider()
+                    .padding(.top, 6)
+
+                HStack {
+                    AvatarView(icon: message.icon)
+                        .frame(width: 30, height: 30, alignment: .center)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                    Text(message.group)
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .padding(.horizontal, 5)
+
+                    Spacer()
+
                     if let url = message.url, let url = URL(string: url) {
-                        Button{
+                        Button {
                             AppManager.openURL(url: url, .auto)
-                        }label: {
+                        } label: {
                             Image(systemName: "link.circle")
                                 .foregroundStyle(.primary, .blue)
                                 .font(.title2)
@@ -64,63 +118,7 @@ struct PlainMessageCard: MessageCardProtocol {
                         .buttonStyle(.borderless)
                     }
 
-                    Spacer()
-                    Text(message.createDate, format: .relative(presentation: .named))
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                }
-
-                if message.title != nil || message.subtitle != nil {
-                    VStack(alignment: .leading, spacing: 2) {
-                        // 主标题
-                        if let title = message.title {
-                            Text(title)
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundColor(.primary)
-                                .lineLimit(2)
-                        }
-                        if let subtitle = message.subtitle {
-                            Text(subtitle)
-                                .font(.subheadline)
-                                .fontWeight(.heavy)
-                                .foregroundColor(.secondary)
-                                .tracking(1) // 字间距
-                        }
-                    }
-                }
-
-                SCSelectableTextRepresentable(
-                    text: message.body.plainText,
-                    font: .systemFont(ofSize: 17, weight: .medium),
-                    textColor: .textBlack,
-                    textAlignment: .left,
-                    lineLimit: 5
-                )
-
-                Divider()
-                    .padding(.top, 6)
-
-                HStack {
-                    AvatarView(icon: message.icon)
-                        .frame(width: 30, height: 30, alignment: .center)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-
-                    Text(message.group)
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal, 5)
-
-                    Spacer()
-
-                    MessageActionMenu(
-                        message: message,
-                        assistantAccounsCount: config.accounts,
-                        manager: manager,
-                        showSnap: $showSnap,
-                        showReply: $showReply,
-                        onDelete: config.delete
-                    )
+                   
                 }
             }
             .padding(20)

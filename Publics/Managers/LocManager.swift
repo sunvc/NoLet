@@ -19,7 +19,7 @@ import MapKit
 final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocManager()
 
-    @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
+    @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     private let locationManager = CLLocationManager()

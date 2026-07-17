@@ -48,7 +48,7 @@ struct MessageInteractiveModifier: ViewModifier {
                                 .interactiveDismissDisabled(true)
                             }
                     } else {
-                        view 
+                        view
                     }
                 }
             }
@@ -88,7 +88,7 @@ struct MessageInteractiveModifier: ViewModifier {
             self.replyText = ""
         }
     }
-    
+
     func showFull() {
         manager.selectMessage = message
         Haptic.impact(.light)
@@ -119,14 +119,14 @@ extension View {
 }
 
 struct MessageActionMenu: View {
-    let message: Message           // 👈 你的消息模型
-    let assistantAccounsCount: Int     // 助手账户数量
-    
+    let message: Message // 👈 你的消息模型
+    let assistantAccounsCount: Int // 助手账户数量
+
     @ObservedObject var manager: AppManager
     @Binding var showSnap: Bool
     @FocusState.Binding var showReply: Bool
-    
-    var onDelete: () -> Void           // 删除回调闭包
+
+    var onDelete: () -> Void // 删除回调闭包
 
     var body: some View {
         Menu {
@@ -139,7 +139,7 @@ struct MessageActionMenu: View {
                     Label("复制内容", systemImage: "doc.on.doc")
                 }
             }
-            
+
             // 2. 分享截图
             Section {
                 Button {
@@ -220,23 +220,22 @@ struct MessageActionMenu: View {
 
         } label: {
             // 🏷 你的那个小巧的点击触发区域
-            HStack {
-                Spacer()
-                Image(systemName: "ellipsis")
-                    .imageScale(.large)
-                    .padding(.horizontal)
-                    .padding(.vertical, 5)
-            }
-            .contentShape(Rectangle())
+            Text(message.createDate, format: .relative(presentation: .named))
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                .accessibilityLabel("时间:")
+                .accessibilityValue(message.createDate
+                    .formatted(date: .long, time: .standard))
+                .contentShape(Rectangle())
         }.frame(maxWidth: 60)
-        
     }
 
     // 抽出图片下载的 Task 逻辑，保持 body 的纯净
     private func shareImageAction(imagePath: String) {
         Task {
             if let imageLocalPath = await ImageManager.downloadImage(imagePath),
-               let uiImage = UIImage(contentsOfFile: imageLocalPath) {
+               let uiImage = UIImage(contentsOfFile: imageLocalPath)
+            {
                 // 确保更新 UI 时回到主线程
                 await MainActor.run {
                     manager.open(sheet: .share(
@@ -247,5 +246,162 @@ struct MessageActionMenu: View {
                 }
             }
         }
+    }
+}
+
+extension MessagesManager {
+    static func examples() -> [Message] {
+        [
+            Message(
+                id: UUID().uuidString,
+                createDate: .now,
+                group: String(localized: "示例"),
+                title: String(localized: "默认样式"),
+                body: String(localized: "这是一段示例内容"),
+                ttl: 1,
+                read: false
+            ),
+            Message(
+                id: UUID().uuidString,
+                createDate: .now,
+                group: String(localized: "示例"),
+                title: String(localized: "MD样式"),
+                body: "# NoLet \n## NoLet \n### NoLet",
+                ttl: 1,
+                read: false,
+                style: "markdown"
+            ),
+
+            Message(
+                id: UUID().uuidString,
+                createDate: .now,
+                group: String(localized: "示例"),
+                title: String(localized: "终端样式"),
+                body: String(localized: "这是一段示例内容") + " style=terminal",
+                ttl: 1,
+                read: false,
+                style: "terminal"
+            ),
+
+            Message(
+                id: UUID().uuidString,
+                createDate: .now,
+                group: String(localized: "示例"),
+                title: String(localized: "GITHUB 样式"),
+                body: String(localized: "这是一段示例内容") + " style=github",
+                ttl: 1,
+                read: false,
+                style: "github"
+            ),
+
+            Message(
+                id: UUID().uuidString,
+                createDate: Date(),
+                group: "wechat",
+                title: "收款通知",
+                subtitle: "+¥18.50",
+                body: "二维码收款已到账",
+                icon: "https://favicon.wzs.app/wechat.com",
+                ttl: 20000,
+                read: false,
+                style: "pay",
+                other: """
+                    {
+                        "ticket":"订单号: 999999999999"
+                    }
+                    """
+            ),
+        ]
+    }
+}
+
+struct Line: Shape {
+    func path(in rect: CGRect) -> Path {
+        return Path { path in
+            path.move(to: CGPoint(x: 0, y: 0))
+            path.addLine(to: CGPoint(x: rect.width, y: 0))
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func mbackground26<S>(_ color: S, radius: CGFloat = 0) -> some View where S: ShapeStyle {
+        if #available(iOS 26.0, *) {
+            self
+                .glassEffect(.regular.interactive(), in: .rect(cornerRadius: radius))
+        } else {
+            background(
+                RoundedRectangle(cornerRadius: radius)
+                    .fill(color)
+                    .shadow(group: false)
+            )
+        }
+    }
+
+    func shadow(group _: Bool) -> some View {
+        shadow(color: Color.shadow2, radius: 1, x: -1, y: -1)
+            .shadow(color: Color.shadow1, radius: 5, x: 3, y: 5)
+            .shadow(color: Color.shadow1.opacity(0.5), radius: 5, x: -3, y: -5)
+    }
+}
+
+extension Message {
+    func accessibilityValue() -> String {
+        var text: [String] = []
+
+        text
+            .append(
+                String(localized: "时间:") + createDate
+                    .formatted(date: .long, time: .standard)
+            )
+
+        if let title = title {
+            text.append(String(localized: "标题") + ":" + title)
+        }
+        if let subtitle = subtitle {
+            text.append(String(localized: "副标题") + ":" + subtitle)
+        }
+
+        if !body.isEmpty {
+            text.append(String(localized: "内容") + ":" + body)
+        }
+
+        if image != nil {
+            text.append(String(localized: "附件: 一张图片"))
+        }
+
+        if let url = url {
+            text.append(String(localized: "跳转链接:") + url)
+        }
+
+        return text.joined(separator: "\n")
+    }
+
+    func expiredTime() -> String {
+        if ttl == ExpirationTime.forever.rawValue {
+            return "∞ ∞ ∞"
+        }
+
+        let days = createDate.daysRemaining(afterSubtractingFrom: ttl)
+        if days <= 0 {
+            return String(localized: "已过期")
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let targetDate = calendar.date(byAdding: .day, value: days, to: now)!
+
+        let components = calendar.dateComponents([.year, .month, .day], from: now, to: targetDate)
+
+        if let years = components.year, years > 0 {
+            return String(localized: "\(years)年")
+        } else if let months = components.month, months > 0 {
+            return String(localized: "\(months)个月")
+        } else if let days = components.day {
+            return String(localized: "\(days)天")
+        }
+
+        return String(localized: "即将过期")
     }
 }
