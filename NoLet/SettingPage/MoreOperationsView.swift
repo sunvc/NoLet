@@ -44,6 +44,8 @@ struct MoreOperationsView: View {
                         }
                     }
                 }
+                
+                
 
                 ListButton {
                     Label {
@@ -73,6 +75,8 @@ struct MoreOperationsView: View {
                     .bold()
                     .font(.footnote)
             }
+            
+            LocationStatusView()
 
             Section {
                 Toggle(isOn: $feedbackSound) {

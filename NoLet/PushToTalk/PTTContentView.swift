@@ -47,9 +47,11 @@ struct PTTContentView: View {
 
     @State private var isButtonPressed = false
     @State private var dragOffset: CGFloat = 0.0
-    private let maxDragDistance: CGFloat = 80.0
+    private let maxDragDistance: CGFloat = 130.0
 
     @State private var showUserMapTem: Bool = false
+
+    @State private var showBackup: Bool = false
 
     var showUserMap: Bool {
         return pttManager.powerState && showUserMapTem
@@ -108,7 +110,7 @@ struct PTTContentView: View {
         if !pttManager.powerState && !isPlaying {
             return String(localized: "未启动监听")
         }
-        
+
         // 2. 场景 A：当没显示用户地图时
         if !self.showUserMap {
             if pttManager.serverStatus == .failed && pttManager.state == .idle {
@@ -116,12 +118,12 @@ struct PTTContentView: View {
             }
             return pttManager.state.title
         }
-        
+
         // 3. 场景 B：当显示了用户地图时（只在播放或录制时显示 title，其余隐形）
         if isPlaying || isRecording {
             return pttManager.state.title
         }
-        
+
         return ""
     }
 
@@ -138,7 +140,7 @@ struct PTTContentView: View {
     }
 
     @State private var isAnimatingHint = false
-    
+
     @State private var showTips = false
 
     var body: some View {
@@ -225,7 +227,7 @@ struct PTTContentView: View {
                                     return true
                                 })
                                 .frame(width: 35)
-                            
+
                             VStack(spacing: 5) {
                                 Text(verbatim: String(format: "%.1f", pttManager.elapsedTime))
                                     .font(.numberStyle(size: 28))
@@ -257,7 +259,7 @@ struct PTTContentView: View {
                                 }
                             }
                         }
-                        
+
                         .animation(.default, value: pttManager.state)
 
                         Spacer()
@@ -475,6 +477,10 @@ struct PTTContentView: View {
                     }
                 }
         }
+        .overlay(alignment: .bottomLeading) {
+            TabBarBackButtonView(size: CGSize(width: 300, height: 0))
+                .offset(x: 30)
+        }
         .animation(.default, value: showVolume)
         .environment(\.colorScheme, .dark)
         .sheet(isPresented: $showVoiceList) {
@@ -585,7 +591,6 @@ struct PTTContentView: View {
             }
 
             Spacer(minLength: 0)
-        
 
             Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
                 .font(.numberStyle(size: 20))
@@ -598,7 +603,7 @@ struct PTTContentView: View {
         ZStack(alignment: .leading) {
             Capsule()
                 .fill(Color.gray.opacity(dragOffset > 0 ? 0.15 : 0.06))
-                .frame(width: maxDragDistance + 50, height: 50)
+                .frame(width: maxDragDistance, height: 50)
                 .overlay(
                     Capsule()
                         .stroke(Color.black.opacity(0.08), lineWidth: 3)
@@ -615,29 +620,16 @@ struct PTTContentView: View {
 
                 .overlay(
                     ZStack(alignment: .leading) {
-                        var tips: String {
-                            if dragOffset > 20 { return String(localized: "退出") }
-                            return pttManager
-                                .powerState ? String(localized: "关闭") : String(localized: "开启")
-                        }
-
                         HStack(spacing: 4) {
-                            if dragOffset >= 20 {
-                                Image(systemName: "chevron.left.2")
-                                    .offset(x: isAnimatingHint ? -6 : 0)
-                            }
-                            Text(tips)
-
-                            if dragOffset < 20 {
-                                Image(systemName: "chevron.right.2")
-                                    .offset(x: isAnimatingHint ? 6 : 0)
-                            }
+                            Text(pttManager.powerState ? "关闭" : "开启")
+                            Image(systemName: "chevron.right.2")
+                                .offset(x: isAnimatingHint ? 0 : -6)
                         }
                         .font(.footnote)
                         .bold()
-                        .foregroundColor(dragOffset > 20 ? .red : .secondary)
+                        .foregroundColor(.secondary)
+                        .offset(x: dragOffset >= (maxDragDistance - 30) / 2 ? 10 : -10)
                         .opacity(isAnimatingHint ? 0.3 : 0.8)
-                        .offset(x: dragOffset > 20 ? 10 : 60)
                         .onAppear {
                             withAnimation(.easeInOut(duration: 1.0)
                                 .repeatForever(autoreverses: true))
@@ -646,13 +638,12 @@ struct PTTContentView: View {
                             }
                         }
                     },
-                    alignment: .leading
+                    alignment:  dragOffset >= (maxDragDistance - 30) / 2 ? .leading : .trailing
                 )
                 .offset(x: 10)
 
-            Image(systemName: dragOffset < -20 ? "xmark.circle.fill" : "power.circle.fill")
-                .foregroundStyle(dragOffset < -20 ? Color.orange.gradient :
-                    (pttManager.powerState ? Color.red.gradient : Color.green.gradient))
+            Image(systemName: "power.circle.fill")
+                .foregroundStyle(pttManager.powerState ? Color.red.gradient : Color.green.gradient)
                 .font(.system(size: 50))
                 .offset(x: buttonType == .call ? dragOffset : 0)
                 .gesture(
@@ -662,7 +653,7 @@ struct PTTContentView: View {
                     )
                     .onChanged { value in
                         let currentWidth = value.translation.width
-                        self.dragOffset = max(-70, min(currentWidth, maxDragDistance + 15))
+                        self.dragOffset = max(0, min(currentWidth, maxDragDistance - 30))
                     }
                     .onEnded { value in
                         withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
@@ -671,7 +662,7 @@ struct PTTContentView: View {
 
                         let draggedWidth = value.translation.width
 
-                        if draggedWidth >= maxDragDistance {
+                        if draggedWidth >= maxDragDistance - 50 {
                             if pttManager.powerState {
                                 PTTChannelManager.shared.leave()
                                 self.showUserMapTem = false
@@ -681,19 +672,6 @@ struct PTTContentView: View {
                             }
 
                             Haptic.impact()
-
-                        } else {
-                            if draggedWidth < -50 {
-                                Haptic.impact()
-
-                                AppManager.shared.page = .message
-
-                                if AppManager.shared.sizeClass == .regular {
-                                    AppManager.shared.homeViewMode = .all
-                                }
-                            }
-
-                            Haptic.notify(.error)
                         }
                     }
                 )
@@ -1067,7 +1045,7 @@ struct ToastPttView: View {
                     .onAppear {
                         startDismissTimer()
                     }
-                    .onChange(of: isPresented) {newValue in
+                    .onChange(of: isPresented) { newValue in
                         // 如果外部在显示期间再次激活（例如连续点击），重新触发定时器
                         if newValue {
                             startDismissTimer()
@@ -1083,11 +1061,11 @@ struct ToastPttView: View {
     private func startDismissTimer() {
         // 1. 如果之前已经有一个定时器在跑，先取消它（防止多次点击导致闪烁或提早关闭）
         dismissTask?.cancel()
-        
+
         // 2. 创建新任务
         dismissTask = Task {
             try? await Task.sleep(nanoseconds: 3 * 1_000_000_000) // 等待 3 秒
-            
+
             // 3. 检查任务是否被取消了，如果没有，在主线程关闭 View
             if !Task.isCancelled {
                 await MainActor.run {

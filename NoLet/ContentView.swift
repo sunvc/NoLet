@@ -157,13 +157,17 @@ struct ContentView: View {
                         Tab(value: .assistant, role: .search) {
                             NavigationStack(path: _page($manager.arouter)) {
                                 NoLetChatHomeView().router()
+                                    .toolbar(manager.page == .assistant ? .hidden : .visible, for: .tabBar)
                             }
+                            
                         } label: {
                             tabLabel(title: NCONFIG.AppName, icon: "apple.intelligence")
                         }
+                        
                     }
                 }
                 .tabBarMinimizeBehavior(.onScrollDown)
+                
 
             } else {
                 TabView(selection: updateTab) {
@@ -199,6 +203,7 @@ struct ContentView: View {
                     if assistantAccouns.count > 0 {
                         NavigationStack(path: _page($manager.arouter)) {
                             NoLetChatHomeView().router()
+                                .toolbar(manager.page == .assistant ? .hidden : .visible, for: .tabBar)
                         }
                         .tabItem {
                             tabLabel(title: NCONFIG.AppName, icon: "atom")
@@ -208,6 +213,7 @@ struct ContentView: View {
                 }
             }
         }
+        
     }
 
     private var updateTab: Binding<TabPage> {
@@ -221,10 +227,16 @@ struct ContentView: View {
                 }
             }
 
-            if newTab == .assistant {
+            if newTab == .assistant || newTab == .ptt {
                 manager.historyPage = manager.page
             }
-            manager.page = newTab
+            withAnimation(.spring(
+                response: 0.3, 
+                dampingFraction: 0.5,
+                blendDuration: 0
+            )) {
+                manager.page = newTab
+            }
         }
     }
 

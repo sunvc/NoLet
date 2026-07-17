@@ -25,7 +25,7 @@ struct ChatMessageArrayView: View {
     @State private var isAppendLoading = false
     @State private var isTyping = false
     @State private var isNearBottom = true
-    
+
     @Environment(\.isSearching) private var isSearching
 
     var body: some View {
@@ -38,7 +38,9 @@ struct ChatMessageArrayView: View {
             }
             .prependLoader(.loader(
                 perform: {
-                    if chatManager.messagesCount > 0, chatManager.chatMessages.count < chatManager.messagesCount {
+                    if chatManager.messagesCount > 0,
+                       chatManager.chatMessages.count < chatManager.messagesCount
+                    {
                         self.isPrependLoading = true
                         chatManager.page += 1
                         Task {
@@ -48,16 +50,7 @@ struct ChatMessageArrayView: View {
                     }
                 },
                 isProcessing: isPrependLoading
-            ) {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("Loading older messages...")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            })
+            ) { loadText })
             .appendLoader(.loader(
                 perform: {
                     if chatManager.page != 1 {
@@ -71,19 +64,10 @@ struct ChatMessageArrayView: View {
 
                 },
                 isProcessing: isAppendLoading
-            ) {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("Loading newer messages...")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            })
+            ) { loadText })
             .typingIndicator(.indicator(isVisible: chatManager.isFocusedInput) {
                 HStack(spacing: 8) {
-                    Text("Someone is typing...")
+                    Text("正在输入...")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -122,8 +106,8 @@ struct ChatMessageArrayView: View {
             }
         }
         .background(ContentBackgroundView())
-        .onChange(of: isSearching){ value in
-            if value{
+        .onChange(of: isSearching) { value in
+            if value {
                 scrollPosition.scrollTo(edge: .bottom, animated: true)
             }
         }
@@ -135,5 +119,16 @@ struct ChatMessageArrayView: View {
         .onChange(of: chatManager.isFocusedInput) { _ in
             scrollPosition.scrollTo(edge: .bottom, animated: true)
         }
+    }
+
+    private var loadText: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+            Text("加载消息中...")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
     }
 }

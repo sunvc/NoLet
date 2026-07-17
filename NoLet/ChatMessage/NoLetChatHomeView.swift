@@ -62,7 +62,6 @@ struct NoLetChatHomeView: View {
             
         }
         .ignoresSafeArea(.container, edges: .bottom)
-        .toolbar(.hidden, for: .tabBar)
         .popView(isPresented: $showChangeGroupName) {
             showChangeGroupName = false
         } content: {

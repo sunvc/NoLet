@@ -18,16 +18,13 @@ enum AppIconEnum: String, CaseIterable, Equatable {
     case nolet
     case nolet0
     case nolet1
+    case nolet2
 
 
     var name: String? { self == .nolet ? nil : rawValue }
-
+    
     var logo: String {
-        switch self {
-        case .nolet: "logo"
-        case .nolet0: "logo0"
-        case .nolet1: "logo1"
-        }
+        return rawValue.replacingOccurrences(of: "nolet", with: "logo")
     }
 }
 

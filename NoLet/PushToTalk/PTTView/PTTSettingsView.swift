@@ -100,7 +100,7 @@ struct PTTSettingsView: View {
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
 
-                locationView
+                LocationStatusView()
 
                 Section {
                     Toggle(isOn: $pttSignature) {
@@ -153,86 +153,6 @@ struct PTTSettingsView: View {
         }
     }
 
-    private var locationView: some View {
-        Section {
-            // 1. 根据不同的权限状态显示不同的 UI
-            switch locManager.authorizationStatus {
-            case .notDetermined:
-                Button("授权定位") {
-                    locManager.requestAuthorization()
-                }
-                .buttonStyle(.borderedProminent)
-
-            case .restricted, .denied:
-                ListButton {
-                    Label {
-                        Text("系统设置")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "gear.circle")
-
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, Color.primary)
-                    }
-                } action: {
-                    Task { @MainActor in
-                        AppManager.openSetting()
-                    }
-                    return true
-                }
-
-            case .authorizedWhenInUse, .authorizedAlways:
-                Toggle(isOn: .constant(true)) {
-                    Label {
-                        Text("已获得定位权限")
-                    } icon: {
-                        Image(systemName: "location.circle")
-                            .foregroundStyle(.green, .primary)
-                    }
-                }
-
-            @unknown default:
-                ListButton {
-                    Label {
-                        Text("系统设置")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        Image(systemName: "gear.circle")
-
-                            .symbolRenderingMode(.palette)
-                            .customForegroundStyle(.accent, Color.primary)
-                    }
-                } action: {
-                    Task { @MainActor in
-                        AppManager.openSetting()
-                    }
-                    return true
-                }
-            }
-        } header: {
-            // 1. 根据不同的权限状态显示不同的 UI
-            switch locManager.authorizationStatus {
-            case .notDetermined:
-                Text("需要您的位置信息")
-
-            case .restricted, .denied:
-                Text("未获得定位权限")
-                    .foregroundColor(.red)
-
-            case .authorizedWhenInUse:
-                Text("App使用期间")
-                    .foregroundColor(.green)
-
-            case .authorizedAlways:
-                Text("始终")
-                    .foregroundColor(.green)
-
-            @unknown default:
-                Text("未知状态")
-                    .foregroundColor(.orange)
-            }
-        }
-    }
 
     private var equalizerView: some View {
         Section {
@@ -327,6 +247,78 @@ struct PTTSettingsView: View {
             } catch {
                 Toast.error(title: "保存失败")
             }
+        }
+    }
+}
+
+struct LocationStatusView: View {
+    @ObservedObject private var locManager = LocManager.shared
+    var body: some View {
+        Section {
+            // 1. 根据不同的权限状态显示不同的 UI
+            switch locManager.authorizationStatus {
+            case .notDetermined:
+                Button("授权使用位置") {
+                    locManager.requestAuthorization()
+                }
+                .buttonStyle(.borderedProminent)
+
+
+            case .authorizedWhenInUse, .authorizedAlways:
+                Toggle(isOn: .constant(true)) {
+                    Label {
+                        Text("已获得定位权限")
+                    } icon: {
+                        Image(systemName: "location.circle")
+                            .foregroundStyle(.green, .primary)
+                    }
+                }
+                
+            default:
+                ListButton {
+                    Label {
+                        Text("系统设置")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        Image(systemName: "gear.circle")
+
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                    }
+                } action: {
+                    Task { @MainActor in
+                        AppManager.openSetting()
+                    }
+                    return true
+                }
+
+            }
+        } header: {
+            // 1. 根据不同的权限状态显示不同的 UI
+            Group{
+                switch locManager.authorizationStatus {
+                case .notDetermined:
+                    Text("需要您的位置信息")
+
+                case .restricted, .denied:
+                    Text("未获得定位权限")
+                        .foregroundColor(.red)
+
+                case .authorizedWhenInUse:
+                    Text("App使用期间")
+                        .foregroundColor(.green)
+
+                case .authorizedAlways:
+                    Text("始终")
+                        .foregroundColor(.green)
+
+                @unknown default:
+                    Text("未知状态")
+                        .foregroundColor(.orange)
+                }
+            }
+            .font(.footnote)
+            
         }
     }
 }

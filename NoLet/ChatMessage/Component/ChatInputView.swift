@@ -42,8 +42,7 @@ struct ChatInputView: View {
 
             HStack(spacing: 10) {
                 if !chatManager.isFocusedInput && manager.sizeClass == .compact {
-                    backupButton()
-                        .offset(x: show ? 0 : 100)
+                    TabBarBackButtonView(size: CGSize(width: 100, height: 0))
                 }
                 if !manager.isLoading {
                     inputField
@@ -184,43 +183,5 @@ struct ChatInputView: View {
         }
         .padding(.horizontal)
     }
-
-    @ViewBuilder
-    func backupButton() -> some View {
-        if manager.historyPage == .setting {
-            Button {
-                manager.router = []
-                manager.page = .setting
-
-                Task.detached {
-                    await Haptic.impact()
-                    await Tone.play(.share)
-                }
-            } label: {
-                Label("设置", systemImage: "gear.badge.questionmark")
-                    .symbolRenderingMode(.palette)
-                    .customForegroundStyle(.green, .primary)
-                    .labelStyle(.iconOnly)
-                    .font(.title)
-                    .transition(.move(edge: .leading))
-            }.button26(.borderless)
-        } else {
-            Button {
-                manager.router = []
-                manager.page = .message
-
-                Task.detached {
-                    await Haptic.impact()
-                    await Tone.play(.share)
-                }
-            } label: {
-                Label("消息", systemImage: "ellipsis.message")
-                    .symbolRenderingMode(.palette)
-                    .customForegroundStyle(.green, .primary)
-                    .labelStyle(.iconOnly)
-                    .font(.title)
-                    .transition(.move(edge: .leading))
-            }.button26(.borderless)
-        }
-    }
 }
+
