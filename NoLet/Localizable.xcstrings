@@ -1489,6 +1489,22 @@
         }
       }
     },
+    "内容不能为空": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Content cannot be empty"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内容不能为空"
+          }
+        }
+      }
+    },
     "内置": {
       "localizations": {
         "en": {

@@ -77,7 +77,12 @@ struct MessageInteractiveModifier: ViewModifier {
 
     // 发送回复的网络封装
     private func sendReply(replyURL: String) {
+        guard !replyText.removingAllWhitespace.isEmpty else { 
+            Toast.info(title: "内容不能为空")
+            return
+        }
         Task { @MainActor in
+            
             do {
                 let result = try await NetworkManager().fetch(url: replyURL + replyText)
                 Toast.success(title: result.check() ? "回复成功" : "回复失败")
