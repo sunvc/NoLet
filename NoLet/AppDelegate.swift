@@ -33,7 +33,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             Defaults[.usePtt] = false
         }
 
-        Task {
+        // FIXME: - 必须保证在主线程执行
+        Task {@MainActor in
             if let token = await LocManager.shared.startMonitoringLocationPushes() {
                 Defaults[.token].location = token
             }

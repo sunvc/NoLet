@@ -46,7 +46,6 @@ final class PTTManager: NSObject, ObservableObject {
         )
     )
 
-
     @Published var onlineUsers: [ChannelUser] = []
 
     private let recorder = PTTRecorderManager()
@@ -55,8 +54,6 @@ final class PTTManager: NSObject, ObservableObject {
     private let network = NetworkManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
-
-    
 
     private override init() {
         super.init()
@@ -70,7 +67,6 @@ final class PTTManager: NSObject, ObservableObject {
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
-       
     }
 
     deinit {
@@ -124,7 +120,6 @@ final class PTTManager: NSObject, ObservableObject {
 
                 do {
                     if await self.powerState {
-                        
                         await LocManager.shared.requestLocation()
                         await self.publicJoinConnect()
                     }
@@ -138,7 +133,7 @@ final class PTTManager: NSObject, ObservableObject {
             logger.info("🛑 后台常驻任务已安全退出")
         }
     }
-    
+
     func deleteAll() {
         _ = try? DatabaseManager.shared.dbQueue.write { db in
             try AudioMessage.deleteAll(db)
@@ -392,6 +387,42 @@ final class PTTManager: NSObject, ObservableObject {
             if let index = self.onlineUsers.firstIndex(where: { $0.id == activeUser?.id }) {
                 self.onlineUsers[index].active = true
             }
+
+            // 添加用户自己的位置信息
+            let userId = Defaults[.id]
+
+            // 检查是否已经包含用户自己
+            let hasSelf = self.onlineUsers.contains { $0.id == userId }
+
+            if !hasSelf {
+                // 获取用户自己的位置
+                let userCoordinate = LocManager.shared.location.coordinate
+
+                // 创建用户自己的 ChannelUser，名称设置为"本机"
+                let selfUser = ChannelUser(
+                    id: userId,
+                    name: "本机",
+                    coordinate: userCoordinate,
+                    active: false
+                )
+
+                // 添加到在线用户列表
+                self.onlineUsers.insert(selfUser, at: 0)
+            } else {
+                // 如果已经包含用户自己，确保名称是"本机"
+                if let index = self.onlineUsers.firstIndex(where: { $0.id == userId }) {
+                    let user = self.onlineUsers[index]
+                    // 重新创建一个，名称设置为"本机"
+                    let updatedUser = ChannelUser(
+                        id: user.id,
+                        name: user.name.isEmpty ? String(localized: "本机") : user.name,
+                        coordinate: user.coordinate,
+                        active: user.active
+                    )
+                    self.onlineUsers[index] = updatedUser
+                }
+            }
+
             Defaults[.pttChannel] = currentChannel
             self.serverStatus = .online
         } else {
@@ -650,15 +681,46 @@ final class PTTManager: NSObject, ObservableObject {
 
 extension PTTManager: CLLocationManagerDelegate {
     func zoomToFitAllUsers() {
-        // 1. 依然要严格过滤掉 (0,0) 的无效坐标
-        let onlineUsers = Defaults[.pttChannel].users.filter { user in
+        // 获取所有用户（包括当前用户自己）
+        var usersToShow = Defaults[.pttChannel].users
+
+        // 获取当前用户信息
+        let userId = Defaults[.id]
+        let userName = Defaults[.pttNickname]
+            .isEmpty ? String(localized: "本机") : Defaults[.pttNickname]
+
+        // 如果没有用户或列表中不包含自己，添加自己
+        let hasSelf = usersToShow.contains { $0.id == userId }
+        if !hasSelf {
+            let userCoordinate = LocManager.shared.location.coordinate
+            let selfUser = ChannelUser(
+                id: userId,
+                name: userName,
+                coordinate: userCoordinate,
+                active: false
+            )
+            usersToShow.insert(selfUser, at: 0)
+        }
+
+        // 过滤掉无效坐标 (0,0)
+        let validUsers = usersToShow.filter { user in
             user.latitude != 0.0 && user.longitude != 0.0
         }
 
-        guard !onlineUsers.isEmpty else { return }
+        guard !validUsers.isEmpty else {
+            // 如果所有用户都无效，至少显示当前用户自己的位置
+            let userCoordinate = LocManager.shared.location.coordinate
+            withAnimation(.easeInOut(duration: 0.5)) {
+                region = MKCoordinateRegion(
+                    center: userCoordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005)
+                )
+            }
+            return
+        }
 
-        let latitudes = onlineUsers.map(\.latitude)
-        let longitudes = onlineUsers.map(\.longitude)
+        let latitudes = validUsers.map(\.latitude)
+        let longitudes = validUsers.map(\.longitude)
 
         guard
             let minLat = latitudes.min(),
@@ -696,8 +758,6 @@ extension PTTManager: CLLocationManagerDelegate {
             )
         }
     }
-
-  
 }
 
 extension PTTManager {

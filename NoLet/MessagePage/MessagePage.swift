@@ -70,7 +70,7 @@ struct MessagePage: View {
         
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: messageManager
-                    .allCount <= 3 ? .topBarLeading : .secondaryAction) { exampleButton }
+                    .allCount <= 5 ? .topBarLeading : .secondaryAction) { exampleButton }
             } else {
                 ToolbarItem(placement: .secondaryAction) { exampleButton }
             }
