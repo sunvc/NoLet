@@ -159,12 +159,14 @@ struct NoLetChatHomeView: View {
         }
 
         if !text.isEmpty {
+            let userMessageID = UUID().uuidString
+            let assistantMessageID = UUID().uuidString
+            
             Task { @MainActor in
-                chatManager.currentMessageID = UUID().uuidString
+                chatManager.currentMessageID = assistantMessageID
                 withAnimation {
                     manager.isLoading = true
                 }
-                chatManager.currentRequest = text
 
                 self.inputText = ""
                 chatManager.currentContent = ""
@@ -172,6 +174,26 @@ struct NoLetChatHomeView: View {
             }
 
             guard let newGroup = getGroup(text: text) else { return }
+            
+            // 先保存用户消息
+            let userMessage = ChatMessage(
+                id: userMessageID,
+                timestamp: .now,
+                chat: newGroup.id,
+                role: ChatMessage.Role.user.rawValue,
+                content: text,
+                message: manager.askMessageID,
+                reason: nil,
+                result: nil
+            )
+            
+            do {
+                try await DatabaseManager.shared.dbQueue.write { db in
+                    try userMessage.insert(db)
+                }
+            } catch {
+                logger.error("保存用户消息失败: \(error.localizedDescription)")
+            }
 
             let results = chatManager.chatsStream(text: text, messageID: manager.askMessageID)
 
@@ -199,7 +221,7 @@ struct NoLetChatHomeView: View {
                         }
 
                         let results = chatManager.chatsStream(
-                            text: "FunctionCall Results:\(text)",
+                            text: "Function Call Results:\(text)",
                             messageID: manager.askMessageID,
                             rounds: 2
                         )
@@ -217,6 +239,7 @@ struct NoLetChatHomeView: View {
 
                 let responseMessage: ChatMessage? = {
                     var message = chatManager.currentChatMessage
+                    message.id = assistantMessageID
                     message.chat = newGroup.id
                     return message
                 }()

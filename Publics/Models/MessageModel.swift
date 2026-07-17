@@ -103,7 +103,7 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
     var id: String = UUID().uuidString
     var timestamp: Date
     var chat: String
-    var request: String
+    var role: String
     var content: String
     var message: String?
     var reason: String?
@@ -113,11 +113,17 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let id = Column(CodingKeys.id)
         static let timestamp = Column(CodingKeys.timestamp)
         static let chat = Column(CodingKeys.chat)
-        static let request = Column(CodingKeys.request)
+        static let role = Column(CodingKeys.role)
         static let content = Column(CodingKeys.content)
         static let message = Column(CodingKeys.message)
         static let reason = Column(CodingKeys.reason)
         static let result = Column(CodingKeys.result)
+    }
+    
+    enum Role: String {
+        case user
+        case assistant
+        case tool
     }
 }
 

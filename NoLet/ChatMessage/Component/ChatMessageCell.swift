@@ -35,9 +35,10 @@ struct ChatMessageCell: TiledCellContent {
 
     func body(context: CellContext<Void>) -> some View {
         let revealOffset = context.cellReveal?.rubberbandedOffset(max: maxRevealOffset) ?? 0
+        let isUserMessage = item.role == ChatMessage.Role.user.rawValue
 
         VStack{
-            if item.request.count > 0 || quote != nil {
+            if quote != nil {
                 VStack {
                     if let quote = quote {
                         HStack {
@@ -47,44 +48,42 @@ struct ChatMessageCell: TiledCellContent {
                         }
                         .padding(.bottom, 5)
                     }
-                    
-                    
-                    if item.request.count > 0 {
-                        HStack {
-                            Spacer()
-
-                            MarkdownCustomView(content: item.request)
-                                .padding()
-                                .foregroundColor(.primary)
-                                .background(Color.blue.opacity(0.2))
-                                .onTapGesture(count: 2) {
-                                    Clipboard.set(item.request)
-                                    Toast.success(title: "复制成功")
-                                }
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                        }
-                    }
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)
             }
 
-            ReasonButton(message: item)
+            if !isUserMessage {
+                ReasonButton(message: item)
+            }
 
             if !item.content.removingAllWhitespace.isEmpty {
                 HStack {
-                    MarkdownCustomView(content: item.content)
-                        .padding()
-                        .foregroundColor(.primary)
-                        .background26(.ultraThinMaterial)
-                        .foregroundColor(.primary)
-                        .lineLimit(8)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .onTapGesture(count: 2) {
-                            Clipboard.set(item.content)
-                            Toast.success(title: "复制成功")
-                        }
-                    Spacer()
+                    if isUserMessage {
+                        Spacer()
+                    }
+                    
+                    ScrollView {
+                        MarkdownCustomView(content: item.content)
+                            .padding()
+                            .foregroundColor(.primary)
+                    }
+                    .frame(maxHeight: 400)
+                    .if(isUserMessage) {
+                        $0.background(Color.blue.opacity(0.2))
+                    }
+                    .if(!isUserMessage) {
+                        $0.background26(.ultraThinMaterial)
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .onTapGesture(count: 2) {
+                        Clipboard.set(item.content)
+                        Toast.success(title: "复制成功")
+                    }
+                    
+                    if !isUserMessage {
+                        Spacer()
+                    }
                 }
                 .padding(.horizontal, 10)
                 .padding(.vertical, 4)

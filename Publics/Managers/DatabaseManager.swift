@@ -114,6 +114,43 @@ final class DatabaseManager {
                 t.add(column: "reason", .text)
             }
         }
+        
+        migrator.registerMigration("add role and make request optional") { db in
+            try db.create(table: "chatMessage_new") { t in
+                t.primaryKey("id", .text)
+                t.column("timestamp", .datetime).notNull()
+                t.column("chat", .text).notNull()
+                t.column("role", .text).notNull().defaults(to: "assistant")
+                t.column("content", .text).notNull()
+                t.column("message", .text)
+                t.column("reason", .text)
+                t.column("result", .jsonText)
+            }
+            
+            try db.execute(sql: """
+                INSERT INTO chatMessage_new (id, timestamp, chat, role, content, message, reason, result)
+                SELECT id, timestamp, chat, 'assistant' AS role, content, message, reason, result
+                FROM chatMessage
+            """)
+            
+            try db.execute(sql: """
+                INSERT INTO chatMessage_new (id, timestamp, chat, role, content, message, reason, result)
+                SELECT 
+                    id || '_user' AS id, 
+                    timestamp, 
+                    chat, 
+                    'user' AS role, 
+                    request AS content, 
+                    message, 
+                    reason, 
+                    result
+                FROM chatMessage
+                WHERE request IS NOT NULL AND request != ''
+            """)
+            
+            try db.drop(table: self.chatMessageTabelName)
+            try db.rename(table: "chatMessage_new", to: self.chatMessageTabelName)
+        }
     }
 
     func registerChatPromptMigrations(_ migrator: inout DatabaseMigrator) {

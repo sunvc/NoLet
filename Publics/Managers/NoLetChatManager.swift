@@ -82,7 +82,7 @@ final class NoLetChatManager: ObservableObject {
             id: currentMessageID,
             timestamp: .now,
             chat: "",
-            request: currentRequest,
+            role: ChatMessage.Role.assistant.rawValue,
             content: currentContent,
             message: AppManager.shared.askMessageID,
             reason: currentReason,
@@ -371,16 +371,18 @@ extension NoLetChatManager {
 
         }) {
             for message in messageRaw.reversed() {
-                params.append(.user(.init(content: .string(message.request))))
-
-                if let result = message.result, !result.isEmpty, let json = result.text() {
-                    params.append(.user(.init(
-                        content: .string(String(localized: "任务执行结果") + json)
-                    )))
-                }
-
-                if !message.content.isEmpty {
-                    params.append(.assistant(.init(content: .textContent(message.content))))
+                if message.role == ChatMessage.Role.user.rawValue {
+                    params.append(.user(.init(content: .string(message.content))))
+                } else if message.role == ChatMessage.Role.assistant.rawValue {
+                    if let result = message.result, !result.isEmpty, let json = result.text() {
+                        params.append(.user(.init(
+                            content: .string(String(localized: "任务执行结果") + json)
+                        )))
+                    }
+                    
+                    if !message.content.isEmpty {
+                        params.append(.assistant(.init(content: .textContent(message.content))))
+                    }
                 }
             }
         }
