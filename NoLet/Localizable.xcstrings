@@ -1041,22 +1041,6 @@
         }
       }
     },
-    "传递纬度,经度, 解析地址, 生成地图预览": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transfer latitude, longitude, parse address, generate map preview"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "传递纬度,经度, 解析地址, 生成地图预览"
-          }
-        }
-      }
-    },
     "低音增强": {
       "localizations": {
         "en": {
@@ -2909,22 +2893,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "图片消息"
-          }
-        }
-      }
-    },
-    "地图预览": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Map Preview"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "地图预览"
           }
         }
       }
@@ -6801,6 +6769,22 @@
         }
       }
     },
+    "用户授权位置后,可以获取设备位置": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After the user authorizes the location, the device location can be obtained."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用户授权位置后,可以获取设备位置"
+          }
+        }
+      }
+    },
     "监听频道": {
       "localizations": {
         "en": {
@@ -7585,6 +7569,22 @@
         }
       }
     },
+    "获取位置": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get location"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取位置"
+          }
+        }
+      }
+    },
     "获取开发者支持": {
       "localizations": {
         "en": {
@@ -7613,6 +7613,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "获取所有铃声"
+          }
+        }
+      }
+    },
+    "获取设备位置": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get device location"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取设备位置"
           }
         }
       }

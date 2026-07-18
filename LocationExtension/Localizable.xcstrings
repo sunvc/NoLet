@@ -3,16 +3,32 @@
   "strings": {
     "位置信息获取成功": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location information retrieved successfully"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
             "value": "位置信息获取成功"
           }
-        },
+        }
+      }
+    },
+    "获取位置": {
+      "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Location information retrieved successfully"
+            "value": "Get location"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取位置"
           }
         }
       }

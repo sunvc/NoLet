@@ -45,7 +45,7 @@ struct MessageExampleView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             }
-            ForEach(createExample(cryptoData: cryptoConfigs.config()), id: \.id) { item in
+            ForEach(createExample(cryptoData: cryptoConfigs.config(), server: pickerSelection), id: \.id) { item in
                 let resultURL = server + item.params
 
                 Section {
@@ -139,12 +139,12 @@ struct MessageExampleView: View {
 }
 
 extension MessageExampleView {
-    func createExample(cryptoData: CryptoModelConfig) -> [PushExampleModel] {
+    func createExample(cryptoData: CryptoModelConfig, server: PushServerModel?) -> [PushExampleModel] {
         let ciphertext = CryptoManager(cryptoData).encrypt(NCONFIG.testData)?.replacingOccurrences(
             of: "+",
             with: "%2B"
         ) ?? ""
-        let location = LocManager.shared.location.coordinate
+        
         return [
             PushExampleModel(
                 header: Text("点击右上角按钮可以复制测试URL、预览推送效果"),
@@ -273,10 +273,10 @@ extension MessageExampleView {
             ),
 
             PushExampleModel(
-                header: Text("地图预览"),
-                footer: Text("传递纬度,经度, 解析地址, 生成地图预览"),
-                title: String(localized: "地图预览"),
-                params: "\(String(localized: "地图预览"))?location=\(location.latitude),\(location.longitude)",
+                header: Text("获取设备位置"),
+                footer: Text("设备授权获取位置后,可以获取设备位置"),
+                title: String(localized: "获取位置"),
+                params: "\(String(localized: "获取位置"))?location=\(server?.server ?? "")",
                 index: 12
             ),
         ]

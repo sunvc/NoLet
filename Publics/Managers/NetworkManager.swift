@@ -15,8 +15,8 @@ import CommonCrypto
 import Compression
 import Defaults
 import Foundation
-import UIKit
 import OSLog
+import UIKit
 import UniformTypeIdentifiers
 
 final nonisolated class NetworkManager: NSObject, Sendable {
@@ -295,8 +295,8 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         return data
     }
-    
- 
+
+   
 }
 
 nonisolated extension Encodable {
@@ -329,5 +329,3 @@ nonisolated extension Encodable {
         }
     }
 }
-
-

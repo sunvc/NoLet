@@ -41,7 +41,7 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         if let location: String = userInfo.raw(.location), let location = location.location(){
             let location = normalizeToLatLngGlobal(location)
-            let address = await LocManager.shared.getFormattedAddress(
+            let address = await CLGeocoderManager.shared.getFormattedAddress(
                 latitude: location.0,
                 longitude: location.1
             )

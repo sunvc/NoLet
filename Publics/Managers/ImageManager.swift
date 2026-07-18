@@ -306,7 +306,7 @@ extension ImageManager {
         }
 
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-        let locationTitle = await LocManager.shared.resolveLocationTitle(for: coordinate)
+        let locationTitle = await CLGeocoderManager.shared.resolveLocationTitle(for: coordinate)
 
         let options = MKMapSnapshotter.Options()
         options.region = MKCoordinateRegion(

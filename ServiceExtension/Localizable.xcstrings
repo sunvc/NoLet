@@ -99,16 +99,16 @@
     },
     "图片key重复，请提供新图片以覆盖": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "图片key重复，请提供新图片以覆盖"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Image key duplicate, please provide a new image to overwrite."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片key重复，请提供新图片以覆盖"
           }
         }
       }
@@ -269,6 +269,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "未知 iCloud 状态"
+          }
+        }
+      }
+    },
+    "未知位置": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知位置"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown location"
           }
         }
       }

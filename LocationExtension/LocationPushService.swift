@@ -12,6 +12,7 @@
 //    Created by Neo on 2026/6/25 12:04.
 
 import CoreLocation
+import OSLog
 
 nonisolated struct MessageParams: Codable, Sendable {
     var title: String?
@@ -34,51 +35,73 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
     var completion: (() -> Void)?
     var locationManager: CLLocationManager?
     var params = MessageParams()
+    var SUCCESS: Bool = false
 
     func didReceiveLocationPushPayload(_ payload: [String: Any], completion: @escaping () -> Void) {
         self.completion = completion
+
+        self.params.callback = payload["location"] as? String
+        self.params.title = payload["title"] as? String ?? String(localized: "获取位置")
+        self.params.subTitle = payload["subtitle"] as? String
+        self.params.body = payload["body"] as? String ?? String(localized: "位置信息获取成功")
+
         self.locationManager = CLLocationManager()
         self.locationManager!.delegate = self
         self.locationManager!.requestLocation()
-
-        self.params.callback = payload["location"] as? String
-        self.params.title = payload["title"] as? String
-        self.params.subTitle = payload["subtitle"] as? String
-        self.params.body = payload["body"] as? String ?? String(localized: "位置信息获取成功")
     }
 
     func serviceExtensionWillTerminate() {
         // Called just before the extension will be terminated by the system.
-        self.completion?()
+        self.stopLocation()
     }
 
     // MARK: - CLLocationManagerDelegate methods
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard !SUCCESS else { return }
+        guard let location = locations.first else {
+            self.stopLocation()
+            return
+        }
+        self.SUCCESS = true
+        self.params.location = "\(location.coordinate.latitude),\(location.coordinate.longitude)"
         Task {
-            guard let callback = self.params.callback,
-                  let location = locations.first else { return }
-
-            self.params.location = "\(location.coordinate.latitude),\(location.coordinate.longitude)"
-
-            do {
-                let res = try await NetworkManager().fetch(
-                    url: callback,
-                    method: .POST,
-                    params: self.params
-                )
-
-                debugPrint(res.check())
-            } catch {
-                debugPrint(error.localizedDescription)
+            var index = 0
+            while index < 3 {
+                index += 1
+                let success = await self.fetchCallback()
+                if success {
+                    self.stopLocation()
+                    return
+                }
             }
-            self.completion?()
+            self.stopLocation()
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        self.stopLocation()
+    }
+
+    func fetchCallback() async -> Bool {
+        guard let callback = self.params.callback else {
+            return false
+        }
+        do {
+            let res = try await NetworkManager().fetch(
+                url: callback,
+                method: .POST,
+                params: self.params
+            )
+            return res.check()
+        } catch {
+            logger.error("\(error.localizedDescription)")
+            return false
+        }
+    }
+
+    func stopLocation() {
+        self.locationManager = nil
         self.completion?()
     }
-    
-
 }
