@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/Opus.git",
       "state" : {
-        "revision" : "9e332f974b1e616aca823a170ec79c9f66a4a352",
-        "version" : "1.0.2"
+        "revision" : "99ad6596e751cd6db950e71bc8e9c877c6949c41",
+        "version" : "1.0.5"
       }
     },
     {

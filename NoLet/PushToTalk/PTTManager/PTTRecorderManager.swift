@@ -38,12 +38,12 @@ final nonisolated class PTTRecorderManager {
     private var inputNode: AVAudioInputNode?
     private var audioFormat: AVAudioFormat?
     private var recordedAudioData = Data()
-    private var oggWriter = OggOpusWriter()
-    private var dataItem = DataItem()
+    private var oggWriter: OpusManager?
 
     // 跳过提示音的样本数
     private var skippedSamplesCount: UInt32 = 0
     private var hasMicrophonePermission: Bool = false
+    private let packetSize = 1920
 
     func requestAudioPermission() {
         AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
@@ -86,8 +86,10 @@ final nonisolated class PTTRecorderManager {
     }
 
     func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
+        
         logger.debug("Avvio trasmissione audio...")
-
+        self.oggWriter = nil
+        
         guard self.hasMicrophonePermission else {
             self.requestAudioPermission()
             return
@@ -109,14 +111,15 @@ final nonisolated class PTTRecorderManager {
         }
 
         do {
-            oggWriter = OggOpusWriter()
-            dataItem = DataItem()
-            oggWriter.inputSampleRate = Int32(audioFormat.sampleRate)
-            oggWriter.begin(with: dataItem)
+            oggWriter = try OpusManager(
+                sampleRate: Int(audioFormat.sampleRate),
+                bitrate: 30 * 1024,
+                application: .voip
+            )
 
             recordedAudioData = Data()
 
-            guard audioFormat.sampleRate > 0, audioFormat.channelCount > 0 else {
+            guard let oggWriter, audioFormat.sampleRate > 0, audioFormat.channelCount > 0 else {
                 logger
                     .debug(
                         "Formato audio non valido: SR=\(audioFormat.sampleRate), CH=\(audioFormat.channelCount)"
@@ -135,7 +138,7 @@ final nonisolated class PTTRecorderManager {
                 ) { [weak self] buffer, _ in
                     guard let self = self else { return }
 
-                    let elapsedTime = self.oggWriter.encodedDuration()
+                    let elapsedTime = oggWriter.encodedDuration
 
                     // 切除提示音
                     if activity, pttMusicPlay, self.skippedSamplesCount < targetSampleCount {
@@ -145,7 +148,7 @@ final nonisolated class PTTRecorderManager {
 
                     if elapsedTime > 60 { return }
 
-                    self.processAndDisposeAudioBuffer(buffer)
+                    try? oggWriter.append(buffer: buffer)
 
                     let mic = self.calculateLevelPercentage(from: buffer)
                     self.delegate?.recorderManager(
@@ -166,7 +169,8 @@ final nonisolated class PTTRecorderManager {
 
     func stopRecording() -> Data? {
         logger.debug("Arresto trasmissione audio...")
-        guard let audioEngine = audioEngine, let inputNode = inputNode else { return nil }
+        guard let oggWriter, let audioEngine = audioEngine,
+              let inputNode = inputNode else { return nil }
 
         inputNode.removeTap(onBus: 0)
         audioEngine.stop()
@@ -174,133 +178,16 @@ final nonisolated class PTTRecorderManager {
         self.inputNode = nil
         self.audioEngine = nil
 
-        self.flushAudioPacket()
-
-        if oggWriter.writeFrame(nil, frameByteCount: 0), oggWriter.encodedDuration() > 0.2 {
-            return dataItem.data()
+        if let data = try? oggWriter.finish(), oggWriter.encodedDuration > 0.2 {
+            return data
         }
 
+        self.oggWriter = nil
         logger.debug("Trasmissione audio arrestata.")
         return nil
     }
 
-    private func processAndDisposeAudioBuffer(_ buffer: AVAudioPCMBuffer) {
-        guard let bufferData = conversionFloat32ToInt16Buffer(buffer) else { return }
-        let buffer = bufferData.audioBufferList.pointee.mBuffers
-
-        let encoderPacketSizeInBytes = 1920
-
-        let currentEncoderPacket = malloc(encoderPacketSizeInBytes)!
-        defer { free(currentEncoderPacket) }
-
-        var bufferOffset = 0
-
-        while true {
-            var currentEncoderPacketSize = 0
-            while currentEncoderPacketSize < encoderPacketSizeInBytes {
-                if recordedAudioData.count != 0 {
-                    let takenBytes = min(
-                        recordedAudioData.count,
-                        encoderPacketSizeInBytes - currentEncoderPacketSize
-                    )
-                    if takenBytes != 0 {
-                        recordedAudioData.withUnsafeBytes { rawBytes in
-                            let bytes = rawBytes.baseAddress!.assumingMemoryBound(to: Int8.self)
-                            memcpy(
-                                currentEncoderPacket.advanced(by: currentEncoderPacketSize),
-                                bytes,
-                                takenBytes
-                            )
-                        }
-                        recordedAudioData.replaceSubrange(0..<takenBytes, with: Data())
-                        currentEncoderPacketSize += takenBytes
-                    }
-                } else if bufferOffset < Int(buffer.mDataByteSize) {
-                    let takenBytes = min(
-                        Int(buffer.mDataByteSize) - bufferOffset,
-                        encoderPacketSizeInBytes - currentEncoderPacketSize
-                    )
-                    if takenBytes != 0 {
-                        memcpy(
-                            currentEncoderPacket.advanced(by: currentEncoderPacketSize),
-                            buffer.mData?.advanced(by: bufferOffset),
-                            takenBytes
-                        )
-                        bufferOffset += takenBytes
-                        currentEncoderPacketSize += takenBytes
-                    }
-                } else {
-                    break
-                }
-            }
-
-            if currentEncoderPacketSize < encoderPacketSizeInBytes {
-                recordedAudioData.append(
-                    currentEncoderPacket.assumingMemoryBound(to: UInt8.self),
-                    count: currentEncoderPacketSize
-                )
-                break
-            } else {
-                oggWriter.writeFrame(
-                    currentEncoderPacket.assumingMemoryBound(to: UInt8.self),
-                    frameByteCount: UInt(currentEncoderPacketSize)
-                )
-            }
-        }
-    }
-
-    private func flushAudioPacket() {
-        logger.debug("剩余数据: \(self.recordedAudioData.count)")
-        guard !recordedAudioData.isEmpty else { return }
-
-        var finalPacket = Data(count: 1920)
-
-        finalPacket.replaceSubrange(
-            0..<recordedAudioData.count,
-            with: recordedAudioData
-        )
-
-        _ = finalPacket.withUnsafeBytes {
-            oggWriter.writeFrame(
-                UnsafeMutablePointer(
-                    mutating: $0.bindMemory(to: UInt8.self).baseAddress!
-                ),
-                frameByteCount: UInt(1920)
-            )
-        }
-
-        recordedAudioData.removeAll()
-    }
-
-    private func conversionFloat32ToInt16Buffer(_ buffer: AVAudioPCMBuffer) -> AVAudioPCMBuffer? {
-        guard buffer.format.commonFormat == .pcmFormatFloat32,
-              let sourcePointer = buffer.floatChannelData?[0] else { return nil }
-
-        guard let format = AVAudioFormat(
-            commonFormat: .pcmFormatInt16,
-            sampleRate: buffer.format.sampleRate,
-            channels: buffer.format.channelCount,
-            interleaved: buffer.format.isInterleaved
-        ) else { return nil }
-
-        let frameLength = buffer.frameLength
-        guard let convertedBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameLength)
-        else { return nil }
-        convertedBuffer.frameLength = frameLength
-
-        guard let destinationPointer = convertedBuffer.int16ChannelData?[0] else { return nil }
-
-        let frameCount = Int(frameLength)
-        var scale = Float(Int16.max)
-
-        var multipliedFactors = [Float](repeating: 0.0, count: frameCount)
-
-        vDSP_vsmul(sourcePointer, 1, &scale, &multipliedFactors, 1, vDSP_Length(frameCount))
-        vDSP_vfix16(multipliedFactors, 1, destinationPointer, 1, vDSP_Length(frameCount))
-
-        return convertedBuffer
-    }
-
+   
     @inline(__always)
     private func calculateLevelPercentage(from buffer: AVAudioPCMBuffer) -> Double {
         guard let samples = buffer.floatChannelData?[0] else { return 0 }
