@@ -13,7 +13,6 @@
 import AVFAudio
 import CloudKit
 import Defaults
-import PushToTalk
 import UIKit
 
 @main
@@ -22,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
         Defaults[.id] = IDManager.ID()
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
@@ -48,9 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await AppManager.shared.registerForRemoteNotifications()
             }
         }
-        
+
         // FIXME: - 修复PTT位置拉起APP定位没有启动
-        if let data = options?[.location] {
+        if options?[.location] != nil {
             LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
         }
 
