@@ -43,8 +43,7 @@ final nonisolated class PTTRecorderManager {
     // 跳过提示音的样本数
     private var skippedSamplesCount: UInt32 = 0
     private var hasMicrophonePermission: Bool = false
-    private let packetSize = 1920
-
+    
     func requestAudioPermission() {
         AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
             guard let self = self else { return }

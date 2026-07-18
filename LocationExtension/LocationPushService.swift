@@ -41,7 +41,7 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
         self.locationManager!.delegate = self
         self.locationManager!.requestLocation()
 
-        self.params.callback = payload["callback"] as? String
+        self.params.callback = payload["location"] as? String
         self.params.title = payload["title"] as? String
         self.params.subTitle = payload["subtitle"] as? String
         self.params.body = payload["body"] as? String ?? String(localized: "位置信息获取成功")

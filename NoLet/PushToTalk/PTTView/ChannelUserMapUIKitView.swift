@@ -93,6 +93,7 @@ private func shouldShowNormalUserNames(for region: MKCoordinateRegion) -> Bool {
 
 struct ChannelUserMapUIKitView: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
+    let animateRegionChanges: Bool
     let onlineUsers: [ChannelUser]
 
     func makeCoordinator() -> Coordinator {
@@ -119,7 +120,11 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
         // 确保包含用户自己
         let usersWithSelf = ensureSelfUser(in: onlineUsers)
         context.coordinator.syncAnnotations(on: mapView, with: usersWithSelf)
-        context.coordinator.updateRegionIfNeeded(on: mapView, targetRegion: region)
+        context.coordinator.updateRegionIfNeeded(
+            on: mapView,
+            targetRegion: region,
+            animated: animateRegionChanges
+        )
     }
 
     // 确保用户列表中包含用户自己
@@ -226,11 +231,12 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
 
         func updateRegionIfNeeded(
             on mapView: MKMapView,
-            targetRegion: MKCoordinateRegion
+            targetRegion: MKCoordinateRegion,
+            animated: Bool
         ) {
             guard !regionMatches(mapView.region, targetRegion) else { return }
             isApplyingRegionFromSwiftUI = true
-            mapView.setRegion(targetRegion, animated: true)
+            mapView.setRegion(targetRegion, animated: animated)
         }
 
         private func refreshTalkingPriority(on mapView: MKMapView) {

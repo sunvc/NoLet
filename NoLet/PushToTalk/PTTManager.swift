@@ -35,6 +35,7 @@ final class PTTManager: NSObject, ObservableObject {
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
     @Published var hasPermission: Bool = false
+    @Published var animateRegionChange = true
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
             latitude: 31.2397,
@@ -684,6 +685,31 @@ final class PTTManager: NSObject, ObservableObject {
 }
 
 extension PTTManager: CLLocationManagerDelegate {
+    func scaleMapAroundCenter(
+        from baseRegion: MKCoordinateRegion,
+        scale: Double,
+        animated: Bool
+    ) {
+        let clampedScale = min(max(scale, 0.2), 5.0)
+        let minDelta: CLLocationDegrees = 0.0005
+        let maxDelta: CLLocationDegrees = 120
+
+        animateRegionChange = animated
+        region = MKCoordinateRegion(
+            center: baseRegion.center,
+            span: MKCoordinateSpan(
+                latitudeDelta: min(
+                    max(baseRegion.span.latitudeDelta * clampedScale, minDelta),
+                    maxDelta
+                ),
+                longitudeDelta: min(
+                    max(baseRegion.span.longitudeDelta * clampedScale, minDelta),
+                    maxDelta
+                )
+            )
+        )
+    }
+
     func zoomToFitAllUsers() {
         // 获取所有用户（包括当前用户自己）
         var usersToShow = Defaults[.pttChannel].users
@@ -714,6 +740,7 @@ extension PTTManager: CLLocationManagerDelegate {
         guard !validUsers.isEmpty else {
             // 如果所有用户都无效，至少显示当前用户自己的位置
             let userCoordinate = LocManager.shared.location.coordinate
+            animateRegionChange = true
             withAnimation(.easeInOut(duration: 0.5)) {
                 region = MKCoordinateRegion(
                     center: userCoordinate,
@@ -749,6 +776,7 @@ extension PTTManager: CLLocationManagerDelegate {
             finalLngDelta = max(lngDelta * 1.5, 0.002)
         }
 
+        animateRegionChange = true
         withAnimation(.easeInOut(duration: 0.5)) {
             region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(

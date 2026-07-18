@@ -187,13 +187,16 @@ final nonisolated class PTTChannelManager: NSObject,
                 }
             }
         }
-
+        
+        let name = pushPayload["name"] as? String
+        
         return .activeRemoteParticipant(
             .init(
-                name: String(localized: "未知"),
+                name: name ?? String(localized: "未知"),
                 image: "無,ff0000".avatarImage()
             )
         )
+        
     }
 
     // MARK: - Audio Session

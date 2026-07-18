@@ -228,6 +228,64 @@ extension ImageManager {
 }
 
 extension ImageManager {
+    
+    private static func drawLocationLabel(
+        text: String,
+        at point: CGPoint,
+        in imageSize: CGSize
+    ) {
+        let font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: font,
+            .foregroundColor: UIColor.white,
+            .paragraphStyle: paragraphStyle,
+        ]
+
+        let padding = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+        let maxLabelWidth = min(imageSize.width - 24, 220)
+        let textBounds = (text as NSString).boundingRect(
+            with: CGSize(width: maxLabelWidth - padding.left - padding.right, height: 60),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: attributes,
+            context: nil
+        ).integral
+
+        let labelSize = CGSize(
+            width: min(maxLabelWidth, textBounds.width + padding.left + padding.right),
+            height: textBounds.height + padding.top + padding.bottom
+        )
+
+        var labelOrigin = CGPoint(
+            x: point.x - labelSize.width / 2,
+            y: point.y - labelSize.height - 18
+        )
+
+        labelOrigin.x = min(max(12, labelOrigin.x), imageSize.width - labelSize.width - 12)
+        if labelOrigin.y < 12 {
+            labelOrigin.y = min(point.y + 18, imageSize.height - labelSize.height - 12)
+        }
+
+        let labelRect = CGRect(origin: labelOrigin, size: labelSize)
+        let textRect = labelRect.inset(by: padding)
+
+        let bubblePath = UIBezierPath(
+            roundedRect: labelRect,
+            cornerRadius: labelSize.height / 2
+        )
+        UIColor.black.withAlphaComponent(0.72).setFill()
+        bubblePath.fill()
+
+        (text as NSString).draw(
+            with: textRect,
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: attributes,
+            context: nil
+        )
+    }
+
     /// 异步解析经纬度并在地图截图上绘制圆形定位点
     /// - Parameters:
     ///   - locationString: 经纬度字符串 (例如 "41.3414, 126.1852")
@@ -248,6 +306,7 @@ extension ImageManager {
         }
 
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        let locationTitle = await LocManager.shared.resolveLocationTitle(for: coordinate)
 
         let options = MKMapSnapshotter.Options()
         options.region = MKCoordinateRegion(
@@ -312,6 +371,14 @@ extension ImageManager {
                         context.restoreGState()
                     }
 
+                    if let locationTitle, !locationTitle.isEmpty {
+                        drawLocationLabel(
+                            text: locationTitle,
+                            at: snapshot.point(for: coordinate),
+                            in: snapshot.image.size
+                        )
+                    }
+
                     let imageWithPin = UIGraphicsGetImageFromCurrentImageContext()
                     UIGraphicsEndImageContext()
                     continuation.resume(returning: imageWithPin)
@@ -326,4 +393,3 @@ extension ImageManager {
         return await Self.downloadImage(locationString)
     }
 }
-

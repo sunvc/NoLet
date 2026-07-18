@@ -22,14 +22,38 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
-    private let locationManager = CLLocationManager()
-    private let geocoder = CLGeocoder()
+    let locationManager = CLLocationManager()
+    let geocoder = CLGeocoder()
     private override init() {
         super.init()
         self.locationManager.delegate = self
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
     }
+    
+    func resolveLocationTitle(for coordinate: CLLocationCoordinate2D) async -> String? {
+     
+        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+
+        do {
+            let placemarks = try await geocoder.reverseGeocodeLocation(location)
+            guard let placemark = placemarks.first else { return nil }
+
+            let candidates = [
+                placemark.name,
+                placemark.locality,
+                placemark.subLocality,
+                placemark.administrativeArea,
+            ]
+            return candidates
+                .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .first(where: { !$0.isEmpty && $0 != placemark.country })
+        } catch {
+            logger.debug("Resolve location title failed: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
 
     nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -39,15 +63,19 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         mapItem.openInMaps(launchOptions: [:])
     }
 
-    func startMonitoringLocationPushes() async -> String?{
-        do {
-            let data = try await self.locationManager.startMonitoringLocationPushes()
+    func startMonitoringLocationPushes(callback: @escaping @Sendable (String) -> Void){
+        
+        self.locationManager.startMonitoringLocationPushes { data, error in
+            
+            if let error = error{
+                logger.error("\(error.localizedDescription)")
+                return 
+            }
+            
+            guard let data = data else{ return }
             let token = data.map { String(format: "%02.2hhx", $0) }.joined()
             logger.info("位置TOKEN: \(token)")
-            return token
-        } catch {
-            logger.error("\(error.localizedDescription)")
-            return nil
+            callback(token)
         }
     }
 

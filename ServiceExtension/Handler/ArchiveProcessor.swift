@@ -45,7 +45,7 @@ class ArchiveProcessor: NotificationContentProcessor {
                 latitude: location.0,
                 longitude: location.1
             )
-            body += "[\(address)]"
+            body += "\n[\(address)]"
             bestAttemptContent.body = body
         }
 
