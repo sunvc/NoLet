@@ -56,10 +56,17 @@ final nonisolated class PTTChannelManager: NSObject,
                 image: "書".avatarImage()
             )
         )
+        Task{@MainActor in
+            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
+        }
+       
     }
 
     func leave() {
         self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
+        Task{@MainActor in
+            LocManager.shared.runMonitoringSignificantLocationChanges(start: false)
+        }
     }
 
 

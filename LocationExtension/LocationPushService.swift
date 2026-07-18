@@ -59,7 +59,7 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard !SUCCESS else { return }
-        guard let location = locations.first else {
+        guard let location = locations.last else {
             self.stopLocation()
             return
         }

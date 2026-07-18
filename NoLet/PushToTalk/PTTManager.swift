@@ -49,10 +49,12 @@ final class PTTManager: NSObject, ObservableObject {
 
     @Published var onlineUsers: [ChannelUser] = []
 
+    var background: Bool = false
+
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
     private let database = DatabaseManager.shared
-    private nonisolated let network = NetworkManager()
+    private let network = NetworkManager()
     private var observationCancellable: AnyDatabaseCancellable?
     private var loopTask: Task<Void, Never>?
 
@@ -68,6 +70,16 @@ final class PTTManager: NSObject, ObservableObject {
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
+
+        Task {
+            for await _ in NotificationCenter.default.notifications(
+                named: .locationUpdated
+            ) {
+                if self.powerState {
+                    await self.publicJoinConnect()
+                }
+            }
+        }
     }
 
     deinit {
@@ -120,11 +132,12 @@ final class PTTManager: NSObject, ObservableObject {
                 guard let self = self else { break }
 
                 do {
+                    try await Task.sleep(for: .seconds(15))
+
                     if await self.powerState {
-                        await LocManager.shared.requestLocation()
                         await self.publicJoinConnect()
                     }
-                    try await Task.sleep(for: .seconds(10))
+
                 } catch {
                     logger.info("Task 休眠被中断，准备退出")
                     break

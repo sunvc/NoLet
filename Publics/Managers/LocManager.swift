@@ -16,23 +16,36 @@ import CoreLocation
 import Foundation
 import MapKit
 
-final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate  {
+final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocManager()
 
     @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
     let locationManager = CLLocationManager()
-    
+
     private override init() {
         super.init()
         self.locationManager.delegate = self
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        
     }
-    
 
+    func runMonitoringSignificantLocationChanges(start: Bool = false) {
+        switch authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            Task { @MainActor in
+                if start {
+                    await self.requestLocation()
+                    self.locationManager.startMonitoringSignificantLocationChanges()
+                } else {
+                    self.locationManager.stopMonitoringSignificantLocationChanges()
+                }
+            }
+        default:
+            break
+        }
+    }
 
     nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
@@ -42,16 +55,14 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate  {
         mapItem.openInMaps(launchOptions: [:])
     }
 
-    func startMonitoringLocationPushes(callback: @escaping @Sendable (String) -> Void){
-        
+    func startMonitoringLocationPushes(callback: @escaping @Sendable (String) -> Void) {
         self.locationManager.startMonitoringLocationPushes { data, error in
-            
-            if let error = error{
+            if let error = error {
                 logger.error("\(error.localizedDescription)")
-                return 
+                return
             }
-            
-            guard let data = data else{ return }
+
+            guard let data = data else { return }
             let token = data.map { String(format: "%02.2hhx", $0) }.joined()
             logger.info("Location TOKEN: \(token)")
             callback(token)
@@ -81,6 +92,10 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate  {
             if let lastLocation = locations.last {
                 self.location = lastLocation
             }
+            NotificationCenter.default.post(
+                name: .locationUpdated,
+                object: nil
+            )
         }
     }
 
@@ -93,5 +108,6 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate  {
     }
 }
 
-
-
+extension Notification.Name {
+    static let locationUpdated = Notification.Name("locationUpdated")
+}

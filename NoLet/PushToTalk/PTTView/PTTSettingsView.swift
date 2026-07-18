@@ -166,7 +166,6 @@ struct PTTSettingsView: View {
         }
     }
 
-
     private var equalizerView: some View {
         Section {
             EQSliderView()
@@ -276,7 +275,6 @@ struct LocationStatusView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-
             case .authorizedWhenInUse, .authorizedAlways:
                 Toggle(isOn: .constant(true)) {
                     Label {
@@ -286,7 +284,12 @@ struct LocationStatusView: View {
                             .foregroundStyle(.green, .primary)
                     }
                 }
-                
+                .onAppear {
+                    if PTTManager.shared.powerState {
+                        LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
+                    }
+                }
+
             default:
                 ListButton {
                     Label {
@@ -304,11 +307,10 @@ struct LocationStatusView: View {
                     }
                     return true
                 }
-
             }
         } header: {
             // 1. 根据不同的权限状态显示不同的 UI
-            Group{
+            Group {
                 switch locManager.authorizationStatus {
                 case .notDetermined:
                     Text("需要您的位置信息")
@@ -331,7 +333,6 @@ struct LocationStatusView: View {
                 }
             }
             .font(.footnote)
-            
         }
     }
 }
