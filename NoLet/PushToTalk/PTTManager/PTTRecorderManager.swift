@@ -85,7 +85,7 @@ final nonisolated class PTTRecorderManager {
         }
     }
 
-    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
+    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool, bitrate: Int) {
         
         logger.debug("Avvio trasmissione audio...")
         self.oggWriter = nil
@@ -113,7 +113,7 @@ final nonisolated class PTTRecorderManager {
         do {
             oggWriter = try OpusManager(
                 sampleRate: Int(audioFormat.sampleRate),
-                bitrate: 30 * 1024,
+                bitrate: bitrate,
                 application: .voip
             )
 

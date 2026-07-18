@@ -535,7 +535,11 @@ final class PTTManager: NSObject, ObservableObject {
     private func beginRecord(_ activity: Bool = true) async {
         state = .recording
         logger.info("Start Record")
-        recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
+        recorder.startRecording(
+            activity,
+            pttMusicPlay: Defaults[.pttMusicPlay],
+            bitrate: Defaults[.pttBitrate] * 1000
+        )
         await self.send(.recordStarted)
     }
 

@@ -20,6 +20,7 @@ struct PTTSettingsView: View {
     @Default(.eqBands) private var eqBands
     @Default(.pttVibration) private var pttVibration
     @Default(.pttMusicPlay) private var pttMusicPlay
+    @Default(.pttBitrate) private var pttBitrate
     @Default(.pttVoiceVolume) private var pttVoiceVolume
     @Default(.pttSignature) private var pttSignature
     @Default(.pttNickname) private var pttNickname
@@ -29,6 +30,7 @@ struct PTTSettingsView: View {
     @State private var showEdit: Bool = false
     @State private var nikeName: String = ""
     @State private var showLoading: Bool = false
+    private let bitrateOptions = [16, 24, 32, 48, 64, 96, 128]
 
     var body: some View {
         NavigationStack {
@@ -143,6 +145,17 @@ struct PTTSettingsView: View {
 
                 } header: {
                     Text("播放音量")
+                }
+
+                Section {
+                    Picker("码率", selection: $pttBitrate) {
+                        ForEach(bitrateOptions, id: \.self) { bitrate in
+                            Text("\(bitrate) kbps")
+                                .tag(bitrate)
+                        }
+                    }
+                } header: {
+                    Text("录音码率")
                 }
 
                 equalizerView
