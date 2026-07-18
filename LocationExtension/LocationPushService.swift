@@ -79,4 +79,6 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         self.completion?()
     }
+    
+
 }

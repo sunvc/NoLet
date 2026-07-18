@@ -16,7 +16,7 @@ import CoreLocation
 import Foundation
 import MapKit
 
-final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate  {
     static let shared = LocManager()
 
     @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
@@ -29,7 +29,10 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.delegate = self
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        
     }
+    
+
     
     func resolveLocationTitle(for coordinate: CLLocationCoordinate2D) async -> String? {
      
