@@ -38,8 +38,6 @@ final nonisolated class PTTChannelManager: NSObject,
         channelManagerLock.withLock { $0 }
     }
 
-
-
     func start() async throws {
         let channelManager = try await PTChannelManager.channelManager(
             delegate: self,

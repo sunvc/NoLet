@@ -20,8 +20,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(
         _: UIApplication,
-        didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]?
+        didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
         Defaults[.id] = IDManager.ID()
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
@@ -46,6 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if !Defaults[.firstStart] {
                 await AppManager.shared.registerForRemoteNotifications()
             }
+        }
+        
+        // FIXME: - 修复PTT位置拉起APP定位没有启动
+        if let data = options?[.location] {
+            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
         }
 
         WeChatManager.shared.register()
