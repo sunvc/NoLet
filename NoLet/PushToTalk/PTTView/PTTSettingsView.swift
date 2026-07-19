@@ -20,7 +20,6 @@ struct PTTSettingsView: View {
     @Default(.eqBands) private var eqBands
     @Default(.pttVibration) private var pttVibration
     @Default(.pttMusicPlay) private var pttMusicPlay
-    @Default(.pttBitrate) private var pttBitrate
     @Default(.pttVoiceVolume) private var pttVoiceVolume
     @Default(.pttSignature) private var pttSignature
     @Default(.pttNickname) private var pttNickname
@@ -30,7 +29,6 @@ struct PTTSettingsView: View {
     @State private var showEdit: Bool = false
     @State private var nikeName: String = ""
     @State private var showLoading: Bool = false
-    private let bitrateOptions = [16, 24, 32, 48, 64, 96, 128]
 
     var body: some View {
         NavigationStack {
@@ -147,17 +145,6 @@ struct PTTSettingsView: View {
                     Text("播放音量")
                 }
 
-                Section {
-                    Picker("码率", selection: $pttBitrate) {
-                        ForEach(bitrateOptions, id: \.self) { bitrate in
-                            Text("\(bitrate) kbps")
-                                .tag(bitrate)
-                        }
-                    }
-                } header: {
-                    Text("录音码率")
-                }
-
                 equalizerView
             }
             .navigationTitle("PTT设置")
@@ -165,6 +152,7 @@ struct PTTSettingsView: View {
             .background(ContentBackgroundView())
         }
     }
+
 
     private var equalizerView: some View {
         Section {
@@ -275,6 +263,7 @@ struct LocationStatusView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
+
             case .authorizedWhenInUse, .authorizedAlways:
                 Toggle(isOn: .constant(true)) {
                     Label {
@@ -284,12 +273,7 @@ struct LocationStatusView: View {
                             .foregroundStyle(.green, .primary)
                     }
                 }
-                .onAppear {
-                    if PTTManager.shared.powerState {
-                        LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
-                    }
-                }
-
+                
             default:
                 ListButton {
                     Label {
@@ -307,10 +291,11 @@ struct LocationStatusView: View {
                     }
                     return true
                 }
+
             }
         } header: {
             // 1. 根据不同的权限状态显示不同的 UI
-            Group {
+            Group{
                 switch locManager.authorizationStatus {
                 case .notDetermined:
                     Text("需要您的位置信息")
@@ -333,6 +318,7 @@ struct LocationStatusView: View {
                 }
             }
             .font(.footnote)
+            
         }
     }
 }

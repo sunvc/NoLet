@@ -43,7 +43,8 @@ final nonisolated class PTTRecorderManager {
     // 跳过提示音的样本数
     private var skippedSamplesCount: UInt32 = 0
     private var hasMicrophonePermission: Bool = false
-    
+    private let packetSize = 1920
+
     func requestAudioPermission() {
         AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
             guard let self = self else { return }
@@ -84,7 +85,7 @@ final nonisolated class PTTRecorderManager {
         }
     }
 
-    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool, bitrate: Int) {
+    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
         
         logger.debug("Avvio trasmissione audio...")
         self.oggWriter = nil
@@ -112,7 +113,7 @@ final nonisolated class PTTRecorderManager {
         do {
             oggWriter = try OpusManager(
                 sampleRate: Int(audioFormat.sampleRate),
-                bitrate: bitrate,
+                bitrate:  32_000,
                 application: .voip
             )
 

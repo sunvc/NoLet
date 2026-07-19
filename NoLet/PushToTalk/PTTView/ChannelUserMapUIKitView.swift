@@ -93,7 +93,6 @@ private func shouldShowNormalUserNames(for region: MKCoordinateRegion) -> Bool {
 
 struct ChannelUserMapUIKitView: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
-    let animateRegionChanges: Bool
     let onlineUsers: [ChannelUser]
 
     func makeCoordinator() -> Coordinator {
@@ -120,36 +119,43 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
         // 确保包含用户自己
         let usersWithSelf = ensureSelfUser(in: onlineUsers)
         context.coordinator.syncAnnotations(on: mapView, with: usersWithSelf)
-        context.coordinator.updateRegionIfNeeded(
-            on: mapView,
-            targetRegion: region,
-            animated: animateRegionChanges
-        )
+        context.coordinator.updateRegionIfNeeded(on: mapView, targetRegion: region)
     }
 
     // 确保用户列表中包含用户自己
     private func ensureSelfUser(in users: [ChannelUser]) -> [ChannelUser] {
         let userId = Defaults[.id]
+
+        // 检查是否已经包含用户自己
         let hasSelf = users.contains { $0.id == userId }
 
         if !hasSelf {
+            // 获取用户自己的位置
             let userCoordinate = LocManager.shared.location.coordinate
+
+            // 创建用户自己的 ChannelUser，名称设置为"本机"
             let selfUser = ChannelUser(
                 id: userId,
-                name: String(localized: "本机"),
+                name: "本机",
                 coordinate: userCoordinate,
                 active: false
             )
+
+            // 添加到在线用户列表
             var newUsers = users
             newUsers.insert(selfUser, at: 0)
             return newUsers
         } else {
+            // 如果已经包含用户自己，确保名称是"本机"
             var newUsers = users
             if let index = newUsers.firstIndex(where: { $0.id == userId }) {
                 let user = newUsers[index]
+                // 直接替换名称为"本机"
+                // 我们需要使用一个临时方式，因为 ChannelUser 没有公开修改 name 的方法
+                // 让我们重新创建一个
                 let updatedUser = ChannelUser(
                     id: user.id,
-                    name: String(localized: "本机"),
+                    name: "本机",
                     coordinate: user.coordinate,
                     active: user.active
                 )
@@ -220,12 +226,11 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
 
         func updateRegionIfNeeded(
             on mapView: MKMapView,
-            targetRegion: MKCoordinateRegion,
-            animated: Bool
+            targetRegion: MKCoordinateRegion
         ) {
             guard !regionMatches(mapView.region, targetRegion) else { return }
             isApplyingRegionFromSwiftUI = true
-            mapView.setRegion(targetRegion, animated: animated)
+            mapView.setRegion(targetRegion, animated: true)
         }
 
         private func refreshTalkingPriority(on mapView: MKMapView) {

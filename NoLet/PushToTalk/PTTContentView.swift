@@ -9,7 +9,6 @@ import AVFAudio
 import Combine
 import Defaults
 import SwiftUI
-import MapKit
 
 struct PTTContentView: View {
     @State private var ispress: Bool = false
@@ -51,7 +50,6 @@ struct PTTContentView: View {
     private let maxDragDistance: CGFloat = 130.0
 
     @State private var showUserMapTem: Bool = false
-    @State private var logoDragStartRegion: MKCoordinateRegion?
 
     @State private var showBackup: Bool = false
 
@@ -393,39 +391,12 @@ struct PTTContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .padding(3)
                             .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onChanged { value in
-                                        guard showUserMapTem else { return }
-                                        pttManager.animateRegionChange = false
-
-                                        if logoDragStartRegion == nil {
-                                            logoDragStartRegion = pttManager.region
-                                        }
-                                        guard let baseRegion = logoDragStartRegion else { return }
-
-                                        let scale = pow(1.01, value.translation.height)
-                                        pttManager.scaleMapAroundCenter(
-                                            from: baseRegion,
-                                            scale: scale,
-                                            animated: false
-                                        )
-                                    }
-                                    .onEnded { value in
-                                        defer {
-                                            logoDragStartRegion = nil
-                                            pttManager.animateRegionChange = true
-                                        }
-                                        guard showUserMapTem else { return }
-
-                                        let isTap = abs(value.translation.width) < 8 &&
-                                            abs(value.translation.height) < 8
-                                        if isTap {
-                                            pttManager.zoomToFitAllUsers()
-                                            Haptic.impact()
-                                        }
-                                    }
-                            )
+                            .VButton{ _ in
+                                if showUserMapTem{
+                                    pttManager.zoomToFitAllUsers()
+                                }
+                                return true
+                            }
 
                         Spacer(minLength: 0)
 
@@ -561,7 +532,6 @@ struct PTTContentView: View {
                 if showUserMap {
                     ChannelUserMapUIKitView(
                         region: $pttManager.region,
-                        animateRegionChanges: pttManager.animateRegionChange,
                         onlineUsers: pttManager.onlineUsers
                     )
                 }
