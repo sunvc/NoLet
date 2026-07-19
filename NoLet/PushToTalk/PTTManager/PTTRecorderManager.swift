@@ -29,6 +29,30 @@ nonisolated protocol PTTRecorderDelegate: AnyObject {
         _ manager: PTTRecorderManager,
         didUpdateMicrophonePermission hasPermission: Bool
     )
+
+    /// 每次采集到 PCM 帧时的实时回调——用于并行 WebSocket 逐帧 Opus 传输。
+    /// 与 didUpdateRecordingPower 同一回调线程；实现方需自行避免长阻塞。
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        didCaptureBuffer buffer: AVAudioPCMBuffer
+    )
+
+    /// Tokenized recorder lifecycle callbacks used by the unified audio FSM.
+    func recorderManager(_ manager: PTTRecorderManager, didStartRecording id: UUID)
+    func recorderManager(_ manager: PTTRecorderManager, recording id: UUID, didStopWith data: Data?)
+    func recorderManager(_ manager: PTTRecorderManager, recording id: UUID, didFail error: String)
+}
+
+extension PTTRecorderDelegate {
+    // Optional by default so existing tests / older delegates compile unchanged.
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        didCaptureBuffer buffer: AVAudioPCMBuffer
+    ) {}
+
+    func recorderManager(_ manager: PTTRecorderManager, didStartRecording id: UUID) {}
+    func recorderManager(_ manager: PTTRecorderManager, recording id: UUID, didStopWith data: Data?) {}
+    func recorderManager(_ manager: PTTRecorderManager, recording id: UUID, didFail error: String) {}
 }
 
 final nonisolated class PTTRecorderManager {
@@ -39,6 +63,7 @@ final nonisolated class PTTRecorderManager {
     private var audioFormat: AVAudioFormat?
     private var recordedAudioData = Data()
     private var oggWriter: OpusManager?
+    private var activeRecordingID: UUID?
 
     // 跳过提示音的样本数
     private var skippedSamplesCount: UInt32 = 0
@@ -85,13 +110,19 @@ final nonisolated class PTTRecorderManager {
         }
     }
 
-    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
-        
+    func startRecording(
+        id: UUID,
+        _ activity: Bool = true,
+        pttMusicPlay: Bool
+    ) {
         logger.debug("Avvio trasmissione audio...")
+        activeRecordingID = id
         self.oggWriter = nil
-        
+
         guard self.hasMicrophonePermission else {
             self.requestAudioPermission()
+            delegate?.recorderManager(self, recording: id, didFail: "microphone permission unavailable")
+            activeRecordingID = nil
             return
         }
 
@@ -150,6 +181,10 @@ final nonisolated class PTTRecorderManager {
 
                     try? oggWriter.append(buffer: buffer)
 
+                    // 并行的实时路径：把同一份 PCM 交给 WS 发送流，
+                    // 由 PTTStreamingSender 走 OpusRealtimeEncoder → 逐 20ms 帧。
+                    self.delegate?.recorderManager(self, didCaptureBuffer: buffer)
+
                     let mic = self.calculateLevelPercentage(from: buffer)
                     self.delegate?.recorderManager(
                         self,
@@ -161,30 +196,49 @@ final nonisolated class PTTRecorderManager {
             audioEngine.prepare()
             try audioEngine.start()
             logger.debug("Trasmissione audio avviata.")
+            delegate?.recorderManager(self, didStartRecording: id)
         } catch {
             logger.error("\(error.localizedDescription)")
-            _ = self.stopRecording()
+            _ = self.stopRecording(id: id, notify: false)
+            delegate?.recorderManager(self, recording: id, didFail: error.localizedDescription)
         }
     }
 
-    func stopRecording() -> Data? {
+    /// Compatibility wrapper used until every caller is tokenized.
+    func startRecording(_ activity: Bool = true, pttMusicPlay: Bool) {
+        startRecording(id: UUID(), activity, pttMusicPlay: pttMusicPlay)
+    }
+
+    @discardableResult
+    func stopRecording(id: UUID, notify: Bool = true) -> Data? {
         logger.debug("Arresto trasmissione audio...")
+        guard activeRecordingID == id else { return nil }
+        activeRecordingID = nil
+
         guard let oggWriter, let audioEngine = audioEngine,
-              let inputNode = inputNode else { return nil }
+              let inputNode = inputNode else {
+            if notify { delegate?.recorderManager(self, recording: id, didStopWith: nil) }
+            return nil
+        }
 
         inputNode.removeTap(onBus: 0)
         audioEngine.stop()
-
         self.inputNode = nil
         self.audioEngine = nil
 
+        var result: Data?
         if let data = try? oggWriter.finish(), oggWriter.encodedDuration > 0.2 {
-            return data
+            result = data
         }
-
         self.oggWriter = nil
         logger.debug("Trasmissione audio arrestata.")
-        return nil
+        if notify { delegate?.recorderManager(self, recording: id, didStopWith: result) }
+        return result
+    }
+
+    func stopRecording() -> Data? {
+        guard let id = activeRecordingID else { return nil }
+        return stopRecording(id: id, notify: false)
     }
 
    
