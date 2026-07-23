@@ -124,26 +124,9 @@ final nonisolated class PTTChannelManager: NSObject,
         channelUUID: UUID,
         didBeginTransmittingFrom source: PTChannelTransmitRequestSource
     ) {
-        let message: String
+       
 
-        switch source {
-        case .unknown:
-            message = "未知来源"
-
-        case .userRequest:
-            message = "用户发起"
-
-        case .developerRequest:
-            message = "应用发起"
-
-        case .handsfreeButton:
-            message = "耳机按钮发起"
-
-        @unknown default:
-            message = "未知来源"
-        }
-
-        logger.debug("🎤\(message): 开始发送 ")
+        logger.debug("🎤外部: 开始发送 ")
         let origin: PTTRecordingOrigin
         switch source {
         case .userRequest: origin = .user

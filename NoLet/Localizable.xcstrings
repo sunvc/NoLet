@@ -2685,6 +2685,7 @@
       }
     },
     "呼叫失败，对方无应答" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -3437,6 +3438,7 @@
       }
     },
     "已静音" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4014,6 +4016,7 @@
       }
     },
     "扬声器" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4030,6 +4033,7 @@
       }
     },
     "拒绝" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4126,6 +4130,7 @@
       }
     },
     "接听" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -4142,6 +4147,7 @@
       }
     },
     "接听失败，连接中断" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5518,6 +5524,7 @@
       }
     },
     "来电中... 北京, 中国" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5742,6 +5749,7 @@
       }
     },
     "模拟来电 🔔" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5774,6 +5782,7 @@
       }
     },
     "正在呼叫..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -5838,6 +5847,7 @@
       }
     },
     "正在接通..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -9204,6 +9214,7 @@
       }
     },
     "静音" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

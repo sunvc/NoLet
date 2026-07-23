@@ -84,6 +84,16 @@ final class PTTManager: NSObject, ObservableObject {
 
     var audioState: PTTAudioState { audioMachine.state }
 
+    /// Whether an incoming/outgoing realtime PTT audio session still needs its
+    /// WebSocket while the app is in the background. Local history playback is
+    /// intentionally excluded because it does not use the realtime socket.
+    var hasActivePTTAudioSession: Bool {
+        if audioMachine.state.isRecordingPhase || !audioMachine.remoteQueue.isEmpty {
+            return true
+        }
+        return audioMachine.state.playback?.isRemote == true
+    }
+
     /// Timestamp of the last PRESENCE update we sent, so `didUpdateLocations`
     /// bursts don't flood the socket. Guarded by MainActor isolation.
     private var lastPresenceReportAt: Date = .distantPast
@@ -315,6 +325,12 @@ final class PTTManager: NSObject, ObservableObject {
             }
         }
         processingAudioEvents = false
+
+        // If the audio session just became idle while the app is backgrounded,
+        // the Sender can suspend the now-unnecessary WebSocket.
+        if !hasActivePTTAudioSession {
+            PTTStreamingSender.shared.audioSessionDidBecomeIdle()
+        }
     }
 
     private func runAudioEffect(_ effect: PTTAudioEffect) {

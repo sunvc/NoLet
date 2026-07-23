@@ -405,6 +405,9 @@ enum PTTAudioReducer {
 
         case .remoteFailed(let sessionID, _):
             machine.remoteQueue.removeAll { $0.sessionID == sessionID }
+            if machine.pausedRemote?.sessionID == sessionID {
+                machine.pausedRemote = nil
+            }
             if machine.state.remoteSessionID == sessionID {
                 effects.append(.releaseRemote(sessionID))
                 selectNextPlayback()

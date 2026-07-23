@@ -71,12 +71,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_: UIScene) {
         _syncAppInfo()
+        Task { @MainActor in
+            guard PTTManager.shared.powerState else { return }
+            PTTStreamingSender.shared.applicationWillEnterForeground(
+                channel: Defaults[.pttChannel]
+            )
+        }
     }
 
     func sceneDidEnterBackground(_: UIScene) {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
-        
+
+        PTTStreamingSender.shared.applicationDidEnterBackground()
         _syncAppInfo()
 
         Task { @MainActor in

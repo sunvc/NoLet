@@ -8,7 +8,7 @@
 //
 
 import Accelerate
-import AVFoundation
+@preconcurrency import AVFoundation
 import Defaults
 import Foundation
 import Opus
@@ -32,6 +32,7 @@ final class PTTStreamingReceiver {
 
     private final class ReceiveSession {
         let id: String
+        let sessionTag: UInt32
         let channel: String
         let from: String
         let fromName: String
@@ -60,6 +61,7 @@ final class PTTStreamingReceiver {
 
         init(
             id: String,
+            sessionTag: UInt32,
             channel: String,
             from: String,
             fromName: String,
@@ -71,6 +73,7 @@ final class PTTStreamingReceiver {
             outputFormat: AVAudioFormat
         ) {
             self.id = id
+            self.sessionTag = sessionTag
             self.channel = channel
             self.from = from
             self.fromName = fromName
@@ -94,6 +97,7 @@ final class PTTStreamingReceiver {
 
     private struct StartBroadcast: Decodable {
         let session_id: String
+        let session_tag: UInt32
         let channel: String
         let from: String
         let from_name: String
@@ -101,6 +105,11 @@ final class PTTStreamingReceiver {
         let codec: String
         let sample_rate: Int
         let frame_ms: Int
+
+        private enum CodingKeys: String, CodingKey {
+            case session_id, session_tag, channel, from, from_name
+            case started_at, codec, sample_rate, frame_ms
+        }
     }
 
     private struct EndBroadcast: Decodable {
@@ -141,9 +150,9 @@ final class PTTStreamingReceiver {
         let receivedAt: TimeInterval
     }
 
-    /// AUDIO carries no session id. During APNs wake-up it can arrive before
-    /// START_BROADCAST / REPLAY_BEGIN has created the receive session. Keep a
-    /// small ordered backlog and attach recent packets to the next session.
+    /// AUDIO payload has an optional 4-byte session_tag prefix, matched against
+    /// START_BROADCAST.session_tag for multi-talker routing. During APNs wake-up
+    /// AUDIO may arrive before the control frame — keep a small ordered backlog.
     private static let maxOrphanAudioPackets = 250
     private static let orphanAudioMaxAge: TimeInterval = 2
     private var orphanAudioFrames: [BufferedAudioFrame] = []
@@ -151,6 +160,10 @@ final class PTTStreamingReceiver {
     private var sessions: [String: ReceiveSession] = [:]
     private var sessionOrder: [String] = []
     private var activeSessionID: String?
+    /// session_tag → sessionID lookup. Built from START_BROADCAST.session_tag
+    /// so AUDIO frames can be routed to the correct session in O(1) even when
+    /// multiple talkers are active.
+    private var sessionsByTag: [UInt32: String] = [:]
 
     /// All receiver lifecycle/progress changes go through this handler. It is
     /// installed by PTTManager and feeds the unified audio mailbox.
@@ -207,8 +220,20 @@ final class PTTStreamingReceiver {
     }
 
     func socket(_ manager: PTTWebSocketManager, didChangeState state: PTTWebSocketState) {
-        guard state == .authenticated else { return }
-        flushPendingSubscribe(for: manager)
+        if state == .authenticated {
+            flushPendingSubscribe(for: manager)
+            return
+        }
+        // When the transport fails or idles, terminate any active remote session
+        // so the FSM can release the audio pipeline and return to idle. The
+        // silence watchdog (drainTimer) is a backup for the case where the socket
+        // stays healthy but END_BROADCAST is lost.
+        if state == .idle || state == .closing { return }
+        guard case .failed = state else { return }
+        if let id = activeSessionID, let session = sessions[id],
+           session.mode == .active || session.mode == .draining {
+            emit(.remoteFailed(sessionID: id, reason: "websocket disconnected"))
+        }
     }
 
     private func flushPendingSubscribe(for manager: PTTWebSocketManager) {
@@ -241,11 +266,23 @@ final class PTTStreamingReceiver {
         }
         guard payload.from != Defaults[.id], sessions[payload.session_id] == nil else { return }
 
+        // When a new remote speaker starts while another is still active,
+        // preempt the current session so the FSM can release the old pipeline
+        // and prepare for the new stream. The server should have already sent
+        // END_BROADCAST for the old session; this is a client-side safety net.
+        if let activeID = activeSessionID,
+           let active = sessions[activeID],
+           active.mode == .active || active.mode == .draining {
+            log.debug("preempting active session id=\(activeID, privacy: .public) for new start id=\(payload.session_id, privacy: .public)")
+            emit(.remoteFailed(sessionID: activeID, reason: "preempted by another speaker"))
+        }
+
         do {
             let decoder = try OpusRealtimeDecoder(sampleRate: payload.sample_rate)
             let jitter = PTTJitterBuffer(maxDepth: Self.maxBacklogPackets)
             let session = ReceiveSession(
                 id: payload.session_id,
+                sessionTag: payload.session_tag,
                 channel: payload.channel,
                 from: payload.from,
                 fromName: payload.from_name,
@@ -258,7 +295,10 @@ final class PTTStreamingReceiver {
             )
             sessions[session.id] = session
             sessionOrder.append(session.id)
-            log.debug("session begin id=\(payload.session_id, privacy: .public) from=\(payload.from, privacy: .public)")
+            if payload.session_tag != 0 {
+                sessionsByTag[payload.session_tag] = session.id
+            }
+            log.debug("session begin id=\(payload.session_id, privacy: .public) tag=\(payload.session_tag) from=\(payload.from, privacy: .public)")
             drainOrphanAudio(into: session)
             emit(.remoteStreamBegan(session.context))
         } catch {
@@ -267,10 +307,24 @@ final class PTTStreamingReceiver {
     }
 
     private func handleAudioFrame(_ frame: PTTFrame) {
-        // Server guarantees one active talker per channel. AUDIO has no
-        // session id, so bind it to the latest non-ended session. During
-        // APNs wake-up AUDIO may race ahead of START_BROADCAST; preserve it
-        // until the control frame creates the session.
+        // Payload layout: [session_tag: UInt32 BE | Opus data]. The tag links
+        // the AUDIO frame to the correct ReceiveSession so multiple concurrent
+        // talkers can be demuxed without guesswork (replaces server-side
+        // "single active talker" guarantee). When the server hasn't been
+        // updated yet or the tag doesn't match any known session, fall back to
+        // latestInputSession() for backward compatibility.
+        let tag: UInt32? = frame.payload.count >= 4
+            ? frame.payload.prefix(4).withUnsafeBytes { $0.loadUnaligned(as: UInt32.self).bigEndian }
+            : nil
+
+        if let tag, tag != 0, let sessionID = sessionsByTag[tag], let session = sessions[sessionID] {
+            let strippedPayload = frame.payload.subdata(in: 4..<frame.payload.count)
+            let stripped = PTTFrame(type: frame.type, seq: frame.seq, timestampMs: frame.timestampMs, payload: strippedPayload)
+            ingestAudioFrame(stripped, into: session)
+            return
+        }
+
+        // Backward compat or unknown tag: route to the latest active session.
         guard let session = latestInputSession() else {
             let now = Date().timeIntervalSince1970
             orphanAudioFrames.removeAll { now - $0.receivedAt > Self.orphanAudioMaxAge }
@@ -281,7 +335,14 @@ final class PTTStreamingReceiver {
             log.debug("buffered AUDIO seq=\(frame.seq) — waiting for input session")
             return
         }
-        ingestAudioFrame(frame, into: session)
+        // Strip the tag even in the fallback path so Opus decode works.
+        if let tag, tag != 0 {
+            let strippedPayload = frame.payload.subdata(in: 4..<frame.payload.count)
+            let stripped = PTTFrame(type: frame.type, seq: frame.seq, timestampMs: frame.timestampMs, payload: strippedPayload)
+            ingestAudioFrame(stripped, into: session)
+        } else {
+            ingestAudioFrame(frame, into: session)
+        }
     }
 
     private func ingestAudioFrame(_ frame: PTTFrame, into session: ReceiveSession) {
@@ -423,6 +484,7 @@ final class PTTStreamingReceiver {
         }
         log.debug("activate session=\(sessionID, privacy: .public) mode=\(session.mode == .draining ? "draining" : "active", privacy: .public) engineConfigured=\(self.engineConfigured) isPlaying=\(self.playerNode.isPlaying)")
         fillScheduledLead(session)
+        startDrainTimerIfNeeded()
     }
 
     func pause(sessionID: String) {
@@ -452,12 +514,16 @@ final class PTTStreamingReceiver {
             }
         }
         fillScheduledLead(session)
+        startDrainTimerIfNeeded()
     }
 
     func release(sessionID: String) {
         guard let session = sessions.removeValue(forKey: sessionID) else { return }
         session.mode = .finished
         sessionOrder.removeAll { $0 == sessionID }
+        if session.sessionTag != 0 {
+            sessionsByTag.removeValue(forKey: session.sessionTag)
+        }
         if activeSessionID == sessionID {
             activeSessionID = nil
             // Drained sessions have zero scheduled buffers. Failure/stop paths
@@ -498,6 +564,7 @@ final class PTTStreamingReceiver {
     func stopAll() {
         sessions.removeAll()
         sessionOrder.removeAll()
+        sessionsByTag.removeAll()
         activeSessionID = nil
         drainTimer?.cancel()
         drainTimer = nil
@@ -626,6 +693,21 @@ final class PTTStreamingReceiver {
             }
         }
 
+        // If the sender has been silent for longer than the grace period and
+        // we never received an END_BROADCAST (likely WS disconnect or the sender
+        // crashed), force a clean drain so the FSM can return to idle. Check
+        // this before the pre-roll gate so short streams and jitter gaps don't
+        // block the timeout.
+        if !session.endReceived,
+           session.lastAudioAt > 0,
+           Date().timeIntervalSince1970 - session.lastAudioAt > Self.silenceGraceSeconds {
+            log.warning("fillScheduledLead: silence timeout for id=\(session.id, privacy: .public), forcing end")
+            session.endReceived = true
+            session.mode = .draining
+            session.jitter.markEndOfStream()
+            // Fall through to check for drained or continue draining below.
+        }
+
         // Pre-roll gate: only enforce the minimum fill before any buffer has
         // been scheduled for the active session. Once at least one batch
         // reaches the player node, the lower water-mark drops to 0 — we
@@ -642,21 +724,6 @@ final class PTTStreamingReceiver {
         }
 
         let before = session.scheduledBufferCount
-        // If the sender has been silent for longer than the grace period and
-        // we never received an END_BROADCAST (likely WS disconnect), force a
-        // clean drain so the FSM can return to idle.
-        if !session.endReceived,
-           session.lastAudioAt > 0,
-           session.jitter.pendingCount == 0,
-           session.scheduledBufferCount == 0,
-           Date().timeIntervalSince1970 - session.lastAudioAt > Self.silenceGraceSeconds {
-            log.warning("fillScheduledLead: silence timeout for id=\(session.id, privacy: .public), forcing end")
-            session.endReceived = true
-            session.mode = .draining
-            session.jitter.markEndOfStream()
-            reportDrainedIfReady(session)
-            return
-        }
         while session.scheduledBufferCount < Self.maxScheduledBuffers {
             switch session.jitter.drainNext(treatAsLost: false) {
             case .packet(let packet):
@@ -729,7 +796,7 @@ final class PTTStreamingReceiver {
                 frameCapacity: max(buffer.frameLength, 1)
               ) else { return false }
 
-        var consumed = false
+        nonisolated(unsafe) var consumed = false
         var error: NSError?
         converter.convert(to: output, error: &error) { _, status in
             if consumed {

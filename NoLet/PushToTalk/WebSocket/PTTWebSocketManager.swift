@@ -82,8 +82,10 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
     private var heartbeatTimer: DispatchSourceTimer?
     private var lastActivity: TimeInterval = 0
     private var reconnectAttempt = 0
+    private var socketGeneration: UInt64 = 0
     private var pendingHello: PTTHelloPayload?
     private var manuallyDisconnected = false
+    private var backgroundSuspended = false
     private var _state: PTTWebSocketState = .idle
 
     /// Delegate storage is main-actor isolated to match the protocol. Read /
@@ -119,6 +121,17 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
         workQueue.async {
             self.manuallyDisconnected = false
             self.pendingHello = hello
+            // A PTT push can arrive while the manager is background-suspended.
+            // In that case the stale state must not make this call a no-op.
+            if self.backgroundSuspended {
+                self.backgroundSuspended = false
+                self.stopHeartbeat()
+                self.socket?.disconnect()
+                self.socket = nil
+                self.reconnectAttempt = 0
+                self.openSocket()
+                return
+            }
             switch self._state {
             case .idle, .failed, .closing:
                 self.reconnectAttempt = 0
@@ -135,10 +148,48 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
     func disconnect() {
         workQueue.async {
             self.manuallyDisconnected = true
+            self.backgroundSuspended = false
             self.stopHeartbeat()
             self.socket?.disconnect()
             self.socket = nil
             self.updateState(.idle)
+        }
+    }
+
+    /// Gracefully suspend the connection for app backgrounding.
+    /// Stops heartbeat, tears down the current socket, and resets the state
+    /// to .idle, but remembers the pending hello so the socket can be
+    /// re-established on foreground. Does NOT send a business LEAVE frame
+    /// because the user is still considered "on the channel".
+    func suspendForBackground() {
+        workQueue.async {
+            self.backgroundSuspended = true
+            self.manuallyDisconnected = false
+            self.stopHeartbeat()
+            self.socket?.disconnect()
+            self.socket = nil
+            self.updateState(.idle)
+        }
+    }
+
+    /// Force a fresh connection after returning from background.
+    /// Unlike `connect(hello:)` this bypasses the "already connected" guard
+    /// so it works even when the stale local state is still .authenticated.
+    /// Safe to call repeatedly; the last call wins.
+    func resumeAfterBackground(hello: PTTHelloPayload? = nil) {
+        workQueue.async {
+            self.backgroundSuspended = false
+            self.manuallyDisconnected = false
+            if let hello = hello {
+                self.pendingHello = hello
+            }
+            // Tear down any stale socket in case the state is still
+            // .connecting/.connected/.authenticated from before suspension.
+            self.stopHeartbeat()
+            self.socket?.disconnect()
+            self.socket = nil
+            self.reconnectAttempt = 0
+            self.openSocket()
         }
     }
 
@@ -161,6 +212,10 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
     // MARK: - Socket lifecycle (workQueue only)
 
     private func openSocket() {
+        guard !manuallyDisconnected, !backgroundSuspended else {
+            updateState(.idle)
+            return
+        }
         guard let url = buildWSURL() else {
             updateState(.failed("bad host URL"))
             return
@@ -170,10 +225,15 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
         var request = URLRequest(url: url)
         request.timeoutInterval = 10
 
+        socketGeneration &+= 1
+        let generation = socketGeneration
         let ws = WebSocket(request: request)
         ws.callbackQueue = workQueue
-        ws.onEvent = { [weak self] event in
-            self?.handle(event: event)
+        ws.onEvent = { [weak self, weak ws] event in
+            guard let self, let ws,
+                  generation == self.socketGeneration,
+                  self.socket === ws else { return }
+            self.handle(event: event)
         }
         socket = ws
         ws.connect()
@@ -329,7 +389,7 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
     private func teardownAndMaybeReconnect(reason: String) {
         stopHeartbeat()
         socket = nil
-        if manuallyDisconnected {
+        if manuallyDisconnected || backgroundSuspended {
             updateState(.idle)
             return
         }
@@ -339,7 +399,7 @@ nonisolated final class PTTWebSocketManager: @unchecked Sendable {
         reconnectAttempt += 1
         log.debug("scheduling reconnect in \(delay)s (attempt \(self.reconnectAttempt))")
         workQueue.asyncAfter(deadline: .now() + delay) {
-            guard !self.manuallyDisconnected else { return }
+            guard !self.manuallyDisconnected, !self.backgroundSuspended else { return }
             self.openSocket()
         }
     }

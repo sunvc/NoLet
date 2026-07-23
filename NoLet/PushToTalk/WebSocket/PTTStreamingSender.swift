@@ -35,6 +35,11 @@ private struct SenderSession {
 
     /// Local 2 s buffer used while the socket is still handshaking.
     let localBuffer = PTTLocalPacketBuffer()
+
+    /// If the START frame was enqueued before the WebSocket was authenticated,
+    /// stash the fully-encoded frame so it can be sent before any AUDIO frames
+    /// once the socket reaches `.authenticated`.
+    var pendingStartFrame: Data?
 }
 
 @MainActor
@@ -62,8 +67,48 @@ final class PTTStreamingSender {
     /// The currently active outgoing session, or nil when the user isn't
     /// speaking. Only one at a time — matches Apple's half-duplex UX.
     private var activeSession: SenderSession?
+    private var isAppInBackground = false
 
     private init() {}
+
+    // MARK: - App lifecycle
+
+    /// Suspends idle sockets when iOS backgrounds the app. Active realtime
+    /// playback/recording keeps the socket alive under the audio/PTT background
+    /// modes until that session finishes.
+    func applicationDidEnterBackground() {
+        isAppInBackground = true
+        guard !PTTManager.shared.hasActivePTTAudioSession else {
+            log.debug("background entered with active PTT audio — keeping socket alive")
+            return
+        }
+        suspendIdleSocketsIfNeeded()
+    }
+
+    /// Re-establishes the selected channel after returning to foreground.
+    /// The caller is responsible for checking that the user's PTT power is on.
+    func applicationWillEnterForeground(channel: PTTChannel) {
+        isAppInBackground = false
+        guard channel.serverOK, let hostURL = URL(string: channel.server.url) else {
+            return
+        }
+        let manager = webSocket(for: hostURL)
+        manager.resumeAfterBackground(hello: buildHello(channel: channel))
+    }
+
+    /// Called when the active realtime audio session drains or recording ends.
+    /// If the app is still backgrounded, the socket can now be suspended.
+    func audioSessionDidBecomeIdle() {
+        suspendIdleSocketsIfNeeded()
+    }
+
+    private func suspendIdleSocketsIfNeeded() {
+        guard isAppInBackground,
+              !PTTManager.shared.hasActivePTTAudioSession else { return }
+        for manager in wsByServer.values {
+            manager.suspendForBackground()
+        }
+    }
 
     // MARK: - Warmup
 
@@ -203,7 +248,17 @@ final class PTTStreamingSender {
         // side (see enqueueAudio).
         let manager = webSocket(for: hostURL)
         manager.connect(hello: buildHello(channel: channel))
-        sendStartFrame(sessionID: sessionID, channel: channel, via: manager)
+
+        // If the socket is already authenticated, send START immediately.
+        // Otherwise stash the frame so it is flushed before any AUDIO once
+        // the socket reaches .authenticated — avoiding the silent drop that
+        // would happen if we called socket?.write() during the handshake.
+        let startFrame = encodeStartFrame(sessionID: sessionID, channel: channel)
+        if manager.stateSnapshot == .authenticated {
+            manager.send(rawFrame: startFrame)
+        } else {
+            activeSession?.pendingStartFrame = startFrame
+        }
 
         log.debug("session start id=\(sessionID, privacy: .public) ch=\(channel.hex(), privacy: .public)")
         return sessionID
@@ -321,7 +376,15 @@ final class PTTStreamingSender {
     }
 
     private func flushLocalBufferIfAny(to manager: PTTWebSocketManager) {
-        guard let session = activeSession else { return }
+        guard var session = activeSession else { return }
+
+        // Send the pending START frame first so the server has the session
+        // metadata before any AUDIO packets arrive.
+        if let startFrame = session.pendingStartFrame {
+            manager.send(rawFrame: startFrame)
+            session.pendingStartFrame = nil
+        }
+
         let pending = session.localBuffer.drain()
         for p in pending {
             let frame = PTTFrame(type: .audio,
@@ -358,7 +421,7 @@ final class PTTStreamingSender {
         )
     }
 
-    private func sendStartFrame(sessionID: String, channel: PTTChannel, via manager: PTTWebSocketManager) {
+    private func encodeStartFrame(sessionID: String, channel: PTTChannel) -> Data {
         struct StartPayload: Codable {
             let session_id: String
             let channel: String
@@ -375,8 +438,14 @@ final class PTTStreamingSender {
             frame_ms: Self.frameMs,
             bitrate: Self.bitrate
         )
-        guard let body = try? JSONEncoder().encode(payload) else { return }
-        manager.send(frame: PTTFrame(type: .start, seq: 0, timestampMs: 0, payload: body))
+        // safe to force-try: the payload is a simple struct with no optional or
+        // dictionary fields that could fail encoding.
+        let body = try! JSONEncoder().encode(payload)
+        return PTTFrameCodec.encode(type: .start, seq: 0, timestampMs: 0, payload: body)
+    }
+
+    private func sendStartFrame(sessionID: String, channel: PTTChannel, via manager: PTTWebSocketManager) {
+        manager.send(rawFrame: encodeStartFrame(sessionID: sessionID, channel: channel))
     }
 
     private func sendEndFrame(sessionID: String, durationMs: Int, totalPackets: Int, via manager: PTTWebSocketManager) {
