@@ -430,9 +430,10 @@ enum PTTAudioReducer {
             machine.state = .playing(.remote(r))
 
         case .transmitBegan(let origin):
-            // System / headset transmit callbacks arrive before PushToTalk has
-            // finished activating the audio route. Record intent only; the
-            // actual sender + recorder start from audioSessionActivated.
+            // System / headset transmit callbacks can arrive before PushToTalk
+            // has activated the audio route. When the session is already active
+            // (for example during remote playback), didActivate will not fire
+            // again, so start recording immediately after pausing playback.
             guard !machine.state.isRecordingPhase else { break }
             machine.transmitIntent = true
             machine.pendingTransmitOrigin = origin
@@ -446,6 +447,14 @@ enum PTTAudioReducer {
                     effects.append(.pauseRemote(r.sessionID))
                 }
                 machine.state = .suspended(.init(playback: pb, recording: nil))
+            }
+            if machine.audioSessionActive {
+                machine.pendingTransmitOrigin = nil
+                let rc = PTTRecordingContext(id: UUID(), origin: origin, activity: false,
+                                              saveLocalCopy: true)
+                machine.recordingCancelled = false
+                machine.state = .preparingRecording(rc)
+                effects += [.warmSender, .startSender(rc), .startRecording(rc)]
             }
 
         case .transmitEnded:
@@ -537,6 +546,10 @@ enum PTTAudioReducer {
                 break
             }
             // If there's a queued remote, activate it immediately.
+            // Guard against recording phase: audioSessionActivated can fire
+            // during an active recording (e.g. after a session re-acquisition),
+            // and must not overwrite the recording state.
+            guard !machine.state.isRecordingPhase else { break }
             if let first = machine.remoteQueue.first {
                 machine.remoteQueue.removeFirst()
                 machine.state = .preparingPlayback(.remote(first))

@@ -970,7 +970,7 @@
 					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1030,7 +1030,7 @@
 					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1198,7 +1198,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1228,7 +1228,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1258,7 +1258,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1288,7 +1288,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1319,7 +1319,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1350,7 +1350,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1379,7 +1379,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1409,7 +1409,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.2.7;
+				MARKETING_VERSION = 2.2.8;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
