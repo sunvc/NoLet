@@ -1,5 +1,5 @@
 {
-  "originHash" : "eff52d2746958d2aa2e5f775b3983a48efdc532c57ec8ff24b6ef53ba67cdf41",
+  "originHash" : "a00dd155552ed935f834bf3c076be99d0d0b15bb2fb7ad7cd22233fbe134621b",
   "pins" : [
     {
       "identity" : "defaults",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sunvc/Opus.git",
       "state" : {
-        "revision" : "99ad6596e751cd6db950e71bc8e9c877c6949c41",
-        "version" : "1.0.5"
+        "revision" : "9ebbacb01a4d3e055179ae9453c6e81898f58eaa",
+        "version" : "1.0.6"
       }
     },
     {
@@ -53,6 +53,15 @@
       "state" : {
         "revision" : "75c8f60025a61fc1636fae0233a746163f815b7f",
         "version" : "1.2.3"
+      }
+    },
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream",
+      "state" : {
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a",
+        "version" : "4.0.8"
       }
     },
     {

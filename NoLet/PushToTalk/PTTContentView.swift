@@ -58,13 +58,20 @@ struct PTTContentView: View {
     }
 
     var currentProgress: Double {
-        switch pttManager.state {
-        case .idle, .preparingPlay, .interrupted, .interruptionEnded:
-            return 0
-        case .playing:
-            return pttManager.currentPlayTime / max(pttManager.totalPlayTime, 1)
-        case .recording:
+        switch pttManager.audioState {
+        case .idle, .suspended:
+            return pttManager.remoteStreamActive ? pttManager.remoteStreamLevel : 0
+        case .preparingRecording, .recording, .finishingRecording:
             return pttManager.micLevel
+        case .playing(let playback):
+            switch playback {
+            case .local:
+                return pttManager.currentPlayTime / max(pttManager.totalPlayTime, 1)
+            case .remote:
+                return pttManager.remoteStreamLevel
+            }
+        case .preparingPlayback:
+            return 0
         }
     }
 
@@ -73,18 +80,63 @@ struct PTTContentView: View {
             return ispress ? .red : .clear
         } else {
             if ispress {
-                return pttManager.state == .recording ? .green : .orange
+                return isRecording ? .green : .orange
             }
             return .clear
         }
     }
 
     var isPlaying: Bool {
-        if case .playing = pttManager.state { true } else { false }
+        if case .playing(.local) = pttManager.audioState { return true }
+        return false
     }
 
     var isRecording: Bool {
-        if case .recording = pttManager.state { true } else { false }
+        pttManager.audioState.isRecordingPhase
+    }
+
+    var isAudioActive: Bool {
+        switch pttManager.audioState {
+        case .idle: return false
+        default: return true
+        }
+    }
+
+    /// Whether the elapsed-time meter should be visible. Covers local
+    /// recording, local playback, and remote realtime broadcast.
+    var showTimeMeter: Bool {
+        isAudioActive && !isSuspended
+    }
+
+    var isSuspended: Bool {
+        if case .suspended = pttManager.audioState { return true }
+        return false
+    }
+
+    /// Elapsed seconds to display in the meter. Priority mirrors
+    /// `showTimeMeter`: recording > local playback > remote broadcast.
+    var meterElapsed: TimeInterval {
+        if isRecording {
+            return pttManager.elapsedTime
+        }
+        if isPlaying {
+            return pttManager.currentPlayTime
+        }
+        return pttManager.remoteStreamElapsed
+    }
+
+    /// True when the meter should display the remote broadcast timer rather
+    /// than the local recorder's own timer. Local recording wins if both are
+    /// somehow live.
+    var showRemoteTime: Bool {
+        !isRecording && pttManager.remoteStreamActive
+    }
+
+    /// Any activity that suppresses passive HUD elements (group-member count,
+    /// volume toggle, settings gear). Meant to keep the button strip visually
+    /// quiet while the user is either speaking or listening.
+    var isAudioBusy: Bool {
+        isRecording || isPlaying || pttManager.remoteStreamActive
     }
 
     var networkIcon: (String, Color, Color) {
@@ -109,6 +161,15 @@ struct PTTContentView: View {
         // 1. 特殊前置状态：未启动监听
         if !pttManager.powerState && !isPlaying {
             return String(localized: "未启动监听")
+        }
+
+        // Remote realtime broadcast is only surfaced when nothing local is
+        // going on — local recording / playing owns the label otherwise.
+        if pttManager.remoteStreamActive, pttManager.state == .idle {
+            if let name = pttManager.remoteSpeakerName {
+                return String(localized: "\(name) 正在讲话")
+            }
+            return String(localized: "远程讲话中")
         }
 
         // 2. 场景 A：当没显示用户地图时
@@ -217,10 +278,15 @@ struct PTTContentView: View {
                                 .foregroundStyle(.white)
                                 .font(.title3)
                                 .opacity(!isRecording ? 1 : 0)
+                                .opacity(!isAudioBusy ? 1 : 0)
                                 .offset(x: !isRecording ? 0 : -50)
+                                .offset(x: !isAudioBusy ? 0 : -50)
                                 .opacity(self.showVolume ? 0 : 1)
                                 .offset(y: self.showVolume ? 20 : 0)
+                                .offset(x: -10)
                                 .animation(.default, value: showVolume)
+                                .animation(.default, value: isRecording)
+                                .animation(.default, value: isAudioBusy)
                                 .opacity(showUserMap ? 0 : 1)
                                 .VButton(onRelease: { _ in
                                     self.showVolume.toggle()
@@ -229,26 +295,30 @@ struct PTTContentView: View {
                                 .frame(width: 35)
 
                             VStack(spacing: 5) {
-                                Text(verbatim: String(format: "%.1f", pttManager.elapsedTime))
+                                // One meter, three sources — recording,
+                                // local playback, or remote realtime — picked
+                                // by `meterElapsed` above.
+                                Text(verbatim: String(format: "%.1f", meterElapsed))
                                     .font(.numberStyle(size: 28))
                                     .fontWeight(.black)
                                     .lineLimit(1)
-                                    .opacity(isRecording ? 1 : 0)
-                                    .scaleEffect(isRecording ? 1 : 0.1)
-                                    .offset(y: isRecording ? 0 : -30)
+                                    .opacity(showTimeMeter || isAudioBusy ? 1 : 0)
+                                    .scaleEffect(showTimeMeter || isAudioBusy ? 1 : 0.1)
+                                    .offset(y: showTimeMeter || isAudioBusy ? 0 : -30)
 
                                 Text(verbatim: "TIME")
                                     .lineLimit(1)
-                                    .opacity(isRecording ? 1 : 0)
-                                    .scaleEffect(isRecording ? 1 : 0.1)
-                                    .offset(y: isRecording ? 0 : 30)
+                                    .opacity(showTimeMeter || isAudioBusy ? 1 : 0)
+                                    .scaleEffect(showTimeMeter || isAudioBusy ? 1 : 0.1)
+                                    .offset(y: showTimeMeter || isAudioBusy ? 0 : 30)
                             }
                             .foregroundStyle(.white)
                             .minimumScaleFactor(0.5)
+                            .animation(.default, value: isAudioBusy)
                             .frame(width: 50)
                             .diff { view in
                                 Group {
-                                    if showUserMap && isRecording {
+                                    if showUserMap && showTimeMeter {
                                         view
                                             .padding(5)
                                             .background(.ultraThinMaterial)
@@ -277,6 +347,10 @@ struct PTTContentView: View {
                                 self.showSettings.toggle()
                                 return true
                             }
+                            .opacity(isAudioBusy ? 0 : 1)
+                            .scaleEffect(isAudioBusy ? 0.1 : 1)
+                            .offset(x: isAudioBusy ? 50 : 0)
+                            .animation(.default, value: isAudioBusy)
                     }
                     .padding(.horizontal, 10)
 
@@ -302,15 +376,8 @@ struct PTTContentView: View {
                                 .offset(x: isPlaying ? 0 : 50)
                                 .animation(.linear(duration: 0.2), value: pttManager.state)
                                 .VButton { _ in
-                                    // TODO: - 停止播放
-                                    Task {
-                                        await self.pttManager.send(.stopPlay)
-                                    }
-
-                                    // TODO: - 播放音乐
-                                    Task {
-                                        await pttManager.playWaitList()
-                                    }
+                                    pttManager.sendAudio(.stopPlaybackRequested)
+                                    pttManager.sendAudio(.playNextRequested)
                                     return true
                                 }
                         }
@@ -341,10 +408,7 @@ struct PTTContentView: View {
                             .opacity(isPlaying && pttManager.waitPlayList
                                 .count > 0 ? 1 : 0)
                             .VButton { _ in
-                                // TODO: - 下一条
-                                Task {
-                                    await self.pttManager.playWaitList()
-                                }
+                                pttManager.sendAudio(.playNextRequested)
                                 return true
                             }
 
@@ -391,8 +455,8 @@ struct PTTContentView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .padding(3)
                             .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
-                            .VButton{ _ in
-                                if showUserMapTem{
+                            .VButton { _ in
+                                if showUserMapTem {
                                     pttManager.zoomToFitAllUsers()
                                 }
                                 return true
@@ -562,10 +626,12 @@ struct PTTContentView: View {
                         Color.white : Color.white.opacity(0.3))
                     .fontWeight(.bold)
                     .tracking(3)
-                    .offset(y: pttManager.state == .recording ? 30 : 0)
-                    .opacity(pttManager.state == .recording ? 0 : 1)
-                    .animation(.default, value: pttManager.state)
-                    .animation(.default, value: pttManager.state)
+                    // Hide the whole member-count strip while audio is active —
+                    // keeps the strip visually quiet during recording / playback /
+                    // remote broadcast, matching the settings gear behaviour.
+                    .opacity(isAudioBusy ? 0 : 1)
+                    .offset(y: isAudioBusy ? 30 : 0)
+                    .animation(.default, value: isAudioBusy)
 
                 ForEach(Array(0...2), id: \.self) { item in
                     Image(systemName: "person")
@@ -582,7 +648,7 @@ struct PTTContentView: View {
                             }
                         }
                         .animation(.default, value: pttChannel.users)
-                        .VButton{ _ in
+                        .VButton { _ in
                             self.showUserMapTem.toggle()
                             return true
                         }
@@ -643,7 +709,7 @@ struct PTTContentView: View {
                             }
                         }
                     },
-                    alignment:  dragOffset >= (maxDragDistance - 30) / 2 ? .leading : .trailing
+                    alignment: dragOffset >= (maxDragDistance - 30) / 2 ? .leading : .trailing
                 )
                 .offset(x: 10)
 
@@ -885,30 +951,20 @@ struct PTTContentView: View {
         if pttMusicPlay {
             pttManager.playTips(.cbegin) {}
         }
-
         if pttVibration { Haptic.impact(.heavy) }
-
         guard self.ispress else { return }
-        await pttManager.send(.startRecord(true))
+        pttManager.sendAudio(.recordRequested(origin: .user, activity: true, saveLocalCopy: true))
     }
 
     func endRecording() async {
-        await pttManager.send(.stopRecord(false))
-
-        if pttVibration {
-            Haptic.notify(.success)
-        }
-
-        if pttMusicPlay {
-            pttManager.playTips(.pttnotifyend)
-        }
+        pttManager.sendAudio(.recordStopRequested(cancelled: false))
+        if pttVibration { Haptic.notify(.success) }
+        if pttMusicPlay { pttManager.playTips(.pttnotifyend) }
     }
 
     func cancelRecording() async {
-        await pttManager.send(.stopRecord(true))
-        if pttVibration {
-            Haptic.notify(.error)
-        }
+        pttManager.sendAudio(.recordStopRequested(cancelled: true))
+        if pttVibration { Haptic.notify(.error) }
     }
 
     func changeTalkChannel(_ angle: Int) {

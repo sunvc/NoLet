@@ -13,6 +13,7 @@
 
 import AVFoundation
 @preconcurrency import CoreLocation
+import Defaults
 import os
 import PushToTalk
 import SwiftUI
@@ -27,8 +28,6 @@ final nonisolated class PTTChannelManager: NSObject,
     static let shared = PTTChannelManager()
 
     private override init() {}
-
-    private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
 
     static let ChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
 
@@ -70,11 +69,11 @@ final nonisolated class PTTChannelManager: NSObject,
 
 
     func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
-        var user: PTParticipant? {
-            if let name = name, let avatar = avatar {
-                return PTParticipant(name: name, image: avatar)
-            }
-            return nil
+        let user: PTParticipant?
+        if let name = name {
+            user = PTParticipant(name: name, image: avatar ?? "無,ff0000".avatarImage())
+        } else {
+            user = nil
         }
 
         self.channelManager?.setActiveRemoteParticipant(
@@ -144,8 +143,17 @@ final nonisolated class PTTChannelManager: NSObject,
         }
 
         logger.debug("🎤\(message): 开始发送 ")
-
-        isRemotePushIncoming.withLock { $0 = false }
+        let origin: PTTRecordingOrigin
+        switch source {
+        case .userRequest: origin = .user
+        case .developerRequest: origin = .developer
+        case .handsfreeButton: origin = .handsfree
+        case .unknown: origin = .unknown
+        @unknown default: origin = .unknown
+        }
+        Task { @MainActor in
+            PTTManager.shared.sendAudio(.transmitBegan(origin: origin))
+        }
     }
 
     // MARK: - End TX
@@ -156,6 +164,17 @@ final nonisolated class PTTChannelManager: NSObject,
         didEndTransmittingFrom source: PTChannelTransmitRequestSource
     ) {
         logger.debug("🎤 停止发送")
+        let origin: PTTRecordingOrigin
+        switch source {
+        case .userRequest: origin = .user
+        case .developerRequest: origin = .developer
+        case .handsfreeButton: origin = .handsfree
+        case .unknown: origin = .unknown
+        @unknown default: origin = .unknown
+        }
+        Task { @MainActor in
+            PTTManager.shared.sendAudio(.transmitEnded(origin: origin))
+        }
     }
 
     // MARK: - Push Token
@@ -181,27 +200,45 @@ final nonisolated class PTTChannelManager: NSObject,
     ) -> PTPushResult {
         logger.debug("收到PTT Push: \(channelUUID)\(pushPayload)")
 
-        isRemotePushIncoming.withLock { $0 = true }
-
-        if let remote = pushPayload["url"] as? String {
-            Task {
-                if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote) {
-                    await PTTManager.shared.send(.startPlay(voice), remote: true)
-                } else {
-                    self.setActiveRemoteParticipant()
-                }
+        // Push only supplies wake-up metadata. The unified FSM decides when
+        // the receiver may connect/queue/play it.
+        if let sessionID = pushPayload["session_id"] as? String,
+           let channel = pushPayload["channel"] as? String,
+           let host = pushPayload["host"] as? String,
+           !sessionID.isEmpty, !channel.isEmpty, !host.isEmpty
+        {
+            let from = pushPayload["from"] as? String ?? ""
+            let fromName = pushPayload["from_name"] as? String
+                ?? (pushPayload["name"] as? String ?? "")
+            let metadata = PTTRemotePushMetadata(
+                host: host,
+                channel: channel,
+                sessionID: sessionID,
+                speakerID: from,
+                speakerName: fromName
+            )
+            Task { @MainActor in
+                PTTManager.shared.sendAudio(.remotePushReceived(metadata))
             }
         }
-        
-        let name = pushPayload["name"] as? String
-        
+
+        var name: String{
+            if let name = pushPayload["name"] as? String, name.count > 0{
+                return name
+            }
+            if let fromName = pushPayload["from_name"] as? String, fromName.count > 0 {
+                return fromName
+            }
+            return String(localized: "未知")
+        }
+
         return .activeRemoteParticipant(
             .init(
-                name: name ?? String(localized: "未知"),
+                name: name,
                 image: "無,ff0000".avatarImage()
             )
         )
-        
+
     }
 
     // MARK: - Audio Session
@@ -211,15 +248,8 @@ final nonisolated class PTTChannelManager: NSObject,
         didActivate audioSession: AVAudioSession
     ) {
         logger.debug("🔊 AudioSession Activated")
-        let remote = isRemotePushIncoming.withLock { $0 }
-        Task {
-            if !remote {
-                await PTTManager.shared.send(.startRecord(false))
-            } else {
-                if case .interruptionEnded = await PTTManager.shared.state {
-                    await PTTManager.shared.send(.resume)
-                }
-            }
+        Task { @MainActor in
+            PTTManager.shared.sendAudio(.audioSessionActivated)
         }
     }
 
@@ -228,11 +258,8 @@ final nonisolated class PTTChannelManager: NSObject,
         didDeactivate audioSession: AVAudioSession
     ) {
         logger.debug("🔇 AudioSession Deactivated")
-        let remote = isRemotePushIncoming.withLock { $0 }
-        if !remote {
-            Task {
-                await PTTManager.shared.send(.stopRecord(false))
-            }
+        Task { @MainActor in
+            PTTManager.shared.sendAudio(.audioSessionDeactivated)
         }
     }
 

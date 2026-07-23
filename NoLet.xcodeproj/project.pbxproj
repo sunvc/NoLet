@@ -56,6 +56,7 @@
 		BAB264353004C5380082E8D9 /* MessagingUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB264343004C5380082E8D9 /* MessagingUI */; };
 		BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = BAC9B9EF2FD6B35200E9ABDE /* Opus */; };
 		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
+		BAE2EAA83010A86100BBC24F /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = BAE2EAA73010A86100BBC24F /* Starscream */; };
 		BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAED8C502FE21F56008FF77C /* PushToTalk.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -479,6 +480,7 @@
 				BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */,
 				BAAA19402F391CB200E0D66F /* QRScanner in Frameworks */,
 				BA9E96E12F3993A800B6DF1B /* WebKit.framework in Frameworks */,
+				BAE2EAA83010A86100BBC24F /* Starscream in Frameworks */,
 				BAAA193F2F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA193E2F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BAAA193D2F391CB200E0D66F /* Splash in Frameworks */,
@@ -655,6 +657,7 @@
 				BAC9B9EF2FD6B35200E9ABDE /* Opus */,
 				BAB264343004C5380082E8D9 /* MessagingUI */,
 				BA4350303008C8820062B2FE /* OpenAI */,
+				BAE2EAA73010A86100BBC24F /* Starscream */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -807,6 +810,7 @@
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
 				BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */,
 				BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */,
+				BAE2EAA63010A86100BBC24F /* XCRemoteSwiftPackageReference "Starscream" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1547,7 +1551,15 @@
 			repositoryURL = "https://github.com/sunvc/Opus.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.2;
+				minimumVersion = 1.0.6;
+			};
+		};
+		BAE2EAA63010A86100BBC24F /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.8;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1722,6 +1734,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */;
 			productName = Opus;
+		};
+		BAE2EAA73010A86100BBC24F /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BAE2EAA63010A86100BBC24F /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

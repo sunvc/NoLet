@@ -16,6 +16,7 @@ import PushToTalk
 import SwiftUI
 import UIKit
 
+@MainActor
 final class PTTManager: NSObject, ObservableObject {
     static let shared = PTTManager()
 
@@ -23,7 +24,7 @@ final class PTTManager: NSObject, ObservableObject {
     @Published var serverStatus: ServerState = .offline
     @Published var micLevel: Double = .zero
     @Published var elapsedTime: TimeInterval = 0
-    @Published var state: State = .idle
+    @Published private(set) var state: State = .idle
     @Published var hasMicrophonePermission: Bool = false
 
     @Published var lastFile: AudioMessage? = nil
@@ -34,6 +35,25 @@ final class PTTManager: NSObject, ObservableObject {
 
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
+
+    // MARK: - Remote realtime stream (WebSocket receive side)
+
+    /// True while `PTTStreamingReceiver` is playing (or has just paused for a
+    /// local recording) audio from a remote speaker. UI uses this to show the
+    /// "listening" affordance.
+    @Published var remoteStreamActive: Bool = false
+
+    /// Normalised RMS level (0…1) of the last decoded PCM buffer from the
+    /// active remote session. Rolls back to zero when the session ends.
+    @Published var remoteStreamLevel: Double = 0
+
+    /// Seconds elapsed since the current remote broadcast started, i.e.
+    /// `now - session.startedAt` on the client side. Zero when idle.
+    @Published var remoteStreamElapsed: TimeInterval = 0
+
+    /// Human-readable name of the remote speaker, from START_BROADCAST /
+    /// REPLAY_BEGIN payload.
+    @Published var remoteSpeakerName: String? = nil
     @Published var hasPermission: Bool = false
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
@@ -53,7 +73,20 @@ final class PTTManager: NSObject, ObservableObject {
     private let database = DatabaseManager.shared
     private nonisolated let network = NetworkManager()
     private var observationCancellable: AnyDatabaseCancellable?
-    private var loopTask: Task<Void, Never>?
+    private var presenceReportTask: Task<Void, Never>?
+
+    // MARK: - Unified audio state machine
+
+    private var audioMachine = PTTAudioMachine()
+    private var audioEventQueue: [PTTAudioEvent] = []
+    private var processingAudioEvents = false
+    private var recordingStopCancelled: [UUID: Bool] = [:]
+
+    var audioState: PTTAudioState { audioMachine.state }
+
+    /// Timestamp of the last PRESENCE update we sent, so `didUpdateLocations`
+    /// bursts don't flood the socket. Guarded by MainActor isolation.
+    private var lastPresenceReportAt: Date = .distantPast
 
     private override init() {
         super.init()
@@ -62,16 +95,19 @@ final class PTTManager: NSObject, ObservableObject {
         Task { @MainActor in
             await self.player.setDelegate(self)
             self.recorder.delegate = self
+            PTTStreamingReceiver.shared.setEventHandler { [weak self] event in
+                self?.sendAudio(event)
+            }
         }
 
         startObservingUnreadCount()
-        self.TaskHandler()
+        self.startPresenceReporter()
         self.setupNotifications()
     }
 
     deinit {
         observationCancellable?.cancel()
-        loopTask?.cancel()
+        presenceReportTask?.cancel()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -82,6 +118,57 @@ final class PTTManager: NSObject, ObservableObject {
             name: AVAudioSession.interruptionNotification,
             object: AVAudioSession.sharedInstance()
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLocationUpdated),
+            name: .locationUpdated,
+            object: nil
+        )
+    }
+
+    @objc private func handleLocationUpdated() {
+        // Location bursts (start of a new fix cycle) can fire several times in
+        // a few seconds. Throttle to at most one presence broadcast every 5s
+        // regardless of the source (timer or delegate callback).
+        Task { @MainActor in
+            self.reportOwnLocation(minInterval: 5)
+        }
+    }
+
+    /// Sends a PRESENCE `update` frame with the device's current location to
+    /// the server. Called from the 20 s periodic loop AND from
+    /// `handleLocationUpdated`. Respects `minInterval` (seconds) to coalesce
+    /// bursty callers.
+    @MainActor
+    func reportOwnLocation(minInterval: TimeInterval = 0) {
+        let channel = Defaults[.pttChannel]
+        guard powerState, channel.serverOK else { return }
+        if minInterval > 0,
+           Date().timeIntervalSince(lastPresenceReportAt) < minInterval {
+            return
+        }
+        let coord = LocManager.shared.location.coordinate
+        // Zero coordinates are the default seed; publishing them would clobber
+        // any better location peers already have. Skip until a real fix.
+        guard coord.latitude != 0 || coord.longitude != 0 else { return }
+
+        let payload = PTTPresencePayload(
+            kind: "update",
+            channel: channel.hex(),
+            user: PTTUserResp(
+                id: Defaults[.id],
+                name: Defaults[.pttNickname].isEmpty
+                    ? String(localized: "本机")
+                    : Defaults[.pttNickname],
+                latitude: coord.latitude,
+                longitude: coord.longitude,
+                timestamp: Int64(Date().timeIntervalSince1970 * 1000)
+            ),
+            users: nil,
+            timestamp: Int64(Date().timeIntervalSince1970 * 1000)
+        )
+        PTTStreamingSender.shared.sendPresence(payload, for: channel)
+        lastPresenceReportAt = Date()
     }
 
     @objc private func handleInterruption(notification: Notification) {
@@ -94,17 +181,16 @@ final class PTTManager: NSObject, ObservableObject {
 
         switch type {
         case .began:
-            Task {
-                await self.send(.interruptionBegan)
+            Task { @MainActor in
+                self.sendAudio(.interruptionBegan)
             }
 
         case .ended:
             let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt ?? 0
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             let shouldResume = options.contains(.shouldResume)
-
-            Task {
-                await self.send(.interruptionEnded(shouldResume: shouldResume))
+            Task { @MainActor in
+                self.sendAudio(.interruptionEnded(shouldResume: shouldResume))
             }
 
         @unknown default:
@@ -112,25 +198,29 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    private func TaskHandler() {
-        self.loopTask = Task.detached(priority: .utility) { [weak self] in
-            logger.info("🚀 后台常驻任务已在线程: \(Thread.current) 启动")
+    /// Periodic PRESENCE update broadcaster. Replaces the old 10 s REST
+    /// heartbeat — everything the server used to learn from `/ptt/connect`
+    /// (my lat/lng, my token freshness) now flows through PRESENCE frames
+    /// on the open WebSocket. Fires every 20 s while `powerState` is on.
+    private func startPresenceReporter() {
+        presenceReportTask?.cancel()
+        presenceReportTask = Task.detached(priority: .utility) { [weak self] in
+            logger.info("🚀 PRESENCE reporter started")
             while !Task.isCancelled {
                 guard let self = self else { break }
-
                 do {
-                    if await self.powerState {
-                        await LocManager.shared.requestLocation()
-                        await self.publicJoinConnect()
+                    let on = await self.powerState
+                    if on {
+                        await MainActor.run {
+                            self.reportOwnLocation(minInterval: 0)
+                        }
                     }
-                    try await Task.sleep(for: .seconds(10))
+                    try await Task.sleep(for: .seconds(20))
                 } catch {
-                    logger.info("Task 休眠被中断，准备退出")
                     break
                 }
             }
-
-            logger.info("🛑 后台常驻任务已安全退出")
+            logger.info("🛑 PRESENCE reporter stopped")
         }
     }
 
@@ -175,134 +265,252 @@ final class PTTManager: NSObject, ObservableObject {
         )
     }
 
+    /// Compatibility adapter for the existing UI while call sites migrate to
+    /// PTTAudioEvent. It performs no audio side effect itself.
     func send(_ event: Event, remote: Bool = false) async {
-        logger.info("STATE: \(self.state.log)")
-        logger.info("EVENT: \(event.log)")
-
-        switch (state, event) {
-           //==================================================
-           // Idle
-           //==================================================
-
-        case (.idle, .startPlay(let message)):
+        switch event {
+        case .startPlay(let message):
             if let message {
-                beginPlay(message)
+                sendAudio(.localPlayRequested(message))
             } else {
-                await self.playWaitList()
+                sendAudio(.playNextRequested)
             }
+        case .stopPlay:
+            sendAudio(.stopPlaybackRequested)
+        case .startRecord(let activity):
+            sendAudio(.recordRequested(
+                origin: .user,
+                activity: activity,
+                saveLocalCopy: true
+            ))
+        case .stopRecord(let cancelled):
+            sendAudio(.recordStopRequested(cancelled: cancelled))
+        case .interruptionBegan:
+            sendAudio(.interruptionBegan)
+        case .interruptionEnded(let shouldResume):
+            sendAudio(.interruptionEnded(shouldResume: shouldResume))
+        case .resume:
+            sendAudio(.explicitResume)
+        case .playStarted, .playFinished, .recordStarted:
+            // Hardware lifecycle is now reported by tokenized delegates.
+            break
+        }
+        _ = remote
+    }
 
-        case (.idle, .startRecord(let activity)):
-            await beginRecord(activity)
+    /// Serialized mailbox for all audio transitions. Reducer state is committed
+    /// before effects execute, so synchronous callbacks observe the new phase.
+    func sendAudio(_ event: PTTAudioEvent) {
+        audioEventQueue.append(event)
+        guard !processingAudioEvents else { return }
+        processingAudioEvents = true
 
-        case (.idle, .recordStarted):
-            internalStopRecord(isCancel: true)
-
-           //==================================================
-           // Preparing Play
-           //==================================================
-
-        case (.preparingPlay, .playStarted):
-            if case .preparingPlay(let message) = state {
-                state = .playing(message)
+        while !audioEventQueue.isEmpty {
+            let next = audioEventQueue.removeFirst()
+            let transition = PTTAudioReducer.reduce(audioMachine, event: next)
+            audioMachine = transition.machine
+            syncPublishedAudioState(event: next)
+            for effect in transition.effects {
+                runAudioEffect(effect)
             }
+        }
+        processingAudioEvents = false
+    }
 
-        case (.preparingPlay, .stopPlay):
-            state = .idle
-            await internalStopPlay()
-
-        case (.preparingPlay, .startRecord(let activity)):
-            await internalStopPlay()
-            await beginRecord(activity)
-
-           //==================================================
-           // Playing
-           //==================================================
-
-        case (.playing, .stopPlay):
-            await internalStopPlay()
-            state = .idle
-
-        case (.playing, .playFinished):
-            currentPlayFile = nil
-            state = .idle
-            await self.playWaitList()
-
-        case (.playing, .startPlay(let message)):
-            guard let message else { break }
-            if message == self.currentPlayFile {
-                await internalStopPlay()
-                currentPlayFile = nil
+    private func runAudioEffect(_ effect: PTTAudioEffect) {
+        switch effect {
+        case .prepareLocal(let local):
+            let s = AVAudioSession.sharedInstance()
+            if s.category != .playAndRecord {
+                try? s.setCategory(.playAndRecord, mode: .default,
+                                  options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP])
+            }
+            try? s.setActive(true, options: .notifyOthersOnDeactivation)
+            currentPlayFile = local.message
+            currentPlayFile = local.message
+            setStatus(message: local.message, read: true)
+            setMapUserStatus(message: local.message)
+            guard let url = local.message.filePath() else {
+                sendAudio(.localPlaybackFailed(
+                    id: local.id,
+                    generation: local.generation,
+                    reason: "missing local file"
+                ))
                 return
             }
-            // FIXME: -  处理连续播放, 如果是远程, 忽略打断
-            if !remote {
-                await internalStopPlay()
-                beginPlay(message)
+            Task {
+                await player.playAudio(url, id: local.id, generation: local.generation)
             }
 
-        case (.playing, .startRecord(let activity)):
-            await internalStopPlay()
+        case .pauseLocal(let id):
+            Task { await player.pause(id: id) }
+
+        case .resumeLocal(let id):
+            Task { await player.resume(id: id) }
+
+        case .stopLocal(let id):
+            Task { await player.stop(id: id) }
             currentPlayFile = nil
-            await beginRecord(activity)
+            setMapUserStatusForAllStopped()
 
-           //==================================================
-           // Recording
-           //==================================================
+        case .queueRemote:
+            break // Receiver already owns the compressed session.
 
-        case (.recording, .stopRecord(let cancel)):
-            internalStopRecord(isCancel: cancel)
-            state = .idle
-            await self.playWaitList()
+        case .activateRemote(let sessionID):
+            // PushToTalk framework activates audio only for the ~1 s ring
+            // window. By the time WS+SUBSCRIBE+REPLAY round-trips complete
+            // the session has already been deactivated. Re-activate it now
+            // so the receiver engine can actually start and produce audio.
+            let s = AVAudioSession.sharedInstance()
+            if s.category != .playAndRecord {
+                try? s.setCategory(.playAndRecord, mode: .default,
+                                  options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP])
+            }
+            try? s.setActive(true, options: .notifyOthersOnDeactivation)
+            PTTStreamingReceiver.shared.activate(sessionID: sessionID)
+            sendAudio(.remoteActivated(sessionID: sessionID))
 
-        // 录音期间禁止播放
-        case (.recording, .startPlay):
-            logger.info("Ignore play while recording")
+        case .pauseRemote(let sessionID):
+            PTTStreamingReceiver.shared.pause(sessionID: sessionID)
 
-            //==================================================
-            // interruptionBegan
-            //==================================================
+        case .resumeRemote(let sessionID):
+            let s = AVAudioSession.sharedInstance()
+            if s.category != .playAndRecord {
+                try? s.setCategory(.playAndRecord, mode: .default,
+                                  options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP])
+            }
+            try? s.setActive(true, options: .notifyOthersOnDeactivation)
+            PTTStreamingReceiver.shared.resume(sessionID: sessionID)
 
-        case (.playing(let message), .interruptionBegan),
-             (.preparingPlay(let message), .interruptionBegan):
-            self.state = .interrupted(message)
-            await self.internalStopPlay()
+        case .releaseRemote(let sessionID):
+            PTTStreamingReceiver.shared.release(sessionID: sessionID)
 
-        case (.recording, .interruptionBegan):
-            await self.send(.stopRecord(false))
+        case .warmSender:
+            PTTStreamingSender.shared.warmup(channel: Defaults[.pttChannel])
 
-        case (.interrupted(let message), .interruptionEnded(let shouldResume)):
-            if shouldResume {
-                self.state = .interruptionEnded(shouldResume, message)
+        case .startSender:
+            _ = PTTStreamingSender.shared.startSession(channel: Defaults[.pttChannel])
 
-                PTTChannelManager.shared.setActiveRemoteParticipant(
-                    name: "恢复播放",
-                    avatar: "字,FF9500".avatarImage()
+        case .endSender(let cancelled):
+            PTTStreamingSender.shared.endSession(cancelled: cancelled)
+
+        case .startRecording(let recording):
+            PTTChannelManager.shared.setActiveRemoteParticipant()
+            recorder.startRecording(
+                id: recording.id,
+                recording.activity,
+                pttMusicPlay: Defaults[.pttMusicPlay]
+            )
+
+        case .stopRecording(let recording, let cancelled):
+            recordingStopCancelled[recording.id] = cancelled
+            _ = recorder.stopRecording(id: recording.id)
+
+        case .configureAudioSessionForPlayback:
+            // Only needed when PushToTalk deactivates the audio session and we
+            // are still playing remotely. In the normal path the framework owns
+            // the session via setActiveRemoteParticipant but deactivation can
+            // happen during a ring-window / background transition. The receiver
+            // engine may have been paused; restart it.
+            let s = AVAudioSession.sharedInstance()
+            if s.category != .playAndRecord {
+                try? s.setCategory(
+                    .playAndRecord,
+                    mode: .default,
+                    options: [.defaultToSpeaker, .allowBluetoothHFP, .allowBluetoothA2DP]
                 )
+            }
+            try? s.setActive(true, options: .notifyOthersOnDeactivation)
+            PTTStreamingReceiver.shared.recoverAfterSessionLoss()
+            // The FSM marked audioSessionActive=false when it saw the
+            // deactivation callback. We just re-acquired the session, so
+            // tell the FSM — otherwise the next remoteStreamBegan will
+            // be stuck queued waiting for an activation that never comes.
+            sendAudio(.audioSessionActivated)
+
+        case .wakeRemote(let metadata):
+            PTTStreamingReceiver.shared.wakeup(
+                host: metadata.host,
+                channel: metadata.channel,
+                sessionID: metadata.sessionID,
+                from: metadata.speakerID,
+                fromName: metadata.speakerName ?? ""
+            )
+
+        case .sendLeaveAndTeardown:
+            PTTStreamingSender.shared.sendLeave()
+            PTTStreamingSender.shared.teardownAll()
+            PTTStreamingReceiver.shared.stopAll()
+
+        case .setActiveRemoteParticipant(let enable):
+            if enable {
+                PTTChannelManager.shared.setActiveRemoteParticipant(name: PTTStreamingReceiver.shared.activeSpeakerName ?? remoteSpeakerName)
             } else {
-                // 系统不建议恢复，直接回到空闲
-                self.state = .idle
-                await self.internalStopPlay()
+                PTTChannelManager.shared.setActiveRemoteParticipant(name: nil, avatar: nil)
             }
 
-        case (.interruptionEnded(let resume, let message), .resume):
-            if resume {
-                beginPlay(message)
-            } else {
-                self.state = .idle
-                await self.internalStopPlay()
-            }
-
-        case (.interrupted, .stopPlay):
-            self.state = .idle
-            await self.internalStopPlay()
-           //==================================================
-           // Ignore
-           //==================================================
-
-        default:
-            logger.info("Ignore-STATE: \(self.state.log)")
-            logger.info("Ignore-EVENT: \(event.log)")
+        case .resetTelemetry:
+            currentPlayTime = 0
+            totalPlayTime = 0
+            micLevel = 0
+            elapsedTime = 0
+            remoteStreamActive = false
+            remoteStreamLevel = 0
+            remoteStreamElapsed = 0
+            remoteSpeakerName = nil
         }
+    }
+
+    private func syncPublishedAudioState(event: PTTAudioEvent) {
+        switch audioMachine.state {
+        case .idle:
+            state = .idle
+        case .preparingPlayback(let playback):
+            switch playback {
+            case .local(let local): state = .preparingPlay(local.message)
+            case .remote: state = .idle
+            }
+        case .playing(let playback):
+            switch playback {
+            case .local(let local):
+                state = .playing(local.message)
+                remoteStreamActive = false
+            case .remote(let remote):
+                state = .idle
+                remoteStreamActive = true
+                remoteSpeakerName = remote.speakerName
+            }
+        case .preparingRecording, .recording, .finishingRecording:
+            state = .recording
+        case .suspended(let context):
+            if case .local(let local)? = context.playback {
+                state = .interrupted(local.message)
+            } else {
+                state = .idle
+            }
+        }
+
+        switch event {
+        case .localPlaybackProgress(_, _, let elapsed, let duration):
+            currentPlayTime = elapsed
+            totalPlayTime = duration
+        case .remoteProgress(_, let elapsed, let level):
+            remoteStreamElapsed = elapsed
+            remoteStreamLevel = level
+        case .remotePlaybackDrained, .remoteFailed:
+            if audioMachine.state.remoteSessionID == nil {
+                remoteStreamActive = false
+                remoteStreamElapsed = 0
+                remoteStreamLevel = 0
+                remoteSpeakerName = nil
+            }
+        default:
+            break
+        }
+    }
+
+    private func setMapUserStatusForAllStopped() {
+        for index in onlineUsers.indices { onlineUsers[index].active = false }
     }
 
     func joinConnect() async throws {
@@ -317,128 +525,240 @@ final class PTTManager: NSObject, ObservableObject {
         }
         recorder.setupAudio()
 
-        await self.publicJoinConnect()
+        // 3. Bookmark the channel in the history list. Because we now enforce
+        //    single-channel semantics, the history list is a plain LRU of
+        //    channels the user has visited — `active` is a UI hint only.
+        Defaults[.pttHisChannel].set(Defaults[.pttChannel], active: true)
 
-        self.serverStatus = Defaults[.pttChannel].users.count > 0 ? .online : .offline
+        // 4. Open the WebSocket. HELLO_ACK arriving over the wire will drive
+        //    the user list / server status via `applyHelloAck`; PRESENCE
+        //    frames keep it in sync from there on. No REST call needed.
+        PTTStreamingSender.shared.warmup(channel: Defaults[.pttChannel])
+
         PTTChannelManager.shared.setTransmissionMode()
-        PTTChannelManager.shared
-            .setServerStatus(Defaults[.pttChannel].users.count > 0 ? .ready : .unavailable)
+        // Server status is provisional here; applyHelloAck will flip it to
+        // .online / .failed once the ack arrives.
+        PTTChannelManager.shared.setServerStatus(.ready)
     }
 
     func levelConnect() async {
-        self.powerState = false
-        self.serverStatus = .offline
+        powerState = false
+        serverStatus = .offline
+        sendAudio(.powerOffRequested)
 
-        await self.publicLevelConnect(Defaults[.pttHisChannel])
-        Defaults[.pttChannel].users = []
+        var currentChannel = Defaults[.pttChannel]
+        currentChannel.users = []
+        Defaults[.pttChannel] = currentChannel
+        onlineUsers = []
+
+        var history = Defaults[.pttHisChannel]
+        for i in history.indices { history[i].active = false }
+        Defaults[.pttHisChannel] = history
     }
 
-    func publicLevelConnect(_ channels: [PTTChannel]) async {
-        let result = await self.connect(channels: channels, join: false)
+    /// Switches the active channel. Tears down the (possibly-warm) WebSocket
+    /// for the old channel and warms up a fresh one for `channel`. Called
+    /// from HistoryChannelListView when the user picks a bookmark.
+    func switchChannel(to channel: PTTChannel) async {
+        guard channel != Defaults[.pttChannel] else { return }
 
-        var historyChannels = Defaults[.pttHisChannel]
-        for item in channels {
-            if let index = historyChannels.firstIndex(of: item) {
-                historyChannels[index].active = false
-                historyChannels[index].users = []
-            }
-        }
-        Defaults[.pttHisChannel] = historyChannels
-
+        // Reset presence bookkeeping tied to the outgoing channel.
+        var outgoing = Defaults[.pttChannel]
+        outgoing.users = []
+        Defaults[.pttChannel] = outgoing
         self.onlineUsers = []
-        logger.log("LEVEL: \(result.count)")
+
+        // Stop every audio pipeline and explicitly leave the old channel
+        // through the unified effect runner before selecting the new channel.
+        sendAudio(.powerOffRequested)
+
+        // Persist the new selection.
+        Defaults[.pttChannel] = channel
+        Defaults[.pttHisChannel].set(channel, active: true)
+
+        // Only re-open if the user is powered on. Otherwise we just remember
+        // the choice for the next joinConnect().
+        if self.powerState {
+            PTTStreamingSender.shared.warmup(channel: channel)
+        }
     }
 
-    func publicJoinConnect() async {
-        Defaults[.pttHisChannel].set(Defaults[.pttChannel], active: true)
-
-        var historyChannels = Defaults[.pttHisChannel]
-
-        let activeChannels = historyChannels.filter { $0.active }
-
-        let results = await self.connect(channels: activeChannels, join: true)
+    /// Fold a HELLO_ACK's per-channel snapshot into the app's user model.
+    /// Kept small compared to the old REST-driven `applyJoinResults` because
+    /// PRESENCE frames now carry the ongoing deltas — this only bootstraps.
+    private func applyJoinResults(_ results: [JoinResponse]) {
+        var currentChannel = Defaults[.pttChannel]
+        let currentKey = "\(currentChannel.server.url)_\(currentChannel.hex())"
 
         let resultMap = Dictionary(uniqueKeysWithValues: results.map {
             ("\($0.host)_\($0.channel)", $0)
         })
 
-        for index in historyChannels.indices {
-            let channel = historyChannels[index]
-            let cacheKey = "\(channel.server.url)_\(channel.hex())"
-
-            if let matchedResult = resultMap[cacheKey] {
-                historyChannels[index].users = matchedResult.users
-                historyChannels[index].timestamp = .now
-            } else if channel.active {
-                historyChannels[index].users = []
-            }
-        }
-
-        Defaults[.pttHisChannel] = historyChannels
-
-        var currentChannel = Defaults[.pttChannel]
-        let currentKey = "\(currentChannel.server.url)_\(currentChannel.hex())"
-
-        if let matchedResult = resultMap[currentKey] {
+        if let matched = resultMap[currentKey] {
+            var users = matched.users
+            self.insertSelfIfNeeded(&users)
             currentChannel.timestamp = .now
-            currentChannel.users = matchedResult.users
-            let activeUser = self.onlineUsers.first(where: { $0.active })
-            self.onlineUsers = matchedResult.users
-            if let index = self.onlineUsers.firstIndex(where: { $0.id == activeUser?.id }) {
-                self.onlineUsers[index].active = true
-            }
-
-            // 添加用户自己的位置信息
-            let userId = Defaults[.id]
-
-            // 检查是否已经包含用户自己
-            let hasSelf = self.onlineUsers.contains { $0.id == userId }
-
-            if !hasSelf {
-                // 获取用户自己的位置
-                let userCoordinate = LocManager.shared.location.coordinate
-
-                // 创建用户自己的 ChannelUser，名称设置为"本机"
-                let selfUser = ChannelUser(
-                    id: userId,
-                    name: "本机",
-                    coordinate: userCoordinate,
-                    active: false
-                )
-
-                // 添加到在线用户列表
-                self.onlineUsers.insert(selfUser, at: 0)
-            } else {
-                // 如果已经包含用户自己，确保名称是"本机"
-                if let index = self.onlineUsers.firstIndex(where: { $0.id == userId }) {
-                    let user = self.onlineUsers[index]
-                    // 重新创建一个，名称设置为"本机"
-                    let updatedUser = ChannelUser(
-                        id: user.id,
-                        name: user.name.isEmpty ? String(localized: "本机") : user.name,
-                        coordinate: user.coordinate,
-                        active: user.active
-                    )
-                    self.onlineUsers[index] = updatedUser
-                }
-            }
-
+            currentChannel.users = users
             Defaults[.pttChannel] = currentChannel
+
+            // Mirror to the history entry so the list shows a fresh count.
+            var history = Defaults[.pttHisChannel]
+            if let idx = history.firstIndex(of: currentChannel) {
+                history[idx].users = users
+                history[idx].timestamp = .now
+                Defaults[.pttHisChannel] = history
+            }
+
+            self.onlineUsers = users
             self.serverStatus = .online
         } else {
-            currentChannel.users = []
-            Defaults[.pttChannel] = currentChannel
-            if let firstRes = results.first,
-               let matchedChannel = historyChannels.first(where: {
-                   $0.hex() == firstRes.channel && $0.server.url == firstRes.host
-               })
-            {
-                Defaults[.pttChannel] = matchedChannel
-            }
             self.serverStatus = .failed
         }
 
         self.zoomToFitAllUsers()
+    }
+
+    /// Called from PTTStreamingSenderBridge when a HELLO_ACK arrives. Turns
+    /// the ack's per-channel snapshot into the shape `applyJoinResults`
+    /// expects and drives the same UI updates that REST /ptt/connect used to.
+    @MainActor
+    func applyHelloAck(_ ack: PTTHelloAckPayload) {
+        let results = ack.channels.map { snapshot -> JoinResponse in
+            let users = snapshot.users.map { u -> ChannelUser in
+                ChannelUser(
+                    id: u.id,
+                    name: u.name,
+                    coordinate: CLLocationCoordinate2D(latitude: u.latitude, longitude: u.longitude),
+                    active: false
+                )
+            }
+            return JoinResponse(host: ack.host, channel: snapshot.channel, users: users)
+        }
+        self.applyJoinResults(results)
+    }
+
+    /// Server → client PRESENCE frame consumer. Routed here from
+    /// `PTTStreamingSenderBridge.webSocketManager(_:didReceiveFrame:)`. Only
+    /// the currently active `pttChannel` is updated in the UI; frames for
+    /// other channels (which would only arrive if the server ever sends them
+    /// while we're subscribed to more than one) are dropped silently to keep
+    /// the single-channel invariant.
+    @MainActor
+    func applyPresence(_ p: PTTPresencePayload) {
+        let currentChannel = Defaults[.pttChannel]
+        guard currentChannel.serverOK, currentChannel.hex() == p.channel else {
+            return
+        }
+
+        switch p.kind {
+        case "snapshot":
+            let users = (p.users ?? []).map(Self.toChannelUser)
+            self.replaceOnlineUsers(with: users)
+
+        case "join":
+            guard let u = p.user else { return }
+            self.upsertUser(Self.toChannelUser(u))
+
+        case "update":
+            guard let u = p.user else { return }
+            self.upsertUser(Self.toChannelUser(u))
+
+        case "leave":
+            guard let u = p.user else { return }
+            self.removeUser(id: u.id)
+
+        default:
+            break
+        }
+    }
+
+    // MARK: - Presence helpers
+
+    private static func toChannelUser(_ u: PTTUserResp) -> ChannelUser {
+        ChannelUser(
+            id: u.id,
+            name: u.name,
+            coordinate: CLLocationCoordinate2D(latitude: u.latitude, longitude: u.longitude),
+            active: false
+        )
+    }
+
+    /// Replaces the presence set with `newUsers`, then ensures "本机" (self)
+    /// stays pinned at index 0 with its own live coordinate. Preserves the
+    /// active-speaker flag if the same user is still in the new list.
+    private func replaceOnlineUsers(with newUsers: [ChannelUser]) {
+        let activeUserID = self.onlineUsers.first(where: { $0.active })?.id
+        var users = newUsers
+        if let idx = users.firstIndex(where: { $0.id == activeUserID }) {
+            users[idx].active = true
+        }
+        self.insertSelfIfNeeded(&users)
+        self.onlineUsers = users
+        self.persistToChannel(users)
+        self.zoomToFitAllUsers()
+    }
+
+    private func upsertUser(_ user: ChannelUser) {
+        var users = self.onlineUsers
+        // Self must not be re-added by an echoed presence — the server does
+        // exclude the sender, but a `snapshot` still contains everyone.
+        let userId = Defaults[.id]
+        if user.id == userId {
+            return
+        }
+        if let idx = users.firstIndex(where: { $0.id == user.id }) {
+            // Preserve active-speaker flag when position updates.
+            var merged = user
+            merged.active = users[idx].active
+            users[idx] = merged
+        } else {
+            users.append(user)
+        }
+        self.onlineUsers = users
+        self.persistToChannel(users)
+    }
+
+    private func removeUser(id: String) {
+        let userId = Defaults[.id]
+        if id == userId { return }
+        self.onlineUsers.removeAll(where: { $0.id == id })
+        self.persistToChannel(self.onlineUsers)
+    }
+
+    /// Adds (or refreshes) the "本机" self-marker at index 0 of `users`.
+    private func insertSelfIfNeeded(_ users: inout [ChannelUser]) {
+        let userId = Defaults[.id]
+        let selfName = String(localized: "本机")
+        let coordinate = LocManager.shared.location.coordinate
+        if let idx = users.firstIndex(where: { $0.id == userId }) {
+            users[idx] = ChannelUser(
+                id: userId,
+                name: users[idx].name.isEmpty ? selfName : users[idx].name,
+                coordinate: users[idx].coordinate,
+                active: users[idx].active
+            )
+        } else {
+            users.insert(
+                ChannelUser(id: userId, name: selfName, coordinate: coordinate, active: false),
+                at: 0
+            )
+        }
+    }
+
+    /// Writes `users` back to Defaults[.pttChannel] and the matching entry in
+    /// Defaults[.pttHisChannel]. Kept small — PRESENCE fires often.
+    private func persistToChannel(_ users: [ChannelUser]) {
+        var current = Defaults[.pttChannel]
+        current.users = users
+        current.timestamp = .now
+        Defaults[.pttChannel] = current
+
+        var history = Defaults[.pttHisChannel]
+        if let idx = history.firstIndex(of: current) {
+            history[idx].users = users
+            history[idx].timestamp = .now
+            Defaults[.pttHisChannel] = history
+        }
     }
 
     @discardableResult
@@ -467,40 +787,15 @@ final class PTTManager: NSObject, ObservableObject {
 
     func playWaitList(_ next: Bool = false) async {
         if next {
-            self.state = .idle
-            await self.internalStopPlay()
+            sendAudio(.playNextRequested)
+            return
         }
-
         guard let message = waitPlayList.last else {
-            await self.send(.stopPlay)
+            sendAudio(.stopPlaybackRequested)
             PTTChannelManager.shared.setActiveRemoteParticipant()
             return
         }
-        await self.send(.startPlay(message))
-    }
-
-    private func beginPlay(_ message: AudioMessage) {
-        state = .preparingPlay(message)
-
-        logger.info("Start Play:\(message.file)")
-
-        currentPlayFile = message
-        self.setStatus(message: message, read: true)
-
-        Task {
-            // 实际接入你的播放器
-            await send(.playStarted)
-            if let currentUrl = message.filePath() {
-                // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
-
-                self.setMapUserStatus(message: message)
-                try await Task.sleep(for: .milliseconds(100))
-                await self.player.playAudio(currentUrl)
-                self.setMapUserStatus(message: message, stop: true)
-            }
-            // 播放结束回调
-            await send(.playFinished)
-        }
+        sendAudio(.localPlayRequested(message))
     }
 
     // 设置谁在说话
@@ -532,28 +827,6 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    private func beginRecord(_ activity: Bool = true) async {
-        state = .recording
-        logger.info("Start Record")
-        recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
-        await self.send(.recordStarted)
-    }
-
-    private func internalStopRecord(isCancel: Bool) {
-        logger.info("Stop Record")
-
-        if let data = recorder.stopRecording(), !isCancel {
-            if let file = self.saveVoice(data: data) {
-                Task.detached(priority: .userInitiated) {
-                    await self.sendVoice(message: file)
-                }
-                if !isCancel {
-                    self.lastFile = file
-                }
-            }
-        }
-    }
-
     func saveVoice(data: Data) -> AudioMessage? {
         let id = Defaults[.id]
         let channel = Defaults[.pttChannel]
@@ -574,28 +847,6 @@ final class PTTManager: NSObject, ObservableObject {
             return voice
         } catch {
             logger.error("\(error.localizedDescription)")
-            return nil
-        }
-    }
-
-    func saveVoice(remoteUrl: String) async -> AudioMessage? {
-        do {
-            guard let remoteFileUrl = URL(string: remoteUrl),
-                  let voice = AudioMessage(remote: remoteFileUrl),
-                  let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(voice.file),
-                  let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign)
-            else {
-                return nil
-            }
-
-            try data.write(to: filePath)
-
-            return try await self.database.dbQueue.write { db in
-                try voice.save(db)
-                return voice
-            }
-
-        } catch {
             return nil
         }
     }
@@ -761,89 +1012,14 @@ extension PTTManager: CLLocationManagerDelegate {
 }
 
 extension PTTManager {
-    func connect(channels: [PTTChannel], join: Bool) async -> [JoinResponse] {
-        let groupedChannels = Dictionary(grouping: channels, by: { $0.server.url })
-
-        return await withTaskGroup(of: [JoinResponse]?.self) { group in
-            for (_, serverChannels) in groupedChannels {
-                group.addTask {
-                    if let data = await self._connect(channels: serverChannels, join: join) {
-                        return data.data
-                    }
-                    return nil
-                }
-            }
-            var allResponses: [JoinResponse] = []
-            for await response in group {
-                if let response = response {
-                    allResponses += response
-                }
-            }
-
-            return allResponses
-        }
-    }
-
-    nonisolated struct JoinParams: Codable, Sendable {
-        var id: String
-        var name: String
-        var channels: [String]
-        var latitude: Double
-        var longitude: Double
-        var token: String
-        var host: String
-    }
-
+    /// Shape mirrored by the REST `/ptt/connect` response, and reused as the
+    /// intermediate form applyHelloAck folds a WebSocket ack into. Kept
+    /// nested here (rather than promoted to a top-level type) because
+    /// nothing outside PTTManager consumes it.
     nonisolated struct JoinResponse: Codable, Sendable {
         var host: String
         var channel: String
         var users: [ChannelUser]
-    }
-
-    private func _connect(
-        channels: [PTTChannel],
-        join: Bool
-    ) async -> baseResponse<[JoinResponse]>? {
-        guard let channel = channels.first, channel.serverOK else {
-            return nil
-        }
-
-        do {
-            let hzs = channels.map { $0.hex() }
-
-            let signHeaders = CryptoManager.signature(
-                sign: channel.server.sign,
-                server: channel.server.key
-            )
-
-            let params = JoinParams(
-                id: Defaults[.id],
-                name: Defaults[.pttNickname],
-                channels: hzs,
-                latitude: LocManager.shared.location.coordinate.latitude,
-                longitude: LocManager.shared.location.coordinate.longitude,
-                token: join ? Defaults[.token].talk : "",
-                host: channel.server.url
-            )
-
-            guard let result: baseResponse<[JoinResponse]> =
-                try await self.network.fetch(
-                    url: channel.server.url,
-                    path: "/ptt/connect",
-                    method: .POST,
-                    params: params,
-                    headers: signHeaders,
-                    timeout: 5
-                )
-            else {
-                throw "请求失败"
-            }
-            return result
-        } catch {
-            logger.error("\(error)")
-            Toast.info(title: "语音服务器错误")
-            return nil
-        }
     }
 
     func sendVoice(message: AudioMessage) async {
@@ -893,34 +1069,6 @@ extension PTTManager {
         }
     }
 
-    private func getVoice(remote remoteFileURL: URL, decode: Bool = false) async -> Data? {
-        do {
-            let channel = Defaults[.pttChannel]
-
-            let response = try await self.network.fetch(
-                url: remoteFileURL.absoluteString,
-                headers: CryptoManager.signature(
-                    sign: channel.server.sign,
-                    server: channel.server.key
-                )
-            )
-            // FIXME: - 404存为了文件
-            guard response.check() else { return nil }
-
-            var data = response.data
-            /// 解密
-            if decode {
-                guard let decodeData = CryptoModelConfig.data.decrypt(inputData: data)
-                else { throw "decrypt error" }
-                data = decodeData
-            }
-
-            return data
-        } catch {
-            logger.error("\(error.localizedDescription)")
-            return nil
-        }
-    }
 }
 
 extension PTTManager {
@@ -1036,15 +1184,87 @@ extension PTTManager {
     }
 }
 
+extension PTTManager {
+    // MARK: - Remote realtime stream telemetry
+    // Called from PTTStreamingReceiver as it drives incoming audio. Kept on
+    // the manager (not the receiver) so SwiftUI views can @ObservedObject
+    // the single source of truth for both local and remote playback state.
+
+    @MainActor
+    func remoteStreamBegan(speakerName: String?) {
+        self.remoteStreamActive = true
+        self.remoteSpeakerName = speakerName?.isEmpty == false ? speakerName : nil
+        self.remoteStreamElapsed = 0
+        self.remoteStreamLevel = 0
+    }
+
+    @MainActor
+    func remoteStreamProgress(elapsed: TimeInterval, level: Double) {
+        // Only forward while a stream is live — a late frame after
+        // remoteStreamEnded shouldn't re-flip the flag.
+        guard self.remoteStreamActive else { return }
+        self.remoteStreamElapsed = elapsed
+        self.remoteStreamLevel = level
+    }
+
+    @MainActor
+    func remoteStreamEnded() {
+        self.remoteStreamActive = false
+        self.remoteStreamLevel = 0
+        self.remoteStreamElapsed = 0
+        self.remoteSpeakerName = nil
+    }
+}
+
 extension PTTManager: PTTPlayerDelegate {
     nonisolated func playerManager(
         _ manager: PTTPlayerManager,
         didUpdateCurrentTime currentTime: TimeInterval,
         duration: TimeInterval
     ) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
+            guard let identity = self.audioMachine.state.localIdentity else { return }
+            self.sendAudio(.localPlaybackProgress(
+                id: identity.0,
+                generation: identity.1,
+                elapsed: currentTime,
+                duration: duration
+            ))
+        }
+    }
+
+    nonisolated func playerManager(
+        _ manager: PTTPlayerManager,
+        didStart id: UUID,
+        generation: UInt64,
+        duration: TimeInterval
+    ) {
+        Task { @MainActor in
             self.totalPlayTime = duration
-            self.currentPlayTime = currentTime
+            self.sendAudio(.localPlaybackStarted(id: id, generation: generation))
+        }
+    }
+
+    nonisolated func playerManager(
+        _ manager: PTTPlayerManager,
+        didFinish id: UUID,
+        generation: UInt64
+    ) {
+        Task { @MainActor in
+            self.setMapUserStatusForAllStopped()
+            self.currentPlayFile = nil
+            self.sendAudio(.localPlaybackFinished(id: id, generation: generation))
+        }
+    }
+
+    nonisolated func playerManager(
+        _ manager: PTTPlayerManager,
+        didFail id: UUID,
+        generation: UInt64,
+        error: String
+    ) {
+        Task { @MainActor in
+            self.sendAudio(.localPlaybackFailed(id: id, generation: generation, reason: error))
         }
     }
 }
@@ -1055,7 +1275,7 @@ extension PTTManager: PTTRecorderDelegate {
         didUpdateRecordingPower power: CGFloat,
         duration: TimeInterval
     ) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.micLevel = power
             self.elapsedTime = duration
         }
@@ -1065,8 +1285,44 @@ extension PTTManager: PTTRecorderDelegate {
         _ manager: PTTRecorderManager,
         didUpdateMicrophonePermission hasPermission: Bool
     ) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.hasPermission = hasPermission
+        }
+    }
+
+    func recorderManager(_ manager: PTTRecorderManager, didStartRecording id: UUID) {
+        sendAudio(.recorderStarted(id: id))
+    }
+
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        recording id: UUID,
+        didStopWith data: Data?
+    ) {
+        let cancelled = recordingStopCancelled.removeValue(forKey: id) ?? false
+        if !cancelled, let data, let file = saveVoice(data: data) {
+            lastFile = file
+        }
+        sendAudio(.recorderStopped(id: id, data: data))
+    }
+
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        recording id: UUID,
+        didFail error: String
+    ) {
+        sendAudio(.recorderFailed(id: id, reason: error))
+    }
+
+    /// 采集回调的 PCM 帧 → PTTStreamingSender → OpusRealtimeEncoder → WS。
+    /// 仅当前 FSM recording id 有效时才接受 PCM；过期 tap 回调直接丢弃。
+    func recorderManager(
+        _ manager: PTTRecorderManager,
+        didCaptureBuffer buffer: AVAudioPCMBuffer
+    ) {
+        Task { @MainActor in
+            guard self.audioMachine.state.recordingContext != nil else { return }
+            PTTStreamingSender.shared.ingestPCM(buffer)
         }
     }
 }
