@@ -193,12 +193,19 @@ final nonisolated class PTTChannelManager: NSObject,
             }
         }
         
-        let name = pushPayload["name"] as? String
+        var name: String{
+            if let name =  pushPayload["name"] as? String, !name.isEmpty{
+                return name
+            }
+            return String(localized: "未知")
+        }
+        
+        
         
         return .activeRemoteParticipant(
             .init(
-                name: name ?? String(localized: "未知"),
-                image: "無,ff0000".avatarImage()
+                name: name,
+                image: "哔,ff0000".avatarImage()
             )
         )
         
@@ -247,7 +254,7 @@ final nonisolated class PTTChannelManager: NSObject,
 
         return PTChannelDescriptor(
             name: NCONFIG.AppName,
-            image: "書".avatarImage()
+            image: "哔".avatarImage()
         )
     }
 
