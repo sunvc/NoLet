@@ -953,17 +953,18 @@ struct PTTContentView: View {
         }
         if pttVibration { Haptic.impact(.heavy) }
         guard self.ispress else { return }
+        PTTChannelManager.shared.beginTransmit()
         pttManager.sendAudio(.recordRequested(origin: .user, activity: true, saveLocalCopy: true))
     }
 
     func endRecording() async {
-        pttManager.sendAudio(.recordStopRequested(cancelled: false))
+        PTTChannelManager.shared.endTransmit()
         if pttVibration { Haptic.notify(.success) }
         if pttMusicPlay { pttManager.playTips(.pttnotifyend) }
     }
 
     func cancelRecording() async {
-        pttManager.sendAudio(.recordStopRequested(cancelled: true))
+        PTTChannelManager.shared.endTransmit()
         if pttVibration { Haptic.notify(.error) }
     }
 
