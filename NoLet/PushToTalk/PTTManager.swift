@@ -408,10 +408,9 @@ final class PTTManager: NSObject, ObservableObject {
 
         case .configureAudioSessionForPlayback:
             // Only needed when PushToTalk deactivates the audio session and we
-            // are still playing remotely. In the normal path the framework owns
-            // the session via setActiveRemoteParticipant but deactivation can
-            // happen during a ring-window / background transition. The receiver
-            // engine may have been paused; restart it.
+            // are still playing remotely. Re-acquire the session ourselves and
+            // restart the receiver engine. The FSM will see audioSessionActive
+            // go false; we reconcile it with an audioSessionActivated event.
             let s = AVAudioSession.sharedInstance()
             if s.category != .playAndRecord {
                 try? s.setCategory(
@@ -422,10 +421,6 @@ final class PTTManager: NSObject, ObservableObject {
             }
             try? s.setActive(true, options: .notifyOthersOnDeactivation)
             PTTStreamingReceiver.shared.recoverAfterSessionLoss()
-            // The FSM marked audioSessionActive=false when it saw the
-            // deactivation callback. We just re-acquired the session, so
-            // tell the FSM — otherwise the next remoteStreamBegan will
-            // be stuck queued waiting for an activation that never comes.
             sendAudio(.audioSessionActivated)
 
         case .wakeRemote(let metadata):

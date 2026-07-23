@@ -84,6 +84,20 @@ final nonisolated class PTTChannelManager: NSObject,
 
     func setTransmissionMode() {
         self.channelManager?.setTransmissionMode(.fullDuplex, channelUUID: Self.ChannelUUID)
+        logger.debug("setTransmissionMode fullDuplex")
+    }
+
+    /// Activates the local microphone through PushToTalk. Called from the UI
+    /// when the user presses the system PTT record button.
+    func beginTransmit() {
+        logger.debug("PTT beginTransmit requested")
+        self.channelManager?.requestBeginTransmitting(channelUUID: Self.ChannelUUID)
+    }
+
+    /// Deactivates the local microphone through PushToTalk.
+    func endTransmit() {
+        logger.debug("PTT endTransmit requested")
+        self.channelManager?.stopTransmitting(channelUUID: Self.ChannelUUID)
     }
 
     func setServerStatus(_ status: PTServiceStatus) {
@@ -232,6 +246,10 @@ final nonisolated class PTTChannelManager: NSObject,
             return String(localized: "未知")
         }
 
+        // Return .activeRemoteParticipant so PushToTalk framework shows
+        // the caller name in the system UI AND activates the audio session.
+        // Without this the framework treats the push as a silent wake-up and
+        // never calls didActivate.
         return .activeRemoteParticipant(
             .init(
                 name: name,

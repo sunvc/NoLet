@@ -348,6 +348,19 @@ enum PTTAudioReducer {
         case .recorderStarted(let id):
             guard case .preparingRecording(let rc) = machine.state, rc.id == id else { break }
             machine.state = .recording(rc)
+            // Derail the receive path: if a remote stream is still draining
+            // or playing, force it away so the mic is the only consumer of
+            // the audio session. This guards against the scenario where the
+            // FSM thinks it's .idle but the receiver engine is still running
+            // from a recently-drained session.
+            if machine.pausedRemote == nil {
+                if let rid = machine.state.remoteSessionID {
+                    effects.append(.releaseRemote(rid))
+                } else if let first = machine.remoteQueue.first {
+                    machine.remoteQueue.removeFirst()
+                    effects.append(.releaseRemote(first.sessionID))
+                }
+            }
 
         case .recorderStopped(let id, _):
             guard case .finishingRecording(let rc) = machine.state, rc.id == id else { break }
@@ -434,6 +447,10 @@ enum PTTAudioReducer {
                 if machine.state.recordingContext != nil { break }
                 let rc = PTTRecordingContext(id: UUID(), origin: origin, activity: false,
                                               saveLocalCopy: true)
+                // Pause playback regardless of whether we're in a playback
+                // state — the FSM may be .idle but the receiver engine could
+                // still be running from a recent remote session that is in
+                // the process of draining.
                 if let pb = machine.state.playback {
                     switch pb {
                     case .local(let l):
@@ -475,8 +492,17 @@ enum PTTAudioReducer {
 
         case .audioSessionDeactivated:
             machine.audioSessionActive = false
+            // If there's still a remote playback or a queued remote, try to
+            // re-acquire the session ourselves. PushToTalk framework may
+            // deactivate us when (a) the ring window expires, or (b) our
+            // setActiveRemoteParticipant is nil. If we are genuinely idle
+            // (no playback), let the framework take it — don't fight.
             if machine.state.playback?.isRemote == true || !machine.remoteQueue.isEmpty {
                 effects.append(.configureAudioSessionForPlayback)
+                // Keep audioSessionActive conceptually true so the FSM
+                // doesn't reject the next remoteStreamBegan. Our recovery
+                // path will send .audioSessionActivated after re-acquiring
+                // the session, which reconciles the flag.
                 break
             }
             if !machine.state.isRecordingPhase, let pb = machine.state.playback {
@@ -500,19 +526,21 @@ enum PTTAudioReducer {
         case .audioSessionActivated:
             machine.audioSessionActive = true
             machine.suspensionBlockers.remove(.audioSessionInactive)
-            // If the receiver has a queued remote session that arrived
-            // while `audioSessionActive` was false, activate it now. This
-            // is the only safe time to start playback — PushToTalk
-            // framework has just granted us the audio session.
+            // If there's a queued remote, activate it immediately.
             if let first = machine.remoteQueue.first {
                 machine.remoteQueue.removeFirst()
                 machine.state = .preparingPlayback(.remote(first))
                 effects += [.activateRemote(first.sessionID), .setActiveRemoteParticipant(true)]
                 break
             }
+            // Wake-up path: the push arrived before WS connect completed.
+            // The START_BROADCAST will arrive asynchronously; in the
+            // meantime tell PushToTalk there IS a speaker so the framework
+            // doesn't deactivate the session before playback begins.
             if let meta = machine.pendingRemotePush {
                 machine.pendingRemotePush = nil
                 effects.append(.wakeRemote(meta))
+                effects.append(.setActiveRemoteParticipant(true))
             }
             if machine.transmitIntent, !machine.state.isRecordingPhase {
                 let rc = PTTRecordingContext(id: UUID(), origin: .user, activity: false,
@@ -538,7 +566,12 @@ enum PTTAudioReducer {
             resumeIfPossible(&machine, effects: &effects, explicit: true)
 
         case .remotePushReceived(let metadata):
-            machine.pendingRemotePush = metadata
+            // Fire the WS wake-up immediately — don't wait for
+            // audioSessionActivated. The PushToTalk ring window is <1 s;
+            // by the time the framework grants the session the WS
+            // subscribe + replay must already be in-flight.
+            machine.pendingRemotePush = nil
+            effects.append(.wakeRemote(metadata))
 
         case .powerOffRequested:
             switch machine.state {
