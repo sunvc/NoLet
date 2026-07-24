@@ -45,41 +45,31 @@ struct MessageDetailView: View {
         Group {
             if searchText.isEmpty {
                 ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVGrid(columns: manager.messageColume) {
-                            ForEach(messages, id: \.id) { message in
-                                MessageCardView(
-                                    message: message,
-                                    searchText: searchText,
-                                    showAllTTL: showAllTTL,
-                                    assistantAccounsCount: assistantAccouns.count,
-                                    selectID: manager.selectID
-                                ){
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                        withAnimation(.default) {
-                                            messages.removeAll(where: { $0.id == message.id })
-                                        }
-                                    }
-
-                                    Task.detached(priority: .background) {
-                                        _ = await MessagesManager.shared.delete(message)
-                                    }
-                                }
-                                .id(message.id)
-                                .onAppear {
-                                    if messages.count < allCount && lastMessage == message {
-                                        loadData(proxy: proxy, item: message)
-                                    }
+                    WaterfallMessageView(
+                        messages: messages,
+                        allCount: allCount,
+                        columnCount: manager.waterfallColumnCount,
+                        isLoading: loadData,
+                        searchText: searchText,
+                        assistantAccounsCount: assistantAccouns.count,
+                        showAllTTL: showAllTTL,
+                        selectID: manager.selectID,
+                        onDelete: { message in
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                withAnimation(.default) {
+                                    messages.removeAll(where: { $0.id == message.id })
                                 }
                             }
+                            Task.detached(priority: .background) {
+                                _ = await MessagesManager.shared.delete(message)
+                            }
+                        },
+                        onLoadMore: {
+                            loadData(proxy: proxy, item: messages.last)
                         }
-                        if loadData {
-                            DataLoadingView()
-                        }
-                    }
+                    )
                     .scrollDismissesKeyboard(.interactively)
                     .scrollContentBackground(.hidden)
-                    .background(ContentBackgroundView())
                     .animation(.easeInOut, value: messages)
                     .refreshable {
                         self.loadData(proxy: proxy, limit: messagePage)
@@ -111,7 +101,7 @@ struct MessageDetailView: View {
                 manager.searchText = ""
             }
         }
-
+        .background(ContentBackgroundView())
         .toolbar {
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .bottomBar)

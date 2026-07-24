@@ -44,43 +44,31 @@ struct MessageFlatListView: View {
 
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView {
-                LazyVGrid(columns: manager.messageColume) {
-                    ForEach(messageManager.messages, id: \.id) { message in
-                        EmptyView()
-                        MessageCardView(
-                            message: message,
-                            searchText: "",
-                            assistantAccounsCount: assistantAccouns.count
-                        ){
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                withAnimation(.default) {
-                                    messageManager.messages
-                                        .removeAll(where: { $0.id == message.id })
-                                }
-                            }
-
-                            Task.detached(priority: .background) {
-                                _ = await messageManager.delete(message)
-                            }
-                            Toast.success(title: "删除成功")
-                        }
-                        
-                        .id(message.id)
-                        .onAppear {
-                            if messagesCount < messageManager
-                                .allCount && lastMessage == message
-                            {
-                                self.loadData(proxy: proxy, limit: messagePage, item: message)
-                            }
+            WaterfallMessageView(
+                messages: messageManager.messages,
+                allCount: messageManager.allCount,
+                columnCount: manager.waterfallColumnCount,
+                isLoading: showLoading,
+                searchText: "",
+                assistantAccounsCount: assistantAccouns.count,
+                showAllTTL: showAllTTL,
+                selectID: manager.selectID,
+                onDelete: { message in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        withAnimation(.default) {
+                            messageManager.messages
+                                .removeAll(where: { $0.id == message.id })
                         }
                     }
+                    Task.detached(priority: .background) {
+                        _ = await messageManager.delete(message)
+                    }
+                    Toast.success(title: "删除成功")
+                },
+                onLoadMore: { [self] in
+                    loadData(proxy: proxy, limit: messagePage)
                 }
-
-                if messagesCount == 0 && showLoading {
-                    DataLoadingView()
-                }
-            }
+            )
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())

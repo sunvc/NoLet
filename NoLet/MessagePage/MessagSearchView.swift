@@ -37,60 +37,35 @@ struct MessagSearchView: View {
 
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: manager.messageColume) {
-                if searched {
-                    HStack {
-                        Spacer()
-                        Text("搜索中...")
-                            .font(.title3.bold())
-                            .foregroundStyle(.green)
-                        Spacer()
-                    }
-                } else if messages.count == 0 && manager.searchText.isEmpty {
-                    HStack {
-                        Spacer()
-                        Text("搜索历史消息")
-                            .font(.title3.bold())
-                            .foregroundStyle(.blue)
-                        Spacer()
-                    }
-                } else if messages.count == 0 && !manager.searchText.isEmpty {
-                    HStack {
-                        Spacer()
-                        Text("没有找到数据")
-                            .font(.title3.bold())
-                            .foregroundStyle(.orange)
-                        Spacer()
-                    }
-                } else {
-                    ForEach(messages, id: \.id) { message in
-                        MessageCardView(
-                            message: message,
-                            searchText: manager.searchText,
-                            assistantAccounsCount: assistantAccouns.count,
-                            selectID: manager.selectID
-                        ){
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                withAnimation(.default) {
-                                    messages.removeAll(where: { $0.id == message.id })
-                                }
-                            }
-
-                            Task.detached(priority: .background) {
-                                _ = await messageManager.delete(message)
+        Group {
+            if searched {
+                searchingView
+            } else if messages.isEmpty {
+                emptyStateView
+            } else {
+                WaterfallMessageView(
+                    messages: messages,
+                    allCount: allCount,
+                    columnCount: manager.waterfallColumnCount,
+                    isLoading: false,
+                    searchText: manager.searchText,
+                    assistantAccounsCount: assistantAccouns.count,
+                    showAllTTL: false,
+                    selectID: manager.selectID,
+                    onDelete: { message in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            withAnimation(.default) {
+                                messages.removeAll(where: { $0.id == message.id })
                             }
                         }
-                        .id(message.id)
-                        .onAppear {
-                            if messages.count < allCount && lastMessage == message {
-                                loadData(limit: messagePage, item: message)
-                            }
+                        Task.detached(priority: .background) {
+                            _ = await messageManager.delete(message)
                         }
+                    },
+                    onLoadMore: {
+                        loadData(limit: messagePage, item: messages.last)
                     }
-                }
-
-                Spacer(minLength: 30)
+                )
             }
         }
         .scrollDismissesKeyboard(.interactively)
@@ -123,6 +98,38 @@ struct MessagSearchView: View {
         }
         .task(id: manager.searchText) {
             loadData(limit: messagePage)
+        }
+    }
+
+    // MARK: - 搜索/空状态
+
+    private var searchingView: some View {
+        ScrollView {
+            VStack {
+                Spacer()
+                Text("搜索中...")
+                    .font(.title3.bold())
+                    .foregroundStyle(.green)
+                Spacer()
+            }
+        }
+    }
+
+    private var emptyStateView: some View {
+        ScrollView {
+            VStack {
+                Spacer()
+                if manager.searchText.isEmpty {
+                    Text("搜索历史消息")
+                        .font(.title3.bold())
+                        .foregroundStyle(.blue)
+                } else {
+                    Text("没有找到数据")
+                        .font(.title3.bold())
+                        .foregroundStyle(.orange)
+                }
+                Spacer()
+            }
         }
     }
 

@@ -59,8 +59,16 @@ final class AppManager: ObservableObject {
     var messageColume: [GridItem] {
         Array(
             repeating: GridItem(.flexible(), spacing: 10),
-            count: sizeClass == .compact ? 1 : Int(windowSize.width / 500)
+            count: waterfallColumnCount
         )
+    }
+
+    /// 瀑布流列数：compact 始终 1 列，regular 按宽度 / 350 最少 2 列
+    var waterfallColumnCount: Int {
+        guard sizeClass == .compact else {
+            return max(2, Int(windowSize.width / 350))
+        }
+        return 1
     }
 
     var router: [RouterPage] = [] {

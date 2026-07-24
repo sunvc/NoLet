@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B124150921E6F92E4A5D5DA /* WaterfallLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */; };
+		B41C4CEE9E81DE316421C801 /* WaterfallMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4B49098EB9147E70845904 /* WaterfallMessageView.swift */; };
 		B58358922DEDD4E10066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B58358912DEDD4E10066B32E /* Defaults */; };
 		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
@@ -128,6 +130,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6F4B49098EB9147E70845904 /* WaterfallMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaterfallMessageView.swift; path = NoLet/MessagePage/WaterfallMessageView.swift; sourceTree = SOURCE_ROOT; };
+		78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaterfallLayout.swift; path = Helpers/WaterfallLayout.swift; sourceTree = SOURCE_ROOT; };
 		B58357F72DEDD3B10066B32E /* NoLet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoLet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58359B92DEDDB170066B32E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		B58359D12DEDDF360066B32E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -150,35 +154,35 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */ = {
+		B58358092DEDD3B40066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = B58357F62DEDD3B10066B32E /* NoLet */;
 		};
-		B58359F52DEDDF860066B32E /* Exceptions for "ShareExtension" folder in "ShareExtension" target */ = {
+		B58359F52DEDDF860066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 		};
-		B5835B1C2DEDE07C0066B32E /* Exceptions for "ServiceExtension" folder in "ServiceExtension" target */ = {
+		B5835B1C2DEDE07C0066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
-		B5835B312DEDE0930066B32E /* Exceptions for "ContentExtension" folder in "ContentExtension" target */ = {
+		B5835B312DEDE0930066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
-		B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */ = {
+		B5835C4F2DEDE29A0066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
@@ -205,7 +209,7 @@
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 		};
-		B5835D272DEDF0830066B32E /* Exceptions for "Publics" folder in "ContentExtension" target */ = {
+		B5835D272DEDF0830066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
@@ -220,7 +224,7 @@
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
 		};
-		B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */ = {
+		B5835D442DEDF95D0066B32E = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				AudioConversion.swift,
@@ -257,7 +261,7 @@
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
-		BA394DFC2ED3F29A00E524E3 /* Exceptions for "Sounds" folder in "ServiceExtension" target */ = {
+		BA394DFC2ED3F29A00E524E3 = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				birdsong.caf,
@@ -311,14 +315,14 @@
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
 		};
-		BA5D59F42FECE05200F89D1A /* Exceptions for "LocationExtension" folder in "LocationExtension" target */ = {
+		BA5D59F42FECE05200F89D1A = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
 		};
-		BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */ = {
+		BA5D59FE2FED17CE00F89D1A = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
@@ -328,7 +332,7 @@
 			);
 			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
 		};
-		BA7B13A22EFC5D84000288F8 /* Exceptions for "NoLet" folder in "ShareExtension" target */ = {
+		BA7B13A22EFC5D84000288F8 = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				OtherViews/ColoredBorder.swift,
@@ -337,7 +341,7 @@
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 		};
-		BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */ = {
+		BAB6784A2EC1F5AB0023BD7B = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				birdsong.caf,
@@ -394,70 +398,13 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		B58357F92DEDD3B10066B32E /* NoLet */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B58358092DEDD3B40066B32E /* Exceptions for "NoLet" folder in "NoLet" target */,
-				BA7B13A22EFC5D84000288F8 /* Exceptions for "NoLet" folder in "ShareExtension" target */,
-			);
-			path = NoLet;
-			sourceTree = "<group>";
-		};
-		B58359E82DEDDF860066B32E /* ShareExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B58359F52DEDDF860066B32E /* Exceptions for "ShareExtension" folder in "ShareExtension" target */,
-			);
-			path = ShareExtension;
-			sourceTree = "<group>";
-		};
-		B5835ABD2DEDE0490066B32E /* Publics */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */,
-				B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */,
-				B5835D272DEDF0830066B32E /* Exceptions for "Publics" folder in "ContentExtension" target */,
-				BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */,
-			);
-			path = Publics;
-			sourceTree = "<group>";
-		};
-		B5835B122DEDE07C0066B32E /* ServiceExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B5835B1C2DEDE07C0066B32E /* Exceptions for "ServiceExtension" folder in "ServiceExtension" target */,
-			);
-			path = ServiceExtension;
-			sourceTree = "<group>";
-		};
-		B5835B242DEDE0930066B32E /* ContentExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				B5835B312DEDE0930066B32E /* Exceptions for "ContentExtension" folder in "ContentExtension" target */,
-			);
-			explicitFolders = (
-				css,
-			);
-			path = ContentExtension;
-			sourceTree = "<group>";
-		};
-		B5835BC12DEDE1020066B32E /* Sounds */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */,
-				BA394DFC2ED3F29A00E524E3 /* Exceptions for "Sounds" folder in "ServiceExtension" target */,
-			);
-			path = Sounds;
-			sourceTree = "<group>";
-		};
-		BA5D59EA2FECE05200F89D1A /* LocationExtension */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BA5D59F42FECE05200F89D1A /* Exceptions for "LocationExtension" folder in "LocationExtension" target */,
-			);
-			path = LocationExtension;
-			sourceTree = "<group>";
-		};
+		B58357F92DEDD3B10066B32E /* NoLet */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B58358092DEDD3B40066B32E, BA7B13A22EFC5D84000288F8, ); path = NoLet; sourceTree = "<group>"; };
+		B58359E82DEDDF860066B32E /* ShareExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B58359F52DEDDF860066B32E, ); path = ShareExtension; sourceTree = "<group>"; };
+		B5835ABD2DEDE0490066B32E /* Publics */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B5835C4F2DEDE29A0066B32E, B5835D442DEDF95D0066B32E, B5835D272DEDF0830066B32E, BA5D59FE2FED17CE00F89D1A, ); path = Publics; sourceTree = "<group>"; };
+		B5835B122DEDE07C0066B32E /* ServiceExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B5835B1C2DEDE07C0066B32E, ); path = ServiceExtension; sourceTree = "<group>"; };
+		B5835B242DEDE0930066B32E /* ContentExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (B5835B312DEDE0930066B32E, ); explicitFolders = (css, ); path = ContentExtension; sourceTree = "<group>"; };
+		B5835BC12DEDE1020066B32E /* Sounds */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BAB6784A2EC1F5AB0023BD7B, BA394DFC2ED3F29A00E524E3, ); path = Sounds; sourceTree = "<group>"; };
+		BA5D59EA2FECE05200F89D1A /* LocationExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BA5D59F42FECE05200F89D1A, ); path = LocationExtension; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -558,6 +505,8 @@
 				B58359B82DEDDB170066B32E /* Frameworks */,
 				B58357F82DEDD3B10066B32E /* Products */,
 				B5835BC12DEDE1020066B32E /* Sounds */,
+				78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */,
+				6F4B49098EB9147E70845904 /* WaterfallMessageView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -865,6 +814,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B124150921E6F92E4A5D5DA /* WaterfallLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
