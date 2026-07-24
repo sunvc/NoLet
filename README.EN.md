@@ -7,26 +7,26 @@
 
 </p>
 
-# NoLet
+# Aero
 ### An application designed for the iOS platform that allows you to push custom notifications to your Apple devices.
 
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="Aero App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="Aero App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="Aero App"></td>
   </tr>
 </table>
 
 | TestFlight | App Store | Documentation | Feedback Group |
 |-------|--------|-------|--------|
-|[<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/78/a0/fc78a0ee-dc6b-00d9-85be-e74c24b2bcb5/AppIcon-85-220-0-4-2x.png/512x0w.webp" alt="NoLet App" height="45"> ](https://testflight.apple.com/join/PMPaM6BR) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="NoLet App" height="40">](https://apps.apple.com/app/id6615073345)| [User Documentation](https://wiki.wzs.app) | [NoLet](https://t.me/PushToMe) |
+|[<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/78/a0/fc78a0ee-dc6b-00d9-85be-e74c24b2bcb5/AppIcon-85-220-0-4-2x.png/512x0w.webp" alt="Aero App" height="45"> ](https://testflight.apple.com/join/PMPaM6BR) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Aero App" height="40">](https://apps.apple.com/app/id6615073345)| [User Documentation](https://wiki.wzs.app) | [NoLet](https://t.me/PushToMe) |
 
 
 ## Application Introduction
 
-NoLet is a powerful iOS push tool that enables you to send custom notifications from any device to your iPhone/iPad. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet all your needs.
+Aero is a powerful iOS push tool that enables you to send custom notifications from any device to your iPhone/iPad. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet all your needs.
 
 > [!IMPORTANT]
 >
@@ -49,8 +49,8 @@ NoLet is a powerful iOS push tool that enables you to send custom notifications 
 
 ### Self-Hosted Push Server
 
-* NoLet supports self-hosted servers to ensure data privacy and security
-* Open-source server code: [NoLetServer](https://github.com/sunvc/NoLets)
+* Aero supports self-hosted servers to ensure data privacy and security
+* Open-source server code: [AeroServer](https://github.com/sunvc/NoLets)
 * Self-hosted servers support multi-platform deployment (Windows, macOS, Linux, etc.)
 * Docker containerized deployment support for easy maintenance and upgrades
 

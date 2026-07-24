@@ -7,7 +7,7 @@
 
 </p>
 
-# NoLet 无字书
+# Aero 伞兵
 ### 是一款为iOS平台设计可让您将自定义通知推送到您的苹果设备的应用程序。
 
 <table>
@@ -26,7 +26,7 @@
 
 ## 应用介绍
 
-NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备向iPhone/iPad发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 无字书都能满足你的需求。
+Aero (伞兵)  是一款强大的iOS推送工具，让你能够从任何设备向iPhone/iPad发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 伞兵都能满足你的需求。
 
 > [!IMPORTANT]
 >
@@ -50,8 +50,8 @@ NoLet 无字书 是一款强大的iOS推送工具，让你能够从任何设备�
 
 ### 自建推送服务器
 
-* NoLet 无字书支持自建服务器，保证数据隐私和安全
-* 服务器代码开源：[NoLetServer](https://github.com/sunvc/NoLets)
+* Aero 伞兵支持自建服务器，保证数据隐私和安全
+* 服务器代码开源：[AeroServer](https://github.com/sunvc/NoLets)
 * 自建服务器支持多平台部署（Windows、macOS、Linux等）
 * 支持Docker容器化部署，便于维护和升级
 
