@@ -93,10 +93,11 @@ private func shouldShowNormalUserNames(for region: MKCoordinateRegion) -> Bool {
 
 struct ChannelUserMapUIKitView: UIViewRepresentable {
     @Binding var region: MKCoordinateRegion
+    @Binding var animatesZoom: Bool
     let onlineUsers: [ChannelUser]
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(region: $region)
+        Coordinator(region: $region, animatesZoom: $animatesZoom)
     }
 
     func makeUIView(context: Context) -> MKMapView {
@@ -167,10 +168,12 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
 
     final class Coordinator: NSObject, MKMapViewDelegate {
         @Binding private var region: MKCoordinateRegion
+        @Binding private var animatesZoom: Bool
         private var isApplyingRegionFromSwiftUI = false
 
-        init(region: Binding<MKCoordinateRegion>) {
+        init(region: Binding<MKCoordinateRegion>, animatesZoom: Binding<Bool>) {
             self._region = region
+            self._animatesZoom = animatesZoom
         }
 
         func syncAnnotations(
@@ -230,7 +233,7 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
         ) {
             guard !regionMatches(mapView.region, targetRegion) else { return }
             isApplyingRegionFromSwiftUI = true
-            mapView.setRegion(targetRegion, animated: true)
+            mapView.setRegion(targetRegion, animated: animatesZoom)
         }
 
         private func refreshTalkingPriority(on mapView: MKMapView) {

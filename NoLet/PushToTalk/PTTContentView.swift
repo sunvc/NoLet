@@ -8,6 +8,7 @@
 import AVFAudio
 import Combine
 import Defaults
+import MapKit
 import SwiftUI
 
 struct PTTContentView: View {
@@ -52,6 +53,13 @@ struct PTTContentView: View {
     @State private var showUserMapTem: Bool = false
 
     @State private var showBackup: Bool = false
+
+    /// logo1 缩放地图相关
+    @GestureState private var isDraggingLogo = false
+    @State private var dragInitialRegion: MKCoordinateRegion?
+
+    /// 是否对 map 缩放做动画：拖拽时 false（跟手），点击/tap zoom 时 true（平滑）
+    private var animatesMapZoom: Bool { !isDraggingLogo }
 
     var showUserMap: Bool {
         return pttManager.powerState && showUserMapTem
@@ -390,13 +398,15 @@ struct PTTContentView: View {
                             .frame(width: 50)
                             .clipShape(RoundedRectangle(cornerRadius: 10))
                             .padding(3)
+                            .contentShape(Rectangle())
                             .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
-                            .VButton{ _ in
-                                if showUserMapTem{
+                            .onTapGesture {
+                                // 轻点：缩放至显示所有人
+                                if showUserMapTem {
                                     pttManager.zoomToFitAllUsers()
                                 }
-                                return true
                             }
+                            .simultaneousGesture(logoZoomGesture)
 
                         Spacer(minLength: 0)
 
@@ -532,6 +542,7 @@ struct PTTContentView: View {
                 if showUserMap {
                     ChannelUserMapUIKitView(
                         region: $pttManager.region,
+                        animatesZoom: .constant(animatesMapZoom),
                         onlineUsers: pttManager.onlineUsers
                     )
                 }
@@ -879,6 +890,43 @@ struct PTTContentView: View {
         }
         .font(.numberStyle(size: 70))
         .fontWeight(.black)
+    }
+
+    /// logo1 上下滑动缩放手势
+    private var logoZoomGesture: some Gesture {
+        DragGesture(minimumDistance: 5)
+            .updating($isDraggingLogo) { _, state, _ in
+                state = true
+            }
+            .onChanged { value in
+                guard showUserMap else { return }
+
+                // 首次开始拖拽时记录初始 region
+                if dragInitialRegion == nil {
+                    dragInitialRegion = pttManager.region
+                }
+
+                guard let initialRegion = dragInitialRegion else { return }
+
+                // 向上滑 → 放大（缩小 span）
+                // 向下滑 → 缩小（增大 span）
+                let delta = CGFloat(initialRegion.span.latitudeDelta)
+                // 指数缩放：每 150pt 缩放一倍
+                let factor = pow(2.0, value.translation.height / 150.0)
+                let newDelta = max(0.0005, min(180.0, delta * factor))
+
+                let span = MKCoordinateSpan(
+                    latitudeDelta: newDelta,
+                    longitudeDelta: newDelta
+                )
+                pttManager.region = MKCoordinateRegion(
+                    center: initialRegion.center,
+                    span: span
+                )
+            }
+            .onEnded { _ in
+                dragInitialRegion = nil
+            }
     }
 
     func startRecording() async {

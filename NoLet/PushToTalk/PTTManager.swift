@@ -48,6 +48,9 @@ final class PTTManager: NSObject, ObservableObject {
 
     @Published var onlineUsers: [ChannelUser] = []
 
+    /// 当前正在说话的用户 ID（自己 or 远程），独立于 onlineUsers 列表存在
+    private var activeSpeakerId: String?
+
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
     private let database = DatabaseManager.shared
@@ -382,11 +385,7 @@ final class PTTManager: NSObject, ObservableObject {
         if let matchedResult = resultMap[currentKey] {
             currentChannel.timestamp = .now
             currentChannel.users = matchedResult.users
-            let activeUser = self.onlineUsers.first(where: { $0.active })
             self.onlineUsers = matchedResult.users
-            if let index = self.onlineUsers.firstIndex(where: { $0.id == activeUser?.id }) {
-                self.onlineUsers[index].active = true
-            }
 
             // 添加用户自己的位置信息
             let userId = Defaults[.id]
@@ -398,12 +397,15 @@ final class PTTManager: NSObject, ObservableObject {
                 // 获取用户自己的位置
                 let userCoordinate = LocManager.shared.location.coordinate
 
+                // 保留之前的 active 状态（如果之前在说话）
+                let wasActive = self.onlineUsers.first(where: { $0.id == userId })?.active ?? false
+
                 // 创建用户自己的 ChannelUser，名称设置为"本机"
                 let selfUser = ChannelUser(
                     id: userId,
                     name: "本机",
                     coordinate: userCoordinate,
-                    active: false
+                    active: wasActive
                 )
 
                 // 添加到在线用户列表
@@ -422,6 +424,9 @@ final class PTTManager: NSObject, ObservableObject {
                     self.onlineUsers[index] = updatedUser
                 }
             }
+
+            // 重新应用会说话的标记（轮询会替换 onlineUsers 列表，需要恢复）
+            applyActiveSpeaker()
 
             Defaults[.pttChannel] = currentChannel
             self.serverStatus = .online
@@ -505,23 +510,30 @@ final class PTTManager: NSObject, ObservableObject {
 
     // 设置谁在说话
     func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
+        activeSpeakerId = stop ? nil : message.from
+        applyActiveSpeaker()
+    }
+
+    /// 标识当前说话的用户（自己 or 远程），stop 时清除
+    private func setActiveSpeaker(userId: String, active: Bool) {
+        activeSpeakerId = active ? userId : nil
+        applyActiveSpeaker()
+    }
+
+    /// 将 activeSpeakerId 应用到 onlineUsers 列表
+    private func applyActiveSpeaker() {
         var users = onlineUsers
-
         for index in users.indices {
-            if stop {
-                users[index].active = false
-            } else {
-                users[index].active = (users[index].id == message.from)
-            }
-            debugPrint(users[index].active)
+            users[index].active = (activeSpeakerId != nil && users[index].id == activeSpeakerId)
         }
-
         self.onlineUsers = users
     }
 
     private func internalStopPlay() async {
         logger.info("Stop Play")
         await self.player.stopPlay()
+        // 移除地图上的说话标记
+        setActiveSpeaker(userId: "", active: false)
 
         if case .interrupted = state {
             PTTChannelManager.shared.setActiveRemoteParticipant()
@@ -535,12 +547,16 @@ final class PTTManager: NSObject, ObservableObject {
     private func beginRecord(_ activity: Bool = true) async {
         state = .recording
         logger.info("Start Record")
+        // 在地图上标记自己在说话
+        setActiveSpeaker(userId: Defaults[.id], active: true)
         recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
         await self.send(.recordStarted)
     }
 
     private func internalStopRecord(isCancel: Bool) {
         logger.info("Stop Record")
+        // 移除地图上的说话标记
+        setActiveSpeaker(userId: "", active: false)
 
         if let data = recorder.stopRecording(), !isCancel {
             if let file = self.saveVoice(data: data) {
