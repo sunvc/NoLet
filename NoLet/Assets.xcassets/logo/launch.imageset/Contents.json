@@ -1,17 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "bbb.png",
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "bbw.png",
+      "filename" : "NoletLogo.png",
       "idiom" : "universal"
     }
   ],

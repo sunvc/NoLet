@@ -127,7 +127,7 @@ struct NoLetChatHomeView: View {
         VStack {
             Spacer()
             VStack {
-                Image("launch")
+                Image("agent")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200)

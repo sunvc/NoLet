@@ -18,7 +18,6 @@ enum AppIconEnum: String, CaseIterable, Equatable {
     case nolet
     case nolet0
     case nolet1
-    case nolet2
 
 
     var name: String? { self == .nolet ? nil : rawValue }

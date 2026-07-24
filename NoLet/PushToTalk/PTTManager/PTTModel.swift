@@ -116,7 +116,7 @@ struct PttPlayInfo: Codable {
         if !image.isEmpty {
             return UIImage(contentsOfFile: image)
         }
-        return UIImage(named: "logo2")
+        return UIImage(named: "logo0")
     }
 }
 
