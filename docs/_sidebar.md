@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [无字书 - NoLet](/#NoLetApp)
+- [伞兵 - NoLet](/#NoLetApp)
 - **App**
   - [使用教程](/tutorial)
   - [消息模板字段](/templates)
