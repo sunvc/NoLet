@@ -166,23 +166,28 @@ struct PTTSettingsView: View {
             HStack {
                 Text("音效调整器")
                 Spacer()
+                
+            }
+            .overlay(alignment: .trailing) { 
                 Picker(selection: $eqPreset) {
                     ForEach(EqualizerPreset.allCases, id: \.self) { item in
-                        Label {
-                            Text(item.displayName)
-                                .tag(item)
-                        } icon: {
-                            Image(systemName: item.iconName)
+                        Section{
+                            Label {
+                                Text(item.displayName)
+                                    .tag(item)
+                            } icon: {
+                                Image(systemName: item.iconName)
+                            }
                         }
                     }
                 } label: { Text("切换服务器") }
-                    .pickerStyle(MenuPickerStyle())
-                    .offset(x: 10)
-                    .onChange(of: eqBands) { _ in
-                        Task {
-                            await manager.changeEQ()
-                        }
+                .pickerStyle(MenuPickerStyle())
+                .offset(x: 10)
+                .onChange(of: eqBands) { _ in
+                    Task {
+                        await manager.changeEQ()
                     }
+                }
             }
         }
         .listSectionSeparator(.hidden)

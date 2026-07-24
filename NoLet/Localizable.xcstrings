@@ -33,6 +33,9 @@
         }
       }
     },
+    "@王小美 分享了图片和视频" : {
+
+    },
     "%@号密钥" : {
       "localizations" : {
         "en" : {
@@ -61,23 +64,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%d条消息"
-          }
-        }
-      }
-    },
-    "%lld kbps" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld kbps"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld kbps"
           }
         }
       }
@@ -210,6 +196,9 @@
         }
       }
     },
+    "+5" : {
+
+    },
     "❗️需要配置大模型" : {
       "localizations" : {
         "en" : {
@@ -225,6 +214,9 @@
           }
         }
       }
+    },
+    "00:42" : {
+
     },
     "1周" : {
       "localizations" : {
@@ -263,7 +255,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "January"
+            "value" : "1 Month"
           }
         },
         "zh-Hans" : {
@@ -322,6 +314,9 @@
         }
       }
     },
+    "12项" : {
+
+    },
     "AI 助手" : {
       "localizations" : {
         "en" : {
@@ -343,7 +338,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "During app usage"
+            "value" : "While Using App"
           }
         },
         "zh-Hans" : {
@@ -359,7 +354,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "APP Assistant"
+            "value" : "App Assistant"
           }
         },
         "zh-Hans" : {
@@ -375,7 +370,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App open source address"
+            "value" : "Source Code"
           }
         },
         "zh-Hans" : {
@@ -391,7 +386,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Configuration"
+            "value" : "App Config"
           }
         },
         "zh-Hans" : {
@@ -423,7 +418,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud service is temporarily unavailable, please try again later."
+            "value" : "iCloud unavailable. Try again later."
           }
         },
         "zh-Hans" : {
@@ -439,7 +434,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud access is restricted, possibly due to parental controls or MDM device management policies."
+            "value" : "iCloud restricted by parental controls or MDM."
           }
         },
         "zh-Hans" : {
@@ -455,7 +450,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud account available"
+            "value" : "iCloud Available"
           }
         },
         "zh-Hans" : {
@@ -471,7 +466,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud Status Check"
+            "value" : "iCloud Status"
           }
         },
         "zh-Hans" : {
@@ -487,7 +482,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checking iCloud status..."
+            "value" : "Checking iCloud..."
           }
         },
         "zh-Hans" : {
@@ -503,7 +498,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IO Waiting"
+            "value" : "IO Wait"
           }
         },
         "zh-Hans" : {
@@ -519,7 +514,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "IV can be randomly generated, but if it is random, it needs to be passed in the iv parameter."
+            "value" : "Random IV must be passed via iv param."
           }
         },
         "zh-Hans" : {
@@ -551,7 +546,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KEY length:"
+            "value" : "Key Length:"
           }
         },
         "zh-Hans" : {
@@ -583,7 +578,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markdown Style"
+            "value" : "Markdown"
           }
         },
         "zh-Hans" : {
@@ -599,7 +594,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MD format"
+            "value" : "MD Format"
           }
         },
         "zh-Hans" : {
@@ -615,7 +610,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PTT settings"
+            "value" : "PTT Settings"
           }
         },
         "zh-Hans" : {
@@ -679,7 +674,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General app notification reminder"
+            "value" : "Standard alert"
           }
         },
         "zh-Hans" : {
@@ -695,7 +690,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload to cloud"
+            "value" : "Upload to Cloud"
           }
         },
         "zh-Hans" : {
@@ -711,7 +706,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upload ringtone"
+            "value" : "Upload Ringtone"
           }
         },
         "zh-Hans" : {
@@ -727,7 +722,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pull down to dismiss message will display image"
+            "value" : "Pull down to view image"
           }
         },
         "zh-Hans" : {
@@ -743,7 +738,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download Cloud Server"
+            "value" : "Cloud Download"
           }
         },
         "zh-Hans" : {
@@ -759,7 +754,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download failed"
+            "value" : "Download Failed"
           }
         },
         "zh-Hans" : {
@@ -775,7 +770,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download successful"
+            "value" : "Downloaded"
           }
         },
         "zh-Hans" : {
@@ -791,7 +786,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do not save"
+            "value" : "Don't Save"
           }
         },
         "zh-Hans" : {
@@ -887,7 +882,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Act Conn"
+            "value" : "Active"
           }
         },
         "zh-Hans" : {
@@ -919,7 +914,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Main View"
+            "value" : "Home"
           }
         },
         "zh-Hans" : {
@@ -935,7 +930,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Main channel cannot be closed"
+            "value" : "Default channel is permanent"
           }
         },
         "zh-Hans" : {
@@ -951,7 +946,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QR code"
+            "value" : "QR Code"
           }
         },
         "zh-Hans" : {
@@ -967,7 +962,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "QR code payment received"
+            "value" : "Payment Received"
           }
         },
         "zh-Hans" : {
@@ -994,12 +989,15 @@
         }
       }
     },
+    "产品设计团队" : {
+
+    },
     "人声增强" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voice Enhancement"
+            "value" : "Voice Enhance"
           }
         },
         "zh-Hans" : {
@@ -1031,7 +1029,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Task execution result"
+            "value" : "Task Result"
           }
         },
         "zh-Hans" : {
@@ -1063,7 +1061,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "You can create a new custom prompt based on it."
+            "value" : "Create a new prompt from this."
           }
         },
         "zh-Hans" : {
@@ -1143,7 +1141,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Encrypt data using AES and send it to the server."
+            "value" : "AES encrypt & send to server."
           }
         },
         "zh-Hans" : {
@@ -1159,7 +1157,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use official server"
+            "value" : "Official Server"
           }
         },
         "zh-Hans" : {
@@ -1175,7 +1173,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Using Documents"
+            "value" : "Documentation"
           }
         },
         "zh-Hans" : {
@@ -1191,7 +1189,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use this prompt word to create a new prompt word"
+            "value" : "Create prompt from this"
           }
         },
         "zh-Hans" : {
@@ -1207,7 +1205,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Example Usage"
+            "value" : "Usage Examples"
           }
         },
         "zh-Hans" : {
@@ -1271,7 +1269,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save image"
+            "value" : "Save Image"
           }
         },
         "zh-Hans" : {
@@ -1303,7 +1301,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save successful"
+            "value" : "Saved"
           }
         },
         "zh-Hans" : {
@@ -1319,7 +1317,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modify group name"
+            "value" : "Rename Group"
           }
         },
         "zh-Hans" : {
@@ -1335,7 +1333,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modified successfully"
+            "value" : "Modified"
           }
         },
         "zh-Hans" : {
@@ -1367,7 +1365,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modify Configuration"
+            "value" : "Edit Config"
           }
         },
         "zh-Hans" : {
@@ -1383,7 +1381,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allow the app to receive push notifications over the network"
+            "value" : "Allow network push"
           }
         },
         "zh-Hans" : {
@@ -1399,7 +1397,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Global Background Style"
+            "value" : "Background"
           }
         },
         "zh-Hans" : {
@@ -1463,7 +1461,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Other fields"
+            "value" : "Other Fields"
           }
         },
         "zh-Hans" : {
@@ -1495,7 +1493,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Content cannot be empty"
+            "value" : "Content required"
           }
         },
         "zh-Hans" : {
@@ -1527,7 +1525,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Built-in extension function"
+            "value" : "Built-in Extensions"
           }
         },
         "zh-Hans" : {
@@ -1543,7 +1541,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Built-in ringtone"
+            "value" : "Built-in Ringtone"
           }
         },
         "zh-Hans" : {
@@ -1575,7 +1573,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recently Used"
+            "value" : "Recent"
           }
         },
         "zh-Hans" : {
@@ -1623,7 +1621,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share content"
+            "value" : "Share Content"
           }
         },
         "zh-Hans" : {
@@ -1671,7 +1669,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share screenshot"
+            "value" : "Share Screenshot"
           }
         },
         "zh-Hans" : {
@@ -1687,7 +1685,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Share Configuration"
+            "value" : "Share Config"
           }
         },
         "zh-Hans" : {
@@ -1703,7 +1701,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grouping Mode"
+            "value" : "Groups"
           }
         },
         "zh-Hans" : {
@@ -1735,7 +1733,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switched successfully"
+            "value" : "Switched"
           }
         },
         "zh-Hans" : {
@@ -1751,7 +1749,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Switch display"
+            "value" : "Switch View"
           }
         },
         "zh-Hans" : {
@@ -1783,7 +1781,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "List mode"
+            "value" : "List"
           }
         },
         "zh-Hans" : {
@@ -1794,12 +1792,15 @@
         }
       }
     },
+    "刚刚" : {
+
+    },
     "创建时间" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Creation Time"
+            "value" : "Created"
           }
         },
         "zh-Hans" : {
@@ -1847,7 +1848,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete messages before ${date}"
+            "value" : "Delete before ${date}"
           }
         },
         "zh-Hans" : {
@@ -1863,7 +1864,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete download ringtone"
+            "value" : "Delete Ringtone"
           }
         },
         "zh-Hans" : {
@@ -1895,7 +1896,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Once deleted, it cannot be restored!!!"
+            "value" : "Cannot be undone!"
           }
         },
         "zh-Hans" : {
@@ -1927,7 +1928,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete conversation"
+            "value" : "Delete Chat"
           }
         },
         "zh-Hans" : {
@@ -1943,7 +1944,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete successful"
+            "value" : "Deleted"
           }
         },
         "zh-Hans" : {
@@ -1959,7 +1960,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all"
+            "value" : "Delete All"
           }
         },
         "zh-Hans" : {
@@ -1975,7 +1976,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all groups"
+            "value" : "Delete All Groups"
           }
         },
         "zh-Hans" : {
@@ -1991,7 +1992,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete message"
+            "value" : "Delete"
           }
         },
         "zh-Hans" : {
@@ -2007,7 +2008,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete mute group"
+            "value" : "Unmute Group"
           }
         },
         "zh-Hans" : {
@@ -2087,7 +2088,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Encrypted data (Base64 encoded"
+            "value" : "Encrypted (Base64)"
           }
         },
         "zh-Hans" : {
@@ -2103,7 +2104,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Encrypted requests require special attention to the handling of special characters."
+            "value" : "Watch special chars in encrypted requests."
           }
         },
         "zh-Hans" : {
@@ -2119,7 +2120,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading"
+            "value" : "Loading..."
           }
         },
         "zh-Hans" : {
@@ -2135,7 +2136,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading failed"
+            "value" : "Load Failed"
           }
         },
         "zh-Hans" : {
@@ -2151,7 +2152,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading files..."
+            "value" : "Loading Files..."
           }
         },
         "zh-Hans" : {
@@ -2167,7 +2168,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading message..."
+            "value" : "Loading Messages..."
           }
         },
         "zh-Hans" : {
@@ -2183,7 +2184,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Animation and Vibration"
+            "value" : "Animation & Vibration"
           }
         },
         "zh-Hans" : {
@@ -2199,7 +2200,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "anonymous"
+            "value" : "Anonymous"
           }
         },
         "zh-Hans" : {
@@ -2263,7 +2264,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dangerous operation!!! Restore to initial state."
+            "value" : "⚠️ Reset to factory settings!"
           }
         },
         "zh-Hans" : {
@@ -2279,7 +2280,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Expiring soon"
+            "value" : "Expires Soon"
           }
         },
         "zh-Hans" : {
@@ -2311,7 +2312,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Historical Dialogue"
+            "value" : "Chat History"
           }
         },
         "zh-Hans" : {
@@ -2327,7 +2328,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Historical Server"
+            "value" : "Server History"
           }
         },
         "zh-Hans" : {
@@ -2343,7 +2344,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Historical count"
+            "value" : "History Count"
           }
         },
         "zh-Hans" : {
@@ -2359,7 +2360,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "History Channel"
+            "value" : "History"
           }
         },
         "zh-Hans" : {
@@ -2375,7 +2376,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "original sound"
+            "value" : "Original"
           }
         },
         "zh-Hans" : {
@@ -2407,7 +2408,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Incomplete parameters"
+            "value" : "Missing parameters"
           }
         },
         "zh-Hans" : {
@@ -2423,7 +2424,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parameter cannot be empty"
+            "value" : "Required"
           }
         },
         "zh-Hans" : {
@@ -2439,7 +2440,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parameter error"
+            "value" : "Invalid parameter"
           }
         },
         "zh-Hans" : {
@@ -2455,7 +2456,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parameter length is incorrect"
+            "value" : "Invalid length"
           }
         },
         "zh-Hans" : {
@@ -2519,7 +2520,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sent successfully"
+            "value" : "Sent"
           }
         },
         "zh-Hans" : {
@@ -2535,7 +2536,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voice message failed to send"
+            "value" : "Voice send failed"
           }
         },
         "zh-Hans" : {
@@ -2599,7 +2600,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Can set different ringtones for push notifications."
+            "value" : "Custom push ringtones."
           }
         },
         "zh-Hans" : {
@@ -2615,7 +2616,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interruptible level in notification settings"
+            "value" : "Notification interruption level"
           }
         },
         "zh-Hans" : {
@@ -2647,7 +2648,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optional parameter values:\n- passive: Only added to the list, will not trigger a screen alert.\n- active: Default value, the system will immediately display a notification on screen.\n- timeSensitive: Time-sensitive notification, can display the notification in focus mode.\n- critical: ⚠️ Important alert, can trigger normally in silent or focus mode.\n* Parameters can be replaced with 0-10, refer to the documentation for details."
+            "value" : "Options:\n- passive: silent list only\n- active: lights up screen\n- timeSensitive: shows in Focus mode\n- critical: bypasses silent/Focus\n* Can use 0-10 instead. See docs."
           }
         },
         "zh-Hans" : {
@@ -2663,30 +2664,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronize all ringtones"
+            "value" : "Sync All Ringtones"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "同步所有铃声"
-          }
-        }
-      }
-    },
-    "呼叫失败，对方无应答" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Call failed, no response from the other party."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "呼叫失败，对方无应答"
           }
         }
       }
@@ -2712,7 +2696,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The reply content will be appended to the end of the user-specified reply parameter."
+            "value" : "Reply appended to reply parameter."
           }
         },
         "zh-Hans" : {
@@ -2728,7 +2712,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reply failed"
+            "value" : "Reply Failed"
           }
         },
         "zh-Hans" : {
@@ -2744,7 +2728,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reply successful"
+            "value" : "Replied"
           }
         },
         "zh-Hans" : {
@@ -2760,7 +2744,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Answering"
+            "value" : "Answering..."
           }
         },
         "zh-Hans" : {
@@ -2808,7 +2792,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image key duplicate. Please provide a new image to overwrite."
+            "value" : "Key exists. Upload new to overwrite."
           }
         },
         "zh-Hans" : {
@@ -2824,7 +2808,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image deletion failed"
+            "value" : "Delete Failed"
           }
         },
         "zh-Hans" : {
@@ -2840,7 +2824,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image deleted successfully"
+            "value" : "Deleted"
           }
         },
         "zh-Hans" : {
@@ -2872,7 +2856,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image not loaded"
+            "value" : "Not Loaded"
           }
         },
         "zh-Hans" : {
@@ -2888,7 +2872,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image message"
+            "value" : "Image"
           }
         },
         "zh-Hans" : {
@@ -2920,7 +2904,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Basic Usage Examples"
+            "value" : "Basic Examples"
           }
         },
         "zh-Hans" : {
@@ -2936,7 +2920,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add New Account"
+            "value" : "Add Account"
           }
         },
         "zh-Hans" : {
@@ -2952,7 +2936,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add new data"
+            "value" : "Add Data"
           }
         },
         "zh-Hans" : {
@@ -3000,7 +2984,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy key"
+            "value" : "Copy Key"
           }
         },
         "zh-Hans" : {
@@ -3032,7 +3016,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy Python Example"
+            "value" : "Copy Python"
           }
         },
         "zh-Hans" : {
@@ -3048,7 +3032,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy content"
+            "value" : "Copy Content"
           }
         },
         "zh-Hans" : {
@@ -3064,7 +3048,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copy successful"
+            "value" : "Copied"
           }
         },
         "zh-Hans" : {
@@ -3075,12 +3059,15 @@
         }
       }
     },
+    "大家好！这是新版App的UI设计稿，包含首页、详情页和个人中心。视频里有详细交互动效演示～" : {
+
+    },
     "始终" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "always"
+            "value" : "Always"
           }
         },
         "zh-Hans" : {
@@ -3090,6 +3077,9 @@
           }
         }
       }
+    },
+    "媒体" : {
+
     },
     "媒体设置" : {
       "localizations" : {
@@ -3144,7 +3134,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Complete Setup"
+            "value" : "Done"
           }
         },
         "zh-Hans" : {
@@ -3240,7 +3230,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import successful"
+            "value" : "Imported"
           }
         },
         "zh-Hans" : {
@@ -3256,7 +3246,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Configuration"
+            "value" : "Import Config"
           }
         },
         "zh-Hans" : {
@@ -3288,7 +3278,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export/Import (Messages/Configuration/Database)"
+            "value" : "Export/Import (Messages/Config/DB)"
           }
         },
         "zh-Hans" : {
@@ -3304,7 +3294,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lose all data"
+            "value" : "All data will be lost"
           }
         },
         "zh-Hans" : {
@@ -3320,7 +3310,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convert encrypted data to Base64 encoding"
+            "value" : "Convert to Base64"
           }
         },
         "zh-Hans" : {
@@ -3336,7 +3326,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "employment"
+            "value" : "Ready"
           }
         },
         "zh-Hans" : {
@@ -3352,7 +3342,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Already considered"
+            "value" : "Thought"
           }
         },
         "zh-Hans" : {
@@ -3368,7 +3358,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authorized access to photo library"
+            "value" : "Photo Library OK"
           }
         },
         "zh-Hans" : {
@@ -3400,7 +3390,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Location permission granted"
+            "value" : "Location Granted"
           }
         },
         "zh-Hans" : {
@@ -3427,29 +3417,12 @@
         }
       }
     },
-    "已静音" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Muted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已静音"
-          }
-        }
-      }
-    },
     "应用信息" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Application Information"
+            "value" : "About"
           }
         },
         "zh-Hans" : {
@@ -3465,7 +3438,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Underlying hardware: Recording has actually started"
+            "value" : "Hardware: Recording started"
           }
         },
         "zh-Hans" : {
@@ -3481,7 +3454,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bottom layer hardware: Playback has actually started"
+            "value" : "Hardware: Playback started"
           }
         },
         "zh-Hans" : {
@@ -3497,7 +3470,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bottom hardware: Playback has ended normally"
+            "value" : "Hardware: Playback ended"
           }
         },
         "zh-Hans" : {
@@ -3513,7 +3486,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bottom hardware: Received audio interrupt start signal"
+            "value" : "Hardware: Audio interrupt began"
           }
         },
         "zh-Hans" : {
@@ -3529,7 +3502,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : " Bottom hardware: Received audio interrupt end signal (recommended recovery: %@)"
+            "value" : "Hardware: Audio interrupt ended (recover: %@)"
           }
         },
         "zh-Hans" : {
@@ -3561,7 +3534,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conn Fail"
+            "value" : "Connect Failed"
           }
         },
         "zh-Hans" : {
@@ -3577,7 +3550,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Developer Support"
+            "value" : "Support"
           }
         },
         "zh-Hans" : {
@@ -3593,7 +3566,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Developer Support Plan"
+            "value" : "Support Plan"
           }
         },
         "zh-Hans" : {
@@ -3609,7 +3582,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start"
+            "value" : "On"
           }
         },
         "zh-Hans" : {
@@ -3625,7 +3598,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start a new chat"
+            "value" : "New Chat"
           }
         },
         "zh-Hans" : {
@@ -3641,7 +3614,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When you converse with the AI assistant, your dialogue will be displayed here."
+            "value" : "Chat with AI assistant here."
           }
         },
         "zh-Hans" : {
@@ -3657,7 +3630,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When the push request URL does not specify the isArchive parameter, this setting will be used to determine whether to save the notification message."
+            "value" : "When isArchive isn't set, this controls message saving."
           }
         },
         "zh-Hans" : {
@@ -3668,29 +3641,12 @@
         }
       }
     },
-    "录音码率" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recording bitrate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "录音码率"
-          }
-        }
-      }
-    },
     "微信扫码登录" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "WeChat QR code login"
+            "value" : "WeChat Login"
           }
         },
         "zh-Hans" : {
@@ -3706,7 +3662,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "WeChat Authorized Login"
+            "value" : "WeChat Login"
           }
         },
         "zh-Hans" : {
@@ -3738,7 +3694,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Required permission not selected"
+            "value" : "Required"
           }
         },
         "zh-Hans" : {
@@ -3802,7 +3758,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thinking"
+            "value" : "Thinking..."
           }
         },
         "zh-Hans" : {
@@ -3882,7 +3838,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restore successful"
+            "value" : "Restored"
           }
         },
         "zh-Hans" : {
@@ -3898,7 +3854,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Resume playback"
+            "value" : "Resume"
           }
         },
         "zh-Hans" : {
@@ -3914,7 +3870,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Messages"
+            "value" : "All"
           }
         },
         "zh-Hans" : {
@@ -3930,7 +3886,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All Ringtone"
+            "value" : "All Ringtones"
           }
         },
         "zh-Hans" : {
@@ -3962,7 +3918,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Open link"
+            "value" : "Open Link"
           }
         },
         "zh-Hans" : {
@@ -3978,7 +3934,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scan QR code"
+            "value" : "Scan QR Code"
           }
         },
         "zh-Hans" : {
@@ -3994,7 +3950,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scan failed"
+            "value" : "Scan Failed"
           }
         },
         "zh-Hans" : {
@@ -4005,46 +3961,12 @@
         }
       }
     },
-    "扬声器" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Speaker"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "扬声器"
-          }
-        }
-      }
-    },
-    "拒绝" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reject"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "拒绝"
-          }
-        }
-      }
-    },
     "拒绝了访问权限" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Access denied"
+            "value" : "Denied"
           }
         },
         "zh-Hans" : {
@@ -4076,7 +3998,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continuous ringing"
+            "value" : "Continuous Ring"
           }
         },
         "zh-Hans" : {
@@ -4092,7 +4014,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete messages by condition"
+            "value" : "Delete by condition"
           }
         },
         "zh-Hans" : {
@@ -4108,7 +4030,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Authorize location access"
+            "value" : "Grant Location"
           }
         },
         "zh-Hans" : {
@@ -4119,46 +4041,12 @@
         }
       }
     },
-    "接听" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Answer"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接听"
-          }
-        }
-      }
-    },
-    "接听失败，连接中断" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Call failed, connection interrupted"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "接听失败，连接中断"
-          }
-        }
-      }
-    },
     "推理能力" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reasoning ability"
+            "value" : "Reasoning"
           }
         },
         "zh-Hans" : {
@@ -4174,7 +4062,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push content"
+            "value" : "Push Content"
           }
         },
         "zh-Hans" : {
@@ -4190,7 +4078,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push icon"
+            "value" : "Push Icon"
           }
         },
         "zh-Hans" : {
@@ -4206,7 +4094,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push picture"
+            "value" : "Push Image"
           }
         },
         "zh-Hans" : {
@@ -4222,7 +4110,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push style"
+            "value" : "Push Style"
           }
         },
         "zh-Hans" : {
@@ -4238,7 +4126,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Push notification sound"
+            "value" : "Push Sound"
           }
         },
         "zh-Hans" : {
@@ -4270,7 +4158,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prompt word"
+            "value" : "Prompt"
           }
         },
         "zh-Hans" : {
@@ -4302,7 +4190,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alert sound"
+            "value" : "Alert Sound"
           }
         },
         "zh-Hans" : {
@@ -4350,7 +4238,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search History Messages"
+            "value" : "Search History"
           }
         },
         "zh-Hans" : {
@@ -4366,7 +4254,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Search extension function"
+            "value" : "Search Extensions"
           }
         },
         "zh-Hans" : {
@@ -4382,7 +4270,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Carrying an image, it will automatically download the cache."
+            "value" : "Image auto-cached."
           }
         },
         "zh-Hans" : {
@@ -4398,7 +4286,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Carry picture"
+            "value" : "With Image"
           }
         },
         "zh-Hans" : {
@@ -4414,7 +4302,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shake"
+            "value" : "Rock"
           }
         },
         "zh-Hans" : {
@@ -4430,7 +4318,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Summary Assistant"
+            "value" : "Summarizer"
           }
         },
         "zh-Hans" : {
@@ -4446,7 +4334,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Playback interrupted..."
+            "value" : "Interrupted"
           }
         },
         "zh-Hans" : {
@@ -4478,7 +4366,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Playback interrupted and suspended: %@"
+            "value" : "Interrupted: %@"
           }
         },
         "zh-Hans" : {
@@ -4494,7 +4382,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Play ringtone"
+            "value" : "Play Ringtone"
           }
         },
         "zh-Hans" : {
@@ -4510,7 +4398,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Playback volume"
+            "value" : "Playback Volume"
           }
         },
         "zh-Hans" : {
@@ -4542,7 +4430,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Operation successful"
+            "value" : "Done"
           }
         },
         "zh-Hans" : {
@@ -4558,7 +4446,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supports text icons, Emoji icons, and custom backgrounds."
+            "value" : "Text icons, emoji & custom backgrounds."
           }
         },
         "zh-Hans" : {
@@ -4574,7 +4462,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Payment notification"
+            "value" : "Payment"
           }
         },
         "zh-Hans" : {
@@ -4606,7 +4494,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fault"
+            "value" : "Error"
           }
         },
         "zh-Hans" : {
@@ -4622,7 +4510,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data is incorrect"
+            "value" : "Invalid Data"
           }
         },
         "zh-Hans" : {
@@ -4638,7 +4526,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Loading data..."
+            "value" : "Loading Data..."
           }
         },
         "zh-Hans" : {
@@ -4654,7 +4542,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Database file"
+            "value" : "Database"
           }
         },
         "zh-Hans" : {
@@ -4670,7 +4558,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DataHub"
+            "value" : "Data Management"
           }
         },
         "zh-Hans" : {
@@ -4702,7 +4590,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Files"
+            "value" : "File Management"
           }
         },
         "zh-Hans" : {
@@ -4718,7 +4606,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Text message"
+            "value" : "Text"
           }
         },
         "zh-Hans" : {
@@ -4734,7 +4622,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New Configuration"
+            "value" : "Add Config"
           }
         },
         "zh-Hans" : {
@@ -4750,7 +4638,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New Conversation"
+            "value" : "New Chat"
           }
         },
         "zh-Hans" : {
@@ -4766,7 +4654,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New prompt word"
+            "value" : "New Prompt"
           }
         },
         "zh-Hans" : {
@@ -4798,7 +4686,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No server"
+            "value" : "No Server"
           }
         },
         "zh-Hans" : {
@@ -4814,7 +4702,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unable to determine iCloud account status, possibly due to network issues."
+            "value" : "Can't check iCloud status. Verify network."
           }
         },
         "zh-Hans" : {
@@ -4830,7 +4718,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Boring chat"
+            "value" : "No Chats"
           }
         },
         "zh-Hans" : {
@@ -4910,7 +4798,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use official server?"
+            "value" : "Use Official Server?"
           }
         },
         "zh-Hans" : {
@@ -4926,7 +4814,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enable voice chat service"
+            "value" : "Enable Voice Chat"
           }
         },
         "zh-Hans" : {
@@ -4942,7 +4830,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to clear?"
+            "value" : "Clear everything?"
           }
         },
         "zh-Hans" : {
@@ -4974,7 +4862,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ordinary Content"
+            "value" : "Content"
           }
         },
         "zh-Hans" : {
@@ -4990,7 +4878,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General Notification Permissions"
+            "value" : "Standard Notifications"
           }
         },
         "zh-Hans" : {
@@ -5006,7 +4894,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "General notification permissions are required options. If important notification permissions are enabled, all permissions will automatically be turned on. Please select the necessary permissions to continue using the application."
+            "value" : "Standard notifications required. Critical enables all."
           }
         },
         "zh-Hans" : {
@@ -5038,7 +4926,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Smart Configuration"
+            "value" : "Smart Config"
           }
         },
         "zh-Hans" : {
@@ -5070,7 +4958,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Temporarily unable to switch"
+            "value" : "Switch unavailable"
           }
         },
         "zh-Hans" : {
@@ -5118,7 +5006,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "More Settings"
+            "value" : "More"
           }
         },
         "zh-Hans" : {
@@ -5134,7 +5022,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Update successful"
+            "value" : "Updated"
           }
         },
         "zh-Hans" : {
@@ -5150,7 +5038,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abnormal"
+            "value" : "Error"
           }
         },
         "zh-Hans" : {
@@ -5166,7 +5054,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limited access rights"
+            "value" : "Limited Access"
           }
         },
         "zh-Hans" : {
@@ -5198,7 +5086,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Friends Circle"
+            "value" : "Moments"
           }
         },
         "zh-Hans" : {
@@ -5246,7 +5134,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server address is invalid"
+            "value" : "Invalid Address"
           }
         },
         "zh-Hans" : {
@@ -5262,7 +5150,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server already exists"
+            "value" : "Server Exists"
           }
         },
         "zh-Hans" : {
@@ -5278,7 +5166,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server open source address"
+            "value" : "Server Source"
           }
         },
         "zh-Hans" : {
@@ -5294,7 +5182,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server not connected"
+            "value" : "Not Connected"
           }
         },
         "zh-Hans" : {
@@ -5310,7 +5198,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Settings"
+            "value" : "Server"
           }
         },
         "zh-Hans" : {
@@ -5326,7 +5214,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Deployment Tutorial"
+            "value" : "Deploy Guide"
           }
         },
         "zh-Hans" : {
@@ -5342,7 +5230,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Server Configuration"
+            "value" : "Server Config"
           }
         },
         "zh-Hans" : {
@@ -5374,7 +5262,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud not logged in, please log in to iCloud account"
+            "value" : "Sign in to iCloud"
           }
         },
         "zh-Hans" : {
@@ -5390,7 +5278,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "unknown"
+            "value" : "Unknown"
           }
         },
         "zh-Hans" : {
@@ -5406,7 +5294,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unknown iCloud status"
+            "value" : "Unknown"
           }
         },
         "zh-Hans" : {
@@ -5422,7 +5310,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "unknown location"
+            "value" : "Unknown Location"
           }
         },
         "zh-Hans" : {
@@ -5438,7 +5326,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unknown status"
+            "value" : "Unknown"
           }
         },
         "zh-Hans" : {
@@ -5454,7 +5342,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No location permission obtained"
+            "value" : "Location Denied"
           }
         },
         "zh-Hans" : {
@@ -5470,7 +5358,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permission not selected"
+            "value" : "Not selected"
           }
         },
         "zh-Hans" : {
@@ -5486,7 +5374,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This app is free to use. Donations will not unlock any new features, allowing you to freely use a good tool."
+            "value" : "Free app. Donations are voluntary."
           }
         },
         "zh-Hans" : {
@@ -5502,7 +5390,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "this unit"
+            "value" : "Local"
           }
         },
         "zh-Hans" : {
@@ -5514,12 +5402,12 @@
       }
     },
     "来电中... 北京, 中国" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Incoming call... Beijing, China"
+            "value" : "Incoming... Beijing, China"
           }
         },
         "zh-Hans" : {
@@ -5551,7 +5439,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View History Server"
+            "value" : "Server History"
           }
         },
         "zh-Hans" : {
@@ -5567,7 +5455,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View icon"
+            "value" : "View Icon"
           }
         },
         "zh-Hans" : {
@@ -5583,7 +5471,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "View Document"
+            "value" : "View Docs"
           }
         },
         "zh-Hans" : {
@@ -5679,7 +5567,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Check iCloud account status error"
+            "value" : "iCloud Check Error"
           }
         },
         "zh-Hans" : {
@@ -5695,7 +5583,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Checking parameters..."
+            "value" : "Checking..."
           }
         },
         "zh-Hans" : {
@@ -5738,52 +5626,18 @@
         }
       }
     },
-    "模拟来电 🔔" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incoming Call 🔔"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "模拟来电 🔔"
-          }
-        }
-      }
-    },
     "欢迎使用" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welcome to use"
+            "value" : "Welcome"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "欢迎使用"
-          }
-        }
-      }
-    },
-    "正在呼叫..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Calling..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在呼叫..."
           }
         }
       }
@@ -5809,7 +5663,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Processing data"
+            "value" : "Processing..."
           }
         },
         "zh-Hans" : {
@@ -5825,30 +5679,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recording"
+            "value" : "Recording..."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在录音"
-          }
-        }
-      }
-    },
-    "正在接通..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecting..."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在接通..."
           }
         }
       }
@@ -5890,7 +5727,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Getting QR code"
+            "value" : "Loading QR Code..."
           }
         },
         "zh-Hans" : {
@@ -5922,7 +5759,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inputting..."
+            "value" : "Typing..."
           }
         },
         "zh-Hans" : {
@@ -5938,7 +5775,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Normal notification"
+            "value" : "Standard"
           }
         },
         "zh-Hans" : {
@@ -5970,7 +5807,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This operation will delete %@ data and cannot be recovered. Are you sure you want to continue?"
+            "value" : "Delete %@ data? Cannot be undone."
           }
         },
         "zh-Hans" : {
@@ -5986,7 +5823,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This operation will delete all chat records and settings data, and it cannot be recovered. Are you sure you want to proceed?"
+            "value" : "Delete all chats & settings? Cannot be undone."
           }
         },
         "zh-Hans" : {
@@ -6002,7 +5839,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No History Channel"
+            "value" : "No History"
           }
         },
         "zh-Hans" : {
@@ -6018,7 +5855,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No image"
+            "value" : "No Image"
           }
         },
         "zh-Hans" : {
@@ -6050,7 +5887,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No data found"
+            "value" : "No Data"
           }
         },
         "zh-Hans" : {
@@ -6066,7 +5903,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File not found"
+            "value" : "Not Found"
           }
         },
         "zh-Hans" : {
@@ -6082,7 +5919,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No relevant prompts found."
+            "value" : "No prompts found."
           }
         },
         "zh-Hans" : {
@@ -6098,7 +5935,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No files"
+            "value" : "No Files"
           }
         },
         "zh-Hans" : {
@@ -6114,7 +5951,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No album permissions"
+            "value" : "No Photo Access"
           }
         },
         "zh-Hans" : {
@@ -6130,7 +5967,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No camera permission"
+            "value" : "No Camera Access"
           }
         },
         "zh-Hans" : {
@@ -6162,7 +5999,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get Key"
+            "value" : "Register Key"
           }
         },
         "zh-Hans" : {
@@ -6210,7 +6047,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registration successful"
+            "value" : "Registered"
           }
         },
         "zh-Hans" : {
@@ -6226,7 +6063,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thai language"
+            "value" : "Thai"
           }
         },
         "zh-Hans" : {
@@ -6258,7 +6095,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Test/Save successful"
+            "value" : "Test/Save OK"
           }
         },
         "zh-Hans" : {
@@ -6322,7 +6159,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message content"
+            "value" : "Content"
           }
         },
         "zh-Hans" : {
@@ -6338,7 +6175,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message List"
+            "value" : "Messages"
           }
         },
         "zh-Hans" : {
@@ -6349,12 +6186,15 @@
         }
       }
     },
+    "消息卡片" : {
+
+    },
     "消息存档" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message Archive"
+            "value" : "Archive"
           }
         },
         "zh-Hans" : {
@@ -6370,7 +6210,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Message Screenshot"
+            "value" : "Screenshot"
           }
         },
         "zh-Hans" : {
@@ -6402,7 +6242,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Addition failed"
+            "value" : "Add Failed"
           }
         },
         "zh-Hans" : {
@@ -6418,7 +6258,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Added successfully"
+            "value" : "Added"
           }
         },
         "zh-Hans" : {
@@ -6450,7 +6290,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cleaning successful"
+            "value" : "Cleaned"
           }
         },
         "zh-Hans" : {
@@ -6466,7 +6306,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Sky"
+            "value" : "Clear"
           }
         },
         "zh-Hans" : {
@@ -6530,7 +6370,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clearance failed"
+            "value" : "Clear Failed"
           }
         },
         "zh-Hans" : {
@@ -6546,7 +6386,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cleared successfully"
+            "value" : "Cleared"
           }
         },
         "zh-Hans" : {
@@ -6578,7 +6418,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clear Expired Notices"
+            "value" : "Clear Expired"
           }
         },
         "zh-Hans" : {
@@ -6594,7 +6434,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scroll to start"
+            "value" : "Scroll to Top"
           }
         },
         "zh-Hans" : {
@@ -6610,7 +6450,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scroll to the end"
+            "value" : "Scroll to Bottom"
           }
         },
         "zh-Hans" : {
@@ -6626,7 +6466,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click to switch app icons"
+            "value" : "Tap to change app icon"
           }
         },
         "zh-Hans" : {
@@ -6642,7 +6482,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click the button in the upper right corner to copy the test URL and preview the push effect."
+            "value" : "Tap top-right to copy test URL & preview."
           }
         },
         "zh-Hans" : {
@@ -6658,7 +6498,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click to jump to app"
+            "value" : "Tap to open app"
           }
         },
         "zh-Hans" : {
@@ -6674,7 +6514,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Click to enter group list"
+            "value" : "Tap to view groups"
           }
         },
         "zh-Hans" : {
@@ -6706,7 +6546,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version %@, double-click to switch display"
+            "value" : "v%@ · Double-tap to switch"
           }
         },
         "zh-Hans" : {
@@ -6722,7 +6562,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Status Abnormal"
+            "value" : "Error"
           }
         },
         "zh-Hans" : {
@@ -6738,7 +6578,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Status normal"
+            "value" : "Normal"
           }
         },
         "zh-Hans" : {
@@ -6770,7 +6610,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "User Agreement"
+            "value" : "Terms"
           }
         },
         "zh-Hans" : {
@@ -6786,7 +6626,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Surveillance Channel"
+            "value" : "Monitor Channel"
           }
         },
         "zh-Hans" : {
@@ -6797,29 +6637,12 @@
         }
       }
     },
-    "码率" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "bitrate"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "码率"
-          }
-        }
-      }
-    },
     "确定" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirm"
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -6835,7 +6658,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete \"%@\"? This action cannot be undone."
+            "value" : "Delete \"%@\"? Cannot be undone."
           }
         },
         "zh-Hans" : {
@@ -6851,7 +6674,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Are you sure you want to delete \"%@\"? This operation cannot be undone."
+            "value" : "Delete \"%@\"? Cannot be undone."
           }
         },
         "zh-Hans" : {
@@ -6867,7 +6690,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirm"
+            "value" : "OK"
           }
         },
         "zh-Hans" : {
@@ -6883,7 +6706,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirm deletion"
+            "value" : "Confirm Delete"
           }
         },
         "zh-Hans" : {
@@ -6899,7 +6722,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Confirm that network permission is enabled"
+            "value" : "Network enabled?"
           }
         },
         "zh-Hans" : {
@@ -6931,7 +6754,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visual and Tactile"
+            "value" : "Visual & Haptics"
           }
         },
         "zh-Hans" : {
@@ -6963,7 +6786,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Program icon"
+            "value" : "App Icon"
           }
         },
         "zh-Hans" : {
@@ -7011,7 +6834,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "End-to-end encrypted push"
+            "value" : "E2E Encrypted Push"
           }
         },
         "zh-Hans" : {
@@ -7027,7 +6850,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waiting to recover..."
+            "value" : "Waiting..."
           }
         },
         "zh-Hans" : {
@@ -7043,7 +6866,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waiting to play: %@"
+            "value" : "Queued: %@"
           }
         },
         "zh-Hans" : {
@@ -7059,7 +6882,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waiting for hardware"
+            "value" : "Waiting Hardware"
           }
         },
         "zh-Hans" : {
@@ -7075,7 +6898,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algorithm"
+            "value" : "Algorithm Config"
           }
         },
         "zh-Hans" : {
@@ -7107,7 +6930,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Algorithm"
+            "value" : "Algorithm Config"
           }
         },
         "zh-Hans" : {
@@ -7123,7 +6946,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paste here, auto-identify"
+            "value" : "Paste here, auto-detect"
           }
         },
         "zh-Hans" : {
@@ -7155,7 +6978,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System reserved file!"
+            "value" : "System file!"
           }
         },
         "zh-Hans" : {
@@ -7187,7 +7010,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "System resources are occupied"
+            "value" : "Resource busy"
           }
         },
         "zh-Hans" : {
@@ -7203,7 +7026,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminal Style"
+            "value" : "Terminal"
           }
         },
         "zh-Hans" : {
@@ -7235,7 +7058,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maintaining"
+            "value" : "Maintenance"
           }
         },
         "zh-Hans" : {
@@ -7267,7 +7090,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Edit prompt word"
+            "value" : "Edit Prompt"
           }
         },
         "zh-Hans" : {
@@ -7283,7 +7106,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Network Address"
+            "value" : "Address"
           }
         },
         "zh-Hans" : {
@@ -7299,7 +7122,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Network Permissions"
+            "value" : "Network"
           }
         },
         "zh-Hans" : {
@@ -7315,7 +7138,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Network permissions are essential for the normal operation of the application, used to receive push notifications, synchronize data, and obtain the latest information. Without network permissions, the core functions of the application will be unable to work properly."
+            "value" : "Network access needed for push, sync & updates."
           }
         },
         "zh-Hans" : {
@@ -7331,7 +7154,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Network permissions are essential for the app to function properly; please grant network permissions to continue."
+            "value" : "Network access required to continue."
           }
         },
         "zh-Hans" : {
@@ -7363,7 +7186,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Group name"
+            "value" : "Group Name"
           }
         },
         "zh-Hans" : {
@@ -7395,7 +7218,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Translation Assistant"
+            "value" : "Translator"
           }
         },
         "zh-Hans" : {
@@ -7459,7 +7282,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom icon"
+            "value" : "Custom Icon"
           }
         },
         "zh-Hans" : {
@@ -7475,7 +7298,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom Extension"
+            "value" : "Custom"
           }
         },
         "zh-Hans" : {
@@ -7491,7 +7314,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom push notification display logo"
+            "value" : "Custom push icon"
           }
         },
         "zh-Hans" : {
@@ -7507,7 +7330,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom Signature"
+            "value" : "Custom"
           }
         },
         "zh-Hans" : {
@@ -7523,7 +7346,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Custom ringtone"
+            "value" : "Custom Ringtone"
           }
         },
         "zh-Hans" : {
@@ -7587,7 +7410,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get Developer Support"
+            "value" : "Get Support"
           }
         },
         "zh-Hans" : {
@@ -7603,7 +7426,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get all notifications"
+            "value" : "All Ringtones"
           }
         },
         "zh-Hans" : {
@@ -7619,7 +7442,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Get device location"
+            "value" : "Get Location"
           }
         },
         "zh-Hans" : {
@@ -7683,7 +7506,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas Conn"
+            "value" : "Passive"
           }
         },
         "zh-Hans" : {
@@ -7715,7 +7538,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Touch and Feedback"
+            "value" : "Touch & Feedback"
           }
         },
         "zh-Hans" : {
@@ -7731,7 +7554,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "After the device is authorized to obtain location, the device location can be obtained."
+            "value" : "Location available after authorization."
           }
         },
         "zh-Hans" : {
@@ -7763,7 +7586,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set the number of historical messages included in each conversation. A higher number provides more complete context but increases token consumption."
+            "value" : "History messages per chat. More = more tokens."
           }
         },
         "zh-Hans" : {
@@ -7779,7 +7602,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Set default ringtone"
+            "value" : "Default Ringtone"
           }
         },
         "zh-Hans" : {
@@ -7795,7 +7618,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "voice"
+            "value" : "Voice"
           }
         },
         "zh-Hans" : {
@@ -7811,7 +7634,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "voice dialogue"
+            "value" : "Voice Intercom"
           }
         },
         "zh-Hans" : {
@@ -7827,7 +7650,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voice server error"
+            "value" : "Voice Server Error"
           }
         },
         "zh-Hans" : {
@@ -7843,7 +7666,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voice message"
+            "value" : "Voice"
           }
         },
         "zh-Hans" : {
@@ -7859,7 +7682,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please turn off the monitoring first!"
+            "value" : "Stop monitoring first!"
           }
         },
         "zh-Hans" : {
@@ -7875,7 +7698,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please grant network permissions first."
+            "value" : "Grant network access first."
           }
         },
         "zh-Hans" : {
@@ -7891,7 +7714,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please register first"
+            "value" : "Register first"
           }
         },
         "zh-Hans" : {
@@ -7907,7 +7730,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please add the server first."
+            "value" : "Add a server first."
           }
         },
         "zh-Hans" : {
@@ -7923,7 +7746,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fire away."
+            "value" : "Say something..."
           }
         },
         "zh-Hans" : {
@@ -7939,7 +7762,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request to stop recording (Save/Send: %@)"
+            "value" : "Stop Recording (Save/Send: %@)"
           }
         },
         "zh-Hans" : {
@@ -7955,7 +7778,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request to stop playback"
+            "value" : "Stop Playback"
           }
         },
         "zh-Hans" : {
@@ -7971,7 +7794,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request address (api.openai.com)"
+            "value" : "API Base URL"
           }
         },
         "zh-Hans" : {
@@ -7987,7 +7810,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request secret key"
+            "value" : "Request Key"
           }
         },
         "zh-Hans" : {
@@ -8003,7 +7826,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request to start recording: Internal-%@"
+            "value" : "Start Recording: %@"
           }
         },
         "zh-Hans" : {
@@ -8019,7 +7842,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request to play - Message ID: %@"
+            "value" : "Play: %@"
           }
         },
         "zh-Hans" : {
@@ -8035,7 +7858,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request path: /v1"
+            "value" : "API Path: /v1"
           }
         },
         "zh-Hans" : {
@@ -8051,7 +7874,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter the prompt keyword topic"
+            "value" : "Enter prompt title"
           }
         },
         "zh-Hans" : {
@@ -8067,7 +7890,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter the old KEY"
+            "value" : "Enter old KEY"
           }
         },
         "zh-Hans" : {
@@ -8083,7 +7906,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a nickname"
+            "value" : "Enter nickname"
           }
         },
         "zh-Hans" : {
@@ -8099,7 +7922,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter a valid server URL address, for example: https://example.com"
+            "value" : "Enter a valid URL, e.g. https://example.com"
           }
         },
         "zh-Hans" : {
@@ -8115,7 +7938,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please enter the server address"
+            "value" : "Enter server address"
           }
         },
         "zh-Hans" : {
@@ -8131,7 +7954,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Please select the other permissions you require."
+            "value" : "Select optional permissions."
           }
         },
         "zh-Hans" : {
@@ -8163,7 +7986,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Load"
+            "value" : "Payload"
           }
         },
         "zh-Hans" : {
@@ -8195,7 +8018,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Account List"
+            "value" : "Accounts"
           }
         },
         "zh-Hans" : {
@@ -8227,7 +8050,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jump to third-party"
+            "value" : "Open External"
           }
         },
         "zh-Hans" : {
@@ -8243,7 +8066,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jump link:"
+            "value" : "Link:"
           }
         },
         "zh-Hans" : {
@@ -8259,7 +8082,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter a %d-digit key"
+            "value" : "Enter %d-digit key"
           }
         },
         "zh-Hans" : {
@@ -8275,7 +8098,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter group name"
+            "value" : "Group name"
           }
         },
         "zh-Hans" : {
@@ -8307,7 +8130,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enter image name"
+            "value" : "Image name"
           }
         },
         "zh-Hans" : {
@@ -8355,7 +8178,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Runtime"
+            "value" : "Uptime"
           }
         },
         "zh-Hans" : {
@@ -8371,7 +8194,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This is an encryption example"
+            "value" : "Encryption example"
           }
         },
         "zh-Hans" : {
@@ -8387,7 +8210,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This is a sample content"
+            "value" : "Sample content"
           }
         },
         "zh-Hans" : {
@@ -8403,7 +8226,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This is the encrypted body part."
+            "value" : "Encrypted body"
           }
         },
         "zh-Hans" : {
@@ -8419,7 +8242,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Process List"
+            "value" : "Processes"
           }
         },
         "zh-Hans" : {
@@ -8467,7 +8290,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select function"
+            "value" : "Choose"
           }
         },
         "zh-Hans" : {
@@ -8483,7 +8306,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select encryption algorithm"
+            "value" : "Encryption"
           }
         },
         "zh-Hans" : {
@@ -8499,7 +8322,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Image"
+            "value" : "Choose Image"
           }
         },
         "zh-Hans" : {
@@ -8515,7 +8338,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Extensions"
+            "value" : "Extensions"
           }
         },
         "zh-Hans" : {
@@ -8531,7 +8354,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select style"
+            "value" : "Style"
           }
         },
         "zh-Hans" : {
@@ -8547,7 +8370,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Select Translation Language"
+            "value" : "Translate to"
           }
         },
         "zh-Hans" : {
@@ -8563,7 +8386,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose ringtone, cut off if exceeding 30 seconds"
+            "value" : "Select ringtone (30s max)"
           }
         },
         "zh-Hans" : {
@@ -8579,7 +8402,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose color"
+            "value" : "Color"
           }
         },
         "zh-Hans" : {
@@ -8595,7 +8418,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification permission settings"
+            "value" : "Notification Permissions"
           }
         },
         "zh-Hans" : {
@@ -8611,7 +8434,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification type"
+            "value" : "Type"
           }
         },
         "zh-Hans" : {
@@ -8627,7 +8450,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notification Level"
+            "value" : "Level"
           }
         },
         "zh-Hans" : {
@@ -8643,7 +8466,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The notification ringtone will play continuously for 30 seconds, and multiple notifications will ring in sequence as they are received."
+            "value" : "Ringtone plays 30s. Multiple alerts play in sequence."
           }
         },
         "zh-Hans" : {
@@ -8675,7 +8498,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partially registered successfully"
+            "value" : "Partial Registration"
           }
         },
         "zh-Hans" : {
@@ -8691,7 +8514,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuration already exists"
+            "value" : "Config Exists"
           }
         },
         "zh-Hans" : {
@@ -8707,7 +8530,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configuration file"
+            "value" : "Config File"
           }
         },
         "zh-Hans" : {
@@ -8723,7 +8546,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rtx"
+            "value" : "Re-Tx Rate"
           }
         },
         "zh-Hans" : {
@@ -8739,7 +8562,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reboot"
+            "value" : "Restart"
           }
         },
         "zh-Hans" : {
@@ -8755,7 +8578,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Restart to take effect, exiting the program now!"
+            "value" : "Restart required. App will exit."
           }
         },
         "zh-Hans" : {
@@ -8787,7 +8610,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplicate data"
+            "value" : "Duplicate"
           }
         },
         "zh-Hans" : {
@@ -8803,7 +8626,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regenerate Key"
+            "value" : "Regenerate"
           }
         },
         "zh-Hans" : {
@@ -8835,7 +8658,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important reminder notification, 70% volume"
+            "value" : "Critical alert, 70% volume"
           }
         },
         "zh-Hans" : {
@@ -8851,7 +8674,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important Notice"
+            "value" : "Critical Alert"
           }
         },
         "zh-Hans" : {
@@ -8867,7 +8690,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important Notification Permissions"
+            "value" : "Critical Notifications"
           }
         },
         "zh-Hans" : {
@@ -8883,7 +8706,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Important Notification Volume"
+            "value" : "Critical Alert Volume"
           }
         },
         "zh-Hans" : {
@@ -8915,7 +8738,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell Sound"
+            "value" : "Ringtone"
           }
         },
         "zh-Hans" : {
@@ -8931,7 +8754,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell Sound List"
+            "value" : "Ringtones"
           }
         },
         "zh-Hans" : {
@@ -8947,7 +8770,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bell Settings"
+            "value" : "Ringtone Settings"
           }
         },
         "zh-Hans" : {
@@ -9027,7 +8850,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Attachment: A picture"
+            "value" : "Attachment: 1 image"
           }
         },
         "zh-Hans" : {
@@ -9059,7 +8882,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Privacy Policy"
+            "value" : "Privacy"
           }
         },
         "zh-Hans" : {
@@ -9139,7 +8962,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your location information is required."
+            "value" : "Location access needed."
           }
         },
         "zh-Hans" : {
@@ -9187,7 +9010,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "shock"
+            "value" : "Vibration"
           }
         },
         "zh-Hans" : {
@@ -9198,29 +9021,12 @@
         }
       }
     },
-    "静音" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silence"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静音"
-          }
-        }
-      }
-    },
     "静音分组1小时" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silence for 1 hour"
+            "value" : "Mute 1h"
           }
         },
         "zh-Hans" : {
@@ -9236,7 +9042,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Silent Notification"
+            "value" : "Silent"
           }
         },
         "zh-Hans" : {
@@ -9268,7 +9074,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sound Adjuster"
+            "value" : "Audio Adjust"
           }
         },
         "zh-Hans" : {
@@ -9300,7 +9106,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Volume boost"
+            "value" : "Volume Boost"
           }
         },
         "zh-Hans" : {
@@ -9332,7 +9138,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "High-permeability notification alert"
+            "value" : "Critical alert"
           }
         },
         "zh-Hans" : {
@@ -9364,7 +9170,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "default style"
+            "value" : "Default Style"
           }
         },
         "zh-Hans" : {
@@ -9380,7 +9186,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Default browser"
+            "value" : "Default Browser"
           }
         },
         "zh-Hans" : {

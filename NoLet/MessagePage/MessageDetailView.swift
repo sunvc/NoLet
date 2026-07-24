@@ -178,7 +178,8 @@ struct MessageDetailView: View {
                 if item == nil {
                     self.messages = results
                 } else {
-                    self.messages += results
+                    let existingIDs = Set(self.messages.map(\.id))
+                    self.messages += results.filter { !existingIDs.contains($0.id) }
                 }
                 if let selectID = manager.selectID {
                     withAnimation {

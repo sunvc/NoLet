@@ -77,7 +77,6 @@ final class MessagesManager: ObservableObject {
         let center = CFNotificationCenterGetDarwinNotifyCenter()
         let observer = UnsafeRawPointer(Unmanaged.passUnretained(self).toOpaque())
 
-        // 2. 注册监听
         CFNotificationCenterAddObserver(
             center,
             observer,
@@ -101,7 +100,6 @@ final class MessagesManager: ObservableObject {
         let unCount = await unreadCount()
 
         Task { @MainActor in
-            self.updateSign += 1
             self.allCount = count
             self.unreadCount = unCount
         }

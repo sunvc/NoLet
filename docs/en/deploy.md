@@ -224,7 +224,7 @@ Field names are normalized by removing symbols and spaces, then lowercasing lett
 | `url` / `icon` / `copy` / `autocopy` / `level` / `badge` | Custom extension fields |
 | `id` | Message ID; auto-generated as a UUID when omitted |
 | `group` | APNs `thread-id`, also usable as a device group |
-| `location` | Triggers a location push when it is a valid URL |
+| `location` | Two modes: pass `"lat,lng"` coordinates to show a map button; pass a valid URL to trigger a Location Push that retrieves the device location |
 | `pushgroupname` | Admin-only group push by device group |
 
 ### Aliases and Defaults
@@ -242,7 +242,8 @@ Field names are normalized by removing symbols and spaces, then lowercasing lett
 | Mode | Trigger |
 |------|------|
 | Standard notification | Any of `title`, `subtitle`, `body`, `ciphertext`, or `image` is present |
-| Location push | `location` is a valid URL |
+| Location push | `location` is a valid URL (has scheme + host) |
+| Map coordinates | When `location` is `"lat,lng"` coordinates, sent with a standard notification and shows a map button on the message card |
 | Silent push | No content fields, but `id` exists |
 | Query mode | No content fields and no `id`; returns registration info instead of sending a push |
 

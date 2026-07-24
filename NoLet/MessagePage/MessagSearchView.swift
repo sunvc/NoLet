@@ -121,7 +121,7 @@ struct MessagSearchView: View {
                 self.allCount = messageManager.allCount
             }
         }
-        .onChange(of: manager.searchText) { _ in
+        .task(id: manager.searchText) {
             loadData(limit: messagePage)
         }
     }
@@ -150,7 +150,8 @@ struct MessagSearchView: View {
                 if item == nil {
                     self.messages = results.0
                 } else {
-                    self.messages += results.0
+                    let existingIDs = Set(self.messages.map(\.id))
+                    self.messages += results.0.filter { !existingIDs.contains($0.id) }
                 }
                 self.allCount = results.1
                 self.searched = false

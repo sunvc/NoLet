@@ -6,7 +6,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "[%@] Group Muted Successfully"
+            "value": "[%@] Muted"
           }
         },
         "zh-Hans": {
@@ -86,7 +86,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Save successful"
+            "value": "Saved"
           }
         },
         "zh-Hans": {
@@ -134,7 +134,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reply failed"
+            "value": "Reply Failed"
           }
         },
         "zh-Hans": {
@@ -150,7 +150,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Image successfully saved to album!"
+            "value": "Saved to Photos!"
           }
         },
         "zh-Hans": {
@@ -182,7 +182,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Copy successful"
+            "value": "Copied"
           }
         },
         "zh-Hans": {
@@ -198,7 +198,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Save the image to the album?"
+            "value": "Save to Photos?"
           }
         },
         "zh-Hans": {
@@ -230,7 +230,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Confirm"
+            "value": "OK"
           }
         },
         "zh-Hans": {
@@ -246,7 +246,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silence group for 1 hour"
+            "value": "Mute 1h"
           }
         },
         "zh-Hans": {

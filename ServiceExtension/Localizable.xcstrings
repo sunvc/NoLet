@@ -6,7 +6,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud service is temporarily unavailable, please try again later."
+            "value": "iCloud unavailable. Try again later."
           }
         },
         "zh-Hans": {
@@ -22,7 +22,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud access restricted, possibly due to parental controls or MDM device management policies."
+            "value": "iCloud restricted by parental controls or MDM."
           }
         },
         "zh-Hans": {
@@ -38,7 +38,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud Account Available"
+            "value": "iCloud Available"
           }
         },
         "zh-Hans": {
@@ -70,7 +70,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Save Successful"
+            "value": "Saved"
           }
         },
         "zh-Hans": {
@@ -102,7 +102,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Image key duplicate, please provide a new image to overwrite."
+            "value": "Key exists. Upload new to overwrite."
           }
         },
         "zh-Hans": {
@@ -134,7 +134,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Authorized to Access Photo Library"
+            "value": "Photo Library OK"
           }
         },
         "zh-Hans": {
@@ -150,7 +150,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Access denied"
+            "value": "Denied"
           }
         },
         "zh-Hans": {
@@ -166,7 +166,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prompt Words"
+            "value": "Prompts"
           }
         },
         "zh-Hans": {
@@ -182,7 +182,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nothing"
+            "value": "None"
           }
         },
         "zh-Hans": {
@@ -198,7 +198,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No server"
+            "value": "No Server"
           }
         },
         "zh-Hans": {
@@ -214,7 +214,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unable to determine iCloud account status, possibly due to network issues"
+            "value": "Can't check iCloud status. Verify network."
           }
         },
         "zh-Hans": {
@@ -230,7 +230,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limited access permissions"
+            "value": "Limited Access"
           }
         },
         "zh-Hans": {
@@ -246,7 +246,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Not logged into iCloud, please log in to your iCloud account"
+            "value": "Sign in to iCloud"
           }
         },
         "zh-Hans": {
@@ -262,7 +262,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unknown iCloud Status"
+            "value": "Unknown"
           }
         },
         "zh-Hans": {
@@ -284,7 +284,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unknown location"
+            "value": "Unknown Location"
           }
         }
       }
@@ -294,7 +294,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unknown Status"
+            "value": "Unknown"
           }
         },
         "zh-Hans": {
@@ -310,7 +310,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Permission not selected"
+            "value": "Not selected"
           }
         },
         "zh-Hans": {
@@ -326,7 +326,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Check iCloud Account Status Error"
+            "value": "iCloud Check Error"
           }
         },
         "zh-Hans": {
@@ -342,7 +342,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No files"
+            "value": "No Files"
           }
         },
         "zh-Hans": {
@@ -358,7 +358,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Decryption failed!"
+            "value": "Decrypt failed!"
           }
         },
         "zh-Hans": {
@@ -374,7 +374,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Silence group for 1 hour"
+            "value": "Mute 1h"
           }
         },
         "zh-Hans": {

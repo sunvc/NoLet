@@ -94,6 +94,7 @@ All parameters are compatible with various casing styles: SubTitle / subTitle / 
 | group | String | Group messages. Notifications will be displayed in the Notification Center grouped by `group`.<br>You can also choose to view different groups in the history message list. |
 | ttl | Integer/String | `ttl=days` Notification expiration time, unit: days. Default is set in the app. |
 | url | URL  | URL to jump to when clicking the notification. Supports URL Scheme and Universal Link |
+| location | String | Two modes: ① Pass `"lat,lng"` coordinates to display a map button on the message card; ② Pass a callback URL to trigger a Location Push that retrieves the device's location and POSTs it back |
 
 ## Batch Push
 

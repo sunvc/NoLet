@@ -6,6 +6,7 @@ Push encryption is a method to protect notification content. It uses a custom ke
 1. Open the app home screen
 2. Find “Push Encryption” and open the encryption settings
 3. Choose an encryption algorithm, fill in the KEY as required, and tap Done to save your custom key. `cipherNumber` is the list order (index), default is `0`.
+4. When using encryption, the `markdown` and `body` fields cannot use shorthands or aliases (`md`, `text`, `content`, `data`, `message` are all invalid)*
 
 #### Send an Encrypted Push
 To send an encrypted push, first convert NoLet request parameters into a JSON string. Then encrypt the string with the previously set key and chosen algorithm. Finally, concatenate the data as `nonce + ciphertext [+ tag]`, encode it in Base64, and send the result in the `ciphertext` parameter to the server.<br><br>

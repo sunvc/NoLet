@@ -94,6 +94,7 @@ curl -X "POST" "https://wzs.app/push" \
 | group | 字符串 | 对消息进行分组，推送将按 `group` 分组显示在通知中心中。<br>也可在历史消息列表中选择查看不同的群组。 |
 | ttl | 整数/字符串 | `ttl=天数` 推送过期时间，单位天，默认 app 内设置。 |
 | url | URL  | 点击推送时，跳转的 URL，支持 URL Scheme 和 Universal Link |
+| location | 字符串 | 两种模式：① 传 `"纬度,经度"` 坐标，直接在消息卡片显示地图按钮；② 传回调 URL，触发 Location Push 获取设备位置后 POST 回传（详见消息模板文档） |
 
 ## 批量推送
 

@@ -159,7 +159,8 @@ struct MessageFlatListView: View {
                 if item == nil {
                     messageManager.messages = results
                 } else {
-                    messageManager.messages += results
+                    let existingIDs = Set(messageManager.messages.map(\.id))
+                    messageManager.messages += results.filter { !existingIDs.contains($0.id) }
                 }
                 if let selectID = manager.selectID {
                     proxy?.scrollTo(selectID, anchor: .center)

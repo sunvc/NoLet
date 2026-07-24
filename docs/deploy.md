@@ -223,7 +223,7 @@ docker-compose up -d
 | `url` / `icon` / `copy` / `autocopy` / `level` / `badge` | 自定义扩展字段 |
 | `id` | 消息 ID；未传时自动生成 UUID |
 | `group` | APNs `thread-id`，也可作为设备分组字段 |
-| `location` | 合法 URL 时会触发定位推送 |
+| `location` | 两种模式：传坐标 `"lat,lng"` 显示地图按钮；传合法 URL 触发 Location Push 获取设备位置 |
 | `pushgroupname` | 管理员按设备分组批量推送 |
 
 ### 兼容别名与默认值
@@ -241,7 +241,8 @@ docker-compose up -d
 | 模式 | 触发条件 |
 |------|------|
 | 普通通知 | 存在 `title`、`subtitle`、`body`、`ciphertext`、`image` 中任一内容字段 |
-| 定位推送 | `location` 为合法 URL |
+| 定位推送 | `location` 为合法 URL（有 scheme + host） |
+| 地图坐标 | `location` 为 `"纬度,经度"` 坐标时，随普通通知一起下发，在消息卡片显示地图按钮 |
 | 静默推送 | 没有内容字段，但存在 `id` |
 | 查询模式 | 没有内容字段，且没有 `id`，此时返回设备注册信息而不是发推送 |
 

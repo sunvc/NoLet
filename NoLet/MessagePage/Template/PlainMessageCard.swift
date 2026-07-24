@@ -36,37 +36,41 @@ struct PlainMessageCard: MessageCardProtocol {
             }
 
             VStack(alignment: .leading, spacing: 12) {
-                if message.title != nil || message.subtitle != nil {
-                    VStack(alignment: .leading, spacing: 2) {
-                        // 主标题
-                        HStack {
-                            if let title = message.title {
-                                Text(title)
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primary)
-                                    .lineLimit(2)
-                            }
+                VStack(alignment: .leading, spacing: 2) {
+                    // 主标题
+                    HStack {
+                        if let title = message.title {
+                            Text(title)
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .lineLimit(2)
+                        }
 
-                            Spacer()
-                            MessageActionMenu(
-                                message: message,
-                                assistantAccounsCount: config.accounts,
-                                manager: manager,
-                                showSnap: $showSnap,
-                                showReply: $showReply,
-                                onDelete: config.delete
-                            )
-                        }
-                        if let subtitle = message.subtitle {
-                            Text(subtitle)
-                                .font(.subheadline)
-                                .fontWeight(.heavy)
-                                .foregroundColor(.secondary)
-                                .tracking(1) // 字间距
-                        }
+                        Spacer()
+                        
+                    }
+                    .frame(minHeight: 20)
+                    .overlay(alignment: .topTrailing) { 
+                        MessageActionMenu(
+                            message: message,
+                            assistantAccounsCount: config.accounts,
+                            manager: manager,
+                            showSnap: $showSnap,
+                            showReply: $showReply,
+                            onDelete: config.delete
+                        )
+
+                    }
+                    if let subtitle = message.subtitle {
+                        Text(subtitle)
+                            .font(.subheadline)
+                            .fontWeight(.heavy)
+                            .foregroundColor(.secondary)
+                            .tracking(1) // 字间距
                     }
                 }
+                
 
                 SCSelectableTextRepresentable(
                     text: message.body.plainText,

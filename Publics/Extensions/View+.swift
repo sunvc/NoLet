@@ -428,7 +428,7 @@ extension View {
     nonisolated func glassCard(
         _ radius: CGFloat = 12,
         padding: CGFloat = 0,
-        borderColor: Color? = .primary
+        borderColor: Color? = nil
     ) -> some View {
         Group {
             if #available(iOS 26.0, *) {

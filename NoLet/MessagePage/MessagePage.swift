@@ -57,11 +57,6 @@ struct MessagePage: View {
                 }
             }
         }
-        .onChange(of: searchText) { value in
-            if value.isEmpty {
-                manager.searchText = ""
-            }
-        }
         .onSubmit(of: .search) {
             manager.searchText = searchText
         }

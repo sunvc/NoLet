@@ -231,7 +231,8 @@ struct MessageActionMenu: View {
                 .accessibilityValue(message.createDate
                     .formatted(date: .long, time: .standard))
                 .contentShape(Rectangle())
-        }.frame(maxWidth: 60)
+                .lineLimit(1)
+        }
     }
 
     // 抽出图片下载的 Task 逻辑，保持 body 的纯净
