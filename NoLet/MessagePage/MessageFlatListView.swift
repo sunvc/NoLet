@@ -66,7 +66,7 @@ struct MessageFlatListView: View {
                     Toast.success(title: "删除成功")
                 },
                 onLoadMore: { [self] in
-                    loadData(proxy: proxy, limit: messagePage)
+                    loadData(proxy: proxy, limit: messagePage, item: messageManager.messages.last)
                 }
             )
             .scrollDismissesKeyboard(.interactively)

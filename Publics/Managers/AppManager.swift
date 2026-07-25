@@ -63,10 +63,10 @@ final class AppManager: ObservableObject {
         )
     }
 
-    /// 瀑布流列数：compact 始终 1 列，regular 按宽度 / 350 最少 2 列
+    /// 瀑布流列数：compact 始终 1 列，regular 按宽度 / 350 计算，2~3 列
     var waterfallColumnCount: Int {
         guard sizeClass == .compact else {
-            return max(2, Int(windowSize.width / 350))
+            return min(3, max(2, Int(windowSize.width / 350)))
         }
         return 1
     }

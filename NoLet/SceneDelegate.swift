@@ -45,8 +45,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             overlay.isUserInteractionEnabled = true
             overlayWindow = overlay
         }
-        
-        
 
         if let urlContext = connectionOptions.urlContexts.first {
             let url = urlContext.url
@@ -76,7 +74,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_: UIScene) {
         UIApplication.shared.shortcutItems = QuickAction
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
-        
+
         _syncAppInfo()
 
         Task { @MainActor in
@@ -97,9 +95,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func setLangAssistantPrompt() {
         if let currentLang = Locale.preferredLanguages.first {
-            if Defaults[.lang] != currentLang {
-                let prompts = ChatPromptMode.prompts
-                Task.detached(priority: .background) {
+            let prompts = ChatPromptMode.prompts
+            Task.detached(priority: .background) {
+                let count = try await DatabaseManager.shared.dbQueue.read { db in
+                    try ChatPrompt.filter(ChatPrompt.Columns.inside == true).fetchCount(db)
+                }
+                
+                if Defaults[.lang] != currentLang || count == 0 {
+                    
                     try await DatabaseManager.shared.dbQueue.write { db in
                         // 删除 inside == true 的项
                         try ChatPrompt.filter(ChatPrompt.Columns.inside == true).deleteAll(db)

@@ -51,6 +51,10 @@ struct WaterfallMessageView: View {
                 multiColumnContent
             }
         }
+        .onChange(of: messages.count) { _ in
+            // 数据更新后重置触发标记，允许再次触发
+            paginationTriggered = false
+        }
     }
 
     // MARK: - 单列（LazyVStack + onAppear 分页）
@@ -109,7 +113,6 @@ struct WaterfallMessageView: View {
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
         .coordinateSpace(name: "waterfallScroll")
-        .onChange(of: messages.count) { _ in paginationTriggered = false }
     }
 
     // MARK: - 哨兵
@@ -142,6 +145,7 @@ struct WaterfallMessageView: View {
                 .foregroundStyle(.secondary)
             Spacer()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - 分页
