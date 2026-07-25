@@ -261,7 +261,7 @@ When updating an existing registration, if `token` is shorter than `64` and `gro
 
 # Other Resources
 
-You may need the push certificate when you need to integrate NoLet into your own system or re-implement the backend code.
+You may need the push certificate when you need to integrate Aero into your own system or re-implement the backend code.
 
 ##### Key ID：*BNY5GUGV38*
 

@@ -42,7 +42,7 @@ curl -X POST https://wzs.app/your_key \
 curl -X "POST" "//https://wzs.app/your_key" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test NoLet Server",
+  "body": "Test Aero Server",
   "title": "Test Title",
   "badge": 1,
   "category": "myNotificationCategory",
@@ -59,7 +59,7 @@ curl -X "POST" "//https://wzs.app/your_key" \
 curl -X "POST" "https://wzs.app/push" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test NoLet Server",
+  "body": "Test Aero Server",
   "title": "Test Title",
   "device_key": "your_key"
 }'
@@ -87,8 +87,8 @@ All parameters are compatible with various casing styles: SubTitle / subTitle / 
 | copy | String | `copy=copy_content` When copying the notification, specify the content to copy. If this parameter is not passed, the entire notification content will be copied. |
 | sound | String | `sound=minuet` You can set different ringtones for notifications. Default ringtone can be set in the app. |
 | icon | URL | `icon=https://example.com/icon.png` Set custom icon, automatically cached, supports uploading cloud icons |
-| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="NoLet App" height="60">  |
-| icon | String Array | `icon=Group,ff0000` <img src="/_media/example-word.png" alt="NoLet App" height="60"> |
+| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="Aero App" height="60">  |
+| icon | String Array | `icon=Group,ff0000` <img src="/_media/example-word.png" alt="Aero App" height="60"> |
 | image | URL | Pass image URL, automatically downloaded and cached after the phone receives the message |
 | savealbum | Boolean | Pass "1" to automatically save the image to the album |
 | group | String | Group messages. Notifications will be displayed in the Notification Center grouped by `group`.<br>You can also choose to view different groups in the history message list. |
@@ -143,7 +143,7 @@ axios.post(
     },
     params: {
       PushGroupName: "newgroup",
-      body: "Test NoLet Server",
+      body: "Test Aero Server",
       // ...
     }
   }
@@ -170,5 +170,5 @@ axios.post(
 
 ## Shortcuts
 
-NoLet supports sending notifications directly using Shortcuts.
+Aero supports sending notifications directly using Shortcuts.
 Pass Server and KEY, or Device ID. If passing Device ID, it does not go through the server, but pushes directly to Apple servers.

@@ -1,6 +1,6 @@
 # 📨 消息模板字段手册
 
-NoLet 的消息通过 `style` 字段来切换不同的卡片模板。本文档按模板分类，列出所有可用字段。
+伞兵(Aero) 的消息通过 `style` 字段来切换不同的卡片模板。本文档按模板分类，列出所有可用字段。
 
 ---
 
@@ -303,11 +303,11 @@ Message(
 // id, createDate, read 由系统自动生成
 Message(
     group: "文档",
-    title: "NoLet 使用指南",
+    title: "伞兵(Aero) 使用指南",
     body: """
     # 快速开始
     ## 安装
-    在 App Store 搜索 **NoLet** 下载。
+    在 App Store 搜索 **Aero** 下载。
     ## 配置
     1. 打开 App
     2. 扫码绑定设备

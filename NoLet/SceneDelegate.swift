@@ -111,11 +111,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         for prompt in prompts {
                             try prompt.insert(db)
                         }
-
-                        // 回到主线程设置语言
-                        DispatchQueue.main.async {
-                            Defaults[.lang] = currentLang
-                        }
+                    }
+                
+                    // 回到主线程设置语言
+                    DispatchQueue.main.async {
+                        Defaults[.lang] = currentLang
                     }
                 }
             }

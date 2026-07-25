@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [NoLet](/en/#NoLetApp)
+- [Aero](/en/#AeroApp)
 - **App**
   - [Usage Tutorial](/en/tutorial)
   - [Message Templates](/en/templates)

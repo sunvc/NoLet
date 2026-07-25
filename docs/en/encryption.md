@@ -1,6 +1,6 @@
 # What is Push Encryption
 
-Push encryption is a method to protect notification content. It uses a custom key to encrypt and decrypt data when sending and receiving.<br>This way, the content cannot be accessed or leaked by the NoLet server or Apple APNs during transmission.
+Push encryption is a method to protect notification content. It uses a custom key to encrypt and decrypt data when sending and receiving.<br>This way, the content cannot be accessed or leaked by the Aero server or Apple APNs during transmission.
 
 #### Set a Custom Key
 1. Open the app home screen
@@ -9,7 +9,7 @@ Push encryption is a method to protect notification content. It uses a custom ke
 4. When using encryption, the `markdown` and `body` fields cannot use shorthands or aliases (`md`, `text`, `content`, `data`, `message` are all invalid)*
 
 #### Send an Encrypted Push
-To send an encrypted push, first convert NoLet request parameters into a JSON string. Then encrypt the string with the previously set key and chosen algorithm. Finally, concatenate the data as `nonce + ciphertext [+ tag]`, encode it in Base64, and send the result in the `ciphertext` parameter to the server.<br><br>
+To send an encrypted push, first convert Aero request parameters into a JSON string. Then encrypt the string with the previously set key and chosen algorithm. Finally, concatenate the data as `nonce + ciphertext [+ tag]`, encode it in Base64, and send the result in the `ciphertext` parameter to the server.<br><br>
 
 Below are examples in various languages.
 
