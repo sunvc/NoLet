@@ -13,48 +13,25 @@
 import CloudKit
 import SwiftUI
 
-struct PushIcon: Identifiable {
-    var id: String
+nonisolated struct PushIcon: Identifiable {
+    var id: String = UUID().uuidString
     var name: String
     var description: [String]
     var size: Int
     var sha256: String
-    var file: URL?
-    var previewImage: UIImage?
+    var file: URL? = nil
+    var previewImage: UIImage? = nil
+}
 
-    func toRecord(recordType: String) -> CKRecord? {
-        guard let file = file else { return nil }
+extension PushIcon: CloudKitConvertible {
+    // MARK: - CloudKitConvertible
 
-        let recordID = CKRecord.ID(recordName: id)
-        let record = CKRecord(recordType: recordType, recordID: recordID)
-        record["name"] = name as CKRecordValue
-        record["description"] = description as CKRecordValue
-        record["data"] = CKAsset(fileURL: file)
-        record["size"] = size as CKRecordValue
-        record["sha256"] = sha256 as CKRecordValue
+    static let recordType = "PushIcon"
 
-        return record
-    }
+    /// 客户端展示用字段，不上传到 CloudKit。
+    static var skippedKeys: Set<String> { ["previewImage"] }
 
-    init(
-        id: String = UUID().uuidString,
-        name: String,
-        description: [String],
-        size: Int,
-        sha256: String,
-        file: URL? = nil,
-        previewImage: UIImage? = nil
-    ) {
-        self.id = id
-        self.name = name
-        self.description = description
-        self.size = size
-        self.sha256 = sha256
-        self.file = file
-        self.previewImage = previewImage
-    }
-
-    init?(from record: CKRecord) {
+    init?(record: CKRecord) {
         guard let name = record["name"] as? String,
               let description = record["description"] as? [String],
               let asset = record["data"] as? CKAsset,
@@ -70,6 +47,26 @@ struct PushIcon: Identifiable {
         self.sha256 = sha256
         file = fileURL
         previewImage = image
+    }
+
+    /// 遗留调用点别名。
+    init?(from record: CKRecord) { self.init(record: record) }
+
+    /// 桥接：`file` (URL) → CKRecord 的 `"data"` (CKAsset) 字段。
+    /// 反射会把 `file` 写入 `"file"` 键，这里手工修正。
+    func toRecord(existing: CKRecord? = nil, clearNilFields: Bool = false) -> CKRecord {
+        let record = toRecordViaReflection(existing: existing, clearNilFields: clearNilFields)
+        if let file = file {
+            record["data"] = CKAsset(fileURL: file)
+        }
+        record["file"] = nil // 清掉反射默认写入的 "file" 键
+        return record
+    }
+
+    /// 遗留调用点入口：`file == nil` 时返回 nil（旧手写实现的语义）。
+    func toRecord(recordType _: String) -> CKRecord? {
+        guard file != nil else { return nil }
+        return toRecord()
     }
 }
 

@@ -24,15 +24,21 @@ import SwiftUI
 /// - `nil` 字段默认**保留** record 中原有值（合并式更新）。若要显式清空，调用
 ///   `toRecord(existing:clearNilFields: true)`。
 /// - 若字段类型未匹配到任一分支，DEBUG 下会打印警告；生产环境静默丢弃。
-protocol CloudKitConvertible {
+/// - 类型可通过 `skippedKeys` 声明"不参与反射"的字段（用于客户端展示字段、本地状态字段等）。
+nonisolated protocol CloudKitConvertible {
     var id: String { get }
     static var recordType: String { get }
+    /// 不参与反射序列化的字段名集合（例如仅客户端使用的字段、由服务端管理的时间戳等）。
+    /// 默认空集合，可在具体类型上覆盖。`id` 已经硬编码跳过，不需要再列。
+    static var skippedKeys: Set<String> { get }
     var recordID: CKRecord.ID { get }
     init?(record: CKRecord)
     func toRecord(existing: CKRecord?, clearNilFields: Bool) -> CKRecord
 }
 
-extension CloudKitConvertible {
+nonisolated extension CloudKitConvertible {
+    static var skippedKeys: Set<String> { [] }
+
     var recordID: CKRecord.ID {
         CKRecord.ID(recordName: self.id)
     }
@@ -57,6 +63,12 @@ extension CloudKitConvertible {
     ///   - clearNilFields: 默认 `false`。为 `true` 时，Swift 端为 `nil` 的字段会写入 `record[key] = nil`，
     ///     从而**抹掉云端已有的值**；为 `false` 时会跳过 `nil` 字段以保留原值。
     func toRecord(existing: CKRecord? = nil, clearNilFields: Bool = false) -> CKRecord {
+        toRecordViaReflection(existing: existing, clearNilFields: clearNilFields)
+    }
+
+    /// 反射默认实现的稳定别名。类型覆写 `toRecord` 做字段名桥接/后处理时，
+    /// 可以先调它拿到反射结果，再手工修补字段。
+    func toRecordViaReflection(existing: CKRecord? = nil, clearNilFields: Bool = false) -> CKRecord {
 
         let record = existing ??
             CKRecord(recordType: Self.recordType, recordID: recordID)
@@ -64,6 +76,7 @@ extension CloudKitConvertible {
         for child in Mirror(reflecting: self).children {
 
             guard let key = child.label, key != "id" else { continue }
+            guard !Self.skippedKeys.contains(key) else { continue }
 
             let value = unwrap(child.value)
 
@@ -92,7 +105,7 @@ extension CloudKitConvertible {
         // 标量
         case let v as String: return v as NSString
         case let v as Bool:   return NSNumber(value: v)
-        case let v as Int:    return NSNumber(value: v)   // 64bit 平台 Int == Int64
+        case let v as Int:    return NSNumber(value: v) // 64bit 平台 Int == Int64
         case let v as Double: return NSNumber(value: v)
         case let v as Float:  return NSNumber(value: v)
         case let v as Date:   return v as NSDate
@@ -145,7 +158,7 @@ extension CloudKitConvertible {
 
 // MARK: - CloudKit 数据库便捷操作
 
-extension CloudKitConvertible {
+nonisolated extension CloudKitConvertible {
 
     /// 按 id 从 CloudKit 拉一条记录。
     ///

@@ -70,23 +70,30 @@ nonisolated struct PushServerModel: Codable, Identifiable, Equatable {
     }
 }
 
-nonisolated extension PushServerModel: Hashable {
+nonisolated extension PushServerModel: Hashable, CloudKitConvertible {
+    static let recordType = "PushServerModal"
+
+    /// 本地状态字段不上传：`status` 是运行时探活结果；`createDate/updateDate` 由 CloudKit 的
+    /// `creationDate/modificationDate` 提供。
+    static var skippedKeys: Set<String> {
+        ["status", "createDate", "updateDate"]
+    }
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(url)
         hasher.combine(key)
     }
 
-    func toCKRecord(recordType: String) -> CKRecord {
-        let recordID = CKRecord.ID(recordName: id)
-        let record = CKRecord(recordType: recordType, recordID: recordID)
-        record["url"] = url as CKRecordValue
-        record["key"] = key as CKRecordValue
-        record["group"] = group as? CKRecordValue
-        record["sign"] = sign as? CKRecordValue
-        return record
+    /// 遗留调用点：AppManager.syncServer 传入 recordType 字符串。这里忽略参数，走协议约定的类型名。
+    func toCKRecord(recordType _: String) -> CKRecord {
+        toRecord()
     }
 
     init?(from record: CKRecord) {
+        self.init(record: record)
+    }
+
+    init?(record: CKRecord) {
         self.id = record.recordID.recordName
         guard let url = record["url"] as? String,
               let key = record["key"] as? String else { return nil }

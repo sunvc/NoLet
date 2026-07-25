@@ -21,7 +21,7 @@ nonisolated extension Defaults.Keys {
 
 nonisolated extension ApnsInfo: Defaults.Serializable {}
 
-nonisolated struct ApnsInfo: Codable, Sendable {
+nonisolated struct ApnsInfo: Codable, Sendable, CloudKitConvertible {
     var id: String
     var timestamp: Date
     var token: String
@@ -29,6 +29,8 @@ nonisolated struct ApnsInfo: Codable, Sendable {
     var keyID: String
     var topic: String
     var pem: String
+
+    static let recordType = "ApnsInfo"
 
     init(
         id: String,
@@ -69,22 +71,5 @@ nonisolated struct ApnsInfo: Codable, Sendable {
         self.keyID = keyID
         self.topic = topic
         self.pem = pem
-    }
-
-    // MARK: - 初始化 CKRecord
-
-    func toCKRecord(type recordType: String) -> CKRecord {
-        // 使用 id 作为 recordName
-        let recordID = CKRecord.ID(recordName: id)
-        let record = CKRecord(recordType: recordType, recordID: recordID)
-
-        record["timestamp"] = timestamp as CKRecordValue
-        record["token"] = token as CKRecordValue
-        record["teamID"] = teamID as CKRecordValue
-        record["keyID"] = keyID as CKRecordValue
-        record["topic"] = topic as CKRecordValue
-        record["pem"] = pem as CKRecordValue
-
-        return record
     }
 }

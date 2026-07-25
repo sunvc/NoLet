@@ -36,8 +36,12 @@ nonisolated struct MemberModel: Codable, Hashable, Equatable, Sendable {
     }
 }
 
-extension MemberModel {
+nonisolated extension MemberModel: CloudKitConvertible {
     static let recordType = "Member"
+
+    /// `avatar`(UIImage) 是解码后的展示用字段；`newAvatar`(URL) 用于上传，会手工桥接到 "avatar" 键。
+    /// 两者都不走反射，避免污染 record。
+    static var skippedKeys: Set<String> { ["avatar", "newAvatar"] }
 
     init?(record: CKRecord) {
         let name = (record["name"] as? String) ?? ""
@@ -61,6 +65,23 @@ extension MemberModel {
         } else {
             self.avatar = nil
         }
+    }
+
+    /// 覆写以桥接 `newAvatar` → `"avatar"` 键，并保持"空字符串不覆盖旧值"的合并语义。
+    func toRecord(existing: CKRecord? = nil, clearNilFields: Bool = false) -> CKRecord {
+        let record = toRecordViaReflection(existing: existing, clearNilFields: clearNilFields)
+
+        // 空字符串视为"不覆盖"（与旧 saveMember 行为一致）
+        if name.isEmpty { record["name"] = existing?["name"] }
+        if token.isEmpty { record["token"] = existing?["token"] }
+        if location.isEmpty { record["location"] = existing?["location"] }
+        if talk.isEmpty { record["talk"] = existing?["talk"] }
+        if voip.isEmpty { record["voip"] = existing?["voip"] }
+
+        if let avatarUrl = newAvatar {
+            record["avatar"] = CKAsset(fileURL: avatarUrl)
+        }
+        return record
     }
 }
 

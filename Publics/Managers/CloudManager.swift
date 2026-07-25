@@ -339,9 +339,7 @@ final class CloudManager {
 
     func queryMember(id: String) async -> MemberModel? {
         do {
-            let id = CKRecord.ID(recordName: id)
-            let record = try await database.record(for: id)
-            return MemberModel(record: record)
+            return try await MemberModel.fetch(id: id, from: database)
         } catch {
             return nil
         }
@@ -349,52 +347,12 @@ final class CloudManager {
 
     func saveMember(data: MemberModel) async -> (MemberModel?, String) {
         let (success, message) = await checkAccount()
-
         guard success else { return (nil, message) }
 
-        let database = CKContainer.default().publicCloudDatabase
-        let recordID = CKRecord.ID(recordName: data.id)
-
         do {
-            var record: CKRecord
-
-            do {
-                record = try await database.record(for: recordID)
-            } catch {
-                record = CKRecord(
-                    recordType: MemberModel.recordType,
-                    recordID: recordID
-                )
-            }
-
-            if !data.name.isEmpty {
-                record["name"] = data.name
-            }
-
-            if !data.token.isEmpty {
-                record["token"] = data.token
-            }
-
-            if !data.location.isEmpty {
-                record["location"] = data.location
-            }
-
-            if !data.talk.isEmpty {
-                record["talk"] = data.talk
-            }
-
-            if !data.voip.isEmpty {
-                record["voip"] = data.voip
-            }
-
-            if let avatarUrl = data.newAvatar {
-                record["avatar"] = CKAsset(fileURL: avatarUrl)
-            }
-
-            let memberRecord = try await database.save(record)
-
-            return (MemberModel(record: memberRecord), "保存成功")
-
+            // MemberModel.toRecord(existing:) 已把"空字符串不覆盖"和 newAvatar→avatar 桥接封装好
+            let saved = try await data.save(to: database, mergeExisting: true)
+            return (saved, String(localized: "保存成功"))
         } catch {
             return (nil, error.localizedDescription)
         }
