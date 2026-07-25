@@ -99,7 +99,7 @@ final class CryptoManager {
             return signTem.safeBase64
         }
 
-        result["X-Device"] = Defaults[.id]
+        result["X-Device"] = Defaults[.member].id
         result["X-USER"] = key
         result["Authorization"] = signInt
         result["X-Signature"] = signInt

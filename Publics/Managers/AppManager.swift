@@ -488,13 +488,13 @@ extension AppManager {
     ) async -> PushServerModel {
         var server = server
         do {
-            let deviceToken = reset ? UUID().uuidString : Defaults[.token].token
+            let deviceToken = reset ? UUID().uuidString : Defaults[.member].token
             let params = DeviceInfo(
                 deviceKey: server.key,
                 deviceToken: deviceToken,
-                talk: Defaults[.token].talk,
-                location: Defaults[.token].location,
-                voip: Defaults[.token].voip,
+                talk: Defaults[.member].talk,
+                location: Defaults[.member].location,
+                voip: Defaults[.member].voip,
                 group: server.group
             )
 
@@ -524,7 +524,7 @@ extension AppManager {
     }
 
     nonisolated func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
-        guard await !appending && !Defaults[.token].token.isEmpty else { return false }
+        guard await !appending && !Defaults[.member].token.isEmpty else { return false }
         await MainActor.run {
             appending = true
         }

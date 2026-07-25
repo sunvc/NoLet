@@ -17,8 +17,7 @@ import SwiftUI
 struct AboutNoLetView: View {
     @ObservedObject private var manager = AppManager.shared
     @Default(.appIcon) private var setting_active_app_icon
-    @Default(.token) private var token
-    @Default(.id) private var id
+    @Default(.member) private var member
     @Default(.nearbyShow) private var nearbyShow
     @Default(.allMessagecount) var allMessagecount
     @State private var showNearbySetting: Bool = false
@@ -96,7 +95,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(.primary, .accent)
                     }
                 }, trailing: {
-                    HackerTextView(text: maskString(token.token), trigger: false)
+                    HackerTextView(text: maskString(member.token), trigger: false)
                         .foregroundStyle(.gray)
 
                     Image(systemName: "doc.on.doc")
@@ -104,8 +103,8 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.accent, Color.primary)
 
                 }, showRight: false) {
-                    if !token.token.isEmpty {
-                        Clipboard.set(token.token)
+                    if !member.token.isEmpty {
+                        Clipboard.set(member.token)
                         Toast.copy(title: "复制成功")
 
                     } else {
@@ -126,7 +125,7 @@ struct AboutNoLetView: View {
                             .customForegroundStyle(Color.primary, .accent)
                     }
                 }, trailing: {
-                    HackerTextView(text: maskString(id), trigger: false)
+                    HackerTextView(text: maskString(member.id), trigger: false)
                         .foregroundStyle(.gray)
 
                     Image(systemName: "doc.on.doc")
@@ -134,7 +133,7 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.accent, Color.primary)
 
                 }, showRight: false) {
-                    Clipboard.set(id)
+                    Clipboard.set(member.id)
                     Toast.copy(title: "复制成功")
                     return true
                 }

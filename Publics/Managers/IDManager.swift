@@ -13,19 +13,38 @@
 import Foundation
 import Security
 
-final class IDManager {
-    private let service = Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
-    private let account = "NOLETACCOUNTDEVICEID"
+final nonisolated class IDManager: Sendable {
+    
+    private static let shared = IDManager()
 
-    static func ID() -> String {
-        let manager = Self()
-        guard let id = manager.read() else { 
-            let newID = ShortUUID().encode(uuid: UUID())
-            manager.save(newID)
-            return newID
+    private static let alphabet: [Character] = Array(
+        "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    )
+
+    private static let alphabetIndex: [Character: Int] = {
+        Dictionary(uniqueKeysWithValues: alphabet.enumerated().map { ($1, $0) })
+    }()
+
+    private static let alphaLen = alphabet.count
+
+    private static let encodedLength = Int(
+        ceil((128 * log(2.0)) / log(Double(alphaLen)))
+    )
+
+    private static let account = "NOLETACCOUNTDEVICEID"
+
+    private static let service =
+        Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
+
+    private init() {}
+
+    static var id: String {
+        if let id = IDManager.shared.read() {
+            return id
         }
-       
-        return id 
+        let id = IDManager.shared.encode(uuid: UUID())
+        IDManager.shared.save(id)
+        return id
     }
 
     private func save(_ id: String) {
@@ -33,16 +52,16 @@ final class IDManager {
         // 先删除旧数据，防止重复
         let queryDelete: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: self.service,
-            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.service,
+            kSecAttrAccount as String: Self.account,
         ]
         SecItemDelete(queryDelete as CFDictionary)
 
         // 添加新数据
         let queryAdd: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.service,
+            kSecAttrAccount as String: Self.account,
             kSecValueData as String: data,
         ]
         SecItemAdd(queryAdd as CFDictionary, nil)
@@ -51,8 +70,8 @@ final class IDManager {
     private func read() -> String? {
         let queryRead: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
+            kSecAttrService as String: Self.service,
+            kSecAttrAccount as String: Self.account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne,
         ]
@@ -65,32 +84,8 @@ final class IDManager {
         }
         return nil
     }
-}
 
-final nonisolated class ShortUUID: Sendable {
-    private let alphabet: [Character]
-    private let alphabetIndex: [Character: Int]
-    private let alphaLen: Int
-
-    init(alphabetStr: String = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz") {
-        let uniqueChars = Array(Set(alphabetStr)).sorted()
-        self.alphabet = uniqueChars
-        self.alphaLen = uniqueChars.count
-
-        var indexMap = [Character: Int]()
-        for (idx, char) in uniqueChars.enumerated() {
-            indexMap[char] = idx
-        }
-        self.alphabetIndex = indexMap
-    }
-
-    var encodedLength: Int {
-        let log2_128 = 128 * log(2.0)
-        let logAlpha = log(Double(alphaLen))
-        return Int(ceil(log2_128 / logAlpha))
-    }
-
-    func encode(uuid: UUID) -> String {
+    func encode(uuid: UUID = UUID()) -> String {
         var uuidBytes = [UInt8](repeating: 0, count: 16)
         let uuidTuple = uuid.uuid
         uuidBytes[0] = uuidTuple.0; uuidBytes[1] = uuidTuple.1; uuidBytes[2] = uuidTuple
@@ -109,16 +104,16 @@ final nonisolated class ShortUUID: Sendable {
             var remainder = 0
             for i in 0..<numberBytes.count {
                 let current = remainder * 256 + Int(numberBytes[i])
-                numberBytes[i] = UInt8(current / alphaLen)
-                remainder = current % alphaLen
+                numberBytes[i] = UInt8(current / Self.alphaLen)
+                remainder = current % Self.alphaLen
             }
-            resultChars.append(alphabet[remainder])
+            resultChars.append(Self.alphabet[remainder])
         }
 
-        let padLength = encodedLength
+        let padLength = Self.encodedLength
         if resultChars.count < padLength {
             let needed = padLength - resultChars.count
-            resultChars.append(contentsOf: repeatElement(alphabet[0], count: needed))
+            resultChars.append(contentsOf: repeatElement(Self.alphabet[0], count: needed))
         }
 
         return String(resultChars.reversed())
@@ -130,13 +125,13 @@ final nonisolated class ShortUUID: Sendable {
         var numberBytes = [UInt8](repeating: 0, count: 16)
 
         for char in string {
-            guard let charValue = alphabetIndex[char] else {
+            guard let charValue = Self.alphabetIndex[char] else {
                 return nil
             }
 
             var carry = charValue
             for i in (0..<16).reversed() {
-                let current = Int(numberBytes[i]) * alphaLen + carry
+                let current = Int(numberBytes[i]) * Self.alphaLen + carry
                 numberBytes[i] = UInt8(current & 0xFF)
                 carry = current >> 8
             }

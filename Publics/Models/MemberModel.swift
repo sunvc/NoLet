@@ -1,6 +1,6 @@
 //
 //  SWIFT: 6.0 - MACOS: 15.7
-//  NoLet - MemberModel.swift
+//  NoLet - TokensModel.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
@@ -9,15 +9,20 @@
 //  Description:
 
 //  History:
-//    Created by Neo on 2026/6/24 12:45.
+//    Created by Neo on 2026/6/27 23:01.
 
 import CloudKit
+import Defaults
+import Foundation
 import SwiftUI
 
-struct MemberModel: Codable, Hashable, Equatable {
+nonisolated struct MemberModel: Codable, Hashable, Equatable, Sendable {
     var id: String
-    var name: String
-    var token: String
+    var name: String = ""
+    var token: String = ""
+    var talk: String = ""
+    var voip: String = ""
+    var location: String = ""
     var avatar: UIImage?
     var newAvatar: URL? = nil
 
@@ -25,6 +30,9 @@ struct MemberModel: Codable, Hashable, Equatable {
         case id
         case name
         case token
+        case location
+        case talk
+        case voip
     }
 }
 
@@ -32,15 +40,18 @@ extension MemberModel {
     static let recordType = "Member"
 
     init?(record: CKRecord) {
-        guard let name = record["name"] as? String,
-              let token = record["token"] as? String
-        else {
-            return nil
-        }
+        let name = (record["name"] as? String) ?? ""
+        let token = (record["token"] as? String) ?? ""
+        let locationToken = (record["location"] as? String) ?? ""
+        let talk = (record["talk"] as? String) ?? ""
+        let voip = (record["voip"] as? String) ?? ""
 
         self.id = record.recordID.recordName
         self.name = name
         self.token = token
+        self.location = locationToken
+        self.talk = talk
+        self.voip = voip
 
         if let asset = record["avatar"] as? CKAsset,
            let fileURL = asset.fileURL,
@@ -51,4 +62,19 @@ extension MemberModel {
             self.avatar = nil
         }
     }
+}
+
+//nonisolated struct TokensModel: Codable {
+//    var token: String = ""
+//    var talk: String = ""
+//    var voip: String = ""
+//    var location: String = ""
+//}
+
+//nonisolated extension TokensModel: Defaults.Serializable {}
+nonisolated extension MemberModel: Defaults.Serializable {}
+
+nonisolated extension Defaults.Keys {
+//    static let token = Key<TokensModel>("TokensModelTokens", TokensModel())
+    static let member = Key<MemberModel>("MemberModel", MemberModel(id: ""))
 }

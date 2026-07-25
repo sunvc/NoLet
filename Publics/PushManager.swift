@@ -208,7 +208,7 @@ final nonisolated class APNs: Sendable {
     func ceshi() async {
         do {
             let response = try await APNs.shared.push(
-                Defaults[.token].token,
+                Defaults[.member].token,
                 title: "",
                 body: "",
                 markdown: true

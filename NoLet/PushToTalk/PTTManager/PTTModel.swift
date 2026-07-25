@@ -216,7 +216,6 @@ nonisolated extension Defaults.Keys {
     static let pttMusicPlay = Key<Bool>("pttMusicPlay", default: true)
     static let pttSignature = Key<Bool>("pttSignature", default: false)
     static let pttVoiceVolume = Key<CGFloat>("pttVoiceVolume", default: 1)
-    static let pttNickname = Key<String>("pttNickname", default: "")
     static let server = Key<String>("pttServer", default: "")
 }
 

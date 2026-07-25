@@ -22,13 +22,18 @@ struct PTTSettingsView: View {
     @Default(.pttMusicPlay) private var pttMusicPlay
     @Default(.pttVoiceVolume) private var pttVoiceVolume
     @Default(.pttSignature) private var pttSignature
-    @Default(.pttNickname) private var pttNickname
     @Default(.eqPreset) private var eqPreset
     @State private var refreshId = UUID()
     @State private var showSelectImage: Bool = false
-    @State private var showEdit: Bool = false
+    @State private var isEditing: Bool = false
     @State private var nikeName: String = ""
+    @State private var pendingAvatarImage: UIImage? = nil
     @State private var showLoading: Bool = false
+    @State private var member: MemberModel? = nil
+
+    var name: String {
+        member?.name ?? ""
+    }
 
     var body: some View {
         NavigationStack {
@@ -36,14 +41,25 @@ struct PTTSettingsView: View {
                 Section {
                     VStack(spacing: 12) {
                         ZStack {
-                            AvatarView(
-                                icon: Defaults[.id],
-                                defaultAvatar: "person.crop.circle.fill",
-                                refreshId: refreshId,
-                                textImage: false
-                            )
-                            .onTapGesture {
-                                self.showSelectImage.toggle()
+                            if let pendingAvatarImage {
+                                Image(uiImage: pendingAvatarImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } else {
+                                AvatarView(
+                                    icon: Defaults[.member].id,
+                                    defaultAvatar: "person.crop.circle.fill",
+                                    refreshId: refreshId,
+                                    textImage: false
+                                )
+                            }
+
+                            if isEditing {
+                                Circle()
+                                    .fill(Color.black.opacity(0.35))
+                                Image(systemName: "camera.fill")
+                                    .foregroundStyle(.white)
+                                    .font(.title2)
                             }
                         }
                         .glassCard(100)
@@ -51,44 +67,32 @@ struct PTTSettingsView: View {
                         .background(.ultraThinMaterial)
                         .frame(width: 120, height: 120)
                         .clipShape(Circle())
+                        .contentShape(Circle())
+                        .onTapGesture {
+                            guard isEditing else { return }
+                            self.showSelectImage.toggle()
+                        }
 
                         HStack {
-                            if showEdit {
+                            if isEditing {
                                 TextField("请输入昵称", text: $nikeName)
                                     .multilineTextAlignment(.center)
-                                    .frame(maxWidth: 100)
-                                    .customField(icon: "checkmark.seal") {
-                                        if !nikeName.isEmpty {
-                                            self.showEdit = false
-                                            self.pttNickname = String(nikeName.prefix(5))
-                                        }
-                                    }
-                                    .onAppear {
-                                        self.nikeName = pttNickname
-                                    }
+                                    .frame(maxWidth: 160)
+                                    .textFieldStyle(.roundedBorder)
                             } else {
-                                Text(pttNickname)
+                                Text(name.isEmpty ? "未设置昵称" : name)
                                     .font(.title3.bold())
-                                    .onTapGesture {
-                                        self.showEdit = true
-                                    }
+                                    .foregroundStyle(name.isEmpty ? .secondary : .primary)
                             }
                         }
                         .padding(.top)
-                        .onAppear {
-                            if self.pttNickname.isEmpty {
-                                self.showEdit = true
-                            }
-                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 10)
                     .imageImporter(isPresented: $showSelectImage) { result in
                         switch result {
                         case .success(let image):
-                            Task {
-                                await imageHandler(image: image)
-                            }
+                            self.pendingAvatarImage = image
                         case .failure(let failure):
                             logger.error("\(failure.localizedDescription)")
                             Toast.error(title: "添加失败")
@@ -150,9 +154,76 @@ struct PTTSettingsView: View {
             .navigationTitle("PTT设置")
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    if isEditing {
+                        HStack(spacing: 12) {
+                            Button {
+                                cancelEditing()
+                            } label: {
+                                Text("取消")
+                            }
+
+                            Button {
+                                Task { await saveProfile() }
+                            } label: {
+                                if showLoading {
+                                    ProgressView()
+                                } else {
+                                    Text("保存").bold()
+                                }
+                            }
+                            .disabled(showLoading)
+                        }
+                    } else {
+                        Button {
+                            startEditing()
+                        } label: {
+                            Text("编辑")
+                        }
+                    }
+                }
+            }
         }
     }
 
+    private func startEditing() {
+        self.nikeName = name
+        self.pendingAvatarImage = nil
+        self.isEditing = true
+    }
+
+    private func cancelEditing() {
+        self.nikeName = name
+        self.pendingAvatarImage = nil
+        self.isEditing = false
+    }
+
+    private func saveProfile() async {
+        self.showLoading = true
+        defer { self.showLoading = false }
+
+        let trimmed = nikeName.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let name = String(trimmed.prefix(5))
+
+        var member = MemberModel(id: Defaults[.member].id, name: name)
+
+        if let image = imageHandler(image: self.pendingAvatarImage) {
+            member.newAvatar = image
+        }
+        
+        let (data, message) = await CloudManager.shared.saveMember(data: member)
+        if let data = data{
+            self.member = data
+            self.pendingAvatarImage = nil
+            self.isEditing = false
+        }else{
+            Toast.shared.present(title: message, symbol: .error)
+        }
+    
+        
+    }
 
     private var equalizerView: some View {
         Section {
@@ -166,12 +237,11 @@ struct PTTSettingsView: View {
             HStack {
                 Text("音效调整器")
                 Spacer()
-                
             }
-            .overlay(alignment: .trailing) { 
+            .overlay(alignment: .trailing) {
                 Picker(selection: $eqPreset) {
                     ForEach(EqualizerPreset.allCases, id: \.self) { item in
-                        Section{
+                        Section {
                             Label {
                                 Text(item.displayName)
                                     .tag(item)
@@ -181,45 +251,23 @@ struct PTTSettingsView: View {
                         }
                     }
                 } label: { Text("切换服务器") }
-                .pickerStyle(MenuPickerStyle())
-                .offset(x: 10)
-                .onChange(of: eqBands) { _ in
-                    Task {
-                        await manager.changeEQ()
+                    .pickerStyle(MenuPickerStyle())
+                    .offset(x: 10)
+                    .onChange(of: eqBands) { _ in
+                        Task {
+                            await manager.changeEQ()
+                        }
                     }
-                }
             }
         }
         .listSectionSeparator(.hidden)
     }
 
-    private func toPushIcon(_ data: Data, name: String = "") -> PushIcon? {
-        if let image = data.toThumbnail(max: 300) {
-            let tempDir = FileManager.default.temporaryDirectory
-            let tempURL = tempDir.appendingPathComponent("cloudIcon.png")
-
-            guard let pngData = image.pngData() else { return nil }
-
-            do {
-                try pngData.write(to: tempURL)
-                return PushIcon(
-                    id: UUID().uuidString,
-                    name: name,
-                    description: [],
-                    size: pngData.count,
-                    sha256: pngData.sha256(),
-                    file: tempURL,
-                    previewImage: image
-                )
-            } catch {
-                logger.error("\(error)")
-            }
-        }
-        return nil
-    }
-
-    private func imageHandler(image: UIImage) async {
-        if let data = image.pngData(), var pushIcon = toPushIcon(data) {
+    private func imageHandler(image: UIImage?) -> URL? {
+        if let data = image?.pngData(),
+           let image = data.toThumbnail(max: 300),
+           let data = image.pngData()
+        {
             do {
                 let temPng = FileManager.default.temporaryDirectory
                     .appendingPathComponent(
@@ -229,30 +277,13 @@ struct PTTSettingsView: View {
 
                 try data.write(to: temPng)
 
-                pushIcon.name = Defaults[.id]
-                let record = pushIcon.toRecord(recordType: CloudManager.pushIconName)
-
-                let (success, _) = await CloudManager.shared
-                    .savePushIconModel(record, file: temPng)
-                if success {
-                    try? await ImageManager.customCache
-                        .removeImage(forKey: Defaults[.id])
-
-                    await ImageManager.storeImage(
-                        data: data,
-                        key: Defaults[.id],
-                        expiration: .days(99999)
-                    )
-                    await MainActor.run {
-                        self.refreshId = UUID()
-                    }
-                } else {
-                    Toast.error(title: "保存失败")
-                }
+                return temPng
             } catch {
                 Toast.error(title: "保存失败")
             }
+            
         }
+        return nil
     }
 }
 
@@ -268,7 +299,6 @@ struct LocationStatusView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-
             case .authorizedWhenInUse, .authorizedAlways:
                 Toggle(isOn: .constant(true)) {
                     Label {
@@ -278,7 +308,7 @@ struct LocationStatusView: View {
                             .foregroundStyle(.green, .primary)
                     }
                 }
-                
+
             default:
                 ListButton {
                     Label {
@@ -296,11 +326,10 @@ struct LocationStatusView: View {
                     }
                     return true
                 }
-
             }
         } header: {
             // 1. 根据不同的权限状态显示不同的 UI
-            Group{
+            Group {
                 switch locManager.authorizationStatus {
                 case .notDetermined:
                     Text("需要您的位置信息")
@@ -323,7 +352,6 @@ struct LocationStatusView: View {
                 }
             }
             .font(.footnote)
-            
         }
     }
 }

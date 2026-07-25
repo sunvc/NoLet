@@ -14,6 +14,9 @@ import Defaults
 import Foundation
 import SwiftUI
 
+
+
+
 final class CloudManager {
     static let shared = CloudManager()
 
@@ -150,20 +153,20 @@ final class CloudManager {
     }
 
     // MARK: - 保存记录到 CloudKit（检查  name 是否重复）
-    
+
     func savePushIconModel(_ record: CKRecord?, file: URL? = nil) async -> (Bool, String) {
         // 1. 基础防错校验
-        guard let record = record else { 
-            return (false, String(localized: "没有文件")) 
+        guard let record = record else {
+            return (false, String(localized: "没有文件"))
         }
 
         let (accountValid, accountMessage) = await checkAccount()
-        guard accountValid else { 
-            return (false, accountMessage) 
+        guard accountValid else {
+            return (false, accountMessage)
         }
 
-        guard let name = record["name"] as? String, !name.isEmpty else { 
-            return (false, String(localized: "参数不全")) 
+        guard let name = record["name"] as? String, !name.isEmpty else {
+            return (false, String(localized: "参数不全"))
         }
 
         let description = record["description"] as? [String]
@@ -171,14 +174,14 @@ final class CloudManager {
 
         // 2. 查询云端是否存在已有记录
         let records = await queryIcons(name: name)
-        
+
         let recordToSave: CKRecord
 
         if let cloudRecord = records.first {
             guard let file = file else {
                 return (false, String(localized: "图片key重复，请提供新图片以覆盖"))
             }
-            
+
             cloudRecord["data"] = CKAsset(fileURL: file)
             if let description = description {
                 cloudRecord["description"] = description
@@ -344,10 +347,10 @@ final class CloudManager {
         }
     }
 
-    func saveMember(data: MemberModel) async -> (Bool, String) {
+    func saveMember(data: MemberModel) async -> (MemberModel?, String) {
         let (success, message) = await checkAccount()
 
-        guard success else { return (false, message) }
+        guard success else { return (nil, message) }
 
         let database = CKContainer.default().publicCloudDatabase
         let recordID = CKRecord.ID(recordName: data.id)
@@ -364,19 +367,36 @@ final class CloudManager {
                 )
             }
 
-            record["name"] = data.name
-            record["token"] = data.token
+            if !data.name.isEmpty {
+                record["name"] = data.name
+            }
+
+            if !data.token.isEmpty {
+                record["token"] = data.token
+            }
+
+            if !data.location.isEmpty {
+                record["location"] = data.location
+            }
+
+            if !data.talk.isEmpty {
+                record["talk"] = data.talk
+            }
+
+            if !data.voip.isEmpty {
+                record["voip"] = data.voip
+            }
 
             if let avatarUrl = data.newAvatar {
                 record["avatar"] = CKAsset(fileURL: avatarUrl)
             }
 
-            _ = try await database.save(record)
+            let memberRecord = try await database.save(record)
 
-            return (true, "保存成功")
+            return (MemberModel(record: memberRecord), "保存成功")
 
         } catch {
-            return (false, error.localizedDescription)
+            return (nil, error.localizedDescription)
         }
     }
 }

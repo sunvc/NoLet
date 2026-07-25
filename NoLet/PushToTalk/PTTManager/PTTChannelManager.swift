@@ -168,7 +168,7 @@ final nonisolated class PTTChannelManager: NSObject,
             String(format: "%02x", $0)
         }.joined()
 
-        Defaults[.token].talk = token
+        Defaults[.member].talk = token
         logger.debug("PTT Token: \(token)")
     }
 

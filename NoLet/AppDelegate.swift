@@ -21,7 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        Defaults[.id] = IDManager.ID()
+        
+        Defaults[.member].id = IDManager.id
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
         Multilingual.resetTransLang()
@@ -32,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         LocManager.shared.startMonitoringLocationPushes { token in
-            Defaults[.token].location = token
+            Defaults[.member].location = token
         }
 
         if !ProcessInfo.processInfo.isiOSAppOnMac {
@@ -63,11 +64,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
 
-        Defaults[.token].token = token
+        Defaults[.member].token = token
 
         Task.detached(priority: .userInitiated) {
             _ = await CloudManager.shared
-                .queryOrUpdateDeviceToken(Defaults[.id], token: token)
+                .queryOrUpdateDeviceToken(Defaults[.member].id, token: token)
 
             if Defaults[.servers].count == 0 {
                 if await !AppManager.shared.customServerURL.isEmpty {

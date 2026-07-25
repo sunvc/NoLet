@@ -22,7 +22,7 @@ import SwiftUI
 struct PTTMessageView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject private var pttManager = PTTManager.shared
-    @Default(.id) var id
+    @Default(.member) var member
     var body: some View {
         NavigationStack {
             List {

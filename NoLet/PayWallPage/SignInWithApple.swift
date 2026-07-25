@@ -16,8 +16,7 @@ import SwiftUI
 
 struct SignInWithApple: View {
     @Environment(\.colorScheme) var colorScheme
-    @Default(.id) var id
-    @Default(.token) var token
+    @Default(.member) var member
 
     var body: some View {
         SignInWithAppleButton(.signIn) { request in

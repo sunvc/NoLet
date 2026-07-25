@@ -125,7 +125,7 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
 
     // 确保用户列表中包含用户自己
     private func ensureSelfUser(in users: [ChannelUser]) -> [ChannelUser] {
-        let userId = Defaults[.id]
+        let userId = Defaults[.member].id
 
         // 检查是否已经包含用户自己
         let hasSelf = users.contains { $0.id == userId }
@@ -406,7 +406,7 @@ final class ChannelUserAnnotationView: MKAnnotationView {
 
     func apply(user: ChannelUser, shouldShowNormalName: Bool) {
         active = user.active
-        isSelf = user.id == Defaults[.id]
+        isSelf = user.id == Defaults[.member].id
         showsNormalName = shouldShowNormalName && !user.active
         canShowCallout = false
         displayPriority = .required

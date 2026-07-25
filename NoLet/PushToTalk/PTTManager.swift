@@ -388,7 +388,7 @@ final class PTTManager: NSObject, ObservableObject {
             self.onlineUsers = matchedResult.users
 
             // 添加用户自己的位置信息
-            let userId = Defaults[.id]
+            let userId = Defaults[.member].id
 
             // 检查是否已经包含用户自己
             let hasSelf = self.onlineUsers.contains { $0.id == userId }
@@ -548,7 +548,7 @@ final class PTTManager: NSObject, ObservableObject {
         state = .recording
         logger.info("Start Record")
         // 在地图上标记自己在说话
-        setActiveSpeaker(userId: Defaults[.id], active: true)
+        setActiveSpeaker(userId: Defaults[.member].id, active: true)
         recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
         await self.send(.recordStarted)
     }
@@ -571,7 +571,7 @@ final class PTTManager: NSObject, ObservableObject {
     }
 
     func saveVoice(data: Data) -> AudioMessage? {
-        let id = Defaults[.id]
+        let id = Defaults[.member].id
         let channel = Defaults[.pttChannel]
         guard let filePath = channel.filePath(userID: id) else { return nil }
 
@@ -701,9 +701,9 @@ extension PTTManager: CLLocationManagerDelegate {
         var usersToShow = Defaults[.pttChannel].users
 
         // 获取当前用户信息
-        let userId = Defaults[.id]
-        let userName = Defaults[.pttNickname]
-            .isEmpty ? String(localized: "本机") : Defaults[.pttNickname]
+        let userId = Defaults[.member].id
+        let userName = Defaults[.member].name
+            .isEmpty ? String(localized: "本机") : Defaults[.member].name
 
         // 如果没有用户或列表中不包含自己，添加自己
         let hasSelf = usersToShow.contains { $0.id == userId }
@@ -833,12 +833,12 @@ extension PTTManager {
             )
 
             let params = JoinParams(
-                id: Defaults[.id],
-                name: Defaults[.pttNickname],
+                id: Defaults[.member].id,
+                name: Defaults[.member].name,
                 channels: hzs,
                 latitude: LocManager.shared.location.coordinate.latitude,
                 longitude: LocManager.shared.location.coordinate.longitude,
-                token: join ? Defaults[.token].talk : "",
+                token: join ? Defaults[.member].talk : "",
                 host: channel.server.url
             )
 
