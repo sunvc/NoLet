@@ -59,6 +59,7 @@ final class PTTManager: NSObject, ObservableObject {
     private nonisolated let network = NetworkManager()
     private var observationTask: Task<Void, Never>?
     private var loopTask: Task<Void, Never>?
+    private let presence = PTTPresenceStream()
 
     private override init() {
         super.init()
@@ -72,6 +73,7 @@ final class PTTManager: NSObject, ObservableObject {
         self.TaskHandler()
         self.setupNotifications()
         self.setupMemberNameCache()
+        self.presence.delegate = self
     }
 
     deinit {
@@ -147,9 +149,11 @@ final class PTTManager: NSObject, ObservableObject {
                 do {
                     if await self.powerState {
                         await LocManager.shared.requestLocation()
-                        await self.publicJoinConnect()
+                        // SSE 承担实时增量;这里只做低频兜底(重连拉一次快照)
+                        // 与位置心跳: 一次 POST 顺带把自己的经纬度告诉服务器
+                        await self.sendPresenceHeartbeat()
                     }
-                    try await Task.sleep(for: .seconds(10))
+                    try await Task.sleep(for: .seconds(60))
                 } catch {
                     logger.info("Task 休眠被中断，准备退出")
                     break
@@ -333,6 +337,9 @@ final class PTTManager: NSObject, ObservableObject {
 
         await self.publicJoinConnect()
 
+        // SSE 订阅当前频道,替换 10s POST 轮询做实时增量
+        self.presence.start(channel: Defaults[.pttChannel])
+
         self.serverStatus = Defaults[.pttChannel].users.count > 0 ? .online : .offline
         PTTChannelManager.shared.setTransmissionMode()
         PTTChannelManager.shared
@@ -342,6 +349,8 @@ final class PTTManager: NSObject, ObservableObject {
     func levelConnect() async {
         self.powerState = false
         self.serverStatus = .offline
+
+        self.presence.stop()
 
         await self.publicLevelConnect(Defaults[.pttHisChannel])
         Defaults[.pttChannel].users = []
@@ -431,6 +440,11 @@ final class PTTManager: NSObject, ObservableObject {
                 Defaults[.pttChannel] = matchedChannel
             }
             self.serverStatus = .failed
+        }
+
+        // 频道可能已经切换,让 SSE 跟上(内部会判定同频道 noop)
+        if self.powerState {
+            self.presence.start(channel: Defaults[.pttChannel])
         }
 
         self.zoomToFitAllUsers(force: false)
@@ -870,6 +884,38 @@ extension PTTManager {
         }
     }
 
+    /// 低频位置心跳。SSE 承载增量成员事件,但客户端自身的位置变化需要主动上报。
+    /// 服务端收到后会 broadcast update 到订阅了这个频道的其它成员。
+    func sendPresenceHeartbeat() async {
+        let channel = Defaults[.pttChannel]
+        guard channel.serverOK else { return }
+
+        do {
+            let params = JoinParams(
+                id: Defaults[.member].id,
+                channels: [channel.hex()],
+                latitude: LocManager.shared.location.coordinate.latitude,
+                longitude: LocManager.shared.location.coordinate.longitude,
+                token: Defaults[.member].talk,
+                host: channel.server.url
+            )
+            let headers = CryptoManager.signature(
+                sign: channel.server.sign,
+                server: channel.server.key
+            )
+            let _: baseResponse<Int>? = try await self.network.fetch(
+                url: channel.server.url,
+                path: "/ptt/presence",
+                method: .POST,
+                params: params,
+                headers: headers,
+                timeout: 5
+            )
+        } catch {
+            logger.debug("presence heartbeat: \(error.localizedDescription)")
+        }
+    }
+
     func sendVoice(message: AudioMessage) async {
         // 重发机制,先重置一下状态
         self.setStatus(message: message, status: .send)
@@ -1092,6 +1138,110 @@ extension PTTManager: PTTRecorderDelegate {
         DispatchQueue.main.async {
             self.hasPermission = hasPermission
         }
+    }
+}
+
+// MARK: - PTTPresenceStreamDelegate
+
+extension PTTManager: PTTPresenceStreamDelegate {
+    nonisolated func presenceStream(
+        _ stream: PTTPresenceStream,
+        didChangeConnected connected: Bool
+    ) {
+        logger.debug("SSE connected=\(connected)")
+    }
+
+    nonisolated func presenceStream(
+        _ stream: PTTPresenceStream,
+        didReceive event: PresenceEvent
+    ) {
+        Task { @MainActor in
+            self.apply(presenceEvent: event)
+        }
+    }
+
+    /// 应用一条 SSE 事件到当前频道的 onlineUsers。跨频道事件直接忽略。
+    @MainActor
+    private func apply(presenceEvent event: PresenceEvent) {
+        let currentChannel = Defaults[.pttChannel]
+        guard event.channel == currentChannel.hex() else { return }
+
+        let myId = Defaults[.member].id
+
+        switch event.event {
+        case .snapshot:
+            // 全量重建,保留自己的 active 状态(其它人 active 只在音频播放时设置)
+            let previousActiveId = self.onlineUsers.first(where: { $0.active })?.id
+            var users: [ChannelUser] = (event.users ?? []).map { u in
+                ChannelUser(
+                    id: u.id,
+                    coordinate: CLLocationCoordinate2D(
+                        latitude: u.latitude,
+                        longitude: u.longitude
+                    ),
+                    active: u.id == previousActiveId
+                )
+            }
+            if !users.contains(where: { $0.id == myId }) {
+                users.insert(
+                    ChannelUser(
+                        id: myId,
+                        coordinate: LocManager.shared.location.coordinate,
+                        active: previousActiveId == myId
+                    ),
+                    at: 0
+                )
+            }
+            self.onlineUsers = users
+            for u in users where u.id != myId {
+                MemberNameCache.shared.prefetch(id: u.id)
+            }
+            // 同步一份到 Defaults 让老代码依然可读
+            var ch = currentChannel
+            ch.users = users
+            Defaults[.pttChannel] = ch
+
+        case .join:
+            guard let u = event.user, u.id != myId else { return }
+            if let idx = self.onlineUsers.firstIndex(where: { $0.id == u.id }) {
+                // 已存在(理论上不该有,补丁式更新)
+                var existing = self.onlineUsers[idx]
+                existing.update(coordinate: CLLocationCoordinate2D(
+                    latitude: u.latitude, longitude: u.longitude))
+                self.onlineUsers[idx] = existing
+            } else {
+                let newUser = ChannelUser(
+                    id: u.id,
+                    coordinate: CLLocationCoordinate2D(
+                        latitude: u.latitude,
+                        longitude: u.longitude
+                    ),
+                    active: false
+                )
+                self.onlineUsers.append(newUser)
+                MemberNameCache.shared.prefetch(id: u.id)
+            }
+
+        case .leave:
+            guard let u = event.user else { return }
+            self.onlineUsers.removeAll { $0.id == u.id }
+
+        case .update:
+            guard let u = event.user else { return }
+            guard let idx = self.onlineUsers.firstIndex(where: { $0.id == u.id }) else {
+                return
+            }
+            var existing = self.onlineUsers[idx]
+            existing.update(coordinate: CLLocationCoordinate2D(
+                latitude: u.latitude, longitude: u.longitude))
+            self.onlineUsers[idx] = existing
+
+        case .ping:
+            break
+        }
+
+        // SSE 增量后,如果用户没手动动过地图,自动重新聚拢
+        self.zoomToFitAllUsers(force: false)
     }
 }
 
