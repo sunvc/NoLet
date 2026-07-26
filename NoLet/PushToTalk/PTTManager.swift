@@ -434,7 +434,7 @@ final class PTTManager: NSObject, ObservableObject {
     @discardableResult
     func setStatus(
         message: AudioMessage,
-        read: Bool? = false,
+        read: Bool? = nil,
         status: AudioMessage.Status? = nil
     ) -> Bool {
         guard read != nil || status != nil else { return false }

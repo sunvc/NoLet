@@ -101,7 +101,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
             let observation = ValueObservation.tracking { db -> ([AudioMessage], [AudioMessage]) in
                 let recent = try AudioMessage
                     .order(AudioMessage.Columns.timestamp.desc)
-                    .limit(50)
+                    .limit(20)
                     .fetchAll(db)
                 let unread = try AudioMessage
                     .order(AudioMessage.Columns.timestamp.desc)

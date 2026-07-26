@@ -907,12 +907,8 @@ struct PTTContentView: View {
                 }
 
                 guard let initialRegion = dragInitialRegion else { return }
-
-                // 向上滑 → 放大（缩小 span）
-                // 向下滑 → 缩小（增大 span）
                 let delta = CGFloat(initialRegion.span.latitudeDelta)
-                // 指数缩放：每 150pt 缩放一倍
-                let factor = pow(2.0, value.translation.height / 150.0)
+                let factor = pow(2.0, value.translation.height / 50.0)
                 let newDelta = max(0.0005, min(180.0, delta * factor))
 
                 let span = MKCoordinateSpan(
