@@ -12,7 +12,6 @@
 //
 
 import Defaults
-import GRDB
 import SwiftUI
 
 struct MessageDetailView: View {
@@ -125,23 +124,11 @@ struct MessageDetailView: View {
         }
         .onDisappear {
             Task.detached(priority: .background) {
-                try? await DatabaseManager.shared.dbQueue.write { db in
-                    // 更新指定 group 的未读消息为已读
-                    let count = try Message
-                        .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
-                        .fetchCount(db)
-
-                    guard count > 0 else { return }
-
-                    try Message
-                        .filter(Message.Columns.group == group)
-                        .filter(Message.Columns.read == false)
-                        .updateAll(db, [Message.Columns.read.set(to: true)])
-
-                    let unRead = try Message
-                        .filter(Message.Columns.read == false)
-                        .fetchCount(db)
+                let unreadInGroup = await MessageDBManager.shared.unreadCount(group: group)
+                guard unreadInGroup > 0 else { return }
+                await MessageDBManager.shared.markAllRead(group: group)
+                let unRead = await MessageDBManager.shared.unreadCount()
+                await MainActor.run {
                     UNUserNotificationCenter.current().setBadgeCount(unRead)
                 }
             }

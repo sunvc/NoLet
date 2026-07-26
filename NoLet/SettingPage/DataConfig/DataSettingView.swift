@@ -320,8 +320,7 @@ struct DataSettingView: View {
 
                 HStack {
                     Button {
-                        try? DatabaseManager.shared.dbQueue
-                            .vacuum()
+                        try? DatabaseManager.shared.vacuum()
                         calculateSize()
                     } label: {
                         HStack {
@@ -411,8 +410,7 @@ struct DataSettingView: View {
                                     Defaults[.imageSaves] = []
                                 }
 
-                                try? DatabaseManager.shared.dbQueue
-                                    .vacuum()
+                                try? DatabaseManager.shared.vacuum()
 
                                 Toast.success(title: "清理成功")
 
@@ -548,18 +546,7 @@ struct DataSettingView: View {
                 ---
                 """
 
-            try await DatabaseManager.shared.dbQueue.write { db in
-                try autoreleasepool {
-                    for k in 0..<number {
-                        let message = Message(
-                            id: UUID().uuidString, createDate: .now,
-                            group: "\(k % 50)", title: "\(k) Test",
-                            body: "\(body)", ttl: 1, read: true
-                        )
-                        try message.insert(db)
-                    }
-                }
-            }
+            try await MessageDBManager.shared.bulkInsertStress(count: number, body: body)
             return true
         } catch {
             logger.error("创建失败")

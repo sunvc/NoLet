@@ -13,7 +13,6 @@
 
 import Defaults
 import Foundation
-import GRDB
 import OpenAI
 import UIKit
 
@@ -60,9 +59,13 @@ final class NoLetChatManager: ObservableObject {
         }
     }
 
-    private let DB: DatabaseManager = .shared
+    private let groupDB: ChatGroupDBManager = .shared
+    private let messageDB: ChatMessageDBManager = .shared
+    private let promptDB: ChatPromptDBManager = .shared
 
-    private var observationCancellable: AnyDatabaseCancellable?
+    private var groupObservationTask: Task<Void, Never>?
+    private var messageCountObservationTask: Task<Void, Never>?
+    private var promptObservationTask: Task<Void, Never>?
 
     private let webSearchConfig = ChatQuery.WebSearchOptions(
         userLocation: ChatQuery.WebSearchOptions
@@ -104,55 +107,55 @@ final class NoLetChatManager: ObservableObject {
     }
 
     private func startObservingUnreadCount() {
-        let observation = ValueObservation.tracking { db -> (
-            Int,
-            Int,
-            ChatGroup?,
-            Int
-        ) in
-            let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
-            let groupsCount: Int = try ChatGroup.fetchCount(db)
-
-            let messageCount: Int = try ChatMessage
-                .filter(ChatMessage.Columns.chat == current?.id)
-                .fetchCount(db)
-
-            let promptCount: Int = try ChatPrompt.fetchCount(db)
-            return (groupsCount, promptCount, current, messageCount)
+        // 订阅 ChatGroup: 总数 + 当前组
+        groupObservationTask?.cancel()
+        groupObservationTask = Task { [weak self] in
+            guard let stream = self?.groupDB.observeSummary() else { return }
+            for await summary in stream {
+                guard let self = self else { break }
+                await MainActor.run {
+                    self.groupsCount = summary.groupsCount
+                    self.chatGroup = summary.current
+                }
+                // 当前组变化 -> 重新订阅该组的消息数量
+                self.restartMessageCountObservation(groupID: summary.current?.id)
+                await self.updateMessage()
+            }
         }
 
-        observationCancellable = observation.start(
-            in: DB.dbQueue,
-            scheduling: .mainActor,
-            onError: { error in
-                logger.error("Failed to observe unread count: \(error)")
-            },
-            onChange: { [weak self] datas in
-                guard let self else { return }
-                self.groupsCount = datas.0
-                self.promptCount = datas.1
-                self.chatGroup = datas.2
-                self.messagesCount = datas.3
-                
-                Task{
-                    await self.updateMessage()
+        // 订阅 ChatPrompt 总数
+        promptObservationTask?.cancel()
+        promptObservationTask = Task { [weak self] in
+            guard let stream = self?.promptDB.observeCount() else { return }
+            for await count in stream {
+                await MainActor.run {
+                    self?.promptCount = count
                 }
             }
-        )
+        }
+    }
+
+    private func restartMessageCountObservation(groupID: String?) {
+        messageCountObservationTask?.cancel()
+        messageCountObservationTask = Task { [weak self] in
+            guard let stream = self?.messageDB.observeCount(inGroup: groupID) else { return }
+            for await count in stream {
+                await MainActor.run {
+                    self?.messagesCount = count
+                }
+            }
+        }
     }
 
     func updateMessage() async {
         let page = self.page
-        let messages = try? await DB.dbQueue.read { db in
-            let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
-            return try ChatMessage
-                .filter(ChatMessage.Columns.chat == current?.id)
-                .order(\.timestamp)
-                .limit(page * 50)
-                .fetchAll(db)
-        }
-        
-        if let messages{
+        guard let current = await groupDB.fetchCurrent() else { return }
+        let messages = await messageDB.fetch(
+            inGroup: current.id,
+            ascending: true,
+            limit: page * 50
+        )
+        await MainActor.run {
             self.chatMessages = messages
         }
     }
@@ -160,81 +163,32 @@ final class NoLetChatManager: ObservableObject {
 
     func setPoint() async -> Bool {
         guard let chatGroup else { return false }
-        do {
-            return try await DB.dbQueue.write { db in
-                if var chatgroup = try ChatGroup.filter(id: chatGroup.id).fetchOne(db) {
-                    chatgroup.point = .now
-                    try chatgroup.upsert(db)
-                    return true
-                }
-                return false
-            }
-        } catch {
-            return false
-        }
+        return await groupDB.setPointToNow(id: chatGroup.id)
     }
 
     func setGroup(group: ChatGroup? = nil) {
         self.page = 1
         self.chatMessages = []
-        do {
-            _ = try DB.dbQueue.write { [weak self] db in
-                if let group = group {
-                    try ChatGroup
-                        .filter { $0.id != group.id }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: false))
-                    try ChatGroup
-                        .filter { $0.id == group.id }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: true))
-                    self?.chatGroup = group
-                } else {
-                    try ChatGroup
-                        .filter { $0.current }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: false))
-                    self?.chatGroup = nil
-                }
-            }
-        } catch {
-            logger.error("\(error)")
+        self.chatGroup = group
+        Task.detached(priority: .userInitiated) { [groupDB] in
+            await groupDB.setCurrent(group)
         }
     }
 
     func updateGroupName(groupID: String, newName: String) {
-        Task.detached(priority: .userInitiated) {
-            do {
-                try await self.DB.dbQueue.write { db in
-                    var group = try ChatGroup.filter(ChatGroup.Columns.id == groupID).fetchOne(db)
-                    group?.name = newName
-                    group?.current = true
-                    try group?.update(db)
-                }
-            } catch {
-                logger.error("更新失败: \(error)")
-            }
+        Task.detached(priority: .userInitiated) { [groupDB] in
+            await groupDB.rename(id: groupID, newName: newName, makeCurrent: true)
         }
     }
 
     func delete(groupID: String? = nil) async {
         self.page = 1
-        try? await DB.dbQueue.write { db in
-            var group: ChatGroup? {
-                if let groupID {
-                    return try? ChatGroup.fetchOne(db, key: groupID)
-                } else {
-                    return try? ChatGroup.filter { $0.current }.fetchOne(db)
-                }
-            }
-
-            if let group = try ChatGroup.filter({ $0.id == group?.id }).fetchOne(db) {
-                // 删除与该 group.id 关联的所有 ChatMessage
-                try ChatMessage
-                    .filter(ChatMessage.Columns.chat == group.id)
-                    .deleteAll(db)
-
-                // 删除该 ChatGroup 本身
-                try group.delete(db)
-            }
-        }
+        let targetID: String? = {
+            if let groupID { return groupID }
+            return self.chatGroup?.id
+        }()
+        guard let targetID = targetID else { return }
+        await groupDB.delete(id: targetID)
     }
 }
 
@@ -351,38 +305,24 @@ extension NoLetChatManager {
         _ limit: Int
     ) -> [ChatQuery.ChatCompletionMessageParam] {
         var params: [ChatQuery.ChatCompletionMessageParam] = []
-        if let messageRaw = try? DB.dbQueue.read({ db in
-            let group = try ChatGroup.filter(ChatGroup.Columns.current == true).fetchOne(db)
-            if let point = group?.point {
-                return try ChatMessage
-                    .filter(ChatMessage.Columns.chat == group?.id)
-                    .filter(ChatMessage.Columns.timestamp > point)
-                    .order(\.timestamp.desc)
-                    .limit(limit)
-                    .fetchAll(db)
+        let group = groupDB.fetchCurrentSync()
+        let messageRaw = messageDB.fetchHistorySync(
+            groupID: group?.id ?? "",
+            after: group?.point,
+            limit: limit
+        )
+        for message in messageRaw.reversed() {
+            if message.role == ChatMessage.Role.user.rawValue {
+                params.append(.user(.init(content: .string(message.content))))
+            } else if message.role == ChatMessage.Role.assistant.rawValue {
+                if let result = message.result, !result.isEmpty, let json = result.text() {
+                    params.append(.user(.init(
+                        content: .string(String(localized: "任务执行结果") + json)
+                    )))
+                }
 
-            } else {
-                return try ChatMessage
-                    .filter(ChatMessage.Columns.chat == group?.id)
-                    .order(\.timestamp.desc)
-                    .limit(limit)
-                    .fetchAll(db)
-            }
-
-        }) {
-            for message in messageRaw.reversed() {
-                if message.role == ChatMessage.Role.user.rawValue {
-                    params.append(.user(.init(content: .string(message.content))))
-                } else if message.role == ChatMessage.Role.assistant.rawValue {
-                    if let result = message.result, !result.isEmpty, let json = result.text() {
-                        params.append(.user(.init(
-                            content: .string(String(localized: "任务执行结果") + json)
-                        )))
-                    }
-                    
-                    if !message.content.isEmpty {
-                        params.append(.assistant(.init(content: .textContent(message.content))))
-                    }
+                if !message.content.isEmpty {
+                    params.append(.assistant(.init(content: .textContent(message.content))))
                 }
             }
         }
@@ -436,29 +376,8 @@ extension NoLetChatManager {
     }
 
     func clearunuse() {
-        Task.detached(priority: .background) {
-            do {
-                try self.DB.dbQueue.write { db in
-                    let allGroups = try ChatGroup.fetchAll(db)
-                    var deleteList: [ChatGroup] = []
-
-                    for group in allGroups {
-                        let messageCount = try ChatMessage
-                            .filter(ChatMessage.Columns.chat == group.id)
-                            .fetchCount(db)
-
-                        if messageCount == 0 {
-                            deleteList.append(group)
-                        }
-                    }
-
-                    for group in deleteList {
-                        try group.delete(db)
-                    }
-                }
-            } catch {
-                logger.error("GRDB 错误: \(error)")
-            }
+        Task.detached(priority: .background) { [groupDB] in
+            await groupDB.deleteEmpty()
         }
     }
 }

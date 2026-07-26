@@ -1,283 +1,374 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
-    "[%@]分组静音成功" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[%@] Muted"
+  "sourceLanguage": "en",
+  "strings": {
+    "[%@]分组静音成功": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@] Muted"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "[%@]分组静音成功"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@]分组静音成功"
           }
         }
       }
     },
-    "iCloud 服务暂时不可用，请稍后再试" : {
-
-    },
-    "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致" : {
-
-    },
-    "iCloud 账户可用" : {
-
-    },
-    "保存" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save"
+    "iCloud 服务暂时不可用，请稍后再试": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服务暂时不可用，请稍后再试"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud service temporarily unavailable, please try again later."
           }
         }
       }
     },
-    "保存图片" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save Image"
+    "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存图片"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud access is restricted, possibly due to parental controls or MDM device management policies."
           }
         }
       }
     },
-    "保存图片时出现错误" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error occurred while saving image"
+    "iCloud 账户可用": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 账户可用"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存图片时出现错误"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Account Available"
           }
         }
       }
     },
-    "保存失败" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save Failed"
+    "保存": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存失败"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
           }
         }
       }
     },
-    "保存成功" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved"
+    "保存图片": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Image"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存成功"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存图片"
           }
         }
       }
     },
-    "发生错误" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An error occurred"
+    "保存图片时出现错误": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error occurred while saving image"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "发生错误"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存图片时出现错误"
           }
         }
       }
     },
-    "取消" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
+    "保存失败": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Failed"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "取消"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存失败"
           }
         }
       }
     },
-    "回复失败" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reply Failed"
+    "保存成功": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "回复失败"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存成功"
           }
         }
       }
     },
-    "图片已成功保存到相册！" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved to Photos!"
+    "发生错误": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An error occurred"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "图片已成功保存到相册！"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发生错误"
           }
         }
       }
     },
-    "复制" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copy"
+    "取消": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "复制"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
           }
         }
       }
     },
-    "复制成功" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copied"
+    "回复失败": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reply Failed"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "复制成功"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回复失败"
           }
         }
       }
     },
-    "无法确定 iCloud 账户状态，可能是网络问题" : {
-
-    },
-    "是否将图片保存到相册？" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save to Photos?"
+    "图片已成功保存到相册！": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved to Photos!"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "是否将图片保存到相册？"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图片已成功保存到相册！"
           }
         }
       }
     },
-    "未登录 iCloud，请登录 iCloud 账户" : {
-
-    },
-    "未知 iCloud 状态" : {
-
-    },
-    "检查 iCloud 账户状态出错" : {
-
-    },
-    "正在回复..." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Replying..."
+    "复制": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在回复..."
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制"
           }
         }
       }
     },
-    "确定" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OK"
+    "复制成功": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "确定"
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制成功"
           }
         }
       }
     },
-    "静音分组1小时" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mute 1h"
+    "无法确定 iCloud 账户状态，可能是网络问题": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法确定 iCloud 账户状态，可能是网络问题"
           }
         },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静音分组1小时"
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unable to determine iCloud account status, possibly a network issue."
+          }
+        }
+      }
+    },
+    "是否将图片保存到相册？": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save to Photos?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "是否将图片保存到相册？"
+          }
+        }
+      }
+    },
+    "未登录 iCloud，请登录 iCloud 账户": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登录 iCloud，请登录 iCloud 账户"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not logged into iCloud, please log in to iCloud account"
+          }
+        }
+      }
+    },
+    "未知 iCloud 状态": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 状态"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown iCloud status"
+          }
+        }
+      }
+    },
+    "检查 iCloud 账户状态出错": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查 iCloud 账户状态出错"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Error checking iCloud account status"
+          }
+        }
+      }
+    },
+    "正在回复...": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replying..."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在回复..."
+          }
+        }
+      }
+    },
+    "确定": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确定"
+          }
+        }
+      }
+    },
+    "静音分组1小时": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mute 1h"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "静音分组1小时"
           }
         }
       }
     }
   },
-  "version" : "1.1"
+  "version": "1.1"
 }

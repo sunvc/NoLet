@@ -13,7 +13,6 @@
 
 import Combine
 import Defaults
-import GRDB
 import OpenAI
 import SwiftUI
 
@@ -173,7 +172,7 @@ struct NoLetChatHomeView: View {
                 chatManager.updateTemMessage()
             }
 
-            guard let newGroup = getGroup(text: text) else { return }
+            guard let newGroup = await getGroup(text: text) else { return }
             
             // 先保存用户消息
             let userMessage = ChatMessage(
@@ -188,9 +187,7 @@ struct NoLetChatHomeView: View {
             )
             
             do {
-                try await DatabaseManager.shared.dbQueue.write { db in
-                    try userMessage.insert(db)
-                }
+                try await ChatMessageDBManager.shared.insert(userMessage)
             } catch {
                 logger.error("保存用户消息失败: \(error.localizedDescription)")
             }
@@ -245,9 +242,7 @@ struct NoLetChatHomeView: View {
                 }()
 
                 if let responseMessage = responseMessage {
-                    try await DatabaseManager.shared.dbQueue.write { db in
-                        try responseMessage.insert(db)
-                    }
+                    try await ChatMessageDBManager.shared.insert(responseMessage)
                 }
 
                 Task { @MainActor in
@@ -327,7 +322,7 @@ struct NoLetChatHomeView: View {
         manager.isLoading = false
     }
 
-    func getGroup(text: String) -> ChatGroup? {
+    func getGroup(text: String) async -> ChatGroup? {
         if let group = chatManager.chatGroup {
             return group
         } else {
@@ -341,10 +336,7 @@ struct NoLetChatHomeView: View {
                 current: true
             )
             do {
-                try DatabaseManager.shared.dbQueue.write { db in
-                    try group.insert(db)
-                }
-
+                try await ChatGroupDBManager.shared.insert(group)
                 return group
             } catch {
                 return nil

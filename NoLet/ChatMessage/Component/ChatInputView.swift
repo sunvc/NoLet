@@ -12,7 +12,6 @@
 
 import Combine
 import Defaults
-import GRDB
 import SwiftUI
 
 struct ChatInputView: View {
@@ -145,30 +144,12 @@ struct ChatInputView: View {
                     QuoteView(message: quote.search)
                         .onAppear {
                             Task.detached(priority: .background) {
-                                try? await DatabaseManager.shared.dbQueue.write { db in
-                                    Task { @MainActor in
-                                        NoLetChatManager.shared.setGroup()
-                                    }
-
-                                    // 尝试查找 quote.id 对应的 group
-                                    if let group = try ChatGroup.fetchOne(db, key: quote.id) {
-                                        // 如果存在，就设为 current
-                                        Task { @MainActor in
-                                            chatManager.setGroup(group: group)
-                                        }
-                                    } else {
-                                        // 如果不存在，创建一个新的
-                                        let group = ChatGroup(
-                                            id: quote.id,
-                                            timestamp: .now,
-                                            name: quote.search.removingAllWhitespace,
-                                            host: "",
-                                            current: true
-                                        )
-                                        try group.insert(db)
-                                        Task { @MainActor in
-                                            chatManager.setGroup(group: group)
-                                        }
+                                if let group = await ChatGroupDBManager.shared.upsertQuoteGroup(
+                                    id: quote.id,
+                                    name: quote.search.removingAllWhitespace
+                                ) {
+                                    await MainActor.run {
+                                        chatManager.setGroup(group: group)
                                     }
                                 }
                             }

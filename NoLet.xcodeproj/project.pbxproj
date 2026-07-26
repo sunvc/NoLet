@@ -185,6 +185,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
+				Database/CloudKitConvertible.swift,
 				DefaultsBaseKeys.swift,
 				Domap.swift,
 				Enums/AppIconEnum.swift,
@@ -202,7 +203,6 @@
 				"Extensions/View+.swift",
 				Managers/cryptoManager.swift,
 				Managers/IDManager.swift,
-				Models/CloudKitConvertible.swift,
 				Models/MemberModel.swift,
 				Models/PushIconModel.swift,
 				ToolsBox.swift,
@@ -215,11 +215,11 @@
 				BaseConfig.swift,
 				DefaultsBaseKeys.swift,
 				Enums/IdentifiersEnum.swift,
+				Enums/PushParams.swift,
 				"Extensions/String+.swift",
 				"Extensions/URL+.swift",
 				Managers/NetworkManager.swift,
 				Markdown.swift,
-				PushParams.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
@@ -227,14 +227,17 @@
 		B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AudioConversion.swift,
 				BaseConfig.swift,
+				Database/CloudKitConvertible.swift,
+				Database/DatabaseManager.swift,
+				Database/MessageDBManager.swift,
 				DefaultsBaseKeys.swift,
 				DefaultsModelKeys.swift,
 				Domap.swift,
 				Enums/AppIconEnum.swift,
 				Enums/IdentifiersEnum.swift,
 				Enums/PBSchemeEnum.swift,
+				Enums/PushParams.swift,
 				Enums/SettingsEnum.swift,
 				"Extensions/Color+.swift",
 				"Extensions/Data+.swift",
@@ -244,20 +247,18 @@
 				"Extensions/String+.swift",
 				"Extensions/Type+.swift",
 				"Extensions/URL+.swift",
+				Managers/AudioConversion.swift,
 				Managers/CLGeocoderManager.swift,
 				Managers/cryptoManager.swift,
-				Managers/DatabaseManager.swift,
 				Managers/IDManager.swift,
 				Managers/ImageManager.swift,
 				Managers/MessagesManager.swift,
 				Managers/NetworkManager.swift,
 				Markdown.swift,
-				Models/CloudKitConvertible.swift,
 				Models/MemberModel.swift,
 				Models/MessageModel.swift,
 				Models/PushIconModel.swift,
 				Models/PushServerModel.swift,
-				PushParams.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;

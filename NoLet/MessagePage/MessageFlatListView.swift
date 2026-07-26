@@ -12,7 +12,6 @@
 //
 
 import Defaults
-import GRDB
 import SwiftUI
 
 struct MessageFlatListView: View {

@@ -12,7 +12,6 @@
 //
 
 import Defaults
-import GRDB
 import SwiftUI
 
 struct MessageGroupView: View {
@@ -161,12 +160,7 @@ struct MessageRow: View {
 
     private func loadCount() {
         Task.detached(priority: .background) {
-            let count = try await DatabaseManager.shared.dbQueue.read { db in
-                try Message
-                    .filter(Message.Columns.group == message.group)
-                    .filter(Message.Columns.read == false)
-                    .fetchCount(db)
-            }
+            let count = await MessageDBManager.shared.unreadCount(group: message.group)
             await MainActor.run {
                 self.unreadCount = count
             }

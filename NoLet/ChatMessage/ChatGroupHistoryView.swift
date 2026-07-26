@@ -11,7 +11,6 @@
 //    Created by Neo on 2025/2/25.
 //
 
-import GRDB
 import SwiftUI
 
 struct ChatMessageSection {
@@ -61,19 +60,11 @@ struct ChatGroupHistoryView: View {
                 if let chatgroup = selectdChatGroup {
                     CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name) { text in
                         Task.detached(priority: .background) {
-                            do {
-                                try await DatabaseManager.shared.dbQueue.write { db in
-                                    if var group = try ChatGroup
-                                        .filter(ChatGroup.Columns.id == chatgroup.id)
-                                        .fetchOne(db)
-                                    {
-                                        group.name = text
-                                        try group.update(db)
-                                    }
-                                }
-                            } catch {
-                                logger.error("更新 group.name 失败: \(error)")
-                            }
+                            await ChatGroupDBManager.shared.rename(
+                                id: chatgroup.id,
+                                newName: text,
+                                makeCurrent: false
+                            )
                         }
                     }
 
@@ -89,11 +80,13 @@ struct ChatGroupHistoryView: View {
                 ToolbarItem {
                     Menu {
                         Button {
-                            _ = try? DatabaseManager.shared.dbQueue.write { db in
-                                try ChatGroup.deleteAll(db)
+                            Task {
+                                await ChatGroupDBManager.shared.deleteAll()
+                                await MainActor.run {
+                                    Haptic.impact()
+                                    chatGroups = []
+                                }
                             }
-                            Haptic.impact()
-                            chatGroups = []
                         } label: {
                             Label("删除所有分组", systemImage: "trash")
                                 .customForegroundStyle(.red, .primary)
@@ -225,26 +218,16 @@ struct ChatGroupHistoryView: View {
 
     private func loadGroups() {
         Task.detached(priority: .background) {
-            do {
-                let groups = try await DatabaseManager.shared.dbQueue.read { db in
-                    try ChatGroup.order(ChatGroup.Columns.timestamp.desc).fetchAll(db)
-                }
-                await MainActor.run {
-                    self.chatGroups = groups
-                }
-            } catch {
-                logger.error("\(error)")
+            let groups = await ChatGroupDBManager.shared.fetchAll()
+            await MainActor.run {
+                self.chatGroups = groups
             }
         }
     }
 
     private func getleftIconName(group: String) -> String {
-        let count = try? DatabaseManager.shared.dbQueue.read { db in
-            try ChatMessage
-                .filter(ChatMessage.Columns.message == group)
-                .fetchCount(db)
-        }
-        return (count ?? 0) == 0 ? "rectangle.3.group.bubble" : "message.badge.circle"
+        let count = ChatMessageDBManager.shared.countSync(inGroup: group)
+        return count == 0 ? "rectangle.3.group.bubble" : "message.badge.circle"
     }
 
     private func getGroupedMessages(allMessages: [ChatGroup]) -> [ChatMessageSection] {

@@ -171,9 +171,7 @@ struct PromptDetailView: View {
         )
         Task.detached(priority: .userInitiated) {
             do {
-                try await DatabaseManager.shared.dbQueue.write { db in
-                    try chatPrompt.insert(db)
-                }
+                try await ChatPromptDBManager.shared.insert(chatPrompt)
                 await MainActor.run {
                     AppManager.shared.open(sheet: nil)
                 }
@@ -187,16 +185,8 @@ struct PromptDetailView: View {
         let title = self.title
         let content = self.content
         Task.detached(priority: .userInitiated) {
-            do {
-                try await DatabaseManager.shared.dbQueue.write { db in
-                    if var item = try ChatPrompt.fetchOne(db, key: prompt?.id) {
-                        item.title = title
-                        item.content = content
-                        try item.update(db)
-                    }
-                }
-            } catch {
-                logger.error("更新 ChatPrompt 失败: \(error)")
+            if let id = prompt?.id {
+                await ChatPromptDBManager.shared.update(id: id, title: title, content: content)
             }
             await MainActor.run {
                 if prompt == nil {

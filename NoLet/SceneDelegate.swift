@@ -11,7 +11,6 @@
 //
 
 import Defaults
-import GRDB
 import SwiftUI
 import UIKit
 
@@ -97,22 +96,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let currentLang = Locale.preferredLanguages.first {
             let prompts = ChatPromptMode.prompts
             Task.detached(priority: .background) {
-                let count = try await DatabaseManager.shared.dbQueue.read { db in
-                    try ChatPrompt.filter(ChatPrompt.Columns.inside == true).fetchCount(db)
-                }
-                
-                if Defaults[.lang] != currentLang || count == 0 {
-                    
-                    try await DatabaseManager.shared.dbQueue.write { db in
-                        // 删除 inside == true 的项
-                        try ChatPrompt.filter(ChatPrompt.Columns.inside == true).deleteAll(db)
+                let count = await ChatPromptDBManager.shared.count(inside: true)
 
-                        // 添加默认 prompts
-                        for prompt in prompts {
-                            try prompt.insert(db)
-                        }
-                    }
-                
+                if Defaults[.lang] != currentLang || count == 0 {
+                    try? await ChatPromptDBManager.shared.replaceInsidePrompts(prompts)
+
                     // 回到主线程设置语言
                     DispatchQueue.main.async {
                         Defaults[.lang] = currentLang

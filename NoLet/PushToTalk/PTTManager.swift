@@ -8,7 +8,6 @@
 import AVFoundation
 import Combine
 import Foundation
-import GRDB
 import MapKit
 import Opus
 import os
@@ -53,14 +52,12 @@ final class PTTManager: NSObject, ObservableObject {
 
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
-    private let database = DatabaseManager.shared
     private nonisolated let network = NetworkManager()
-    private var observationCancellable: AnyDatabaseCancellable?
+    private var observationTask: Task<Void, Never>?
     private var loopTask: Task<Void, Never>?
 
     private override init() {
         super.init()
-        try? AudioMessage.createInit(dbQueue: DatabaseManager.shared.dbQueue)
 
         Task { @MainActor in
             await self.player.setDelegate(self)
@@ -73,7 +70,7 @@ final class PTTManager: NSObject, ObservableObject {
     }
 
     deinit {
-        observationCancellable?.cancel()
+        observationTask?.cancel()
         loopTask?.cancel()
         NotificationCenter.default.removeObserver(self)
     }
@@ -138,44 +135,32 @@ final class PTTManager: NSObject, ObservableObject {
     }
 
     func deleteAll() {
-        _ = try? DatabaseManager.shared.dbQueue.write { db in
-            try AudioMessage.deleteAll(db)
+        Task.detached(priority: .userInitiated) {
+            do {
+                try await AudioMessageDBManager.shared.deleteAll()
+            } catch {
+                logger.error("AudioMessage deleteAll 失败: \(error)")
+            }
             if let path = NCONFIG.getDir(.ptt) {
-                try FileManager.default.removeItem(at: path)
+                try? FileManager.default.removeItem(at: path)
             }
         }
     }
 
     private func startObservingUnreadCount() {
-        let observation = ValueObservation.tracking { db -> (
-            [AudioMessage],
-            [AudioMessage]
-        ) in
-            let messages = try AudioMessage
-                .order(AudioMessage.Columns.timestamp.desc)
-                .limit(50)
-                .fetchAll(db)
-            let unreadMessages = try AudioMessage
-                .order(AudioMessage.Columns.timestamp.desc)
-                .filter { !$0.read }
-                .fetchAll(db)
-            return (messages, unreadMessages)
-        }
-
-        observationCancellable = observation.start(
-            in: database.dbQueue,
-            scheduling: .async(onQueue: .global()),
-            onError: { error in
-                logger.error("Failed to observe unread count: \(error)")
-            },
-            onChange: { [weak self] newMessages, unReadMessages in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.messages = newMessages
-                    self.waitPlayList = unReadMessages
+        observationTask?.cancel()
+        observationTask = Task { [weak self] in
+            guard let stream = AudioMessageDBManager.shared.observeMessages() as AsyncStream? else {
+                return
+            }
+            for await value in stream {
+                guard let self = self else { break }
+                await MainActor.run {
+                    self.messages = value.recent
+                    self.waitPlayList = value.unread
                 }
             }
-        )
+        }
     }
 
     func send(_ event: Event, remote: Bool = false) async {
@@ -453,21 +438,14 @@ final class PTTManager: NSObject, ObservableObject {
         status: AudioMessage.Status? = nil
     ) -> Bool {
         guard read != nil || status != nil else { return false }
-        return (try? DatabaseManager.shared.dbQueue.write { db in
-            do {
-                if var message = try AudioMessage.fetchOne(db, id: message.id) {
-                    message.read = true
-                    if let status {
-                        message.status = status
-                    }
-                    try message.save(db)
-                }
-                return true
-            } catch {
-                return false
-            }
-
-        }) ?? false
+        Task.detached(priority: .userInitiated) {
+            _ = await AudioMessageDBManager.shared.setStatus(
+                id: message.id,
+                read: read,
+                status: status
+            )
+        }
+        return true
     }
 
     func playWaitList(_ next: Bool = false) async {
@@ -577,15 +555,14 @@ final class PTTManager: NSObject, ObservableObject {
 
         do {
             try data.write(to: filePath)
-            let voice = try self.database.dbQueue.write { db in
-                let voice = AudioMessage(
-                    channel: channel.hex(),
-                    from: id,
-                    file: filePath.lastPathComponent,
-                    read: true
-                )
-                try voice.save(db)
-                return voice
+            let voice = AudioMessage(
+                channel: channel.hex(),
+                from: id,
+                file: filePath.lastPathComponent,
+                read: true
+            )
+            Task.detached(priority: .userInitiated) {
+                try? await AudioMessageDBManager.shared.save(voice)
             }
             return voice
         } catch {
@@ -605,12 +582,8 @@ final class PTTManager: NSObject, ObservableObject {
             }
 
             try data.write(to: filePath)
-
-            return try await self.database.dbQueue.write { db in
-                try voice.save(db)
-                return voice
-            }
-
+            try await AudioMessageDBManager.shared.save(voice)
+            return voice
         } catch {
             return nil
         }

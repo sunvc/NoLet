@@ -12,7 +12,6 @@
 
 import Defaults
 import Foundation
-import GRDB
 import SwiftUI
 
 // MARK: - Views
@@ -137,15 +136,9 @@ struct PromptChooseView: View {
 
     private func loadData() {
         Task.detached(priority: .background) {
-            do {
-                let results = try await DatabaseManager.shared.dbQueue.read { db in
-                    try ChatPrompt.fetchAll(db)
-                }
-                await MainActor.run {
-                    self.prompts = results
-                }
-            } catch {
-                logger.error("\(error)")
+            let results = await ChatPromptDBManager.shared.fetchAll()
+            await MainActor.run {
+                self.prompts = results
             }
         }
     }
@@ -193,15 +186,7 @@ private struct PromptSection: View {
             Button("删除", role: .destructive) {
                 if let prompt = promptToDelete {
                     Task.detached(priority: .userInitiated) {
-                        do {
-                            _ = try await DatabaseManager.shared.dbQueue.write { db in
-                                try ChatPrompt
-                                    .filter(Column("id") == prompt.id)
-                                    .deleteAll(db)
-                            }
-                        } catch {
-                            logger.error("删除 ChatPrompt 失败: \(error)")
-                        }
+                        await ChatPromptDBManager.shared.delete(id: prompt.id)
                     }
                 }
             }
@@ -345,13 +330,10 @@ struct AddPromptView: View {
                         )
                         Task.detached(priority: .userInitiated) {
                             do {
-                                try await DatabaseManager.shared.dbQueue.write { db in
-                                    try chatprompt.insert(db)
-                                }
+                                try await ChatPromptDBManager.shared.insert(chatprompt)
                                 await MainActor.run {
                                     AppManager.shared.open(sheet: nil)
                                 }
-
                             } catch {
                                 logger.error("插入 ChatPrompt 失败: \(error)")
                             }

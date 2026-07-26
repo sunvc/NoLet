@@ -232,10 +232,7 @@ struct NoLetChatSettingsView: View {
             Button("取消", role: .cancel) {}
             Button("删除", role: .destructive) {
                 Task.detached(priority: .userInitiated) {
-                    try? await DatabaseManager.shared.dbQueue.write { db in
-                        try ChatMessage.deleteAll(db)
-                        try ChatGroup.deleteAll(db)
-                    }
+                    await ChatGroupDBManager.shared.deleteAll()
                 }
             }
         } message: {

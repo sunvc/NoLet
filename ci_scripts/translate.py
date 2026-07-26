@@ -84,7 +84,7 @@ class Translate:
 
         async with semaphore:
             completion = await self.client.chat.completions.create(
-                model="deepseek-chat",
+                model=self.model,
                 messages=messages
             )
             response = completion.choices[0].message.content.strip('"')

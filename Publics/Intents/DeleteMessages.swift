@@ -11,7 +11,6 @@
 //
 
 import AppIntents
-import GRDB
 import SwiftUI
 
 struct DeleteMessageIntent: AppIntent {
@@ -28,11 +27,7 @@ struct DeleteMessageIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         do {
-            _ = try await DatabaseManager.shared.dbQueue.write { db in
-                try Message
-                    .filter(Message.Columns.createDate < date)
-                    .deleteAll(db)
-            }
+            try await MessageDBManager.shared.delete(beforeDate: date)
         } catch {
             logger.error("删除旧消息失败: \(error)")
         }

@@ -13,7 +13,7 @@
 import Foundation
 import GRDB
 
-final class DatabaseManager {
+final nonisolated class DatabaseManager: @unchecked Sendable {
     static let shared: DatabaseManager = {
         do {
             return try DatabaseManager()
@@ -28,6 +28,7 @@ final class DatabaseManager {
     let chatGroupTabelName = "chatGroup"
     let chatMessageTabelName = "chatMessage"
     let chatPromptTabelName = "chatPrompt"
+    let audioMessageTableName = "AudioMessage"
 
     private init() throws {
         // DatabasePool 只在这里创建一次
@@ -37,7 +38,13 @@ final class DatabaseManager {
         registerChatGroupMigrations(&migrator)
         registerChatMessageMigrations(&migrator)
         registerChatPromptMigrations(&migrator)
+        registerAudioMessageMigrations(&migrator)
         try migrator.migrate(dbQueue)
+    }
+
+    /// 压缩数据库文件,回收空间
+    func vacuum() throws {
+        try dbQueue.vacuum()
     }
 
     func registerMessageMigrations(_ migrator: inout DatabaseMigrator) {
@@ -165,6 +172,22 @@ final class DatabaseManager {
         migrator.registerMigration("add mode") { db in
             try db.alter(table: self.chatPromptTabelName) { t in
                 t.add(column: "mode", .text)
+            }
+        }
+    }
+
+    func registerAudioMessageMigrations(_ migrator: inout DatabaseMigrator) {
+        migrator.registerMigration("create_AudioMessage") { db in
+            try db.create(table: self.audioMessageTableName, ifNotExists: true) { t in
+                t.column("id", .text).primaryKey()
+                t.column("timestamp", .datetime).notNull()
+                t.column("channel", .text).notNull()
+                t.column("from", .text).notNull()
+                t.column("file", .text).notNull()
+                t.column("url", .text).notNull()
+                t.column("read", .boolean).notNull()
+                t.column("sign", .boolean).notNull()
+                t.column("status", .integer).notNull()
             }
         }
     }

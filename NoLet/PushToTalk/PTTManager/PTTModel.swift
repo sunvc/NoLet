@@ -82,24 +82,6 @@ extension AudioMessage {
     }
 }
 
-extension AudioMessage {
-    static func createInit(dbQueue: DatabaseQueue) throws {
-        try dbQueue.write { db in
-            try db.create(table: "AudioMessage", ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("timestamp", .datetime).notNull()
-                t.column("channel", .text).notNull()
-                t.column("from", .text).notNull()
-                t.column("file", .text).notNull() // URL存为字符串
-                t.column("url", .text).notNull() // URL存为字符串
-                t.column("read", .boolean).notNull()
-                t.column("sign", .boolean).notNull()
-                t.column("status", .integer).notNull()
-            }
-        }
-    }
-}
-
 struct PttMessageRequest: Codable {
     var id: String
     var channel: String
