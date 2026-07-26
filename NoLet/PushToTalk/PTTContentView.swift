@@ -909,6 +909,9 @@ struct PTTContentView: View {
                     dragInitialRegion = pttManager.region
                 }
 
+                // logo 缩放视为用户主动交互,阻止后续远程用户回执触发的自动 zoom
+                pttManager.userMapInteracted = true
+
                 guard let initialRegion = dragInitialRegion else { return }
                 let delta = CGFloat(initialRegion.span.latitudeDelta)
                 let factor = pow(2.0, value.translation.height / 50.0)

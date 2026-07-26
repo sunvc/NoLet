@@ -50,6 +50,10 @@ final class PTTManager: NSObject, ObservableObject {
     /// 当前正在说话的用户 ID（自己 or 远程），独立于 onlineUsers 列表存在
     private var activeSpeakerId: String?
 
+    /// 用户是否手动拖动/缩放过地图。若为 true,轮询获取新的远程用户后不再自动 zoom。
+    /// 用户显式触发 zoom(点击 logo / 用户计数)时清零。
+    @Published var userMapInteracted: Bool = false
+
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
     private nonisolated let network = NetworkManager()
@@ -429,7 +433,7 @@ final class PTTManager: NSObject, ObservableObject {
             self.serverStatus = .failed
         }
 
-        self.zoomToFitAllUsers()
+        self.zoomToFitAllUsers(force: false)
     }
 
     @discardableResult
@@ -703,7 +707,12 @@ final class PTTManager: NSObject, ObservableObject {
 }
 
 extension PTTManager: CLLocationManagerDelegate {
-    func zoomToFitAllUsers() {
+    /// - Parameter force: `true` 时忽略用户交互标记强制 zoom(点击 logo/用户数触发);
+    ///   `false` 时若用户手动动过地图则跳过,避免打断查看。用户显式 zoom 会清零交互标记。
+    func zoomToFitAllUsers(force: Bool = true) {
+        if !force, userMapInteracted { return }
+        if force { userMapInteracted = false }
+
         // 获取所有用户（包括当前用户自己）
         var usersToShow = Defaults[.pttChannel].users
 

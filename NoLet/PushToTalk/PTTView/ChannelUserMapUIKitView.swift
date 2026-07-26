@@ -289,6 +289,28 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
 
         func mapView(
             _ mapView: MKMapView,
+            regionWillChangeAnimated animated: Bool
+        ) {
+            // 判断本次 region 变更是否由用户手势(pan/pinch)引起。
+            // MKMapView 的手势装在其内部子 view 上,任一 gesture recognizer 处于 began/changed/ended
+            // 状态即认为是用户交互。
+            guard let gestureView = mapView.subviews.first else { return }
+            let interactive = gestureView.gestureRecognizers?.contains { recognizer in
+                switch recognizer.state {
+                case .began, .changed, .ended: return true
+                default: return false
+                }
+            } ?? false
+
+            if interactive {
+                Task { @MainActor in
+                    PTTManager.shared.userMapInteracted = true
+                }
+            }
+        }
+
+        func mapView(
+            _ mapView: MKMapView,
             regionDidChangeAnimated animated: Bool
         ) {
             refreshAnnotationVisibility(on: mapView)
