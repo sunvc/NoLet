@@ -20,6 +20,8 @@ import UIKit
 
 struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
     let id: String
+    /// 已废弃字段。频道加入不再上报/下发 name;name 通过 `MemberNameCache` 按 id 从 CloudKit 查。
+    /// 仍保留以兼容旧本地缓存反序列化,新数据一律为空串。
     let name: String
     var latitude: CLLocationDegrees
     var longitude: CLLocationDegrees
@@ -27,6 +29,22 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
 
     var coordinate: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+
+    /// 展示用名字:
+    /// - 本机: `Defaults[.member].name`,空则 "本机"
+    /// - 其它: 命中 `MemberNameCache` 就用云端 name(空串也回退到"未知");miss 时触发异步拉取并返回 "未知"
+    var displayName: String {
+        let myId = Defaults[.member].id
+        if id == myId {
+            let n = Defaults[.member].name
+            return n.isEmpty ? String(localized: "本机") : n
+        }
+        if let cached = MemberNameCache.shared.cached(id: id), !cached.isEmpty {
+            return cached
+        }
+        MemberNameCache.shared.prefetch(id: id)
+        return String(localized: "未知")
     }
 
     mutating func update(coordinate: CLLocationCoordinate2D, active: Bool? = nil) {
@@ -37,21 +55,32 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
 
     enum CodingKeys: CodingKey {
         case id
-        case name
         case latitude
         case longitude
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try c.decode(String.self, forKey: .id)
+        self.latitude = try c.decodeIfPresent(CLLocationDegrees.self, forKey: .latitude) ?? 0
+        self.longitude = try c.decodeIfPresent(CLLocationDegrees.self, forKey: .longitude) ?? 0
+        self.name = ""
+        self.active = false
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(latitude, forKey: .latitude)
+        try c.encode(longitude, forKey: .longitude)
     }
 }
 
 extension ChannelUser {
-    init(
-        id: String,
-        name: String,
-        coordinate: CLLocationCoordinate2D,
-        active: Bool = false
-    ) {
+    /// 主入口:不再接受 name 参数
+    init(id: String, coordinate: CLLocationCoordinate2D, active: Bool = false) {
         self.id = id
-        self.name = name.isEmpty ? String(localized: "匿名") : name
+        self.name = ""
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
         self.active = active
@@ -66,7 +95,7 @@ final class ChannelUserAnnotation: NSObject, MKAnnotation {
 
     init(user: ChannelUser) {
         self.id = user.id
-        self.userName = user.name
+        self.userName = user.displayName
         self.active = user.active
         self.coordinate = user.coordinate
         super.init()
@@ -127,43 +156,18 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
     private func ensureSelfUser(in users: [ChannelUser]) -> [ChannelUser] {
         let userId = Defaults[.member].id
 
-        // 检查是否已经包含用户自己
-        let hasSelf = users.contains { $0.id == userId }
+        if users.contains(where: { $0.id == userId }) { return users }
 
-        if !hasSelf {
-            // 获取用户自己的位置
-            let userCoordinate = LocManager.shared.location.coordinate
-
-            // 创建用户自己的 ChannelUser，名称设置为"本机"
-            let selfUser = ChannelUser(
+        var newUsers = users
+        newUsers.insert(
+            ChannelUser(
                 id: userId,
-                name: "本机",
-                coordinate: userCoordinate,
+                coordinate: LocManager.shared.location.coordinate,
                 active: false
-            )
-
-            // 添加到在线用户列表
-            var newUsers = users
-            newUsers.insert(selfUser, at: 0)
-            return newUsers
-        } else {
-            // 如果已经包含用户自己，确保名称是"本机"
-            var newUsers = users
-            if let index = newUsers.firstIndex(where: { $0.id == userId }) {
-                let user = newUsers[index]
-                // 直接替换名称为"本机"
-                // 我们需要使用一个临时方式，因为 ChannelUser 没有公开修改 name 的方法
-                // 让我们重新创建一个
-                let updatedUser = ChannelUser(
-                    id: user.id,
-                    name: "本机",
-                    coordinate: user.coordinate,
-                    active: user.active
-                )
-                newUsers[index] = updatedUser
-            }
-            return newUsers
-        }
+            ),
+            at: 0
+        )
+        return newUsers
     }
 
     final class Coordinator: NSObject, MKMapViewDelegate {
@@ -201,7 +205,7 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
             for user in users {
                 if let annotation = existingByID[user.id] {
                     annotation.coordinate = user.coordinate
-                    annotation.userName = user.name
+                    annotation.userName = user.displayName
                     annotation.active = user.active
 
                     if let annotationView = mapView.view(for: annotation)
@@ -267,7 +271,6 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
             annotationView.apply(
                 user: ChannelUser(
                     id: userAnnotation.id,
-                    name: userAnnotation.userName,
                     coordinate: userAnnotation.coordinate,
                     active: userAnnotation.active
                 ),
@@ -318,7 +321,6 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
                 annotationView.apply(
                     user: ChannelUser(
                         id: userAnnotation.id,
-                        name: userAnnotation.userName,
                         coordinate: userAnnotation.coordinate,
                         active: userAnnotation.active
                     ),
@@ -435,7 +437,7 @@ final class ChannelUserAnnotationView: MKAnnotationView {
         }
 
         if user.active {
-            nameLabel.text = user.name
+            nameLabel.text = user.displayName
             centerOffset = CGPoint(x: 0, y: -12)
             bounds = CGRect(x: 0, y: 0, width: 52, height: 64)
             pulseContainerView.isHidden = false
@@ -443,7 +445,7 @@ final class ChannelUserAnnotationView: MKAnnotationView {
             layoutIfNeeded()
             startPulseIfNeeded()
         } else {
-            normalNameLabel.text = user.name
+            normalNameLabel.text = user.displayName
             centerOffset = shouldShowNormalName ? CGPoint(x: 0, y: -10) : .zero
             bounds = shouldShowNormalName
                 ? CGRect(x: 0, y: 0, width: 72, height: 44)

@@ -67,6 +67,7 @@ final class PTTManager: NSObject, ObservableObject {
         startObservingUnreadCount()
         self.TaskHandler()
         self.setupNotifications()
+        self.setupMemberNameCache()
     }
 
     deinit {
@@ -82,6 +83,27 @@ final class PTTManager: NSObject, ObservableObject {
             name: AVAudioSession.interruptionNotification,
             object: AVAudioSession.sharedInstance()
         )
+    }
+
+    /// CloudKit 昵称回填后触发 UI 刷新: `onlineUsers` 未变但 `displayName` 结果变了,
+    /// 通过重新赋值 published 数组强制 SwiftUI/UIKit 层重绘 pin 标签
+    private func setupMemberNameCache() {
+        MemberNameCache.shared.onUpdate = { [weak self] _, _ in
+            Task { @MainActor in
+                guard let self else { return }
+                self.onlineUsers = self.onlineUsers
+            }
+        }
+
+        // 本机 name 变化同样需要触发 map 刷新
+        Task { [weak self] in
+            for await _ in Defaults.updates(.member) {
+                guard let self else { break }
+                await MainActor.run {
+                    self.onlineUsers = self.onlineUsers
+                }
+            }
+        }
     }
 
     @objc private func handleInterruption(notification: Notification) {
@@ -372,42 +394,21 @@ final class PTTManager: NSObject, ObservableObject {
             currentChannel.users = matchedResult.users
             self.onlineUsers = matchedResult.users
 
-            // 添加用户自己的位置信息
+            // 添加用户自己的位置信息(名字走 ChannelUser.displayName -> Defaults[.member].name)
             let userId = Defaults[.member].id
 
-            // 检查是否已经包含用户自己
-            let hasSelf = self.onlineUsers.contains { $0.id == userId }
-
-            if !hasSelf {
-                // 获取用户自己的位置
-                let userCoordinate = LocManager.shared.location.coordinate
-
-                // 保留之前的 active 状态（如果之前在说话）
-                let wasActive = self.onlineUsers.first(where: { $0.id == userId })?.active ?? false
-
-                // 创建用户自己的 ChannelUser，名称设置为"本机"
+            if !self.onlineUsers.contains(where: { $0.id == userId }) {
                 let selfUser = ChannelUser(
                     id: userId,
-                    name: "本机",
-                    coordinate: userCoordinate,
-                    active: wasActive
+                    coordinate: LocManager.shared.location.coordinate,
+                    active: false
                 )
-
-                // 添加到在线用户列表
                 self.onlineUsers.insert(selfUser, at: 0)
-            } else {
-                // 如果已经包含用户自己，确保名称是"本机"
-                if let index = self.onlineUsers.firstIndex(where: { $0.id == userId }) {
-                    let user = self.onlineUsers[index]
-                    // 重新创建一个，名称设置为"本机"
-                    let updatedUser = ChannelUser(
-                        id: user.id,
-                        name: user.name.isEmpty ? String(localized: "本机") : user.name,
-                        coordinate: user.coordinate,
-                        active: user.active
-                    )
-                    self.onlineUsers[index] = updatedUser
-                }
+            }
+
+            // 对轮询到的所有远程用户预热昵称缓存
+            for user in self.onlineUsers where user.id != userId {
+                MemberNameCache.shared.prefetch(id: user.id)
             }
 
             // 重新应用会说话的标记（轮询会替换 onlineUsers 列表，需要恢复）
@@ -518,37 +519,23 @@ final class PTTManager: NSObject, ObservableObject {
         let isSelf = activeId == myId
 
         if let index = users.firstIndex(where: { $0.id == activeId }) {
-            // 已存在,置为 active,并按规则修正名字为空的情况
-            let existing = users[index]
-            let anonymous = String(localized: "匿名")
-            let fixedName: String
-            if existing.name.isEmpty || existing.name == anonymous {
-                fixedName = isSelf ? String(localized: "本机") : String(localized: "未知")
-            } else {
-                fixedName = existing.name
-            }
-            users[index] = ChannelUser(
-                id: existing.id,
-                name: fixedName,
-                coordinate: existing.coordinate,
-                active: true
-            )
+            // 已存在,只需置为 active(name 由 ChannelUser.displayName 计算)
+            var existing = users[index]
+            existing.active = true
+            users[index] = existing
         } else {
             // 不在列表里,动态插入占位条目(远程用户可能没在轮询结果里)
-            let name: String
-            let coordinate: CLLocationCoordinate2D
-            if isSelf {
-                let memberName = Defaults[.member].name
-                name = memberName.isEmpty ? String(localized: "本机") : memberName
-                coordinate = LocManager.shared.location.coordinate
-            } else {
-                name = String(localized: "未知")
-                coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-            }
+            let coordinate: CLLocationCoordinate2D = isSelf
+                ? LocManager.shared.location.coordinate
+                : CLLocationCoordinate2D(latitude: 0, longitude: 0)
             users.insert(
-                ChannelUser(id: activeId, name: name, coordinate: coordinate, active: true),
+                ChannelUser(id: activeId, coordinate: coordinate, active: true),
                 at: 0
             )
+            // 远程用户异步补齐 name
+            if !isSelf {
+                MemberNameCache.shared.prefetch(id: activeId)
+            }
         }
 
         self.onlineUsers = users
@@ -720,19 +707,13 @@ extension PTTManager: CLLocationManagerDelegate {
         // 获取所有用户（包括当前用户自己）
         var usersToShow = Defaults[.pttChannel].users
 
-        // 获取当前用户信息
         let userId = Defaults[.member].id
-        let userName = Defaults[.member].name
-            .isEmpty ? String(localized: "本机") : Defaults[.member].name
 
-        // 如果没有用户或列表中不包含自己，添加自己
-        let hasSelf = usersToShow.contains { $0.id == userId }
-        if !hasSelf {
-            let userCoordinate = LocManager.shared.location.coordinate
+        // 如果列表中不包含自己，添加自己(名字由 displayName 计算)
+        if !usersToShow.contains(where: { $0.id == userId }) {
             let selfUser = ChannelUser(
                 id: userId,
-                name: userName,
-                coordinate: userCoordinate,
+                coordinate: LocManager.shared.location.coordinate,
                 active: false
             )
             usersToShow.insert(selfUser, at: 0)
@@ -822,7 +803,6 @@ extension PTTManager {
 
     nonisolated struct JoinParams: Codable, Sendable {
         var id: String
-        var name: String
         var channels: [String]
         var latitude: Double
         var longitude: Double
@@ -854,7 +834,6 @@ extension PTTManager {
 
             let params = JoinParams(
                 id: Defaults[.member].id,
-                name: Defaults[.member].name,
                 channels: hzs,
                 latitude: LocManager.shared.location.coordinate.latitude,
                 longitude: LocManager.shared.location.coordinate.longitude,

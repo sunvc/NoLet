@@ -128,10 +128,10 @@ struct PTTContentView: View {
             return pttManager.state.title
         }
 
-        // 3. 场景 B：当显示了用户地图时（只在播放或录制时显示 title，其余隐形）
-        if isPlaying || isRecording {
-            return pttManager.state.title
-        }
+//        // 3. 场景 B：当显示了用户地图时（只在播放或录制时显示 title，其余隐形）
+//        if isPlaying || isRecording {
+//            return pttManager.state.title
+//        }
 
         return ""
     }
@@ -278,16 +278,18 @@ struct PTTContentView: View {
 
                         Spacer()
                         // TODO: -
-
                         Image(systemName: "slider.horizontal.3")
                             .font(.title)
                             .foregroundStyle(.white)
+                            .offset(y: showUserMap ? -70 : 0)
                             .VButton { _ in
                                 self.showSettings.toggle()
                                 return true
                             }
+                       
                     }
                     .padding(.horizontal, 10)
+                    .animation(.default, value: showUserMap)
 
                     HStack {
                         ZStack {
