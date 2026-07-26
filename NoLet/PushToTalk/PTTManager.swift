@@ -499,11 +499,58 @@ final class PTTManager: NSObject, ObservableObject {
     }
 
     /// 将 activeSpeakerId 应用到 onlineUsers 列表
+    /// - 录音时激活本机(name 空 → "本机"),播放远程音频时激活对应用户(name 空 → "未知")
+    /// - 若 activeSpeakerId 不在 onlineUsers 里,动态插入一个占位条目,保证地图上有激活标记
     private func applyActiveSpeaker() {
         var users = onlineUsers
+
+        // 先清除所有 active
         for index in users.indices {
-            users[index].active = (activeSpeakerId != nil && users[index].id == activeSpeakerId)
+            users[index].active = false
         }
+
+        guard let activeId = activeSpeakerId, !activeId.isEmpty else {
+            self.onlineUsers = users
+            return
+        }
+
+        let myId = Defaults[.member].id
+        let isSelf = activeId == myId
+
+        if let index = users.firstIndex(where: { $0.id == activeId }) {
+            // 已存在,置为 active,并按规则修正名字为空的情况
+            let existing = users[index]
+            let anonymous = String(localized: "匿名")
+            let fixedName: String
+            if existing.name.isEmpty || existing.name == anonymous {
+                fixedName = isSelf ? String(localized: "本机") : String(localized: "未知")
+            } else {
+                fixedName = existing.name
+            }
+            users[index] = ChannelUser(
+                id: existing.id,
+                name: fixedName,
+                coordinate: existing.coordinate,
+                active: true
+            )
+        } else {
+            // 不在列表里,动态插入占位条目(远程用户可能没在轮询结果里)
+            let name: String
+            let coordinate: CLLocationCoordinate2D
+            if isSelf {
+                let memberName = Defaults[.member].name
+                name = memberName.isEmpty ? String(localized: "本机") : memberName
+                coordinate = LocManager.shared.location.coordinate
+            } else {
+                name = String(localized: "未知")
+                coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+            }
+            users.insert(
+                ChannelUser(id: activeId, name: name, coordinate: coordinate, active: true),
+                at: 0
+            )
+        }
+
         self.onlineUsers = users
     }
 

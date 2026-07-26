@@ -22,6 +22,7 @@ struct PTTSettingsView: View {
     @Default(.pttMusicPlay) private var pttMusicPlay
     @Default(.pttVoiceVolume) private var pttVoiceVolume
     @Default(.pttSignature) private var pttSignature
+    @Default(.pttBitrate) private var pttBitrate
     @Default(.eqPreset) private var eqPreset
     @Default(.member) private var member
     @State private var refreshId = UUID()
@@ -145,6 +146,8 @@ struct PTTSettingsView: View {
                     Text("播放音量")
                 }
 
+                bitrateSection
+
                 equalizerView
             }
             .navigationTitle("PTT设置")
@@ -228,6 +231,46 @@ struct PTTSettingsView: View {
         }
     
         
+    }
+
+    /// 录音码率 Picker。持久化到 `Defaults[.pttBitrate]`;
+    /// 若 Defaults 里存的旧值不在预设档位,回落到最近的档位显示,写入时也用档位值,
+    /// 避免 Opus 收到异常码率报错。
+    private var bitrateSection: some View {
+        Section {
+            Picker(selection: bitrateBinding) {
+                ForEach(PTTBitrate.allCases) { item in
+                    Text(item.displayName).tag(item)
+                }
+            } label: {
+                Label {
+                    Text("录音码率")
+                } icon: {
+                    Image(systemName: "waveform.badge.mic")
+                        .foregroundStyle(.green, .primary)
+                }
+            }
+            .pickerStyle(.menu)
+        } header: {
+            Text("录音质量")
+        } footer: {
+            Text(currentBitrate.subtitle)
+        }
+    }
+
+    /// 当前档位:Defaults 里若是非预设值,靠差值最小的档位兜底
+    private var currentBitrate: PTTBitrate {
+        if let hit = PTTBitrate(rawValue: pttBitrate) { return hit }
+        return PTTBitrate.allCases.min(by: {
+            abs($0.rawValue - pttBitrate) < abs($1.rawValue - pttBitrate)
+        }) ?? .normal
+    }
+
+    private var bitrateBinding: Binding<PTTBitrate> {
+        Binding(
+            get: { currentBitrate },
+            set: { pttBitrate = $0.rawValue }
+        )
     }
 
     private var equalizerView: some View {

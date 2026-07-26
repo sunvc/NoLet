@@ -31,6 +31,7 @@ struct PTTContentView: View {
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
+    
 
     @State private var isCancel: Bool = false
 

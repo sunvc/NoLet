@@ -13,6 +13,7 @@
 
 import Accelerate
 import AVFoundation
+import Defaults
 import Opus
 import SwiftUI
 
@@ -111,9 +112,11 @@ final nonisolated class PTTRecorderManager {
         }
 
         do {
+            // 码率读用户偏好,兜底 32k,并 clamp 到 16k 以上避免异常写入让 Opus 拒绝
+            let userBitrate = max(16_000, Defaults[.pttBitrate])
             oggWriter = try OpusManager(
                 sampleRate: Int(audioFormat.sampleRate),
-                bitrate:  32_000,
+                bitrate: userBitrate,
                 application: .voip
             )
 

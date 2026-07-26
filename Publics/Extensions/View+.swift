@@ -378,7 +378,8 @@ extension View {
     @ViewBuilder
     func customPresentationCornerRadius(_ radius: CGFloat) -> some View {
         if #available(iOS 16.4, *) {
-            self.presentationCornerRadius(radius)
+            self
+                .presentationCornerRadius(radius)
         } else {
             self
         }
@@ -447,7 +448,16 @@ extension View {
                                 .stroke(borderColor.opacity(0.6), lineWidth: 1)
                         )
                 } else {
-                    view
+                    if #unavailable(iOS 26.0) {
+                        view
+                            .overlay(
+                                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                                    .stroke(.primary.opacity(0.6), lineWidth: 1)
+                            )
+                    }else{
+                        view
+                    }
+                    
                 }
             }
         }

@@ -171,23 +171,22 @@ extension Array {
 struct DataLoadingView: View {
     var text: String = .init(localized: "数据加载中...")
     var body: some View {
-        HStack {
-            Spacer()
-            VStack(spacing: 16) {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .orange))
-                    .scaleEffect(2)
-                    .padding(.vertical, 30)
-                    .padding()
+        VStack(spacing: 16) {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                .scaleEffect(2)
+                .padding(.vertical, 30)
+                .padding()
 
-                Text(text)
-                    .foregroundColor(.primary)
-                    .font(.body)
-                    .bold()
-            }
-            Spacer()
+            Text(text)
+                .foregroundColor(.primary)
+                .font(.body)
+                .bold()
         }
         .padding(24)
+        // 撑满可用空间,让父层挂的 .background(ContentBackgroundView()) 能铺满整块区域,
+        // 而不是只有中间那一小坨内容尺寸。
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

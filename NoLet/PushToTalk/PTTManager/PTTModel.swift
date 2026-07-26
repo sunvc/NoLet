@@ -5,6 +5,7 @@
 //  Created by lynn on 2025/8/7.
 //
 
+import Defaults
 import Foundation
 import GRDB
 import SwiftUI
@@ -198,7 +199,36 @@ nonisolated extension Defaults.Keys {
     static let pttMusicPlay = Key<Bool>("pttMusicPlay", default: true)
     static let pttSignature = Key<Bool>("pttSignature", default: false)
     static let pttVoiceVolume = Key<CGFloat>("pttVoiceVolume", default: 1)
+    /// Opus 编码码率(bps)。最低 16k,默认 32k。数值越高音质越好、包越大。
+    static let pttBitrate = Key<Int>("pttBitrate", default: 32_000)
     static let server = Key<String>("pttServer", default: "")
+}
+
+/// PTT 录音 Opus 码率档位。最低 16k,数值越高越占带宽。
+nonisolated enum PTTBitrate: Int, CaseIterable, Identifiable {
+    case low = 16_000
+    case standard = 24_000
+    case normal = 32_000
+    case high = 48_000
+    case max = 64_000
+
+    var id: Int { rawValue }
+
+    /// 面向用户的短标签,例如 "32 kbps"
+    var displayName: String {
+        "\(rawValue / 1_000) kbps"
+    }
+
+    /// 面向用户的解释,给 Picker footer 用
+    var subtitle: String {
+        switch self {
+        case .low:      return String(localized: "省流量,音质一般")
+        case .standard: return String(localized: "轻度压缩,人声清晰")
+        case .normal:   return String(localized: "默认,平衡")
+        case .high:     return String(localized: "音质更好,包更大")
+        case .max:      return String(localized: "最高音质,占用最大")
+        }
+    }
 }
 
 extension Font {
