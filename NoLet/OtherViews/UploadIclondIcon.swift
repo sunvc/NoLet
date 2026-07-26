@@ -88,7 +88,6 @@ struct UploadIclondIcon: View {
                             .foregroundStyle(freeCount < 5 ? .red : .green)
                             .font(.headline)
                             .fontWeight(.bold)
-
                     }
                     .padding(.bottom, 10)
                     Spacer()
@@ -179,17 +178,24 @@ struct UploadIclondIcon: View {
         .onAppear(perform: {
             pictureLoading = true
             Task {
-                let (success, message) = await CloudManager.shared.checkAccount()
+                do {
+                    let (success, message) = await NCONFIG.checkAccount()
 
-                let records = await CloudManager.shared.queryIconsForMe()
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.freeCount = Defaults[.freeCloudImageCount] - records.count
-                    if !success {
-                        self.tips = message
+                    let userID = try await NCONFIG.container.userRecordID()
+                    let records = try await PushIcon.query(
+                        NSPredicate(format: "creatorUserRecordID == %@", userID),
+                        from: NCONFIG.container.publicCloudDatabase
+                    )
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self.freeCount = Defaults[.freeCloudImageCount] - records.count
+                        if !success {
+                            self.tips = message
+                        }
+                        self.status = success && self.freeCount > 0
+                        pictureLoading = false
                     }
-                    self.status = success && self.freeCount > 0
-                    pictureLoading = false
+                } catch {
+                    logger.error("\(error.localizedDescription)")
                 }
             }
         })
@@ -201,8 +207,7 @@ struct UploadIclondIcon: View {
             self.pictureLoading = true
         }
 
-        let (success, msg) = await CloudManager.shared
-            .savePushIconModel(pushIcon.toRecord(recordType: CloudManager.pushIconName))
+        let (success, msg) = await self.savePushIconModel(pushIcon)
 
         if success {
             saveOk = true
@@ -213,6 +218,28 @@ struct UploadIclondIcon: View {
         DispatchQueue.main.async {
             self.tips = msg
             self.pictureLoading = false
+        }
+    }
+
+    func savePushIconModel(_ record: PushIcon, file: URL? = nil) async -> (Bool, String?) {
+        do {
+            guard !record.name.isEmpty, record.file != nil else {
+                return (false, String(localized: "参数不全"))
+            }
+
+            let records = try await PushIcon.query(
+                NSPredicate(format: "name == %@", record.name),
+                from: NCONFIG.container.publicCloudDatabase
+            )
+            // 2. 查询云端是否存在已有记录
+            if records.count == 0 {
+                try await record.save(to: NCONFIG.container.publicCloudDatabase)
+                return (true, nil)
+            }
+            return (false, String(localized: "图片名不可用!"))
+        } catch {
+            logger.error("\(error.localizedDescription)")
+            return (false,"\(error.localizedDescription)")
         }
     }
 }

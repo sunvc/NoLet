@@ -68,13 +68,14 @@ nonisolated extension CloudKitConvertible {
 
     /// 反射默认实现的稳定别名。类型覆写 `toRecord` 做字段名桥接/后处理时，
     /// 可以先调它拿到反射结果，再手工修补字段。
-    func toRecordViaReflection(existing: CKRecord? = nil, clearNilFields: Bool = false) -> CKRecord {
-
+    func toRecordViaReflection(
+        existing: CKRecord? = nil,
+        clearNilFields: Bool = false
+    ) -> CKRecord {
         let record = existing ??
             CKRecord(recordType: Self.recordType, recordID: recordID)
 
         for child in Mirror(reflecting: self).children {
-
             guard let key = child.label, key != "id" else { continue }
             guard !Self.skippedKeys.contains(key) else { continue }
 
@@ -104,35 +105,35 @@ nonisolated extension CloudKitConvertible {
         switch value {
         // 标量
         case let v as String: return v as NSString
-        case let v as Bool:   return NSNumber(value: v)
-        case let v as Int:    return NSNumber(value: v) // 64bit 平台 Int == Int64
+        case let v as Bool: return NSNumber(value: v)
+        case let v as Int: return NSNumber(value: v) // 64bit 平台 Int == Int64
         case let v as Double: return NSNumber(value: v)
-        case let v as Float:  return NSNumber(value: v)
-        case let v as Date:   return v as NSDate
-        case let v as Data:   return v as NSData
+        case let v as Float: return NSNumber(value: v)
+        case let v as Date: return v as NSDate
+        case let v as Data: return v as NSData
 
         // URL: 本地文件 → CKAsset; 其它 → absoluteString
         case let v as URL:
             return v.isFileURL ? CKAsset(fileURL: v) : (v.absoluteString as NSString)
 
         // 已经是 CloudKit 原生类型
-        case let v as CKAsset:            return v
+        case let v as CKAsset: return v
         case let v as CKRecord.Reference: return v
-        case let v as CLLocation:         return v
+        case let v as CLLocation: return v
 
         // List 类型 —— CloudKit 支持的元素类型
-        case let v as [String]:             return v as NSArray
-        case let v as [Int]:                return v as NSArray
-        case let v as [Double]:             return v as NSArray
-        case let v as [Date]:               return v as NSArray
-        case let v as [Data]:               return v as NSArray
-        case let v as [CKAsset]:            return v as NSArray
-        case let v as [CLLocation]:         return v as NSArray
+        case let v as [String]: return v as NSArray
+        case let v as [Int]: return v as NSArray
+        case let v as [Double]: return v as NSArray
+        case let v as [Date]: return v as NSArray
+        case let v as [Data]: return v as NSArray
+        case let v as [CKAsset]: return v as NSArray
+        case let v as [CLLocation]: return v as NSArray
         case let v as [CKRecord.Reference]: return v as NSArray
         case let v as [URL]:
             let mapped: [CKRecordValue] = v.map {
                 $0.isFileURL ? (CKAsset(fileURL: $0) as CKRecordValue)
-                             : ($0.absoluteString as NSString)
+                    : ($0.absoluteString as NSString)
             }
             return mapped as NSArray
 
@@ -146,7 +147,9 @@ nonisolated extension CloudKitConvertible {
             let mirror = Mirror(reflecting: value)
             let typeName = String(describing: type(of: value))
             if mirror.displayStyle == .struct || mirror.displayStyle == .class {
-                print("⚠️ [CloudKitConvertible] Nested \(mirror.displayStyle == .struct ? "struct" : "class") not supported for key \"\(key)\": \(typeName). Reflection does not recurse; flatten this field.")
+                print(
+                    "⚠️ [CloudKitConvertible] Nested \(mirror.displayStyle == .struct ? "struct" : "class") not supported for key \"\(key)\": \(typeName). Reflection does not recurse; flatten this field."
+                )
             } else {
                 print("⚠️ [CloudKitConvertible] Unsupported type for key \"\(key)\": \(typeName)")
             }
@@ -159,7 +162,6 @@ nonisolated extension CloudKitConvertible {
 // MARK: - CloudKit 数据库便捷操作
 
 nonisolated extension CloudKitConvertible {
-
     /// 按 id 从 CloudKit 拉一条记录。
     ///
     /// - Returns: 找不到记录（`CKError.unknownItem`）时返回 `nil`；其它错误抛出。
@@ -177,7 +179,7 @@ nonisolated extension CloudKitConvertible {
     }
 
     /// 按 predicate 查询记录列表。
-    static func query(
+    nonisolated static func query(
         _ predicate: NSPredicate = NSPredicate(value: true),
         limit: Int = 100,
         from database: CKDatabase

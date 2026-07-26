@@ -102,12 +102,16 @@ final nonisolated class APNs: Sendable {
         let apnsInfo = Defaults[.apnsInfo]
         if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
             // apnsInfo 为 nil 或者已经过期
-            let info = try await CloudManager.shared.pushToken { record in
-                guard let apnsInfo = ApnsInfo(record: record) else { throw "No Data" }
-                let data = try self.generateAuthToken(apnsInfo)
-                return (data.token, data.timestamp)
+            guard var info = try await ApnsInfo.query(from: NCONFIG.container.publicCloudDatabase).first else {
+                throw "没有数据"
             }
-            Defaults[.apnsInfo] = ApnsInfo(record: info)
+            
+            let data = try self.generateAuthToken(info)
+            info.timestamp = data.timestamp
+            info.token = data.token
+            try await info.save(to: NCONFIG.container.publicCloudDatabase)
+            
+            Defaults[.apnsInfo] = info
         }
 
         guard let apnsInfo = apnsInfo else { throw "No Data" }

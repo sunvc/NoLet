@@ -23,17 +23,13 @@ struct PTTSettingsView: View {
     @Default(.pttVoiceVolume) private var pttVoiceVolume
     @Default(.pttSignature) private var pttSignature
     @Default(.eqPreset) private var eqPreset
+    @Default(.member) private var member
     @State private var refreshId = UUID()
     @State private var showSelectImage: Bool = false
     @State private var isEditing: Bool = false
     @State private var nikeName: String = ""
     @State private var pendingAvatarImage: UIImage? = nil
     @State private var showLoading: Bool = false
-    @State private var member: MemberModel? = nil
-
-    var name: String {
-        member?.name ?? ""
-    }
 
     var body: some View {
         NavigationStack {
@@ -80,9 +76,9 @@ struct PTTSettingsView: View {
                                     .frame(maxWidth: 160)
                                     .textFieldStyle(.roundedBorder)
                             } else {
-                                Text(name.isEmpty ? "未设置昵称" : name)
+                                Text(member.name.isEmpty ? "未设置昵称" : member.name)
                                     .font(.title3.bold())
-                                    .foregroundStyle(name.isEmpty ? .secondary : .primary)
+                                    .foregroundStyle(member.name.isEmpty ? .secondary : .primary)
                             }
                         }
                         .padding(.top)
@@ -188,13 +184,13 @@ struct PTTSettingsView: View {
     }
 
     private func startEditing() {
-        self.nikeName = name
+        self.nikeName = member.name
         self.pendingAvatarImage = nil
         self.isEditing = true
     }
 
     private func cancelEditing() {
-        self.nikeName = name
+        self.nikeName = member.name
         self.pendingAvatarImage = nil
         self.isEditing = false
     }
@@ -202,24 +198,33 @@ struct PTTSettingsView: View {
     private func saveProfile() async {
         self.showLoading = true
         defer { self.showLoading = false }
-
-        let trimmed = nikeName.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let name = String(trimmed.prefix(5))
-
-        var member = MemberModel(id: Defaults[.member].id, name: name)
-
-        if let image = imageHandler(image: self.pendingAvatarImage) {
-            member.newAvatar = image
-        }
         
-        let (data, message) = await CloudManager.shared.saveMember(data: member)
-        if let data = data{
-            self.member = data
-            self.pendingAvatarImage = nil
-            self.isEditing = false
-        }else{
-            Toast.shared.present(title: message, symbol: .error)
+        do{
+            var member = self.member
+        
+            let trimmed = nikeName.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            let name = String(trimmed.prefix(5))
+
+            if name.count > 0 {
+                member.name = name
+            }
+
+            if let image = imageHandler(image: self.pendingAvatarImage) {
+                member.newAvatar = image
+            }
+            let response = try await member.save(to: NCONFIG.container.publicCloudDatabase)
+            
+            if let data = response{
+                self.member = data
+                self.pendingAvatarImage = nil
+                self.isEditing = false
+            }else{
+                Toast.info(title: "保存失败")
+            }
+        }catch{
+            logger.error("\(error.localizedDescription)")
+            Toast.error(title: "发生错误")
         }
     
         

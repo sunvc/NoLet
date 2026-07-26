@@ -301,13 +301,12 @@ struct CloudServersView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
                         Task { @MainActor in
-                            let success = await CloudManager.shared.delete(
-                                item.id,
-                                pub: false
-                            )
-                            if success {
+                            do{
+                                try await item.delete(from: NCONFIG.container.privateCloudDatabase)
                                 manager.servers.removeAll(where: { $0.id == item.id })
                                 Toast.success(title: "删除成功")
+                            }catch{
+                                Toast.success(title: "发生错误")
                             }
                         }
                     } label: {

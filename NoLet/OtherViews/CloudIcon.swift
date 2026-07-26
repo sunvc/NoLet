@@ -90,16 +90,16 @@ struct CloudIcon: View {
                                             Section {
                                                 Button(role: .destructive) {
                                                     Task {
-                                                        let success = await CloudManager.shared
-                                                            .delete(icon.id)
-                                                        if !success {
-                                                            Toast.error(title: "图片删除失败")
-                                                        } else {
+                                                        do {
+                                                            try await icon
+                                                                .delete(from: NCONFIG.container
+                                                                    .privateCloudDatabase)
                                                             Toast.success(title: "图片删除成功")
-                                                            icons
-                                                                .removeAll(where: {
-                                                                    $0.id == icon.id
-                                                                })
+                                                            icons.removeAll(where: {
+                                                                $0.id == icon.id
+                                                            })
+                                                        } catch {
+                                                            Toast.error(title: "图片删除失败")
                                                         }
                                                     }
                                                 } label: {
@@ -241,18 +241,15 @@ struct CloudIcon: View {
                     self.loading = true
                 }
                 Task.detached(priority: .userInitiated) {
-                    let icons = await CloudManager.shared.queryIconsForMe()
+                    let userID = try await NCONFIG.container.userRecordID()
+                    let icons = try await PushIcon.query(
+                        NSPredicate(format: "creatorUserRecordID == %@", userID),
+                        from: NCONFIG.container.publicCloudDatabase
+                    )
 
-                    var iconsTem: [PushIcon] = []
-
-                    for item in icons {
-                        if let icon = await PushIcon(from: item) {
-                            iconsTem.append(icon)
-                        }
-                    }
                     Task { @MainActor in
                         withAnimation {
-                            self.icons = iconsTem
+                            self.icons = icons
                             self.loading = false
                         }
                     }

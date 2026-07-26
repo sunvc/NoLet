@@ -70,7 +70,6 @@ struct PushToDeviceIntent: AppIntent {
             params["level"] = level
 
             if await level == LevelTitle.critical.name {
-                
                 params["volume"] = String(describing: volume)
             }
         }
@@ -118,7 +117,7 @@ struct PushToDeviceIntent: AppIntent {
         if let reply {
             params["reply"] = reply
         }
-        
+
         if let cipherKey, !cipherKey.isEmpty {
             if let algorithm = CryptoAlgorithm(rawValue: cipherKey.count) {
                 var cryptoConfig = await CryptoModelConfig.data
@@ -144,8 +143,6 @@ struct PushToDeviceIntent: AppIntent {
         }
 
         do {
-           
-
             if let address = URL(string: address), await address.hasHttp {
                 let res: APIPushToDeviceResponse? = try await NetworkManager()
                     .fetch(
@@ -155,7 +152,10 @@ struct PushToDeviceIntent: AppIntent {
                     )
                 return .result(value: res?.code == 200 ? "ok" : "fail")
             } else {
-                guard let token = await CloudManager.shared.queryOrUpdateDeviceToken(address) else {
+                guard let member = try await MemberModel.fetch(
+                    id: address,
+                    from: NCONFIG.container.publicCloudDatabase
+                ) else {
                     return .result(value: "Token is Empty...")
                 }
 
@@ -164,7 +164,7 @@ struct PushToDeviceIntent: AppIntent {
                 params.removeValue(forKey: "body")
 
                 let response = try await APNs.shared.push(
-                    token,
+                    member.token,
                     id: UUID().uuidString,
                     title: title,
                     subtitle: subTitle,

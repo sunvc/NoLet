@@ -97,5 +97,5 @@ nonisolated extension MemberModel: Defaults.Serializable {}
 
 nonisolated extension Defaults.Keys {
 //    static let token = Key<TokensModel>("TokensModelTokens", TokensModel())
-    static let member = Key<MemberModel>("MemberModel", MemberModel(id: ""))
+    static let member = Key<MemberModel>("MemberModel", MemberModel(id: IDManager.id))
 }

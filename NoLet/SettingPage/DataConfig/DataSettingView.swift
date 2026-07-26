@@ -263,7 +263,7 @@ struct DataSettingView: View {
 
             Section(header: Text(verbatim: "")) {
                 NavigationLink {
-                    NoletFileList(rootURL: CONTAINER)
+                    NoletFileList(rootURL: NCONFIG.localContainer)
                 } label: {
                     HStack {
                         Label {
@@ -465,7 +465,7 @@ struct DataSettingView: View {
     }
 
     fileprivate func resetApp() {
-        manager.clearContentsOfDirectory(at: CONTAINER)
+        manager.clearContentsOfDirectory(at: NCONFIG.localContainer)
         exit(0)
     }
 
@@ -475,7 +475,7 @@ struct DataSettingView: View {
             let imageURL = NCONFIG.getDir(.image),
             let cacheFileURL = NCONFIG.getDir(.tem)
         {
-            totalSize = manager.calculateDirectorySize(at: CONTAINER)
+            totalSize = manager.calculateDirectorySize(at: NCONFIG.localContainer)
 
             cacheSize = manager.calculateDirectorySize(at: soundsURL) + manager
                 .calculateDirectorySize(at: imageURL) +

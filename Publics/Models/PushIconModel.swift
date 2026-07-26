@@ -23,7 +23,7 @@ nonisolated struct PushIcon: Identifiable {
     var previewImage: UIImage? = nil
 }
 
-extension PushIcon: CloudKitConvertible {
+nonisolated extension PushIcon: CloudKitConvertible {
     // MARK: - CloudKitConvertible
 
     static let recordType = "PushIcon"

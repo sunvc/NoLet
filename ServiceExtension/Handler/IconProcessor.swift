@@ -89,8 +89,7 @@ class IconProcessor: NotificationContentProcessor {
             return nil
         }
 
-        if let image = await CloudManager.shared.queryIcons(name: pngURL).first,
-           let icon = PushIcon(from: image),
+        if let icon = try? await PushIcon.query(NSPredicate(format: "name == %@", pngURL), from: NCONFIG.container.publicCloudDatabase).first,
            let previewImage = icon.previewImage,
            let data = previewImage.pngData()
         {

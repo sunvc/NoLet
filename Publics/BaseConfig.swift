@@ -11,15 +11,11 @@
 //    Created by Neo 2024/10/25.
 //
 
-
-import UIKit
-import OSLog
+import CloudKit
 import Foundation
+import OSLog
+import UIKit
 import UniformTypeIdentifiers
-
-
-nonisolated let CONTAINER = FileManager.default
-    .containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
 
 typealias NURL = String
 
@@ -32,10 +28,8 @@ nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "main")
 nonisolated class NCONFIG {
     static let appSymbol = "NoLet"
     static let groupName = "group.pushback"
-    static let icloudName = "iCloud.pushback"
     static let databaseName = "pushback.sqlite"
     static let longSoundPrefix = "pb.sounds.30s"
-
     static let notificationName = "app.wzs.newMessage"
 
     #if DEBUG
@@ -53,6 +47,23 @@ nonisolated class NCONFIG {
     static let logoImage: NURL = "https://s3.wzs.app/avatar.png"
     static let ogImage: NURL = "https://s3.wzs.app/og.png"
 
+    static let container = CKContainer(identifier: "iCloud.pushback")
+    
+    static var privateCloudDatabase:CKDatabase {
+        container.privateCloudDatabase
+    }
+    
+    static var publicCloudDatabase:CKDatabase {
+        container.publicCloudDatabase
+    }
+    
+    static let localContainer = FileManager.default
+        .containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
+    
+    static func defaultStore() -> UserDefaults {
+        return UserDefaults(suiteName: NCONFIG.groupName)!
+    }
+
     static var bundleIdentifier: String {
         Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
     }
@@ -64,12 +75,12 @@ nonisolated class NCONFIG {
     }
 
     static var configPath: URL {
-        CONTAINER.appendingPathComponent("Library/Preferences", isDirectory: true)
+        NCONFIG.localContainer.appendingPathComponent("Library/Preferences", isDirectory: true)
             .appendingPathComponent(NCONFIG.groupName + ".plist", conformingTo: .propertyList)
     }
 
     static var databasePath: URL {
-        CONTAINER.appendingPathComponent(NCONFIG.databaseName)
+        NCONFIG.localContainer.appendingPathComponent(NCONFIG.databaseName, conformingTo: .database)
     }
 
     static func offServer(_ from: String) -> Bool { from.hasPrefix(server) }
@@ -106,7 +117,7 @@ nonisolated class NCONFIG {
             return FileManager.default.temporaryDirectory
         }
 
-        let dir = CONTAINER.appendingPathComponent(name.rawValue)
+        let dir = NCONFIG.localContainer.appendingPathComponent(name.rawValue)
 
         // If the directory doesn't exist, create it
         if !FileManager.default.fileExists(atPath: dir.path) {
@@ -127,7 +138,7 @@ nonisolated class NCONFIG {
     class func files(in _: URL) -> [URL] {
         do {
             let items = try FileManager.default.contentsOfDirectory(
-                at: CONTAINER,
+                at: NCONFIG.localContainer,
                 includingPropertiesForKeys: [.isDirectoryKey],
                 options: [.skipsHiddenFiles]
             )
@@ -153,6 +164,34 @@ nonisolated class NCONFIG {
             logger.error("\(error)")
             return nil
         }
+    }
+
+    static func checkAccount() async -> (Bool, String) {
+        var message = (false, String(localized: "未知 iCloud 状态"))
+        do {
+            let status = try await container.accountStatus()
+
+            switch status {
+            case .available:
+                message = (true, String(localized: "iCloud 账户可用"))
+            case .couldNotDetermine:
+                message = (false, String(localized: "无法确定 iCloud 账户状态，可能是网络问题"))
+            case .restricted:
+                message = (false, String(localized: "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"))
+            case .noAccount:
+                message = (false, String(localized: "未登录 iCloud，请登录 iCloud 账户"))
+            case .temporarilyUnavailable:
+                message = (false, String(localized: "iCloud 服务暂时不可用，请稍后再试"))
+            @unknown default:
+                message = (false, String(localized: "未知 iCloud 状态"))
+            }
+            logger.info("\(message.0),\(message.1)")
+        } catch {
+            message = (false, String(localized: "检查 iCloud 账户状态出错"))
+            logger.error("\(error) - \(message.1)")
+        }
+
+        return message
     }
 }
 

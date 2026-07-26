@@ -23,15 +23,13 @@ final class DatabaseManager {
     }()
 
     let dbQueue: DatabaseQueue
-    let localPath: URL
+    let localPath: URL = NCONFIG.databasePath
     let messageTabelName = "message"
     let chatGroupTabelName = "chatGroup"
     let chatMessageTabelName = "chatMessage"
     let chatPromptTabelName = "chatPrompt"
 
     private init() throws {
-        localPath = CONTAINER.appendingPathComponent(NCONFIG.databaseName, conformingTo: .database)
-
         // DatabasePool 只在这里创建一次
         dbQueue = try DatabaseQueue(path: localPath.path)
         var migrator = DatabaseMigrator()

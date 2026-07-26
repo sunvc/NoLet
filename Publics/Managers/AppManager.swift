@@ -91,9 +91,12 @@ final class AppManager: ObservableObject {
 
     private init() {
         updates = newTransactionListenerTask()
+
+        Task.detached {
+            await NCONFIG.checkAccount()
+        }
     }
 
-    
     deinit {
         self.updates?.cancel()
     }
@@ -428,8 +431,6 @@ extension AppManager {
         sign: String? = nil
     ) async -> Bool {
         do {
-            
-            
             let response: baseResponse<String> =
                 try await self.network.fetch(
                     url: address,
@@ -458,7 +459,6 @@ extension AppManager {
     }
 
     nonisolated func registers() async {
-        
         guard Defaults[.servers].count > 0 else { return }
         let servers = Defaults[.servers]
         let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -626,20 +626,28 @@ extension AppManager {
     }
 
     nonisolated static func syncServer() async {
-        let serverName = await CloudManager.serverName
-        let datas = Defaults[.servers].compactMap { server in
-            server.toCKRecord(recordType: serverName)
+        let database = NCONFIG.container.privateCloudDatabase
+        let localServers = Defaults[.servers]
+        let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
+
+        let serversToSave = localServers.filter { !cloudServers.contains($0) }
+
+        await withTaskGroup(of: Void.self) { group in
+            for server in serversToSave {
+                group.addTask {
+                    _ = try? await server.save(to: database)
+                }
+            }
         }
 
-        let records = await CloudManager.shared.synchronousServers(from: datas)
-            .compactMap { record in
-                PushServerModel(from: record)
+        if let datas = try? await PushServerModel.query(from: database) {
+            await MainActor.run {
+                AppManager.shared.servers = datas
             }
-
-        Task { @MainActor in
-            AppManager.shared.servers = records
         }
     }
+
+    
 }
 
 extension AppManager {

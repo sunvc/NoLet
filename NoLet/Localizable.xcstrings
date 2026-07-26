@@ -2788,6 +2788,7 @@
       }
     },
     "图片key重复，请提供新图片以覆盖" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -2834,6 +2835,9 @@
           }
         }
       }
+    },
+    "图片名不可用!" : {
+
     },
     "图片存档" : {
       "localizations" : {
@@ -5934,6 +5938,7 @@
       }
     },
     "没有文件" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

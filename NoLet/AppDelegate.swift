@@ -21,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        
         Defaults[.member].id = IDManager.id
         UNUserNotificationCenter.current().delegate = self
         Identifiers.setCategories()
@@ -67,8 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Defaults[.member].token = token
 
         Task.detached(priority: .userInitiated) {
-            _ = await CloudManager.shared
-                .queryOrUpdateDeviceToken(Defaults[.member].id, token: token)
 
             if Defaults[.servers].count == 0 {
                 if await !AppManager.shared.customServerURL.isEmpty {
@@ -84,6 +81,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else {
                 await AppManager.shared.registers()
             }
+            
+            try await Defaults[.member].save(to: NCONFIG.container.publicCloudDatabase)
         }
 
         logger.info("获取到设备Token: \(token)")

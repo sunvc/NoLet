@@ -14,13 +14,9 @@
 import Foundation
 
 
-nonisolated func DEFAULTSTORE() -> UserDefaults {
-    return UserDefaults(suiteName: NCONFIG.groupName)!
-}
-
 nonisolated extension Defaults.Key {
     convenience init(_ name: String, _ defaultValue: Value, iCloud: Bool = false) {
-        self.init(name, default: defaultValue, suite: DEFAULTSTORE(), iCloud: iCloud)
+        self.init(name, default: defaultValue, suite: NCONFIG.defaultStore(), iCloud: iCloud)
     }
 }
 
