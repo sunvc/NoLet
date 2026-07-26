@@ -105,7 +105,7 @@ struct MessageFlatListView: View {
                 }
             }
         }
-        .task(id: "singleData") {
+        .task {
             self.loadData(limit: messagePage)
         }
     }

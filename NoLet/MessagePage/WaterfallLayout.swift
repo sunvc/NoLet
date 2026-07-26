@@ -25,8 +25,6 @@ struct ScrollOffsetPreferenceKey: PreferenceKey {
 }
 
 // MARK: - WaterfallLayout
-
-@available(iOS 16.0, *)
 struct WaterfallLayout: Layout {
     /// 列数
     let columns: Int

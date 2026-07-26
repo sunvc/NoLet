@@ -221,20 +221,37 @@ class Translate:
     @staticmethod
     def get_local_tips(lang_code="en"):
         return f"""
-            Act as a professional translator of app. Translate the text into {lang_code}.
-            Constraints:
-            1. Output ONLY the translated text.
-            2. DO NOT wrap the output in extra quotes or symbols (e.g., "", “”, 「」) unless they are part of the original source text.
-            3. DO NOT add any prefixes, labels, or introductory remarks.
-            4. Preserve the original punctuation only if it exists in the source.
-            """
+Act as a professional iOS/macOS app localizer. Translate the source text into {lang_code}.
+
+Length & tone
+1. Prefer the shortest natural phrasing a native user would recognize in a real Apple app. Do NOT add articles, filler, or explanations that inflate length.
+2. UI-shaped strings (button labels, navigation titles, tab titles, menu items, toolbar items — typically 1–4 source words with no ending punctuation) MUST stay short: match the source word count when possible, and never exceed it by more than one word unless the target language absolutely requires it.
+3. Reuse the platform-standard Apple term when one exists (e.g. "OK", "Cancel", "Done", "Settings", "Delete", "Share", "Copy"). Follow the target language's Apple Human Interface Guidelines conventions for casing (Title Case for English button/nav labels, sentence case for longer strings).
+4. Preserve tone: imperative source → imperative target; noun source → noun target. Do not turn a button into a sentence.
+
+Formatting fidelity
+5. Preserve every format specifier exactly: %@, %d, %lld, %1$@, %2$@, %.2f, etc. Keep their order and count identical to the source unless the target language grammar requires reordering — in that case use positional specifiers (%1$@, %2$@).
+6. Preserve newlines (\\n), tabs (\\t), leading/trailing whitespace, and Markdown/HTML markup exactly.
+7. Preserve emoji, punctuation marks, brand names, and code identifiers (function names, URL paths, keys like manage_app) verbatim.
+8. Do not translate strings that are pure identifiers, URLs, file extensions, or version numbers.
+
+Output contract
+9. Output ONLY the translated text. No quotes, no backticks, no labels, no "Translation:" prefix, no trailing commentary.
+10. Do not wrap the output in extra quotation marks unless the source itself is wrapped.
+"""
 
     @staticmethod
     def get_other_tips(file_type, lang_code="en"):
         return f"""
-            Please provide the content of the Xcode {file_type} you would like me to translate.
-            Once you paste the text, I will return the localized version in {lang_code} immediately, following all your constraints regarding URL parameters, brand names, and UI conciseness.
-            """
+Translate the following Xcode {file_type} file content into {lang_code}. It contains one "key" = "value"; line per entry.
+
+Rules
+1. Translate ONLY the value on the right side of each = sign. Leave every key (left side) untouched.
+2. Preserve the exact file structure: every line, quote character, equals sign, semicolon, and comment MUST appear byte-for-byte in the output.
+3. Keep translations short and idiomatic for iOS/macOS UI (short titles, permission usage descriptions, etc.). Use Apple's standard terminology for the target language where applicable.
+4. Preserve format specifiers (%@, %d, %lld), escape sequences (\\n, \\"), placeholders, brand names, and app names verbatim.
+5. Output ONLY the translated file content — no prose, no markdown fences, no explanations.
+"""
 
     def localizable_handler(self):
         print("start handler:")

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0B124150921E6F92E4A5D5DA /* WaterfallLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */; };
 		B58358922DEDD4E10066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B58358912DEDD4E10066B32E /* Defaults */; };
 		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
@@ -129,8 +128,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6F4B49098EB9147E70845904 /* WaterfallMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaterfallMessageView.swift; path = NoLet/MessagePage/WaterfallMessageView.swift; sourceTree = SOURCE_ROOT; };
-		78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WaterfallLayout.swift; path = Helpers/WaterfallLayout.swift; sourceTree = SOURCE_ROOT; };
 		B58357F72DEDD3B10066B32E /* NoLet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoLet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B58359B92DEDDB170066B32E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		B58359D12DEDDF360066B32E /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -564,8 +561,6 @@
 				B58359B82DEDDB170066B32E /* Frameworks */,
 				B58357F82DEDD3B10066B32E /* Products */,
 				B5835BC12DEDE1020066B32E /* Sounds */,
-				78994C6BAA2AA3DCB5E8324A /* WaterfallLayout.swift */,
-				6F4B49098EB9147E70845904 /* WaterfallMessageView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -873,7 +868,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B124150921E6F92E4A5D5DA /* WaterfallLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

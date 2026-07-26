@@ -23,6 +23,15 @@ struct MessagePage: View {
     @State private var searchText: String = ""
     @State private var selectAction: MessageAction? = nil
     @FocusState private var searchFocused: Bool
+
+    private var debouncedSearchBinding: Binding<String> {
+        Binding(
+            get: { searchText },
+            set: { newValue in
+                if newValue != searchText { searchText = newValue }
+            }
+        )
+    }
    
     var body: some View {
         ZStack {
@@ -38,7 +47,7 @@ struct MessagePage: View {
         }
         .animation(.easeInOut, value: showGroup)
         .toolbarTitleMenu { groupButton }
-        .searchable(text: $searchText)
+        .searchable(text: debouncedSearchBinding)
         .diff { view in
             Group {
                 if #available(iOS 26.0, *) {

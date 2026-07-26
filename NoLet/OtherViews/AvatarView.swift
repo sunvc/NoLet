@@ -15,6 +15,13 @@ import Defaults
 import Kingfisher
 import SwiftUI
 
+/// AvatarView 的 .task(id:) 使用的稳定复合键。
+/// 只依赖 icon 与显式传入的 refreshId,任一变化才重跑 loadImage()。
+private struct AvatarTaskID: Hashable {
+    let icon: String?
+    let refreshId: UUID?
+}
+
 struct AvatarView: View {
     var icon: String?
     var defaultAvatar: String? = nil
@@ -46,7 +53,7 @@ struct AvatarView: View {
             }
         }
         .clipped()
-        .task(id: "\(icon ?? "")-\(refreshId ?? UUID())") {
+        .task(id: AvatarTaskID(icon: icon, refreshId: refreshId)) {
             await loadImage()
         }
     }

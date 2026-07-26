@@ -33,7 +33,9 @@ struct ReverseScrollView<Content>: View where Content: View {
             //  ... and set its sizing inside the parent
             self.content()
             .modifier(ViewHeightKey())
-            .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
+            .onPreferenceChange(ViewHeightKey.self) {
+                self.contentHeight = $0
+            }
             .frame(height: outerGeometry.size.height)
             .offset(y: self.offset(outerheight: outerGeometry.size.height, innerheight: self.contentHeight))
             .clipped()

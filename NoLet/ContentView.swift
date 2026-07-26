@@ -113,8 +113,8 @@ struct ContentView: View {
                     value: proxy.frame(in: .global).size
                 )
             }
-            .onPreferenceChange(ContentSizeKey.self) { value in
-                manager.windowSize = value
+            .onPreferenceChange(ContentSizeKey.self) { 
+                manager.windowSize = $0
             }
         )
     }

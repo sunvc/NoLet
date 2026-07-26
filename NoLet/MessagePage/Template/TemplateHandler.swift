@@ -42,6 +42,7 @@ struct MessageCardView: View {
     }
 
     var body: some View {
+        
         switch message.style?.lowercased() {
         case "markdown":
             MarkdownMessageCard(message: message, config: messageConfig)
@@ -62,7 +63,6 @@ struct MessageCardView: View {
 }
 
 protocol MessageCardProtocol: View {
-    // 1. 核心数据源
     var message: Message { get }
     var config: MessageCardConfiguration { get }
 }

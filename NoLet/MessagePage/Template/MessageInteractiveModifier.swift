@@ -15,9 +15,9 @@ import SwiftUI
 
 struct MessageInteractiveModifier: ViewModifier {
     let message: Message
-    let namespace: Namespace.ID // 👈 用于 iOS 18 缩放动画
+    let namespace: Namespace.ID
 
-    @ObservedObject var manager: AppManager // 业务数据总管
+    @ObservedObject var manager: AppManager
     @Binding var replyText: String
     @FocusState.Binding var showReply: Bool
     @Binding var showSnap: Bool
@@ -106,7 +106,7 @@ extension View {
         in namespace: Namespace.ID,
         manager: AppManager,
         replyText: Binding<String>,
-        showReply: FocusState<Bool>.Binding, // 👈 专门适配 FocusState
+        showReply: FocusState<Bool>.Binding,
         showSnap: Binding<Bool>,
         onShowFull: @escaping () -> Void
     ) -> some View {
@@ -123,14 +123,14 @@ extension View {
 }
 
 struct MessageActionMenu: View {
-    let message: Message // 👈 你的消息模型
-    let assistantAccounsCount: Int // 助手账户数量
+    let message: Message 
+    let assistantAccounsCount: Int 
 
     @ObservedObject var manager: AppManager
     @Binding var showSnap: Bool
     @FocusState.Binding var showReply: Bool
 
-    var onDelete: () -> Void // 删除回调闭包
+    var onDelete: () -> Void 
 
     var body: some View {
         Menu {
@@ -213,7 +213,7 @@ struct MessageActionMenu: View {
 
             // 7. 删除
             Section {
-                Button(role: .destructive) { // 💡 推荐：给删除按钮标记 role，系统会自动将其变红并优化震感
+                Button(role: .destructive) {
                     onDelete()
                 } label: {
                     Label("删除", systemImage: "trash.circle")
@@ -223,7 +223,7 @@ struct MessageActionMenu: View {
             }
 
         } label: {
-            // 🏷 你的那个小巧的点击触发区域
+           
             Text(message.createDate, format: .relative(presentation: .named))
                 .font(.footnote)
                 .foregroundColor(.secondary)
@@ -235,13 +235,12 @@ struct MessageActionMenu: View {
         }
     }
 
-    // 抽出图片下载的 Task 逻辑，保持 body 的纯净
+   
     private func shareImageAction(imagePath: String) {
         Task {
             if let imageLocalPath = await ImageManager.downloadImage(imagePath),
                let uiImage = UIImage(contentsOfFile: imageLocalPath)
             {
-                // 确保更新 UI 时回到主线程
                 await MainActor.run {
                     manager.open(sheet: .share(
                         contents: [uiImage],

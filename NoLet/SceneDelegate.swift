@@ -27,6 +27,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 
         let hosting = UIHostingController(rootView: ContentView())
+        // 让 push/pop 转场时不再闪出 systemBackground 的白色底,统一由 SwiftUI 的
+        // ContentBackgroundView 兜底。
+        hosting.view.backgroundColor = .clear
+        window?.backgroundColor = .clear
 
         window?.rootViewController = hosting
         window?.makeKeyAndVisible()

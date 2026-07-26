@@ -40,48 +40,66 @@ struct MessageDetailView: View {
 
     @State private var loadData: Bool = false
 
+    /// 用一个 Binding 代理: 只有当值真正发生变化时才写回 @State,
+    /// 避免 .searchable + .searchToolbarBehavior(.minimize) 在滚动时
+    /// 于同一渲染帧内多次向 binding 写入 (会触发
+    /// "onChange(of: String) action tried to update multiple times per frame")。
+    private var debouncedSearchBinding: Binding<String> {
+        Binding(
+            get: { searchText },
+            set: { newValue in
+                if newValue != searchText { searchText = newValue }
+            }
+        )
+    }
+
     var body: some View {
-        Group {
-            if searchText.isEmpty {
-                ScrollViewReader { proxy in
-                    WaterfallMessageView(
-                        messages: messages,
-                        allCount: allCount,
-                        columnCount: manager.waterfallColumnCount,
-                        isLoading: loadData,
-                        searchText: searchText,
-                        assistantAccounsCount: assistantAccouns.count,
-                        showAllTTL: showAllTTL,
-                        selectID: manager.selectID,
-                        onDelete: { message in
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                withAnimation(.default) {
-                                    messages.removeAll(where: { $0.id == message.id })
+        ZStack {
+            ContentBackgroundView()
+                .ignoresSafeArea()
+
+            Group {
+                if searchText.isEmpty {
+                    ScrollViewReader { proxy in
+                        WaterfallMessageView(
+                            messages: messages,
+                            allCount: allCount,
+                            columnCount: manager.waterfallColumnCount,
+                            isLoading: loadData,
+                            searchText: searchText,
+                            assistantAccounsCount: assistantAccouns.count,
+                            showAllTTL: showAllTTL,
+                            selectID: manager.selectID,
+                            onDelete: { message in
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    withAnimation(.default) {
+                                        messages.removeAll(where: { $0.id == message.id })
+                                    }
                                 }
+                                Task.detached(priority: .background) {
+                                    _ = await MessagesManager.shared.delete(message)
+                                }
+                            },
+                            onLoadMore: {
+                                loadData(proxy: proxy, item: messages.last)
                             }
-                            Task.detached(priority: .background) {
-                                _ = await MessagesManager.shared.delete(message)
-                            }
-                        },
-                        onLoadMore: {
-                            loadData(proxy: proxy, item: messages.last)
+                        )
+                        .scrollDismissesKeyboard(.interactively)
+                        .scrollContentBackground(.hidden)
+                        .animation(.easeInOut, value: messages)
+                        .refreshable {
+                            self.loadData(proxy: proxy, limit: messagePage)
                         }
-                    )
-                    .scrollDismissesKeyboard(.interactively)
-                    .scrollContentBackground(.hidden)
-                    .animation(.easeInOut, value: messages)
-                    .refreshable {
-                        self.loadData(proxy: proxy, limit: messagePage)
+                        .onChange(of: messageManager.updateSign) { _ in
+                            loadData(proxy: proxy, limit: max(messages.count, messagePage))
+                        }
                     }
-                    .onChange(of: messageManager.updateSign) { _ in
-                        loadData(proxy: proxy, limit: max(messages.count, messagePage))
-                    }
+                } else {
+                    MessagSearchView(group: group)
                 }
-            } else {
-                MessagSearchView(group: group)
             }
         }
-        .searchable(text: $searchText)
+        .searchable(text: debouncedSearchBinding)
         .diff { view in
             Group {
                 if #available(iOS 26.0, *) {
@@ -95,12 +113,15 @@ struct MessageDetailView: View {
         .onSubmit(of: .search) {
             manager.searchText = searchText
         }
-        .onChange(of: searchText) { value in
-            if value.isEmpty {
+        .task(id: searchText.isEmpty) {
+            // 只在 "有搜索词 ↔ 无搜索词" 的翻转时同步一次 manager.searchText。
+            // 用 task(id:) 而不是 onChange(of: String),避免 .searchable + .minimize
+            // 在滚动动画每帧回写 binding 时触发 "onChange(of: String) action tried
+            // to update multiple times per frame" 警告。
+            if searchText.isEmpty, !manager.searchText.isEmpty {
                 manager.searchText = ""
             }
         }
-        .background(ContentBackgroundView())
         .toolbar {
             if #available(iOS 26.0, *) {
                 ToolbarSpacer(.flexible, placement: .bottomBar)
