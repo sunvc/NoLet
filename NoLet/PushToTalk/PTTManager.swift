@@ -58,6 +58,10 @@ final class PTTManager: NSObject, ObservableObject {
     private var loopTask: Task<Void, Never>?
     private let presence = PTTPresenceStream()
 
+    private var lastPresenceUpload: Date = .distantPast
+    private var pendingPresenceUpload: Task<Void, Never>?
+    private let presenceMinInterval: TimeInterval = 5
+
     private override init() {
         super.init()
 
@@ -86,6 +90,48 @@ final class PTTManager: NSObject, ObservableObject {
             name: AVAudioSession.interruptionNotification,
             object: AVAudioSession.sharedInstance()
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLocationUpdated),
+            name: .locationUpdated,
+            object: nil
+        )
+    }
+
+    /// LocManager 定位到新点时触发。带 5s 节流,避免 GPS 密集回调打爆服务端;
+    /// 频道未开时不上报,60s 心跳仍作为兜底。
+    @objc private func handleLocationUpdated() {
+        Task { @MainActor in
+            guard self.powerState else { return }
+            self.schedulePresenceUpload()
+        }
+    }
+
+    @MainActor
+    private func schedulePresenceUpload() {
+        let now = Date()
+        let elapsed = now.timeIntervalSince(lastPresenceUpload)
+        if elapsed >= presenceMinInterval {
+            lastPresenceUpload = now
+            pendingPresenceUpload?.cancel()
+            pendingPresenceUpload = nil
+            Task { [weak self] in
+                await self?.sendPresenceHeartbeat()
+            }
+            return
+        }
+        if pendingPresenceUpload != nil { return }
+        let delay = presenceMinInterval - elapsed
+        pendingPresenceUpload = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard let self else { return }
+            if Task.isCancelled { return }
+            await MainActor.run {
+                self.lastPresenceUpload = Date()
+                self.pendingPresenceUpload = nil
+            }
+            await self.sendPresenceHeartbeat()
+        }
     }
 
     /// CloudKit 昵称回填后触发 UI 刷新: `onlineUsers` 未变但 `displayName` 结果变了,
