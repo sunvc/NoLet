@@ -82,7 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 await AppManager.shared.registers()
             }
             
-            try await Defaults[.member].save(to: NCONFIG.container.publicCloudDatabase)
+            try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
         }
 
         logger.info("获取到设备Token: \(token)")
@@ -95,8 +95,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         configurationForConnecting connectingSceneSession: UISceneSession,
         options _: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
         let sceneConfiguration = UISceneConfiguration(
             name: "Default Configuration",
             sessionRole: connectingSceneSession.role
@@ -122,7 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         notificatonHandler(userInfo: content.userInfo)
 
-        // 清除通知中心的显示
         center.removeDeliveredNotifications(withIdentifiers: [content.threadIdentifier])
 
         completionHandler()

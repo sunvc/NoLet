@@ -1570,7 +1570,20 @@
       }
     },
     "最高音质,占用最大" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Highest Quality, Largest Size"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高音质,占用最大"
+          }
+        }
+      }
     },
     "写" : {
       "localizations" : {
@@ -2176,23 +2189,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "动画与振动"
-          }
-        }
-      }
-    },
-    "匿名" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anonymous"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匿名"
           }
         }
       }
@@ -2807,6 +2803,12 @@
     },
     "图片名不可用!" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image name unavailable!"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3616,10 +3618,36 @@
       }
     },
     "录音码率" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recording Bitrate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录音码率"
+          }
+        }
+      }
     },
     "录音质量" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recording Quality"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录音质量"
+          }
+        }
+      }
     },
     "微信扫码登录" : {
       "localizations" : {
@@ -4935,6 +4963,12 @@
     },
     "暂无消息" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Messages"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5118,6 +5152,9 @@
           }
         }
       }
+    },
+    "服务器不支持!" : {
+
     },
     "服务器地址无效" : {
       "localizations" : {
@@ -6609,7 +6646,20 @@
       }
     },
     "省流量,音质一般" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data Saver, Normal Audio"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "省流量,音质一般"
+          }
+        }
+      }
     },
     "确定" : {
       "localizations" : {
@@ -8052,7 +8102,20 @@
       }
     },
     "轻度压缩,人声清晰" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light compression, clear vocals"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻度压缩,人声清晰"
+          }
+        }
+      }
     },
     "输入%d位数的key" : {
       "localizations" : {
@@ -9063,7 +9126,20 @@
       }
     },
     "音质更好,包更大" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Better audio, bigger bundle"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音质更好,包更大"
+          }
+        }
+      }
     },
     "音量" : {
       "localizations" : {
@@ -9146,7 +9222,20 @@
       }
     },
     "默认,平衡" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default,Balance"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "默认,平衡"
+          }
+        }
+      }
     },
     "默认样式" : {
       "localizations" : {

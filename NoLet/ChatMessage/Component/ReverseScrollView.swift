@@ -29,8 +29,6 @@ struct ReverseScrollView<Content>: View where Content: View {
     
     var body: some View {
         GeometryReader { outerGeometry in
-            // Render the content
-            //  ... and set its sizing inside the parent
             self.content()
             .modifier(ViewHeightKey())
             .onPreferenceChange(ViewHeightKey.self) {
@@ -48,20 +46,16 @@ struct ReverseScrollView<Content>: View where Content: View {
     }
     
     func onDragChanged(_ value: DragGesture.Value) {
-        // Update rendered offset
         self.scrollOffset = (value.location.y - value.startLocation.y)
     }
     
     func onDragEnded(_ value: DragGesture.Value, outerHeight: CGFloat) {
-        // Update view to target position based on drag position
         let scrollOffset = value.location.y - value.startLocation.y
         let topLimit = self.contentHeight - outerHeight
         
-        // Negative topLimit => Content is smaller than screen size. We reset the scroll position on drag end:
         if topLimit < 0 {
              self.currentOffset = 0
         } else {
-            // We cannot pass bottom limit (negative scroll)
             if self.currentOffset + scrollOffset < 0 {
                 self.currentOffset = 0
             } else if self.currentOffset + scrollOffset > topLimit {

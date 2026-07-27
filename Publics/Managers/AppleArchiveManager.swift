@@ -52,16 +52,13 @@ public final class AppleArchiveManager {
         from sourcePath: String,
         to destinationPath: String
     ) throws {
-        // 1. 解析波浪号路径
         let resolvedSource = (sourcePath as NSString).expandingTildeInPath
         let resolvedDestination = (destinationPath as NSString).expandingTildeInPath
 
-        // 2. 校验源文件是否存在
         guard FileManager.default.fileExists(atPath: resolvedSource) else {
             throw ArchiveError.sourceFileNotExist
         }
 
-        // 3. 确保目标文件夹存在
         if !FileManager.default.fileExists(atPath: resolvedDestination) {
             try FileManager.default.createDirectory(
                 atPath: resolvedDestination,
@@ -70,7 +67,6 @@ public final class AppleArchiveManager {
             )
         }
 
-        // 4. 构建输入流水线：输入流 -> 解压流 -> 解码流
         guard let readFileStream = ArchiveByteStream.fileStream(
             path: FilePath(resolvedSource),
             mode: .readOnly,
@@ -93,7 +89,6 @@ public final class AppleArchiveManager {
         }
         defer { try? decodeStream.close() }
 
-        // 5. 构建输出流：解压提取流
         guard let extractStream = ArchiveStream.extractStream(
             extractingTo: FilePath(resolvedDestination),
             flags: [.ignoreOperationNotPermitted]
@@ -102,7 +97,6 @@ public final class AppleArchiveManager {
         }
         defer { try? extractStream.close() }
 
-        // 6. 启动多线程传输、解压并写入磁盘
         _ = try ArchiveStream.process(readingFrom: decodeStream, writingTo: extractStream)
     }
 
@@ -125,25 +119,22 @@ public final class AppleArchiveManager {
         from sourceURL: URL,
         to destinationURL: URL
     ) throws {
-        // 1. 校验源目录是否存在
         guard FileManager.default.fileExists(atPath: sourceURL.path) else {
             throw ArchiveError.sourceNotExist
         }
 
         let archiveFilePath = FilePath(destinationURL.path)
 
-        // 2. 构建输出文件流 (使用用户传入的 destinationURL)
         guard let writeFileStream = ArchiveByteStream.fileStream(
             path: archiveFilePath,
             mode: .writeOnly,
-            options: [.create, .truncate], // 增加 truncate，防止多次覆盖写入时旧数据残留
+            options: [.create, .truncate],
             permissions: FilePermissions(rawValue: 0o644)
         ) else {
             throw ArchiveError.unableToCreateFileStream
         }
         defer { try? writeFileStream.close() }
 
-        // 3. 构建压缩流
         guard let compressStream = ArchiveByteStream.compressionStream(
             using: .lzfse,
             writingTo: writeFileStream
@@ -152,20 +143,17 @@ public final class AppleArchiveManager {
         }
         defer { try? compressStream.close() }
 
-        // 4. 构建编码流
         guard let encodeStream = ArchiveStream.encodeStream(writingTo: compressStream) else {
             throw ArchiveError.unableToCreateEncodeStream
         }
         defer { try? encodeStream.close() }
 
-        // 5. 解析元数据字段键集
         guard let keySet = ArchiveHeader
             .FieldKeySet("TYP,PAT,LNK,DEV,DAT,UID,GID,MOD,FLG,MTM,BTM,CTM")
         else {
             throw ArchiveError.unableToCreateKeySet
         }
 
-        // 6. 执行归档写入 (使用用户传入的 sourceURL)
         let sourcePath = FilePath(sourceURL.path)
         try encodeStream.writeDirectoryContents(
             archiveFrom: sourcePath,

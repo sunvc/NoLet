@@ -28,10 +28,8 @@ nonisolated final class MemberNameCache: @unchecked Sendable {
     private let store = OSAllocatedUnfairLock<[String: Entry]>(initialState: [:])
     private let inflight = OSAllocatedUnfairLock<Set<String>>(initialState: [])
 
-    /// 命中或缺省成功时触发,调用方(PTTManager)据此刷新 UI
     var onUpdate: (@Sendable (_ id: String, _ name: String) -> Void)?
 
-    /// 单条记录 TTL,超时后 miss 会重新拉一次
     private let ttl: TimeInterval = 60 * 30
 
     private init() {}
@@ -51,10 +49,8 @@ nonisolated final class MemberNameCache: @unchecked Sendable {
 
     /// 触发拉取(若未在飞行中且缓存 miss)。
     func prefetch(id: String) {
-        // 已有有效缓存直接跳过
         if cached(id: id) != nil { return }
 
-        // 幂等
         let inserted = inflight.withLock { set -> Bool in
             if set.contains(id) { return false }
             set.insert(id)
@@ -69,7 +65,7 @@ nonisolated final class MemberNameCache: @unchecked Sendable {
             do {
                 let member = try await MemberModel.fetch(
                     id: id,
-                    from: NCONFIG.container.publicCloudDatabase
+                    from: NCONFIG.publicCloudDatabase
                 )
                 let name = member?.name ?? ""
                 guard let self else { return }

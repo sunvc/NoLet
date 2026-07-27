@@ -184,8 +184,6 @@ struct DataLoadingView: View {
                 .bold()
         }
         .padding(24)
-        // 撑满可用空间,让父层挂的 .background(ContentBackgroundView()) 能铺满整块区域,
-        // 而不是只有中间那一小坨内容尺寸。
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

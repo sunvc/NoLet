@@ -27,14 +27,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
 
         let hosting = UIHostingController(rootView: ContentView())
-        // 让 push/pop 转场时不再闪出 systemBackground 的白色底,统一由 SwiftUI 的
-        // ContentBackgroundView 兜底。
         hosting.view.backgroundColor = .clear
         window?.backgroundColor = .clear
 
         window?.rootViewController = hosting
         window?.makeKeyAndVisible()
-        // 2. 添加 overlay window（Toast 层）
         if overlayWindow == nil {
             let overlay = PassthroughWindow(windowScene: windowScene)
             overlay.backgroundColor = .clear
@@ -105,7 +102,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 if Defaults[.lang] != currentLang || count == 0 {
                     try? await ChatPromptDBManager.shared.replaceInsidePrompts(prompts)
 
-                    // 回到主线程设置语言
                     DispatchQueue.main.async {
                         Defaults[.lang] = currentLang
                     }
@@ -150,7 +146,6 @@ class PassthroughWindow: UIWindow {
 
         if #available(iOS 18, *) {
             for subview in rootView.subviews.reversed() {
-                /// Finding if any of rootview's is receving hit test
                 let pointInSubView = subview.convert(point, from: rootView)
                 if subview.point(inside: pointInSubView, with: event) {
                     return hitView

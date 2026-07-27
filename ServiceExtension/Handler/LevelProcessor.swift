@@ -11,7 +11,6 @@ import LiveCommunicationKit
 import UserNotifications
 
 class LevelProcessor: NotificationContentProcessor {
-    /// 铃声文件夹，扩展访问不到主APP中的铃声，需要先共享铃声文件
     let soundsDirectoryURL = NCONFIG.getDir(.sounds)
 
     func processor(
@@ -19,10 +18,8 @@ class LevelProcessor: NotificationContentProcessor {
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         
-        // 设置通知级别
         bestAttemptContent.interruptionLevel = bestAttemptContent.level
         
-        // 如果不是来电通知，直接返回
         guard let call: Bool = bestAttemptContent.userInfo.raw(.call), call else {
             bestAttemptContent.setSound()
             return bestAttemptContent
@@ -31,15 +28,11 @@ class LevelProcessor: NotificationContentProcessor {
         let soundName = bestAttemptContent.soundName?.split(separator: ".", maxSplits: 1).first
             .map(String.init) ?? "call"
 
-        // 尝试获取延长铃声 URL
         guard let longSoundURL = await getLongSound(soundName: soundName)
         else {
             bestAttemptContent.setSound(soundName: "call.caf")
             return bestAttemptContent
         }
-        // Fallback on earlier versions
-        // 设置铃声
-        // Fallback on earlier versions
         let soundFile = UNNotificationSoundName(rawValue: longSoundURL.lastPathComponent)
         if bestAttemptContent.isCritical {
             bestAttemptContent.setSound(soundName: soundFile.rawValue)
@@ -57,12 +50,10 @@ extension LevelProcessor{
         guard let soundsDirectoryURL else { return nil }
 
         let soundType: String = "caf"
-        // 已经存在处理过的长铃声，则直接返回
         let longSoundName = "\(NCONFIG.longSoundPrefix).\(soundName).\(soundType)"
         let longSoundPath = soundsDirectoryURL.appendingPathComponent(longSoundName)
         if FileManager.default.fileExists(atPath: longSoundPath.path) { return longSoundPath }
 
-        // 原始铃声路径
         var path: String = soundsDirectoryURL.appendingPathComponent("\(soundName).\(soundType)")
             .path
         if !FileManager.default.fileExists(atPath: path) {
@@ -70,7 +61,6 @@ extension LevelProcessor{
         }
         guard !path.isEmpty else { return nil }
 
-        // 将原始铃声处理成30s的长铃声，并缓存起来
         return await mergeCAFFilesToDuration(inputFile: URL(fileURLWithPath: path))
     }
 
@@ -108,7 +98,6 @@ extension LevelProcessor{
 extension UNMutableNotificationContent {
     var isCritical: Bool { levelNumber > 2 }
 
-    /// 声音名称
     var soundName: String? {
         if let sound: String = userInfo.raw(.sound), sound.count > 0 {
             let soundName = sound.hasSuffix(".caf") ? sound : "\(sound).caf"
@@ -119,12 +108,9 @@ extension UNMutableNotificationContent {
 
     var levelNumber: Int {
         let level: String? = userInfo.raw(.level)
-        // 获取 level 字符串
         guard let level = level, let number = Int(level) else {
-            // 返回标准数字
             return Int(self.level.rawValue)
         }
-        //  返回非标准数字
         return number
     }
 
@@ -162,7 +148,6 @@ extension UNMutableNotificationContent {
     }
 
     func setSound(soundName: String? = nil) {
-        // 设置重要警告 sound
         let sound = soundName ?? self.soundName ?? "\(Defaults[.sound]).caf"
         if isCritical {
             self.sound = UNNotificationSound.criticalSoundNamed(

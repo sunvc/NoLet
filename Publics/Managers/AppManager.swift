@@ -41,11 +41,9 @@ final class AppManager: ObservableObject {
 
     @Published var selectMessage: Message? = nil
     @Published var selectPoint: CGPoint = .zero
-    /// 首页彩色框
     @Published var isLoading: Bool = false
     @Published var inAssistant: Bool = false
 
-    /// 问智能助手
     @Published var askMessageID: String? = nil
     @Published var customServerURL: String = ""
     @Published var VipInfo: SubscribeUser? = nil
@@ -63,7 +61,6 @@ final class AppManager: ObservableObject {
         )
     }
 
-    /// 瀑布流列数：compact 始终 1 列，regular 按宽度 / 350 计算，2~3 列
     var waterfallColumnCount: Int {
         guard sizeClass == .compact else {
             return min(3, max(2, Int(windowSize.width / 350)))
@@ -194,14 +191,12 @@ extension AppManager {
     ///   - unOpen: A closure called when the URL cannot be opened, passing the URL as an argument
     class func openURL(url: URL, _ mode: DefaultBrowserModel) {
         guard url.absoluteString.hasHttp else {
-            // 非 http/https 直接打开
             UIApplication.shared.open(url, options: [:])
             return
         }
 
-        // 优先尝试 Universal Link
         UIApplication.shared.open(url, options: [.universalLinksOnly: true]) { success in
-            guard !success else { return } // 成功唤起 App，无需 fallback
+            guard !success else { return }
 
             switch (Defaults[.defaultBrowser], mode) {
             case (.app, _):
@@ -252,7 +247,6 @@ extension AppManager {
         else { return false }
 
         if granted {
-            // 如果授权，注册设备接收推送通知
             Task { @MainActor in
                 UIApplication.shared.registerForRemoteNotifications()
             }
@@ -350,7 +344,6 @@ extension AppManager {
                     return .assistant(config)
                 }
             case .openPage:
-                /// pb://openPage
                 if let _ = params["page"] {
                     return .cloudIcon
                 }
@@ -473,7 +466,6 @@ extension AppManager {
             for await pair in group {
                 tmp.append(pair)
             }
-            // 按 index 排序，保证和 servers 顺序一致
             return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
         }
 
@@ -508,7 +500,7 @@ extension AppManager {
 
             guard 200...299 ~= response.code else {
                 await Toast.shared.present(title: response.message, symbol: .error)
-                throw response.message
+                throw NoletError(message: response.message)
             }
 
             if let data = response.data {
@@ -543,7 +535,6 @@ extension AppManager {
         let serverNew = await register(server: serverCopy)
         if serverNew.status > 0 {
             if reset {
-                /// 重置后清空老的token
                 _ = await register(server: server, reset: true)
             }
 
@@ -585,14 +576,10 @@ extension AppManager {
             .Transaction>)
     {
         guard case .verified(let transaction) = verificationResult else {
-            // Ignore unverified transactions.
             return
         }
 
         if let revocationDate = transaction.revocationDate {
-            // Remove access to the product identified by transaction.productID.
-            // Transaction.revocationReason provides details about
-            // the revoked transaction.
             if let reason = transaction.revocationReason {
                 logger
                     .info(
@@ -606,14 +593,11 @@ extension AppManager {
             return
 
         } else if let expirationDate = transaction.expirationDate, expirationDate < Date() {
-            // Do nothing, this subscription is expired.
             if VipInfo?.productID == transaction.productID {
                 VipInfo = nil
             }
             return
         } else if transaction.isUpgraded {
-            // Do nothing, there is an active transaction
-            // for a higher level of service.
             return
         } else {
             DispatchQueue.main.async {
@@ -626,7 +610,7 @@ extension AppManager {
     }
 
     nonisolated static func syncServer() async {
-        let database = NCONFIG.container.privateCloudDatabase
+        let database = NCONFIG.privateCloudDatabase
         let localServers = Defaults[.servers]
         let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
 

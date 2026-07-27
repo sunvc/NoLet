@@ -141,12 +141,10 @@ class Toast: ObservableObject {
 
 struct ToastItem: Identifiable {
     let id: UUID = .init()
-    /// Custom Properties
     var title: String
     var symbol: String?
     var tint: Color
     var isUserInteractionEnabled: Bool
-    /// Timing
     var timing: CGFloat = 1.0
 }
 
@@ -192,7 +190,7 @@ struct ToastGroup: View {
                     ColoredBorder()
                 }
             }
-            .statusBarHidden(manager.page == .ptt)
+            .statusBarHidden(manager.page == .ptt || manager.router.first == .ptt)
             
         }
     }
@@ -213,7 +211,6 @@ struct ToastGroup: View {
 private struct ToastView: View {
     var size: CGSize
     var item: ToastItem
-    /// View Properties
     @State private var delayTask: DispatchWorkItem?
     var body: some View {
         HStack(spacing: 0) {
@@ -265,7 +262,6 @@ private struct ToastView: View {
                     let endX = value.translation.width
 
                     if abs(endX) > 10 {
-                        /// Removing Toast
                         removeToast()
                         Haptic.impact(.light)
                     }else{
@@ -276,7 +272,6 @@ private struct ToastView: View {
         .onAppear {
             startTiming()
         }
-        /// Limiting Size
         .frame(maxWidth: size.width * 0.7)
         .transition(.offset(y: 150))
     }

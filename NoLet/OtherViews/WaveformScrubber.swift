@@ -16,15 +16,12 @@ import SwiftUI
 struct WaveformScrubber: View {
     var config: Config = .init()
     var url: URL
-    /// Scrubber Progress
     @Binding var progress: CGFloat
     var info: (AudioInfo) -> Void = { _ in }
     var onGestureActive: (Bool) -> Void = { _ in }
-    /// View Properties
     @State private var samples: [Float] = []
     @State private var dowsizedSamples: [Float] = []
     @State private var viewSize: CGSize = .zero
-    /// Gesture Properties
     @State private var lastProgress: CGFloat = 0
     @GestureState private var isActive: Bool = false
     var body: some View {
@@ -65,7 +62,6 @@ struct WaveformScrubber: View {
         .onGeometryChange(for: CGSize.self) {
             $0.size
         } action: { newValue in
-            /// Storing Initial Progress
             if viewSize == .zero {
                 lastProgress = progress
             }
@@ -80,12 +76,10 @@ struct WaveformScrubber: View {
         var shapeWidth: Float = 2
         var activeTint: Color = .primary
         var inActiveTint: Color = .gray.opacity(0.7)
-        /// OTHER CONFIGS....
     }
 
     struct AudioInfo {
         var duration: TimeInterval = 0
-        /// OTHER AUDIO INFO....
     }
 }
 

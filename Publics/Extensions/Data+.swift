@@ -14,8 +14,6 @@ import SwiftUI
 
 extension Data {
     func sha256() -> String {
-        // 计算 SHA-256 哈希值
-        // 将哈希值转换为十六进制字符串
         return SHA256.hash(data: self).compactMap { String(format: "%02x", $0) }.joined()
     }
 

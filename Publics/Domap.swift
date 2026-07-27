@@ -19,7 +19,6 @@ public nonisolated enum Domap {
     static let IV = "ABCDEFGHIJKLMNOP"
 
     public static func generateRandomString(_ length: Int = 16) -> String {
-        // 创建可用字符集（大写、小写字母和数字）
         let charactersArray =
             Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 

@@ -65,7 +65,6 @@ struct MessageInteractiveModifier: ViewModifier {
                         }
                 }
             }
-            // 4. 动态消息截图
             .snapshot(trigger: showSnap) { item in
                 manager.open(sheet: .share(
                     contents: [item],
@@ -134,7 +133,6 @@ struct MessageActionMenu: View {
 
     var body: some View {
         Menu {
-            // 1. 选择复制
             Section {
                 Button {
                     Clipboard.set(message.body.plainText)
@@ -144,7 +142,6 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 2. 分享截图
             Section {
                 Button {
                     showSnap.toggle()
@@ -153,7 +150,6 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 3. 动态分享图片
             if let image = message.image, !image.isEmpty {
                 Section {
                     Button {
@@ -164,7 +160,6 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 4. 动态分享文字内容
             if !message.body.isEmpty {
                 Section {
                     Button {
@@ -179,7 +174,6 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 5. 回复
             if let reply = message.reply, !reply.isEmpty {
                 Section {
                     Button {
@@ -190,12 +184,10 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 6. 智能助手
             if assistantAccounsCount > 0 {
                 Section {
                     Button {
                         Haptic.impact()
-                        // 确保切回主线程执行 UI 核心路由逻辑
                         DispatchQueue.main.async {
                             AppManager.shared.askMessageID = message.id
                             AppManager.shared.page = .assistant
@@ -211,7 +203,6 @@ struct MessageActionMenu: View {
                 }
             }
 
-            // 7. 删除
             Section {
                 Button(role: .destructive) {
                     onDelete()
@@ -289,7 +280,7 @@ extension MessagesManager {
 
             Message(
                 id: UUID().uuidString,
-                createDate: Date().addingTimeInterval(-1), // 15秒前
+                createDate: Date().addingTimeInterval(-1),
                 group: String(localized: "主机通知"),
                 title: "Merge pull request #157 from feature/jwt-auth",
                 subtitle: String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。"),

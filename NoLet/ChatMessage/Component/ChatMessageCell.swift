@@ -91,7 +91,6 @@ struct ChatMessageCell: TiledCellContent {
         }
         .offset(x: -revealOffset)
         .overlay(alignment: .trailing) {
-            // Timestamp hidden off-screen, revealed on swipe
             Text(Self.timeFormatter.string(from: item.timestamp))
                 .font(.caption2)
                 .foregroundStyle(.secondary)

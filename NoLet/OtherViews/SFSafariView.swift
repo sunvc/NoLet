@@ -18,12 +18,10 @@ import UIKit
 class NoLetSafariViewController: SFSafariViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -39,16 +37,15 @@ class NoLetSafariViewController: SFSafariViewController {
 
 struct SFSafariView: UIViewControllerRepresentable {
     let url: URL
-    var onDismiss: (() -> Void)? // 闭包处理关闭事件
+    var onDismiss: (() -> Void)?
 
     func makeUIViewController(context: Context) -> SFSafariViewController {
         let sfVC = NoLetSafariViewController(url: url)
-        sfVC.delegate = context.coordinator // 设置委托
+        sfVC.delegate = context.coordinator
         return sfVC
     }
 
     func updateUIViewController(_: SFSafariViewController, context _: Context) {
-        // 不需要更新
     }
 
     func makeCoordinator() -> Coordinator {
@@ -64,7 +61,7 @@ struct SFSafariView: UIViewControllerRepresentable {
 
         // Delegate method to handle dismissal
         func safariViewControllerDidFinish(_: SFSafariViewController) {
-            onDismiss?() // 调用闭包处理关闭
+            onDismiss?()
         }
     }
 }

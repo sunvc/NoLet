@@ -81,8 +81,6 @@ struct ServiceRow: View {
 
             if !service.events.isEmpty {
                 ForEach(service.events, id: \.messageId) { event in
-                    // Only show active events in detail, or maybe all recent ones
-                    // Here we show a summary
                     if event.eventStatus.lowercased() != "resolved" && event.eventStatus
                         .lowercased() != "completed"
                     {
@@ -132,7 +130,6 @@ final class ApnsServerMonitoring: ObservableObject {
             throw AppleStatusError.dataError
         }
 
-        // Strip JSONP wrapper: jsonCallback( ... );
         let cleanedString = jsonString
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "^jsonCallback\\(", with: "", options: .regularExpression)
@@ -192,9 +189,7 @@ extension ApnsServerMonitoring {
         let events: [Event]
 
         var currentStatus: ServiceStatus {
-            // Filter for active events
             let activeEvents = events.filter { event in
-                // If eventStatus is "resolved" or "completed", it's not active
                 let status = event.eventStatus.lowercased()
                 return status != "resolved" && status != "completed"
             }
@@ -203,8 +198,6 @@ extension ApnsServerMonitoring {
                 return .available
             }
 
-            // Determine the most severe status among active events
-            // Priority: Outage > Maintenance > Issue
             if activeEvents.contains(where: { $0.statusType == "Outage" }) {
                 return .outage
             } else if activeEvents.contains(where: { $0.statusType == "Maintenance" }) {

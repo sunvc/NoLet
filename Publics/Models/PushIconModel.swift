@@ -28,7 +28,6 @@ nonisolated extension PushIcon: CloudKitConvertible {
 
     static let recordType = "PushIcon"
 
-    /// 客户端展示用字段，不上传到 CloudKit。
     static var skippedKeys: Set<String> { ["previewImage"] }
 
     init?(record: CKRecord) {
@@ -59,7 +58,7 @@ nonisolated extension PushIcon: CloudKitConvertible {
         if let file = file {
             record["data"] = CKAsset(fileURL: file)
         }
-        record["file"] = nil // 清掉反射默认写入的 "file" 键
+        record["file"] = nil
         return record
     }
 

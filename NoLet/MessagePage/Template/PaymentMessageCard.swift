@@ -58,7 +58,6 @@ struct PaymentMessageCard: View {
             }
             .padding([.top, .horizontal], 16)
 
-            // 2. 卡片主体 (商户名称 & 金额/内容)
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     if let url = message.url, let url = URL(string: url) {
@@ -77,7 +76,6 @@ struct PaymentMessageCard: View {
 
                 Spacer()
 
-                // 右侧展示元数据：在支付场景下非常适合放“金额”
                 if let money = message.subtitle {
                     Text(money)
                         .font(.title3)
@@ -87,7 +85,7 @@ struct PaymentMessageCard: View {
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)
-            .padding(.bottom, message.ttl > 0 ? 12 : 16) // 如果有TTL，留白缩减给进度条
+            .padding(.bottom, message.ttl > 0 ? 12 : 16)
             if let number = message.value(for: "ticket", ""), !number.isEmpty{
                 HStack {
                     Text(number)
@@ -100,7 +98,6 @@ struct PaymentMessageCard: View {
             }
             
 
-            // 3. 底部生命周期倒计时条 (TTL 机制)
             if message.ttl > 0 {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
@@ -177,7 +174,7 @@ struct PaymentMessageCard_Previews: PreviewProvider {
                 subtitle: "-¥6,799.00",
                 body: "您正在【Apple Store】消费，请确认扣款。",
                 icon: "https://favicon.wzs.app/alipay.com",
-                ttl: 10, // 10秒存活
+                ttl: 10,
                 read: false
             ))
             .padding()
@@ -205,34 +202,29 @@ struct PaymentMessageCard_Previews: PreviewProvider {
 }
 
 enum PaymentPlatform {
-    // === 国际卡组织 (Card Networks) ===
     case visa
     case mastercard
-    case amex // American Express
+    case amex
     case discover
-    case jcb // 日本吉三巴
-    case unionpay // 银联
+    case jcb
+    case unionpay
 
-    // === 手机钱包与科技巨头 (Digital Wallets) ===
     case applePay
     case googlePay
     case samsungPay
 
-    // === 亚太主流钱包 (Asia-Pacific Wallets) ===
-    case alipay // 支付宝
-    case wechat // 微信支付
-    case linePay // LINE Pay (日韩/中国台湾)
-    case paytm // 印度主流钱包
+    case alipay
+    case wechat
+    case linePay
+    case paytm
 
-    // === 欧美主流在线支付与先买后付 (Online & BNPL) ===
     case paypal
     case stripe
-    case klarna // 欧洲流行先买后付
+    case klarna
 
-    // === 欧洲本地转账/直付 (European Local Payments) ===
-    case ideal // 荷兰国民支付
-    case bancontact // 比利时国民支付
-    case giropay // 德国常用直付
+    case ideal
+    case bancontact
+    case giropay
 
     case unknown(String)
 
@@ -240,27 +232,22 @@ enum PaymentPlatform {
     init(rawValue: String) {
         let normalized = rawValue.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
         switch normalized {
-        // 国际卡组织
         case "visa": self = .visa
         case "mastercard", "master": self = .mastercard
         case "amex", "american express", "americanexpress": self = .amex
         case "discover", "discover card": self = .discover
         case "jcb": self = .jcb
         case "unionpay", "union pay", "银联", "银联支付": self = .unionpay
-        // 手机钱包
         case "applepay", "apple pay": self = .applePay
         case "googlepay", "google pay", "gpay": self = .googlePay
         case "samsungpay", "samsung pay": self = .samsungPay
-        // 亚太主流
         case "alipay", "支付宝": self = .alipay
         case "wechat", "wechat pay", "wechatpay", "微信支付": self = .wechat
         case "linepay", "line pay": self = .linePay
         case "paytm": self = .paytm
-        // 欧美主流
         case "paypal", "pay pal": self = .paypal
         case "stripe": self = .stripe
         case "klarna": self = .klarna
-        // 欧洲本地
         case "ideal": self = .ideal
         case "bancontact": self = .bancontact
         case "giropay": self = .giropay
@@ -268,38 +255,31 @@ enum PaymentPlatform {
         }
     }
 
-    // 绑定各大平台的官方标准品牌色
     var brandColor: Color {
         switch self {
-        // 国际卡组织
-        case .visa: return Color(hex: "#1A1F71") // Visa 经典深蓝
-        case .mastercard: return Color(hex: "#FF5F00") // 万事达标志性橙色
-        case .amex: return Color(hex: "#016FD0") // 运通蓝
-        case .discover: return Color(hex: "#E55C20") // Discover 橙
-        case .jcb: return Color(hex: "#00377B") // JCB 深蓝
-        case .unionpay: return Color(hex: "#00796B") // 银联标志性红绿蓝偏青色调
-        // 手机钱包
-        case .applePay: return Color.primary // 适配黑白暗黑模式
-        case .googlePay: return Color(hex: "#4285F4") // Google 蓝
-        case .samsungPay: return Color(hex: "#1428A0") // 三星蓝
-        // 亚太主流
-        case .alipay: return Color(hex: "#128EFA") // 支付宝蓝
-        case .wechat: return Color(hex: "#07C160") // 微信生态绿
-        case .linePay: return Color(hex: "#06C755") // LINE 绿
-        case .paytm: return Color(hex: "#00BAF2") // Paytm 浅蓝
-        // 欧美主流
-        case .paypal: return Color(hex: "#003087") // PayPal 深蓝
-        case .stripe: return Color(hex: "#635BFF") // Stripe 经典紫蓝
-        case .klarna: return Color(hex: "#FFB3C7") // Klarna 标志性粉色
-        // 欧洲本地
-        case .ideal: return Color(hex: "#CC0066") // iDEAL 玫红
-        case .bancontact: return Color(hex: "#000000") // 比利时黑 (建议按需适配暗黑模式)
-        case .giropay: return Color(hex: "#005A9B") // Giropay 蓝
-        case .unknown: return Color.indigo // 默认兜底紫色
+        case .visa: return Color(hex: "#1A1F71")
+        case .mastercard: return Color(hex: "#FF5F00")
+        case .amex: return Color(hex: "#016FD0")
+        case .discover: return Color(hex: "#E55C20")
+        case .jcb: return Color(hex: "#00377B")
+        case .unionpay: return Color(hex: "#00796B")
+        case .applePay: return Color.primary
+        case .googlePay: return Color(hex: "#4285F4")
+        case .samsungPay: return Color(hex: "#1428A0")
+        case .alipay: return Color(hex: "#128EFA")
+        case .wechat: return Color(hex: "#07C160")
+        case .linePay: return Color(hex: "#06C755")
+        case .paytm: return Color(hex: "#00BAF2")
+        case .paypal: return Color(hex: "#003087")
+        case .stripe: return Color(hex: "#635BFF")
+        case .klarna: return Color(hex: "#FFB3C7")
+        case .ideal: return Color(hex: "#CC0066")
+        case .bancontact: return Color(hex: "#000000")
+        case .giropay: return Color(hex: "#005A9B")
+        case .unknown: return Color.indigo
         }
     }
 
-    // 额外扩展：获取面向用户的标准展示名称
     var displayName: String {
         switch self {
         case .visa: return "Visa"
@@ -333,11 +313,11 @@ extension Color {
         Scanner(string: hex).scanHexInt64(&int)
         let a, r, g, b: UInt64
         switch hex.count {
-        case 3: // RGB (12-bit)
+        case 3:
             (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
+        case 6:
             (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
+        case 8:
             (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
         default:
             (a, r, g, b) = (1, 1, 1, 1)

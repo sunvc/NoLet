@@ -15,7 +15,7 @@ import SwiftUI
 
 struct ChatMessageSection {
     var id: String = UUID().uuidString
-    var title: String // 分组名称，例如 "[今天]"
+    var title: String
     var messages: [ChatGroup]
 }
 
@@ -112,8 +112,8 @@ struct ChatGroupHistoryView: View {
                         systemImage: getleftIconName(group: chatgroup.id)
                     )
                     .fontWeight(.medium)
-                    .lineLimit(1) // 限制为单行
-                    .truncationMode(.tail) // 超出部分用省略号
+                    .lineLimit(1)
+                    .truncationMode(.tail)
                     .padding(.vertical, 10)
                     .padding(.leading, 10)
                     .foregroundColor(chatManager.chatGroup == chatgroup ? .green : .primary)

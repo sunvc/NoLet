@@ -41,7 +41,6 @@ enum ImageManager {
         _ imageURL: String,
         expiration: StorageExpiration = .never
     ) async -> String? {
-        // Return cached path if image is already cached
         if customCache.diskStorage.isCached(forKey: imageURL) {
             return customCache.cachePath(forKey: imageURL)
         }
@@ -50,7 +49,6 @@ enum ImageManager {
 
         guard let result = try? await downloadImage(url: imageResource).get() else { return nil }
 
-        // Cache downloaded image
         await storeImage(
             data: result.originalData, key: imageURL, expiration: expiration
         )
@@ -113,7 +111,6 @@ extension ImageManager {
             return (status.0, status.1)
         }
 
-        // 1. 准备数据源 (在执行 performChanges 之前完成)
         let source: SaveSource
         if let img = image {
             source = .image(img)
@@ -126,11 +123,8 @@ extension ImageManager {
         do {
             let finalAlbumName = albumName ?? NCONFIG.AppName
 
-            // 2. 获取或创建相册
             let collection = try await fetchOrCreateAlbum(named: finalAlbumName)
 
-            // 3. 使用原生异步 performChanges (iOS 16+)
-            // 这种写法下，变量 localID 的捕获由编译器自动处理，不会有隔离报错
             try await PHPhotoLibrary.shared().performChanges {
                 let assetRequest: PHAssetChangeRequest
                 switch source {
@@ -167,7 +161,6 @@ extension ImageManager {
             return existing
         }
 
-        // 使用原生异步接口创建相册
         var localID: String?
         try await PHPhotoLibrary.shared().performChanges {
             let request = PHAssetCollectionChangeRequest

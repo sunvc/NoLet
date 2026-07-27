@@ -28,33 +28,29 @@ struct GitHubMessageCard: View {
         message.value(for: "severity", "EVENT").uppercased()
     }
 
-    // 根据消息等级 (level) 配置主题色
     var levelColor: Color {
         switch severity {
         case "INFO":
-            return Color.blue // 普通信息 / 推送
+            return Color.blue
         case "SUCCESS":
-            return Color(red: 0.18, green: 0.64, blue: 0.28) // 成功 / 正常
+            return Color(red: 0.18, green: 0.64, blue: 0.28)
         case "WARN":
-            return Color.orange // 警告级
+            return Color.orange
         case "CRIT":
-            return Color.red // 严重 / 崩溃 / 故障
+            return Color.red
         default:
-            return Color(red: 0.55, green: 0.32, blue: 0.89) // 紫色 (自定义等)
+            return Color(red: 0.55, green: 0.32, blue: 0.89)
         }
     }
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                // 1. 左侧级别状态竖条 (颜色随 level 改变)
                 Rectangle()
                     .fill(levelColor)
                     .frame(width: 5)
 
-                // 2. 右侧主体内容
                 VStack(alignment: .leading, spacing: 10) {
-                    // 顶部：分组与来源元数据
                     HStack(spacing: 6) {
                         Image(systemName: "folder")
                             .font(.system(size: 11))
@@ -83,7 +79,6 @@ struct GitHubMessageCard: View {
                             onDelete: config.delete
                         )
 
-                        // TTL 进度指示器
                         if message.ttl > 0 && !message.isExpired {
                             Circle()
                                 .trim(from: 0.0, to: CGFloat(message.lifePercent))
@@ -93,9 +88,7 @@ struct GitHubMessageCard: View {
                         }
                     }
 
-                    // 中部：等级标签与分支/网络属性
                     HStack(spacing: 8) {
-                        // 级别标
                         HStack(spacing: 4) {
                             Image(systemName: "arrow.triangle.merge")
                                 .font(.system(size: 9, weight: .bold))
@@ -108,7 +101,6 @@ struct GitHubMessageCard: View {
                         .background(levelColor)
                         .cornerRadius(4)
 
-                        // Subtitle 副标题分支
                         if let branch = message.value(for: "branch", "main") {
                             HStack(spacing: 4) {
                                 Image(systemName: "arrow.triangle.branch")
@@ -123,7 +115,6 @@ struct GitHubMessageCard: View {
                             .cornerRadius(4)
                         }
 
-                        // Host 来源主机
                         if let host = message.value(for: "from", ""),
                            let url = URL(string: host),
                            let host = url.host()
@@ -138,7 +129,6 @@ struct GitHubMessageCard: View {
                         }
                     }
 
-                    // 标题与内容描述
                     VStack(alignment: .leading, spacing: 6) {
                         if let title = message.title {
                             Text(title)
@@ -175,7 +165,6 @@ struct GitHubMessageCard: View {
                         .cornerRadius(6)
                     }
 
-                    // 底部：其他备注信息与 TTL 进度
                     HStack(spacing: 8) {
                         if let footer = message.value(for: "footer", "") {
                             Text(footer)
@@ -186,7 +175,6 @@ struct GitHubMessageCard: View {
 
                         Spacer()
 
-                        // 操作选项：如果包含 Link 则提供快捷一键复制/打开
                         if let link = message.url, let url = URL(string: link) {
                             Link(destination: url) {
                                 Text(verbatim: "LINK")
@@ -224,7 +212,7 @@ struct GitHubMessageCard: View {
     ScrollView {
         GitHubMessageCard(message: Message(
             id: UUID().uuidString,
-            createDate: Date().addingTimeInterval(-1), // 15秒前
+            createDate: Date().addingTimeInterval(-1),
             group: "主机通知",
             title: "Merge pull request #157 from feature/jwt-auth",
             subtitle: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。",

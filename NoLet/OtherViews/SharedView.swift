@@ -58,7 +58,6 @@ struct ActivityViewController: UIViewControllerRepresentable {
             }
         )
 
-        // iPad popover 支持
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let rootVC = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController
         {
@@ -74,7 +73,6 @@ struct ActivityViewController: UIViewControllerRepresentable {
             }
         }
 
-        // 分享完成回调
         controller.completionWithItemsHandler = { _, _, _, _ in
             for item in activityItems {
                 if let content = item as? URL {
@@ -131,6 +129,4 @@ nonisolated class MyCustomActivity: UIActivity {
         
     }
 }
-
-
 

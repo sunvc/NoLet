@@ -31,7 +31,6 @@ struct SelectMessageView: View {
     @State private var scaleFactor: CGFloat = 1.0
     @State private var lastScaleValue: CGFloat = 1.0
 
-    // 设定基础字体大小
     @ScaledMetric(relativeTo: .body) var baseTitleSize: CGFloat = 17
     @ScaledMetric(relativeTo: .subheadline) var baseSubtitleSize: CGFloat = 15
     @ScaledMetric(relativeTo: .footnote) var basedateSize: CGFloat = 13
@@ -253,7 +252,7 @@ struct SelectMessageView: View {
                                 let delta = value / lastScaleValue
                                 lastScaleValue = value
                                 scaleFactor *= delta
-                                scaleFactor = min(max(scaleFactor, 1.0), 3.0) // 限制最小/最大缩放倍数
+                                scaleFactor = min(max(scaleFactor, 1.0), 3.0)
                             }
                             .onEnded { _ in
                                 lastScaleValue = 1.0
@@ -475,7 +474,6 @@ struct SelectMessageView: View {
             }
 
         } catch {
-            // Handle chunk error here
             logger.error("\(error)")
             Toast.error(title: "发生错误")
         }

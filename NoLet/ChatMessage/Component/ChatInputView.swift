@@ -93,7 +93,6 @@ struct ChatInputView: View {
                 }
 
             if !text.isEmpty {
-                // 发送按钮
                 Button(action: {
                     sendMessage()
                 }) {

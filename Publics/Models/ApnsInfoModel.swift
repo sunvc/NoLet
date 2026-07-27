@@ -51,7 +51,6 @@ nonisolated struct ApnsInfo: Codable, Sendable, CloudKitConvertible {
     }
 
     init?(record: CKRecord) {
-        // 如果 recordName 对应 id，就直接用
         id = record.recordID.recordName
 
         guard

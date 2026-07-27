@@ -53,7 +53,6 @@ struct MarkdownMessageCard: MessageCardProtocol {
 
     @State private var showSnap: Bool = false
     var body: some View {
-        /// 记录一下, 在 List 直接使用 Section 会内存泄漏, 必须包一层
 
         VStack {
             HStack {

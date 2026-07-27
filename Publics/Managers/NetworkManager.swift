@@ -115,7 +115,7 @@ final nonisolated class NetworkManager: NSObject, Sendable {
         }
 
         var request = URLRequest(url: requestURL)
-        request.httpMethod = method.method // .get 或 .post
+        request.httpMethod = method.method
 
         request.setValue(await customUserAgent(), forHTTPHeaderField: "User-Agent")
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
@@ -124,7 +124,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
             request.setValue(value, forHTTPHeaderField: key)
         }
 
-        // 如果是 POST 请求，将参数编码为 JSON 设置到 httpBody
         if method == .POST, let params {
             request.httpBody = try JSONEncoder().encode(params)
         }
@@ -135,7 +134,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
         let (data, response) = try await session.data(for: request)
         guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
 
-//        logger.debug("\(request.description)\(String(data: data, encoding: .utf8))")
         return Response(data: data, header: response)
     }
 
@@ -207,10 +205,8 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         request.timeoutInterval = timeout
 
-        // 创建下载任务
         let (downloadedURL, response) = try await session.download(for: request)
 
-        // 验证响应
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidURL
         }
@@ -218,17 +214,14 @@ final nonisolated class NetworkManager: NSObject, Sendable {
             throw APIError.invalidCode(httpResponse.statusCode)
         }
 
-        // 将下载的临时文件移动到应用沙盒的缓存目录
         let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
             .first!
         let destinationURL = cachesDirectory.appendingPathComponent(fileURL.lastPathComponent)
 
-        // 如果目标文件已存在则删除
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             try FileManager.default.removeItem(at: destinationURL)
         }
 
-        // 移动文件
         try FileManager.default.moveItem(at: downloadedURL, to: destinationURL)
 
         return destinationURL
@@ -237,7 +230,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
     func customUserAgent() async -> String {
         let info = Bundle.main.infoDictionary
 
-        let appName = NCONFIG.appSymbol
         let appVersion = info?["CFBundleShortVersionString"] as? String ?? "0.0"
         let buildNumber = info?["CFBundleVersion"] as? String ?? "0"
 
@@ -252,10 +244,10 @@ final nonisolated class NetworkManager: NSObject, Sendable {
 
         let systemVer = await MainActor.run { UIDevice.current.systemVersion }
         let locale = Locale.current
-        let regionCode = locale.region?.identifier ?? "CN" // e.g. CN
-        let language = locale.language.languageCode?.identifier ?? "en" // e.g. zh
+        let regionCode = locale.region?.identifier ?? "CN"
+        let language = locale.language.languageCode?.identifier ?? "en"
 
-        return "\(appName)/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
+        return "NoLet/\(appVersion) (Build \(buildNumber); \(deviceModel); iOS \(systemVer); \(regionCode)-\(language))"
     }
 
     struct EmptyParams: Codable, Sendable {}
@@ -286,7 +278,6 @@ final nonisolated class NetworkManager: NSObject, Sendable {
         request.timeoutInterval = 15
 
         let (data, response) = try await self.session.upload(for: request, from: data)
-        // 验证响应
         guard let httpResponse = response as? HTTPURLResponse,
               200...299 ~= httpResponse.statusCode
         else {

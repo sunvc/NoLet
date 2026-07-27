@@ -36,7 +36,6 @@ struct TerminalMessageCard: MessageCardProtocol {
     var body: some View {
         
             VStack(alignment: .leading, spacing: 14) {
-                // 1. Terminal 顶部命令样式栏
                 HStack {
                     HStack(spacing: 6) {
                         Circle().fill(Color.red).frame(width: 8, height: 8)
@@ -57,7 +56,6 @@ struct TerminalMessageCard: MessageCardProtocol {
 
                     Spacer()
 
-                    // 生存环 (TTL 倒计时)
                     ZStack {
                         Circle()
                             .stroke(Color.gray.opacity(0.2), lineWidth: 2)
@@ -70,7 +68,6 @@ struct TerminalMessageCard: MessageCardProtocol {
                     }
                 }
 
-                // 2. 主体终端输出式样
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(alignment: .firstTextBaseline, spacing: 6) {
                         Text(verbatim: "$")
@@ -114,9 +111,7 @@ struct TerminalMessageCard: MessageCardProtocol {
                         }
                 }
 
-                // 3. 极客式底层元数据
                 HStack(spacing: 12) {
-                    // 精简小图标 + 接收时间
 
                     AvatarView(icon: message.icon)
                         .frame(width: 30, height: 30, alignment: .center)
@@ -129,7 +124,6 @@ struct TerminalMessageCard: MessageCardProtocol {
 
                     Spacer()
 
-                    // 操作选项：如果包含 Link 则提供快捷一键复制/打开
                     if let link = message.url, let url = URL(string: link) {
                         Link(destination: url) {
                             Text(verbatim: "LINK")

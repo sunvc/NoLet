@@ -49,7 +49,6 @@ final nonisolated class IDManager: Sendable {
 
     private func save(_ id: String) {
         guard let data = id.data(using: .utf8) else { return }
-        // 先删除旧数据，防止重复
         let queryDelete: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,
@@ -57,7 +56,6 @@ final nonisolated class IDManager: Sendable {
         ]
         SecItemDelete(queryDelete as CFDictionary)
 
-        // 添加新数据
         let queryAdd: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Self.service,

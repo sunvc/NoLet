@@ -26,11 +26,8 @@ struct ScrollOffsetPreferenceKey: PreferenceKey {
 
 // MARK: - WaterfallLayout
 struct WaterfallLayout: Layout {
-    /// 列数
     let columns: Int
-    /// 水平间距
     let horizontalSpacing: CGFloat
-    /// 垂直间距
     let verticalSpacing: CGFloat
 
     // MARK: - Cache

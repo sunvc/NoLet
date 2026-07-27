@@ -69,7 +69,6 @@ struct AnimatedButton: View {
                             Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
                                 .transition(.blurReplace)
                         } else {
-                            // Fallback on earlier versions
                             Spinner(tint: currentConfig.foregroundColor, lineWidth: 4)
                         }
                     }
@@ -83,7 +82,6 @@ struct AnimatedButton: View {
                                     .contentTransition(.symbolEffect)
                                     .transition(.blurReplace)
                             } else {
-                                // Fallback on earlier versions
                                 Image(systemName: symbolImage)
                                     .contentTransition(.opacity)
                             }
@@ -103,10 +101,7 @@ struct AnimatedButton: View {
             .clipShape(shape)
             .contentShape(shape)
         }
-        /// Disabling Button when Task is Performing
         .disabled(isLoading)
-        /// Let's create a custom button style which uses scale animation rather than default
-        /// opacity animation
         .buttonStyle(ScaleButtonStyle())
         .animation(currentConfig.animation, value: currentConfig)
         .animation(currentConfig.animation, value: isLoading)
@@ -176,7 +171,6 @@ private struct ScaleButtonStyle: ButtonStyle {
                     $0.scaleEffect(configuration.isPressed ? 0.9 : 1)
                 }
         } else {
-            // Fallback on earlier versions
             configuration.label
                 .scaleEffect(configuration.isPressed ? 0.9 : 1)
                 .animation(.linear(duration: 0.2), value: configuration.isPressed)
@@ -187,7 +181,6 @@ private struct ScaleButtonStyle: ButtonStyle {
 struct Spinner: View {
     var tint: Color
     var lineWidth: CGFloat = 4
-    /// View Properties
     @State private var rotation: Double = 0
     @State private var extraRotation: Double = 0
     @State private var isAnimatedTriggered: Bool = false

@@ -227,7 +227,6 @@ struct ListButton<LEFT: View, Trailing: View>: View {
     }
 
     var body: some View {
-        // 适配26.0暂时只能设置为button
         Button {
             if action() {
                 Haptic.impact()

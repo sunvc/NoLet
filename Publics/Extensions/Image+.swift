@@ -55,16 +55,13 @@ extension View{
 }
 
 struct ImagePickerRepresentable: UIViewControllerRepresentable {
-    // 控制弹窗的显示与隐藏
     @Binding var isPresented: Bool
-    // 选择成功后的回调闭包
     var onResult: (Result<UIImage, Error>) -> Void
 
     func makeUIViewController(context: Context) -> PHPickerViewController {
-        // 配置 PHPicker
         var configuration = PHPickerConfiguration()
-        configuration.filter = .images // 只筛选图片
-        configuration.selectionLimit = 1 // 单选（若需多选可调整）
+        configuration.filter = .images
+        configuration.selectionLimit = 1
 
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = context.coordinator
@@ -86,14 +83,12 @@ struct ImagePickerRepresentable: UIViewControllerRepresentable {
         }
 
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            // 关闭弹窗
             parent.isPresented = false
 
             guard let provider = results.first?.itemProvider else {
                 return
             }
 
-            // 安全读取图片数据
             if provider.canLoadObject(ofClass: UIImage.self) {
                 provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
                     if let error = error {
@@ -101,7 +96,6 @@ struct ImagePickerRepresentable: UIViewControllerRepresentable {
                             self?.parent.onResult(.failure(error))
                         }
                     } else if let uiImage = object as? UIImage {
-                        // 切换回主线程返回结果
                         Task { @MainActor in
                             self?.parent.onResult(.success(uiImage))
                         }
@@ -132,7 +126,6 @@ nonisolated extension String{
             backgroundColor.setFill()
             context.cgContext.fillEllipse(in: rect)
 
-            // 可用绘图区域为去除 padding 后的部分
             let availableRect = rect.insetBy(dx: padding, dy: padding)
 
             let fontSize = availableRect.height * (singleEmoji ? 1 : 0.85)
@@ -159,19 +152,16 @@ nonisolated extension String{
         _ backgroundColor: UIColor = .systemBlue
     )-> (text: String, color: UIColor, background: UIColor)?
     {
-        // 拆分字符串，最多取 3 个
         let parts = split(separator: ",", maxSplits: 2, omittingEmptySubsequences: false)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
 
         guard let first = parts.first, !first.isEmpty else {
-            return nil // 第一个为空，返回 nil
+            return nil
         }
 
-        // 转成字符数组（注意 Character 可以表示 emoji）
         let chars = Array(first)
         var firstChar: String
 
-        // 如果第一个是 emoji，直接只取一个
         if chars.first?.isEmoji == true {
             firstChar = String(chars[0])
         } else {
@@ -179,9 +169,9 @@ nonisolated extension String{
                 if chars[0].isLetter || chars[0].isNumber,
                    chars[1].isLetter || chars[1].isNumber
                 {
-                    firstChar = String(chars[0...1]) // 前两个都是字母/数字
+                    firstChar = String(chars[0...1])
                 } else {
-                    firstChar = String(chars[0]) // 否则只取第一个
+                    firstChar = String(chars[0])
                 }
             } else {
                 firstChar = String(chars[0])

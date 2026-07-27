@@ -41,7 +41,6 @@ final nonisolated class PTTRecorderManager {
     private var recordedAudioData = Data()
     private var oggWriter: OpusManager?
 
-    // 跳过提示音的样本数
     private var skippedSamplesCount: UInt32 = 0
     private var hasMicrophonePermission: Bool = false
     private let packetSize = 1920
@@ -112,7 +111,6 @@ final nonisolated class PTTRecorderManager {
         }
 
         do {
-            // 码率读用户偏好,兜底 32k,并 clamp 到 16k 以上避免异常写入让 Opus 拒绝
             let userBitrate = max(16_000, Defaults[.pttBitrate])
             oggWriter = try OpusManager(
                 sampleRate: Int(audioFormat.sampleRate),
@@ -143,7 +141,6 @@ final nonisolated class PTTRecorderManager {
 
                     let elapsedTime = oggWriter.encodedDuration
 
-                    // 切除提示音
                     if activity, pttMusicPlay, self.skippedSamplesCount < targetSampleCount {
                         self.skippedSamplesCount += buffer.frameLength
                         return

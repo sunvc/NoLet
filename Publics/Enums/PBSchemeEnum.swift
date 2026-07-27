@@ -33,7 +33,7 @@ enum PBScheme: String, CaseIterable {
     func scheme(host: HostType, params parameters: [String: Any]) -> URL {
         var components = URLComponents()
         components.scheme = rawValue
-        components.host = host.rawValue // 固定 host，如果有 path 也可以加上
+        components.host = host.rawValue
 
         components.queryItems = parameters.map { key, value in
             URLQueryItem(name: key, value: "\(value)")

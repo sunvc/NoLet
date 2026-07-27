@@ -199,7 +199,6 @@ nonisolated extension Defaults.Keys {
     static let pttMusicPlay = Key<Bool>("pttMusicPlay", default: true)
     static let pttSignature = Key<Bool>("pttSignature", default: false)
     static let pttVoiceVolume = Key<CGFloat>("pttVoiceVolume", default: 1)
-    /// Opus 编码码率(bps)。最低 16k,默认 32k。数值越高音质越好、包越大。
     static let pttBitrate = Key<Int>("pttBitrate", default: 32_000)
     static let server = Key<String>("pttServer", default: "")
 }
@@ -214,12 +213,10 @@ nonisolated enum PTTBitrate: Int, CaseIterable, Identifiable {
 
     var id: Int { rawValue }
 
-    /// 面向用户的短标签,例如 "32 kbps"
     var displayName: String {
         "\(rawValue / 1_000) kbps"
     }
 
-    /// 面向用户的解释,给 Picker footer 用
     var subtitle: String {
         switch self {
         case .low:      return String(localized: "省流量,音质一般")
@@ -271,7 +268,6 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
         }
     }
 
-    // 1. 将 gains 改为返回可选型，明确表达 .custom 没有固定的 gains
     var gains: [Float]? {
         switch self {
         case .flat: return [0, 0, 0, 0, 0, 0]
@@ -284,18 +280,14 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
     }
 
     var bands: [EQBand] {
-        // 2. 使用 guard let 安全解包，优雅地避开了越界风险和硬编码判断
         guard let currentGains = self.gains else { return [] }
 
-        // 3. 使用 zip 将频率和增益合并，天然防御两个数组长度不一致的问题
         return zip(Self.bandFrequencies, currentGains).enumerated().map { index, element in
             let (frequencyValue, gainValue) = element
 
-            // 4. 优化频率字符转换，支持 2.4K 这种带小数的表现形式
             let frequencyStr: String
             if frequencyValue >= 1000 {
                 let khz = frequencyValue / 1000
-                // 如果能被 1 整除（如 4000 -> 4），就显示 4K；否则显示 2.4K
                 frequencyStr = khz
                     .truncatingRemainder(dividingBy: 1) == 0 ? "\(Int(khz))K" : String(
                         format: "%.1fK",

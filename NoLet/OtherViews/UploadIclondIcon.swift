@@ -72,7 +72,7 @@ struct UploadIclondIcon: View {
                                 .scaleEffect(2.0)
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .overlay( // 再添加圆角边框
+                        .overlay(
                             ColoredBorder(cornerRadius: 10)
                         )
                 }
@@ -184,7 +184,7 @@ struct UploadIclondIcon: View {
                     let userID = try await NCONFIG.container.userRecordID()
                     let records = try await PushIcon.query(
                         NSPredicate(format: "creatorUserRecordID == %@", userID),
-                        from: NCONFIG.container.publicCloudDatabase
+                        from: NCONFIG.publicCloudDatabase
                     )
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         self.freeCount = Defaults[.freeCloudImageCount] - records.count
@@ -212,8 +212,10 @@ struct UploadIclondIcon: View {
         if success {
             saveOk = true
         }
-
-        logger.info("\(msg)")
+        if let msg{
+            logger.info("\(msg)")
+        }
+        
 
         DispatchQueue.main.async {
             self.tips = msg
@@ -229,11 +231,10 @@ struct UploadIclondIcon: View {
 
             let records = try await PushIcon.query(
                 NSPredicate(format: "name == %@", record.name),
-                from: NCONFIG.container.publicCloudDatabase
+                from: NCONFIG.publicCloudDatabase
             )
-            // 2. 查询云端是否存在已有记录
             if records.count == 0 {
-                try await record.save(to: NCONFIG.container.publicCloudDatabase)
+                try await record.save(to: NCONFIG.publicCloudDatabase)
                 return (true, nil)
             }
             return (false, String(localized: "图片名不可用!"))

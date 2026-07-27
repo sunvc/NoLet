@@ -492,7 +492,7 @@ struct DataSettingView: View {
                     if let data = CryptoManager(.data).decrypt(data: raw) {
                         try data.write(to: NCONFIG.configPath)
                     } else {
-                        throw NoletError.basic("解密失败")
+                        throw NoletError(message: "解密失败")
                     }
                     await MainActor.run {
                         self.restartAppShow.toggle()
@@ -557,14 +557,14 @@ struct DataSettingView: View {
 
 extension UInt64 {
     func fileSize() -> String {
-        if self >= 1_073_741_824 { // 1GB
+        if self >= 1_073_741_824 {
             return String(format: "%.2fGB", Double(self) / 1_073_741_824)
-        } else if self >= 1_048_576 { // 1MB
+        } else if self >= 1_048_576 {
             return String(format: "%.2fMB", Double(self) / 1_048_576)
-        } else if self >= 1024 { // 1KB
+        } else if self >= 1024 {
             return String(format: "%dKB", self / 1024)
         } else {
-            return "\(self)B" // 小于 1KB 直接显示字节
+            return "\(self)B"
         }
     }
 }

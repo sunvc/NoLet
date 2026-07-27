@@ -266,7 +266,6 @@ extension MessagesManager {
 }
 
 extension String {
-    /// 将 key 转换为安全的文件名
     fileprivate var safeFileName: String {
         addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? self
     }

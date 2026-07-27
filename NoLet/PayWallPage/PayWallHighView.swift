@@ -15,7 +15,6 @@ import SwiftUI
 
 /// IAP View Images
 enum IAPImage: String, CaseIterable {
-    /// Raw value represents the asset image
     case one = "IAP1"
     case two = "IAP2"
     case three = "IAP3"
@@ -119,7 +118,6 @@ struct PayWallHighView: View {
         GeometryReader {
             let size = $0.size
 
-            /// This is a Dark image, but you can use your own image as per your needs!
             Image("IAP4")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -138,7 +136,6 @@ struct PayWallHighView: View {
     @ViewBuilder
     func CustomMarketingView() -> some View {
         ZStack {
-            /// App Screenshots View
             HStack(spacing: 25) {
                 ScreenshotsView([.one, .two, .three], offset: -200)
                 ScreenshotsView([.four, .one, .two], offset: -350)
@@ -154,7 +151,6 @@ struct PayWallHighView: View {
             .frame(maxHeight: .infinity)
             .scaleEffect(1.2)
             .offset(x: 20)
-            /// Progress Blur Mask
             .mask {
                 LinearGradient(colors: [
                     .white,
@@ -168,7 +164,6 @@ struct PayWallHighView: View {
                     .padding(.bottom)
             }
 
-            /// Replace with your App Information
             VStack(spacing: 6) {
                 Text("开发者支持")
                     .font(.largeTitle.bold())

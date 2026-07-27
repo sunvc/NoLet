@@ -203,7 +203,6 @@ private struct PromptRowView: View {
     var selectID: String?
     var body: some View {
         HStack(spacing: 12) {
-            // 选中状态指示器
             Circle()
                 .fill(prompt.id == selectID ? Color.blue : Color.clear)
                 .frame(width: 8, height: 8)
@@ -215,7 +214,6 @@ private struct PromptRowView: View {
                         )
                 )
 
-            // 提示词内容
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
                     Text(prompt.title)
@@ -269,7 +267,6 @@ private struct PromptSwipeActions: ViewModifier {
     func body(content: Content) -> some View {
         content
             .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                // 编辑按钮
                 NavigationLink {
                     PromptDetailView(prompt: prompt)
                 } label: {

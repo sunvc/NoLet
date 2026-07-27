@@ -13,13 +13,11 @@
 import SwiftUI
 
 struct HackerTextView: View {
-    /// Config
     var text: String
     var trigger: Bool
     var transition: ContentTransition = .interpolate
     var duration: CGFloat = 1.0
     var speed: CGFloat = 0.1
-    /// View Properties
     @State private var animatedText: String = ""
     @State private var randomCharacters: [Character] =
         Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUWVXYZ0123456789-?/#$%@!^&*()=")

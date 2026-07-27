@@ -51,7 +51,6 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
     }
 
     func serviceExtensionWillTerminate() {
-        // Called just before the extension will be terminated by the system.
         self.stopLocation()
     }
 

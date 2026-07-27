@@ -42,3 +42,15 @@ extension UIApplication {
 func == <T, Value: Equatable>(keyPath: KeyPath<T, Value>, value: Value) -> (T) -> Bool {
     { $0[keyPath: keyPath] == value }
 }
+
+extension Array where Element: Hashable {
+    func uniqued<Value: Hashable>(
+        by keyPath: KeyPath<Element, Value>,
+        _ data: Element? = nil
+    ) -> [Element] {
+        var seen = Set<Value>()
+        var result = filter { seen.insert($0[keyPath: keyPath]).inserted }
+        if let data { result.insert(data, at: 0) }
+        return result
+    }
+}

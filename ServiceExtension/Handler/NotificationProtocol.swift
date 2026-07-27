@@ -14,7 +14,6 @@
 import Foundation
 @preconcurrency import UserNotifications
 
-/// 使用 Actor 保证 Content 的并发访问安全，并封装处理逻辑
 actor NotificationServiceActor {
     var bestAttemptContent: UNMutableNotificationContent
     var handler: (UNNotificationContent) -> Void
@@ -46,7 +45,6 @@ actor NotificationServiceActor {
 
     func completed() {
         handler(bestAttemptContent)
-        // 通知主 APP 有新消息
         CFNotificationCenterPostNotification(
             CFNotificationCenterGetDarwinNotifyCenter(),
             CFNotificationName(NCONFIG.notificationName as CFString),

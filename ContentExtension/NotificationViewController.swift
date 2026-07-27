@@ -33,14 +33,12 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Tips View
         tipsView.text = ""
         tipsView.textAlignment = .center
         tipsView.adjustsFontForContentSizeCategory = true
         tipsView.font = UIFont.preferredFont(ofSize: 16)
         tipsView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 0)
 
-        // Image View
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
         imageView.backgroundColor = .clear
@@ -48,7 +46,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         imageView.isHidden = true
         imageView.frame = .init(x: 0, y: 0, width: view.bounds.width, height: 0)
 
-        // Web
         web.navigationDelegate = self
         web.isOpaque = false
         web.backgroundColor = .clear
@@ -67,17 +64,14 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     func didReceive(_ notification: UNNotification) {
         let userInfo = notification.request.content.userInfo
 
-        // 重置状态，防止上一条通知的影响
         tipsView.text = ""
         tipsView.frame = .zero
         imageHeight = 0
         imageView.isHidden = true
         imageView.image = nil
 
-        // 关键：确保测量前 WebView 宽度与当前视图一致
         web.frame.size.width = view.bounds.width
 
-        // 兼容bark
         if let autoCopy: Bool = userInfo.raw(.autoCopy), autoCopy {
             if let copy: String = userInfo.raw(.copy) {
                 UIPasteboard.general.string = copy
@@ -90,7 +84,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         if let imageURL = attachments.first?.url {
             ImageHandler(imageURL: imageURL)
         } else {
-            // 无图 → 隐藏
             imageView.isHidden = true
             imageView.frame.size.height = 0
         }
@@ -109,7 +102,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             web.isHidden = false
             web.loadHTMLString(html, baseURL: cssURL)
         } else {
-            // 非 markdown 分类 → WebView 高度为 0
             web.isHidden = true
             markdownHeight = 0
             web.frame = .zero
@@ -120,13 +112,11 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     // MARK: - WebView Height
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
-        // 确保测量时的宽度是最终显示宽度
         webView
             .evaluateJavaScript("document.querySelector('.markdown-body').offsetHeight") { [
                 weak self
             ] result, _ in
                 guard let self = self, let height = result as? CGFloat else { return }
-                // offsetHeight 不包含外边距，增加少量 padding 缓冲
                 self.updateLayout(webHeight: height + 10)
             }
     }
@@ -137,7 +127,6 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         let tipsHeight = tipsView.bounds.height
         let isReply = currentCategory == .reply
 
-        // 如果是 reply，tips 放在底部，顶部 y 从 0 开始
         let startY: CGFloat = isReply ? 0 : tipsHeight
 
         imageView.frame = CGRect(
@@ -155,10 +144,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         )
 
         if isReply {
-            // reply 模式：图片 + web + tips
             tipsView.frame.origin.y = imageHeight + webHeight
         } else {
-            // 普通模式：tips + 图片 + web
             tipsView.frame.origin.y = 0
         }
 
@@ -194,9 +181,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             }
         } else if response.actionIdentifier == Identifiers.reply.rawValue {
             let userInfo = response.notification.request.content.userInfo
-            // TODO: - 回应信息
             guard let response = response as? UNTextInputNotificationResponse else { return }
-            let text = response.userText // 获取用户在键盘输入的文字
+            let text = response.userText
             guard self.replyText == nil else { return }
             self.replyText = text
             if let reply: String = userInfo.raw(.reply) {
@@ -322,7 +308,6 @@ extension NotificationViewController {
 
         guard let image = imageView.image else { return }
 
-        // 弹出保存选项
         let alertController = UIAlertController(
             title: String(localized: "保存图片"),
             message: String(localized: "是否将图片保存到相册？"),
@@ -359,7 +344,6 @@ extension NotificationViewController {
         let alertController: UIAlertController
 
         if let error = error {
-            // 保存失败提示
             alertController = UIAlertController(
                 title: String(localized: "保存失败"),
                 message: String(localized: "保存图片时出现错误"),
@@ -367,7 +351,6 @@ extension NotificationViewController {
             )
             logger.error("\(error)")
         } else {
-            // 保存成功提示
             alertController = UIAlertController(
                 title: String(localized: "保存成功"),
                 message: String(localized: "图片已成功保存到相册！"),
@@ -375,14 +358,12 @@ extension NotificationViewController {
             )
         }
 
-        // 添加确定按钮
         alertController.addAction(UIAlertAction(
             title: String(localized: "确定"),
             style: .default,
             handler: nil
         ))
 
-        // 显示弹窗
         DispatchQueue.main.async {
             self.present(alertController, animated: true, completion: nil)
         }

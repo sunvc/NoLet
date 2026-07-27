@@ -25,7 +25,6 @@ class CiphertextProcessor: NotificationContentProcessor {
             return bestAttemptContent
         }
 
-        // 解密推送信息
         do {
             let ciphertNumber: Int = userInfo.raw(.cipherNumber) ?? 0
 
@@ -42,7 +41,6 @@ class CiphertextProcessor: NotificationContentProcessor {
                 bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
             }
 
-            /// map 不能使用.raw 因为没有aps的层级嵌套
             if let id: String = map.raw(.id) {
                 bestAttemptContent.targetContentIdentifier = id
             }
@@ -114,7 +112,7 @@ class CiphertextProcessor: NotificationContentProcessor {
         guard let json = CryptoManager(cryptoConfig).decrypt(base64: ciphertext),
               let data = json.data(using: .utf8),
               let map = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-        else { throw "JSON parsing failed" }
+        else { throw NoletError(message: "JSON parsing failed") }
 
         return map.reduce(into: [AnyHashable: Any]()) { $0[$1.key.lowercased()] = $1.value }
     }

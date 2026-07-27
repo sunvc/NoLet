@@ -236,4 +236,3 @@ struct ChangeCryptoConfigView: View {
     ChangeCryptoConfigView(item: CryptoModelConfig.creteNewModel())
 }
 
-

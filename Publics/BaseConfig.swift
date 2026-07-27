@@ -48,18 +48,18 @@ nonisolated class NCONFIG {
     static let ogImage: NURL = "https://s3.wzs.app/og.png"
 
     static let container = CKContainer(identifier: "iCloud.pushback")
-    
-    static var privateCloudDatabase:CKDatabase {
+
+    static var privateCloudDatabase: CKDatabase {
         container.privateCloudDatabase
     }
-    
-    static var publicCloudDatabase:CKDatabase {
+
+    static var publicCloudDatabase: CKDatabase {
         container.publicCloudDatabase
     }
-    
+
     static let localContainer = FileManager.default
         .containerURL(forSecurityApplicationGroupIdentifier: NCONFIG.groupName)!
-    
+
     static func defaultStore() -> UserDefaults {
         return UserDefaults(suiteName: NCONFIG.groupName)!
     }
@@ -119,7 +119,6 @@ nonisolated class NCONFIG {
 
         let dir = NCONFIG.localContainer.appendingPathComponent(name.rawValue)
 
-        // If the directory doesn't exist, create it
         if !FileManager.default.fileExists(atPath: dir.path) {
             do {
                 try FileManager.default.createDirectory(
@@ -195,6 +194,23 @@ nonisolated class NCONFIG {
     }
 }
 
-enum NoletError: Error {
-    case basic(_ msg: String)
+public nonisolated func NSLocalizedString(
+    _ key: String,
+    tableName: String? = nil,
+    bundle: Bundle = Bundle.main,
+    value: String = "",
+    comment: String? = nil
+) -> String {
+    NSLocalizedString(
+        key,
+        tableName: tableName,
+        bundle: bundle,
+        value: value,
+        comment: comment ?? ""
+    )
+}
+
+nonisolated struct NoletError: LocalizedError {
+    let message: String?
+    var errorDescription: String? { message }
 }

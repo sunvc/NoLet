@@ -73,8 +73,6 @@ nonisolated struct PushServerModel: Codable, Identifiable, Equatable {
 nonisolated extension PushServerModel: Hashable, CloudKitConvertible {
     static let recordType = "PushServerModal"
 
-    /// 本地状态字段不上传：`status` 是运行时探活结果；`createDate/updateDate` 由 CloudKit 的
-    /// `creationDate/modificationDate` 提供。
     static var skippedKeys: Set<String> {
         ["status", "createDate", "updateDate"]
     }

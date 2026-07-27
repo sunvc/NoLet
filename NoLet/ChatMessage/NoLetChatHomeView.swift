@@ -174,7 +174,6 @@ struct NoLetChatHomeView: View {
 
             guard let newGroup = await getGroup(text: text) else { return }
             
-            // 先保存用户消息
             let userMessage = ChatMessage(
                 id: userMessageID,
                 timestamp: .now,
@@ -194,7 +193,6 @@ struct NoLetChatHomeView: View {
 
             let results = chatManager.chatsStream(text: text, messageID: manager.askMessageID)
 
-            // Map to handle parallel tool calls: index -> (name, args)
             var toolCallsMap: [Int: (name: String, args: String)] = [:]
 
             do {
@@ -255,7 +253,6 @@ struct NoLetChatHomeView: View {
                 }
                 return
             } catch {
-                // Handle chunk error here
                 logger.error("\(error.localizedDescription)")
                 Task { @MainActor in
                     Toast.shared.present(title: error.localizedDescription, symbol: .error)

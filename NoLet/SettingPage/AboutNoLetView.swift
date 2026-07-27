@@ -25,9 +25,7 @@ struct AboutNoLetView: View {
     @State private var product: Product?
     @State private var purchaseResult: Product.PurchaseResult?
     var buildVersion: String {
-        // 版本号
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        // build号
         var buildNumber: String {
             if let version = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
                let versionNumber = Int(version)
@@ -42,7 +40,6 @@ struct AboutNoLetView: View {
 
     var body: some View {
         List {
-            // Logo 部分
             Section {
                 HStack {
                     Spacer()
@@ -82,7 +79,6 @@ struct AboutNoLetView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
 
-            // 应用信息部分
             Section {
                 ListButton(leading: {
                     Label {
@@ -138,7 +134,6 @@ struct AboutNoLetView: View {
                     return true
                 }
 
-                // App开源地址
                 ListButton {
                     Label {
                         Text("使用文档")
@@ -152,7 +147,6 @@ struct AboutNoLetView: View {
                     return true
                 }
 
-                // App开源地址
                 ListButton {
                     Label {
                         Text("App开源地址")
@@ -167,7 +161,6 @@ struct AboutNoLetView: View {
                     return true
                 }
 
-                // 服务器开源地址
                 ListButton {
                     Label {
                         Text("服务器开源地址")

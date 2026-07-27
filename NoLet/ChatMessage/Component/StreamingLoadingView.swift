@@ -29,7 +29,6 @@ struct StreamingLoadingView: View {
 
                     HStack(alignment: .bottom, spacing: 0) {
                         Text(chatManager.currentContent.isEmpty ? "思考中" : "回答中")
-                        // 固定点号的容器，防止文字左右抖动
                         Text(verbatim: "...")
                             .frame(width: 15, alignment: .leading)
                     }

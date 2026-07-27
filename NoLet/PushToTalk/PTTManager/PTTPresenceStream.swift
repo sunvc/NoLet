@@ -49,7 +49,6 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
     private var currentChannel: PTTChannel?
     private var isStopped = true
 
-    /// 断线重连退避序列,秒
     private let backoffSchedule: [UInt64] = [1, 3, 5, 10, 30]
 
     /// 启动订阅。若已在同一个 (server,channel) 上,noop。切换 channel 会 teardown 旧连接。
@@ -118,7 +117,6 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
             var host: String
         }
 
-        // 读取 MainActor 隔离的 Defaults / LocManager / CryptoManager 需要跳一下
         let (body, headers): (Body, [String: String]) = await MainActor.run {
             let b = Body(
                 id: Defaults[.member].id,
@@ -145,7 +143,6 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
         request.httpBody = try JSONEncoder().encode(body)
         request.timeoutInterval = 3600
 
-        // 单独 session,禁用连接复用/缓存 buffer,配合 no-cache 避免中间层缓存
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 60
         config.timeoutIntervalForResource = 3600
@@ -159,21 +156,19 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
             throw URLError(.badServerResponse)
         }
         guard (200..<300).contains(http.statusCode) else {
-            // 读一小段响应体便于排查(签名过期、鉴权失败等)
             var head = Data()
             do {
                 for try await byte in bytes {
                     head.append(byte)
                     if head.count > 256 { break }
                 }
-            } catch { /* ignore */ }
+            } catch {  }
             let snippet = String(data: head, encoding: .utf8) ?? ""
             logger.error("SSE HTTP \(http.statusCode) body=\(snippet)")
             throw URLError(.badServerResponse)
         }
         self.delegate?.presenceStream(self, didChangeConnected: true)
 
-        // SSE 帧解析
         var eventName = ""
         var dataBuffer = ""
 
@@ -181,7 +176,6 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
             if Task.isCancelled || isStopped { return }
 
             if line.isEmpty {
-                // 空行 = 一帧结束
                 if !dataBuffer.isEmpty {
                     if let event = self.parse(eventName: eventName, data: dataBuffer) {
                         self.delegate?.presenceStream(self, didReceive: event)
@@ -192,7 +186,6 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
                 continue
             }
             if line.hasPrefix(":") {
-                // comment/heartbeat
                 continue
             }
             if let colonIndex = line.firstIndex(of: ":") {
@@ -204,7 +197,7 @@ nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
                 case "data":
                     if !dataBuffer.isEmpty { dataBuffer += "\n" }
                     dataBuffer += String(value)
-                default: break // 忽略 id/retry
+                default: break
                 }
             }
         }

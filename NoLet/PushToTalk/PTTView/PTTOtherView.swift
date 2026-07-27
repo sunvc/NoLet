@@ -54,7 +54,7 @@ struct TouchCaptureView: UIViewRepresentable {
     class Coordinator {
         var hasMoveTopRight: Binding<Bool>
         var isPressing: Binding<Bool>
-        var lastTouchTime: Date? // ⏱ 记录上次点击时间
+        var lastTouchTime: Date?
 
         init(hasMoveTopRight: Binding<Bool>, isPressing: Binding<Bool>) {
             self.hasMoveTopRight = hasMoveTopRight
@@ -187,11 +187,9 @@ nonisolated struct AnimatableLine: VectorArithmetic {
 struct CustomSlider: View {
     @Binding var isPress: Bool
     @Binding var sliderProgress: CGFloat
-    /// Configuration
     var symbol: Symbol?
     var axis: SliderAxis
     var tint: Color
-    /// View Properties
     @State private var progress: CGFloat = .zero
     @State private var dragOffset: CGFloat = .zero
     @State private var lastDragOffset: CGFloat = .zero
@@ -256,7 +254,6 @@ struct CustomSlider: View {
                     (progress < 0 ? .trailing : .leading)
             )
             .onChange(of: sliderProgress) { newValue in
-                /// Initial Progress Settings
                 guard newValue != progress else { return }
                 progress = max(min(newValue, 1.0), .zero)
                 dragOffset = progress * orientationSize
@@ -289,7 +286,6 @@ struct CustomSlider: View {
             (dragOffset > orientationSize ? topAndTrailingExcessOffset :
                 bottomAndLeadingExcessOffset) / orientationSize
 
-        // 防止 NaN 和无限值
         if progress.isFinite, !progress.isNaN {
             self.progress = progress
         }
@@ -359,7 +355,6 @@ struct EQSliderView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
-                // Draw labels for gain values
                 VStack {
                     Text(verbatim: "\(Int(maxGain))db")
                         .font(.caption2)
@@ -489,14 +484,12 @@ struct EQGlobalGainSlider: View {
     @State private var gain: Double = 0
 
     @ObservedObject private var pttManager = PTTManager.shared
-    // 配置常量
     private let minGain: Double = -24.0
     private let maxGain: Double = 24.0
-    private let alertGain: Double = 12.0 // 超过 12dB 变红
+    private let alertGain: Double = 12.0
 
     var body: some View {
         VStack(spacing: 20) {
-            // 头部数据读数
             HStack(alignment: .lastTextBaseline) {
                 Text("音量增益")
                     .font(.headline)
@@ -514,7 +507,6 @@ struct EQGlobalGainSlider: View {
             }
             .padding(.horizontal, 5)
 
-            // 自定义滑块核心组件
             GeometryReader { geometry in
                 let width = geometry.size.width
                 let height = geometry.size.height
@@ -753,10 +745,8 @@ struct RotateButtonView: View {
     private func onChanged(value: DragGesture.Value, center: CGFloat) {
         let touchLocation = value.location
 
-        // 基于精准且固定的外层中轴线建立向量
         let vector = CGVector(dx: touchLocation.x - center, dy: touchLocation.y - center)
 
-        // 防止用户手势完美点在绝对中心导致 atan2 分母为0崩溃或计算异常
         guard vector.dx != 0 || vector.dy != 0 else { return }
 
         let radians = atan2(vector.dy, vector.dx)
@@ -764,17 +754,14 @@ struct RotateButtonView: View {
         var currentAngle = radians * 180 / .pi
         if currentAngle < 0 { currentAngle += 360 }
 
-        // 如果是刚触碰的第一帧，初始化角度，不计算增量（避免闪跳）
         if !isDragging {
             lastAngle = currentAngle
             isDragging = true
             return
         }
 
-        // 计算角度增量
         var deltaAngle = currentAngle - lastAngle
 
-        // 处理 0° / 360° 突变边界的平滑过渡
         if deltaAngle > 180 {
             deltaAngle -= 360
         } else if deltaAngle < -180 {
@@ -796,8 +783,6 @@ struct RotateButtonView: View {
     }
 }
 
-/// VolumePeakView
-///
 
 struct VolumePeakView: View {
     var progress: CGFloat
@@ -811,11 +796,9 @@ struct VolumePeakView: View {
 
     var body: some View {
         ZStack {
-            // 底色：未激活状态的波形
             VoiceformShape(count: barCount, spacing: barSpacing, height: barHeight)
                 .fill(inActiveTint)
 
-            // 上色：激活状态的波形 + 动态遮罩
             VoiceformShape(count: barCount, spacing: barSpacing, height: barHeight)
                 .fill(activeTint)
                 .mask {
@@ -846,7 +829,7 @@ private struct VoiceformShape: Shape {
 
             let barRect = CGRect(
                 x: xPosition,
-                y: (rect.height - height) / 2, // 居中对齐
+                y: (rect.height - height) / 2,
                 width: barWidth,
                 height: height
             )

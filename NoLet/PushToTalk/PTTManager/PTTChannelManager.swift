@@ -68,7 +68,6 @@ final nonisolated class PTTChannelManager: NSObject,
     }
 
 
-
     func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
         var user: PTParticipant? {
             if let name = name, let avatar = avatar {
@@ -199,7 +198,6 @@ final nonisolated class PTTChannelManager: NSObject,
             }
             return String(localized: "未知")
         }
-        
         
         
         return .activeRemoteParticipant(

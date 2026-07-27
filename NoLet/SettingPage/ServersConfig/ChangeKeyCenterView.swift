@@ -341,7 +341,6 @@ struct ChangeKeyCenterView: View {
                     .init(title: String(localized: "注册中..."), background: .cyan),
                 ]
             ) { view in
-                // 检查完善url
                 await MainActor.run {
                     if keyHost.isEmpty {
                         keyHost = NCONFIG.server

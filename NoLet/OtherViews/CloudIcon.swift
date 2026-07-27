@@ -54,7 +54,7 @@ struct CloudIcon: View {
                                 Text("拖动图片到此处")
                                     .font(.largeTitle)
                                     .foregroundStyle(Color.accentColor)
-                                    .multilineTextAlignment(.center) // 使文字居中
+                                    .multilineTextAlignment(.center)
                                     .lineSpacing(10)
                                     .padding(.vertical)
                                     .frame(maxWidth: .infinity, alignment: .center)
@@ -191,30 +191,25 @@ struct CloudIcon: View {
                                     let dragThreshold: CGFloat = 50
                                     let translation = value.translation
 
-                                    // 判断滑动是否超过阈值
                                     guard abs(translation.width) > dragThreshold ||
                                         abs(translation.height) > dragThreshold
                                     else {
-                                        // 滑动距离不够，回弹
                                         withAnimation {
                                             self.offset = .zero
                                         }
                                         return
                                     }
 
-                                    // 计算滑动方向
                                     var finalOffset = CGSize.zero
                                     let slideDistance: CGFloat = 500
 
                                     if abs(translation.width) > abs(translation.height) {
-                                        // 水平方向为主
                                         finalOffset = CGSize(
                                             width: translation
                                                 .width > 0 ? slideDistance : -slideDistance,
                                             height: 0
                                         )
                                     } else {
-                                        // 垂直方向为主
                                         finalOffset = CGSize(
                                             width: 0,
                                             height: translation
@@ -222,12 +217,10 @@ struct CloudIcon: View {
                                         )
                                     }
 
-                                    // 动画滑出
                                     withAnimation(.easeOut(duration: 0.3)) {
                                         self.offset = finalOffset
                                     }
 
-                                    // 滑出后清除图片
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                         self.selectImage = nil
                                         self.offset = .zero
@@ -244,7 +237,7 @@ struct CloudIcon: View {
                     let userID = try await NCONFIG.container.userRecordID()
                     let icons = try await PushIcon.query(
                         NSPredicate(format: "creatorUserRecordID == %@", userID),
-                        from: NCONFIG.container.publicCloudDatabase
+                        from: NCONFIG.publicCloudDatabase
                     )
 
                     Task { @MainActor in

@@ -27,7 +27,6 @@ nonisolated class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        // 使用 Actor 存储 content，确保线程安全
         contentActor = NotificationServiceActor(bestAttemptContent, contentHandler: contentHandler)
 
         let identifier = request.identifier

@@ -249,7 +249,6 @@ struct NoLetChatAccountDetail: View {
     }
 
     func parseAPI(from input: String) -> (host: String, basePath: String?) {
-        // 自动补全 scheme
         let normalizedInput: String
         if input.contains("://") {
             normalizedInput = input
@@ -263,7 +262,6 @@ struct NoLetChatAccountDetail: View {
 
         let path = url.path
 
-        // 必须有有效 path
         guard !path.isEmpty, path != "/" else {
             return (input, nil)
         }

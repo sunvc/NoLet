@@ -154,7 +154,7 @@ struct PushToDeviceIntent: AppIntent {
             } else {
                 guard let member = try await MemberModel.fetch(
                     id: address,
-                    from: NCONFIG.container.publicCloudDatabase
+                    from: NCONFIG.publicCloudDatabase
                 ) else {
                     return .result(value: "Token is Empty...")
                 }

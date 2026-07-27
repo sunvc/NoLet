@@ -48,7 +48,6 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
 
     // MARK: - Computed Properties
 
-    // 优化：Lazy 干净拼接，避免产生过多临时中间数组
     var search: String {
         [group, title, subtitle, body, url]
             .lazy
@@ -57,7 +56,6 @@ struct Message: Codable, FetchableRecord, PersistableRecord, Identifiable, Hasha
             .joined(separator: ";") + ";"
     }
 
-    // 优化：提取公共计算逻辑，保持 DRY (Don't Repeat Yourself)
     private var elapsedSeconds: TimeInterval {
         Date().timeIntervalSince(createDate)
     }

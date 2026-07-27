@@ -393,19 +393,16 @@ struct SCNetworkInterface: Identifiable {
     let ip: String?
     let isVirtual: Bool
 
-    // Traffic
     let uploadSpeed: String
     let downloadSpeed: String
     let totalUpload: String
     let totalDownload: String
 
-    // For chart ratio (0.0 - 1.0)
     let uploadRatio: Double
     let downloadRatio: Double
 }
 
 struct SCNetworkStatus {
-    // Summary
     let totalUploadSpeed: String
     let totalDownloadSpeed: String
     let totalUpload: String
@@ -413,7 +410,6 @@ struct SCNetworkStatus {
     let uploadRatio: Double
     let downloadRatio: Double
 
-    // TCP Stats
     let retransRate: String
     let activeConn: Int
     let passiveConn: Int
@@ -435,13 +431,11 @@ struct SCDiskStatus: Identifiable {
     let total: String
     let percentage: Double
 
-    // Read Stats
     let readRate: String
     let readBytes: String
     let readIOPS: String
     let readDelay: String
 
-    // Write Stats
     let writeRate: String
     let writeBytes: String
     let writeIOPS: String
@@ -452,14 +446,12 @@ struct SCDockerContainer: Identifiable {
     let id = UUID()
     let name: String
     let cpuUsage: String
-    let cpuPercentage: Double // 0.0 - 1.0
+    let cpuPercentage: Double
     let memoryUsed: String
 
-    // Network
     let netUpload: String
     let netDownload: String
 
-    // Block I/O
     let blockRead: String
     let blockWrite: String
 }
@@ -478,7 +470,6 @@ struct SCServerStatus {
     let load5: Double
     let load15: Double
 
-    // Usage per core
     let cores: [SCCoreUsage]
 
     let memoryAvailable: String

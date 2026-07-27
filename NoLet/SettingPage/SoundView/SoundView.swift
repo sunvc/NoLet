@@ -47,8 +47,6 @@ struct SoundView: View {
                             .background26(.ultraThinMaterial, radius: 20)
                     }
                     .disabled(uploadLoading)
-                    ///  UTType.types(tag: "caf", tagClass:
-                    /// UTTagClass.filenameExtension,conformingTo: nil)
                     .fileImporter(
                         isPresented: $showUpload,
                         allowedContentTypes: [.audio]
@@ -190,7 +188,7 @@ struct SoundView: View {
             )
 
         guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
-            throw "Not Dir"
+            throw NoletError(message: "Not Dir")
         }
 
         try AppleArchiveManager.extractArchive(from: fromURL, to: soundsTem)
@@ -250,17 +248,14 @@ struct SoundView: View {
         name lastPath: String? = nil,
         maxNameLength: Int = 13
     ) async {
-        // 获取 App Group 的共享铃声目录路径
         guard let groupDirectoryURL = NCONFIG.getDir(.sounds) else { return }
 
         var fileName: String {
             String((lastPath ?? sourceURL.lastPathComponent).suffix(maxNameLength))
         }
 
-        // 构造目标路径：使用传入的自定义文件名（lastPath），否则使用源文件名
         let groupDestinationURL = groupDirectoryURL.appendingPathComponent(fileName)
 
-        // 如果目标文件已存在，先删除旧文件
         if FileManager.default.fileExists(atPath: groupDestinationURL.path) {
             try? FileManager.default.removeItem(at: groupDestinationURL)
         }
@@ -271,36 +266,27 @@ struct SoundView: View {
                 outputURL: groupDestinationURL,
                 maxSeconds: 29.9
             )
-            // 拷贝文件到共享目录（实现“保存”操作）
             try FileManager.default.removeItem(at: sourceURL)
 
-            // 弹出成功提示（使用 Toast）
             Toast.success(title: "保存成功")
 
-            // 刷新铃声文件列表（用于更新 UI 或数据）
             tipsManager.updateFileList()
         } catch {
-            // 如果保存失败，弹出错误提示
             Toast.error(title: "保存失败")
             logger.error("\(error)")
         }
     }
 
     func deleteSound(url: URL) {
-        // 获取 App Group 中的共享铃声目录
         guard let soundsDirectoryURL = NCONFIG.getDir(.sounds) else { return }
 
-        // 删除本地 sounds 目录下的铃声文件
         try? FileManager.default.removeItem(at: url)
 
-        // 构造共享目录下对应的长铃声文件路径（带有前缀）
         let groupSoundURL = soundsDirectoryURL.appendingPathComponent(
             "\(NCONFIG.longSoundPrefix).\(url.lastPathComponent)")
 
-        // 删除共享目录中的铃声文件（如果存在）
         try? FileManager.default.removeItem(at: groupSoundURL)
 
-        // 刷新文件列表（通常是为了更新 UI 或内部数据状态）
         tipsManager.updateFileList()
     }
 }

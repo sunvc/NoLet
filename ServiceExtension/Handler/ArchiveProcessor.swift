@@ -24,7 +24,6 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         var body: String = {
             if let body: String = userInfo.raw(.body) {
-                /// 解决换行符渲染问题
                 return ensureMarkdownLineBreaks(body)
             }
             return ""
@@ -83,7 +82,6 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         let other = userInfo.toJSONString(excluding: Params.names)
 
-        //  获取保存时间
         var saveDays: Int {
             if let isArchive = ttl, let saveDaysTem = Int(isArchive) {
                 return saveDaysTem
@@ -101,7 +99,6 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         guard saveDays > 0 else { return bestAttemptContent }
 
-        //  保存数据到数据库
         let message = Message(
             id: messageID ?? UUID().uuidString,
             createDate: .now,
@@ -126,19 +123,16 @@ class ArchiveProcessor: NotificationContentProcessor {
     }
 
     func ensureMarkdownLineBreaks(_ text: String) -> String {
-        // 将文本按行分割
         let lines = text.components(separatedBy: .newlines)
 
-        // 处理每一行：检查结尾是否已经有两个空格
         let processedLines = lines.map { line in
             if line.hasSuffix("  ") || line.isEmpty {
                 return line
             } else {
-                return line + "  " // 添加两个空格
+                return line + "  "
             }
         }
 
-        // 使用 \n 连接回去
         return processedLines.joined(separator: "\n")
     }
     

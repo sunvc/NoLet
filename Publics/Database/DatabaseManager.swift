@@ -31,7 +31,6 @@ final nonisolated class DatabaseManager: @unchecked Sendable {
     let audioMessageTableName = "AudioMessage"
 
     private init() throws {
-        // DatabasePool 只在这里创建一次
         dbQueue = try DatabaseQueue(path: localPath.path)
         var migrator = DatabaseMigrator()
         registerMessageMigrations(&migrator)

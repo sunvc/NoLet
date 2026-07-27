@@ -22,7 +22,6 @@ struct MessageDetailView: View {
 
     @Default(.assistantAccouns) var assistantAccouns
 
-    // 分页相关状态
     @State private var messages: [Message] = []
     @State private var allCount: Int = 9_999_999
 
@@ -40,10 +39,6 @@ struct MessageDetailView: View {
 
     @State private var loadData: Bool = false
 
-    /// 用一个 Binding 代理: 只有当值真正发生变化时才写回 @State,
-    /// 避免 .searchable + .searchToolbarBehavior(.minimize) 在滚动时
-    /// 于同一渲染帧内多次向 binding 写入 (会触发
-    /// "onChange(of: String) action tried to update multiple times per frame")。
     private var debouncedSearchBinding: Binding<String> {
         Binding(
             get: { searchText },
@@ -114,10 +109,6 @@ struct MessageDetailView: View {
             manager.searchText = searchText
         }
         .task(id: searchText.isEmpty) {
-            // 只在 "有搜索词 ↔ 无搜索词" 的翻转时同步一次 manager.searchText。
-            // 用 task(id:) 而不是 onChange(of: String),避免 .searchable + .minimize
-            // 在滚动动画每帧回写 binding 时触发 "onChange(of: String) action tried
-            // to update multiple times per frame" 警告。
             if searchText.isEmpty, !manager.searchText.isEmpty {
                 manager.searchText = ""
             }

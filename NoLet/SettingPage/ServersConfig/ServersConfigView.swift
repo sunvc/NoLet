@@ -302,7 +302,7 @@ struct CloudServersView: View {
                     Button(role: .destructive) {
                         Task { @MainActor in
                             do{
-                                try await item.delete(from: NCONFIG.container.privateCloudDatabase)
+                                try await item.delete(from: NCONFIG.privateCloudDatabase)
                                 manager.servers.removeAll(where: { $0.id == item.id })
                                 Toast.success(title: "删除成功")
                             }catch{

@@ -25,7 +25,6 @@ struct PlainMessageCard: MessageCardProtocol {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // 1. 顶部图片与标签区域
             if let image = message.image {
                 AsyncPhotoView(url: image, zoom: false, height: 200)
                     .padding(5)
@@ -37,7 +36,6 @@ struct PlainMessageCard: MessageCardProtocol {
 
             VStack(alignment: .leading, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    // 主标题
                     HStack {
                         if let title = message.title {
                             Text(title)
@@ -67,7 +65,7 @@ struct PlainMessageCard: MessageCardProtocol {
                             .font(.subheadline)
                             .fontWeight(.heavy)
                             .foregroundColor(.secondary)
-                            .tracking(1) // 字间距
+                            .tracking(1)
                     }
                 }
                 

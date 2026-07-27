@@ -21,7 +21,6 @@ final nonisolated class APNs: Sendable {
     // MARK: - Generate JWT Token
 
     private func generateAuthToken(_ apnsInfo: ApnsInfo) throws -> ApnsInfo {
-        // 去掉 PEM 头尾并解码
         let keyString = apnsInfo.pem
             .replacingOccurrences(of: "-----BEGIN PRIVATE KEY-----", with: "")
             .replacingOccurrences(of: "-----END PRIVATE KEY-----", with: "")
@@ -38,11 +37,9 @@ final nonisolated class APNs: Sendable {
         }
         logger.info("Private key length: \(keyData.count)")
 
-        // 使用CryptoKit处理私钥 - 直接使用DER格式
         let privateKey: P256.Signing.PrivateKey
 
         do {
-            // PEM格式的私钥通常是DER编码的，直接使用DER格式
             privateKey = try P256.Signing.PrivateKey(derRepresentation: keyData)
         } catch {
             logger.info("Error creating private key with DER: \(error)")
@@ -53,7 +50,6 @@ final nonisolated class APNs: Sendable {
             )
         }
 
-        // Header & Claims
         let header: [String: String] = [
             "alg": "ES256",
             "kid": apnsInfo.keyID,
@@ -71,7 +67,6 @@ final nonisolated class APNs: Sendable {
         let signingInput = "\(headerBase64).\(claimsBase64)"
         let signingData = Data(signingInput.utf8)
 
-        // 使用CryptoKit签名
         let signature = try privateKey.signature(for: signingData)
         let signatureData = signature.derRepresentation
         let signatureBase64 = signatureData.base64URLEncodedString()
@@ -97,24 +92,23 @@ final nonisolated class APNs: Sendable {
         custom: [String: Any] = [:]
     ) async throws -> APNsResponse {
         if deviceToken.isEmpty {
-            throw "deviceToken is empty"
+            throw NoletError(message: "deviceToken is empty")
         }
         let apnsInfo = Defaults[.apnsInfo]
         if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
-            // apnsInfo 为 nil 或者已经过期
-            guard var info = try await ApnsInfo.query(from: NCONFIG.container.publicCloudDatabase).first else {
-                throw "没有数据"
+            guard var info = try await ApnsInfo.query(from: NCONFIG.publicCloudDatabase).first else {
+                throw NoletError(message: "not data")
             }
             
             let data = try self.generateAuthToken(info)
             info.timestamp = data.timestamp
             info.token = data.token
-            try await info.save(to: NCONFIG.container.publicCloudDatabase)
+            try await info.save(to: NCONFIG.publicCloudDatabase)
             
             Defaults[.apnsInfo] = info
         }
 
-        guard let apnsInfo = apnsInfo else { throw "No Data" }
+        guard let apnsInfo = apnsInfo else { throw NoletError(message: "Not Data") }
 
         let headers = APNsHeaders(
             apnsTopic: apnsInfo.topic,
@@ -142,7 +136,7 @@ final nonisolated class APNs: Sendable {
             timestamp: Date()
         ))
 
-        guard var apsBody = aps.toEncodableDictionary() else { throw "No Params" }
+        guard var apsBody = aps.toEncodableDictionary() else { throw NoletError(message: "No Params") }
 
         for (key, value) in custom {
             if key != "aps" {
@@ -171,12 +165,10 @@ final nonisolated class APNs: Sendable {
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
-        // 2. 解码 JSON 成 APNsResponse
 
         if data.isEmpty {
             var response1 = APNsResponse(statusCode: 200)
 
-            // 1. 检查 HTTP 响应
             if let httpResponse = response as? HTTPURLResponse {
                 response1.apnsID = httpResponse.value(forHTTPHeaderField: "apns-id")
                 response1.apnsUniqueID = httpResponse.value(forHTTPHeaderField: "apns-unique-id")
@@ -190,7 +182,6 @@ final nonisolated class APNs: Sendable {
 
             var apnsResponse = try decoder.decode(APNsResponse.self, from: data)
 
-            // 1. 检查 HTTP 响应
             if let httpResponse = response as? HTTPURLResponse {
                 logger.debug("HTTP status code: \(httpResponse.statusCode)")
                 apnsResponse.apnsID = httpResponse.value(forHTTPHeaderField: "apns-id")

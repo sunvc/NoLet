@@ -204,6 +204,7 @@ extension WeChatManager: WechatAuthAPIDelegate {
     }
 
     func onAuthFinish(_ errCode: Int32, authCode: String?) {
+        let authCode = authCode ?? ""
         logger.log("\(errCode)\(authCode)")
     }
 }
@@ -240,17 +241,7 @@ extension WeChatManager: WXApiDelegate {
     }
 
     func register() {
-//        #if DEBUG
-//        WXApi.startLog(by: .detail) { log in
-//            print("WeChatSDK: \(log)")
-//        }
-//        #endif
         WXApi.registerApp(self.appid, universalLink: self.universalLink)
-//        #if DEBUG
-//        WXApi.checkUniversalLinkReady { step, result in
-//            print("\(step.rawValue), \(result.success), \(result.errorInfo),\(result.suggestion)")
-//        }
-//        #endif
 
         self.isWXAppInstalled = WeChatManager.isWXAppInstalled()
     }
@@ -326,7 +317,6 @@ nonisolated extension WeChatManager {
     }
 
     nonisolated struct WeChatUserResponse: Codable {
-        // 成功字段
         let openid: String?
         let nickname: String?
         let sex: Int?
@@ -337,7 +327,6 @@ nonisolated extension WeChatManager {
         let privilege: [String]?
         let unionid: String?
 
-        // 错误字段
         let errcode: Int?
         let errmsg: String?
 

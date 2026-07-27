@@ -113,7 +113,6 @@ struct HistoryChannelListView: View {
                 }
             }
             .onChange(of: context.date) { newDate in
-                // 持续驱动动画时间轴
                 globalTime = newDate.timeIntervalSinceReferenceDate
             }
             .onAppear {
@@ -143,7 +142,6 @@ struct ChannelMonitorRow: View {
 
     var body: some View {
         VStack(spacing: 3) {
-            // Top Section: 频道名称与状态标尺
             HStack(alignment: .center, spacing: 5) {
                 Button {
                     monitoring()
@@ -187,7 +185,7 @@ struct ChannelMonitorRow: View {
                             .fill(channel.users.count > 0 ? Color.green : Color.orange)
                             .frame(width: 8, height: 8)
                             .shadow(color: .green.opacity(0.6), radius: 4)
-                            .opacity(0.4 + (sin(globalTime * 8) + 1) * 0.3) // 👈 呼吸频率
+                            .opacity(0.4 + (sin(globalTime * 8) + 1) * 0.3)
 
                         Text(channel.server.name)
                             .font(.system(size: 12, weight: .black, design: .monospaced))

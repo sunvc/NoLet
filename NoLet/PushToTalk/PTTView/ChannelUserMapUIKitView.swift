@@ -20,8 +20,6 @@ import UIKit
 
 struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
     let id: String
-    /// 已废弃字段。频道加入不再上报/下发 name;name 通过 `MemberNameCache` 按 id 从 CloudKit 查。
-    /// 仍保留以兼容旧本地缓存反序列化,新数据一律为空串。
     let name: String
     var latitude: CLLocationDegrees
     var longitude: CLLocationDegrees
@@ -31,9 +29,6 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
         CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
-    /// 展示用名字:
-    /// - 本机: `Defaults[.member].name`,空则 "本机"
-    /// - 其它: 命中 `MemberNameCache` 就用云端 name(空串也回退到"未知");miss 时触发异步拉取并返回 "未知"
     var displayName: String {
         let myId = Defaults[.member].id
         if id == myId {
@@ -139,14 +134,12 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
             forAnnotationViewWithReuseIdentifier: ChannelUserAnnotationView.reuseIdentifier
         )
 
-        // 确保包含用户自己
         let usersWithSelf = ensureSelfUser(in: onlineUsers)
         context.coordinator.syncAnnotations(on: mapView, with: usersWithSelf)
         return mapView
     }
 
     func updateUIView(_ mapView: MKMapView, context: Context) {
-        // 确保包含用户自己
         let usersWithSelf = ensureSelfUser(in: onlineUsers)
         context.coordinator.syncAnnotations(on: mapView, with: usersWithSelf)
         context.coordinator.updateRegionIfNeeded(on: mapView, targetRegion: region)
@@ -291,9 +284,6 @@ struct ChannelUserMapUIKitView: UIViewRepresentable {
             _ mapView: MKMapView,
             regionWillChangeAnimated animated: Bool
         ) {
-            // 判断本次 region 变更是否由用户手势(pan/pinch)引起。
-            // MKMapView 的手势装在其内部子 view 上,任一 gesture recognizer 处于 began/changed/ended
-            // 状态即认为是用户交互。
             guard let gestureView = mapView.subviews.first else { return }
             let interactive = gestureView.gestureRecognizers?.contains { recognizer in
                 switch recognizer.state {
@@ -368,7 +358,7 @@ final class ChannelUserAnnotationView: MKAnnotationView {
     private var showsNormalName = false
 
     var active = false
-    var isSelf = false // 是否是用户自己
+    var isSelf = false
     var annotationPriorityRank: Int {
         if active {
             return 3
@@ -441,11 +431,9 @@ final class ChannelUserAnnotationView: MKAnnotationView {
         normalDotView.isHidden = user.active
         normalNameLabel.isHidden = !showsNormalName
 
-        // 设置颜色，自己为橙色，其他为默认颜色
         let primaryColor: UIColor = isSelf ? .systemOrange : .systemGreen
         let secondaryColor: UIColor = isSelf ? .systemOrange : .systemBlue
 
-        // 更新视图颜色
         iconCircleView.backgroundColor = primaryColor
         iconCircleView.layer.shadowColor = primaryColor.cgColor
         nameLabel.backgroundColor = primaryColor.withAlphaComponent(0.92)

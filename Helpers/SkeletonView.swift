@@ -19,15 +19,12 @@ struct SkeletonView<S: Shape>: View {
     var body: some View {
         shape
             .fill(color)
-            /// Skeleton Effect
             .overlay {
                 GeometryReader {
                     let size = $0.size
                     let skeletonWidth = size.width / 2
-                    /// Limiting blur radius to 30+
                     let blurRadius = max(skeletonWidth / 2, 30)
                     let blurDiameter = blurRadius * 2
-                    /// Movement Offsets
                     let minX = -(skeletonWidth + blurDiameter)
                     let maxX = size.width + skeletonWidth + blurDiameter
 
@@ -38,7 +35,6 @@ struct SkeletonView<S: Shape>: View {
                         .blur(radius: blurRadius)
                         .rotationEffect(.init(degrees: rotation))
                         .blendMode(.softLight)
-                        /// Moving from left-right in-definetely
                         .offset(x: isAnimating ? maxX : minX)
                 }
             }
@@ -51,7 +47,6 @@ struct SkeletonView<S: Shape>: View {
                 }
             }
             .onDisappear {
-                /// Stopping Animation
                 isAnimating = false
             }
             .transaction {
@@ -61,7 +56,6 @@ struct SkeletonView<S: Shape>: View {
             }
     }
 
-    /// Customizable Properties
     var rotation: Double {
         return 5
     }

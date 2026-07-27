@@ -60,7 +60,7 @@ struct MarkdownCustomView: View {
         .markdownInlineImageProvider(WebInlineImageProvider())
         .environment(\.openURL, OpenURLAction { url in
             AppManager.openURL(url: url, .safari)
-            return .handled // 表示链接已经被处理，不再执行默认行为
+            return .handled
         })
         .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
         .markdownTheme(MarkdownTheme.defaultTheme(baseSize, scaleFactor: scaleFactor))
@@ -75,7 +75,6 @@ struct WebImageProvider: ImageProvider {
 
 struct WebInlineImageProvider: InlineImageProvider {
     func image(with url: URL, label _: String) async throws -> Image {
-        // 下载图片
         guard let imagePath = await ImageManager.downloadImage(url.absoluteString),
               let original = UIImage(contentsOfFile: imagePath)
         else {
@@ -86,10 +85,8 @@ struct WebInlineImageProvider: InlineImageProvider {
             )
         }
 
-        // 获取屏幕宽度（逻辑点）
         let maxWidth = UIScreen.main.bounds.width - 30
 
-        // 按屏幕宽度等比缩放
         let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)
 
         return Image(uiImage: resized)
@@ -101,7 +98,6 @@ struct WebInlineImageProvider: InlineImageProvider {
         let originalWidth = original.size.width
         let originalHeight = original.size.height
 
-        // 如果原图宽度小于屏幕宽度，就不缩放
         guard originalWidth > maxWidth else {
             return original
         }

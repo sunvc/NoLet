@@ -65,7 +65,7 @@ public final class Clipboard {
 
 public enum Haptic {
     private static var lastImpactTime: Date?
-    private static var minInterval: TimeInterval = 0.2 // 最小震动间隔
+    private static var minInterval: TimeInterval = 0.2
     private static let generator = UIImpactFeedbackGenerator(style: .medium)
 
     static func impact(
@@ -105,5 +105,4 @@ public enum Haptic {
         return true
     }
 }
-
 

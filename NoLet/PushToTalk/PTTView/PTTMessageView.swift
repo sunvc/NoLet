@@ -15,9 +15,6 @@ import AVFoundation
 import Defaults
 import SwiftUI
 
-///  PTTMessageView
-///
-///
 
 struct PTTMessageView: View {
     @Environment(\.dismiss) var dismiss
@@ -109,6 +106,10 @@ struct PTTMessageRow: View {
                         }
                     }
                     .VButton { _ in
+                        
+                        guard message.timestamp.timeIntervalSinceNow < 15 else{
+                            return false
+                        }
                         guard !sendStatus, message.status == .failed else { return false}
                         self.sendStatus = true
                         Task {

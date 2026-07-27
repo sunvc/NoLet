@@ -47,11 +47,8 @@ final class PTTManager: NSObject, ObservableObject {
 
     @Published var onlineUsers: [ChannelUser] = []
 
-    /// 当前正在说话的用户 ID（自己 or 远程），独立于 onlineUsers 列表存在
     private var activeSpeakerId: String?
 
-    /// 用户是否手动拖动/缩放过地图。若为 true,轮询获取新的远程用户后不再自动 zoom。
-    /// 用户显式触发 zoom(点击 logo / 用户计数)时清零。
     @Published var userMapInteracted: Bool = false
 
     private let recorder = PTTRecorderManager()
@@ -101,7 +98,6 @@ final class PTTManager: NSObject, ObservableObject {
             }
         }
 
-        // 本机 name 变化同样需要触发 map 刷新
         Task { [weak self] in
             for await _ in Defaults.updates(.member) {
                 guard let self else { break }
@@ -149,8 +145,6 @@ final class PTTManager: NSObject, ObservableObject {
                 do {
                     if await self.powerState {
                         await LocManager.shared.requestLocation()
-                        // SSE 承担实时增量;这里只做低频兜底(重连拉一次快照)
-                        // 与位置心跳: 一次 POST 顺带把自己的经纬度告诉服务器
                         await self.sendPresenceHeartbeat()
                     }
                     try await Task.sleep(for: .seconds(60))
@@ -198,9 +192,6 @@ final class PTTManager: NSObject, ObservableObject {
         logger.info("EVENT: \(event.log)")
 
         switch (state, event) {
-           //==================================================
-           // Idle
-           //==================================================
 
         case (.idle, .startPlay(let message)):
             if let message {
@@ -215,9 +206,6 @@ final class PTTManager: NSObject, ObservableObject {
         case (.idle, .recordStarted):
             internalStopRecord(isCancel: true)
 
-           //==================================================
-           // Preparing Play
-           //==================================================
 
         case (.preparingPlay, .playStarted):
             if case .preparingPlay(let message) = state {
@@ -232,9 +220,6 @@ final class PTTManager: NSObject, ObservableObject {
             await internalStopPlay()
             await beginRecord(activity)
 
-           //==================================================
-           // Playing
-           //==================================================
 
         case (.playing, .stopPlay):
             await internalStopPlay()
@@ -263,22 +248,15 @@ final class PTTManager: NSObject, ObservableObject {
             currentPlayFile = nil
             await beginRecord(activity)
 
-           //==================================================
-           // Recording
-           //==================================================
 
         case (.recording, .stopRecord(let cancel)):
             internalStopRecord(isCancel: cancel)
             state = .idle
             await self.playWaitList()
 
-        // 录音期间禁止播放
         case (.recording, .startPlay):
             logger.info("Ignore play while recording")
 
-            //==================================================
-            // interruptionBegan
-            //==================================================
 
         case (.playing(let message), .interruptionBegan),
              (.preparingPlay(let message), .interruptionBegan):
@@ -297,7 +275,6 @@ final class PTTManager: NSObject, ObservableObject {
                     avatar: "字,FF9500".avatarImage()
                 )
             } else {
-                // 系统不建议恢复，直接回到空闲
                 self.state = .idle
                 await self.internalStopPlay()
             }
@@ -313,9 +290,6 @@ final class PTTManager: NSObject, ObservableObject {
         case (.interrupted, .stopPlay):
             self.state = .idle
             await self.internalStopPlay()
-           //==================================================
-           // Ignore
-           //==================================================
 
         default:
             logger.info("Ignore-STATE: \(self.state.log)")
@@ -324,12 +298,10 @@ final class PTTManager: NSObject, ObservableObject {
     }
 
     func joinConnect() async throws {
-        // 1. 状态前置
         self.powerState = true
         self.serverStatus = .connecting
 
         PTTChannelManager.shared.setServerStatus(.connecting)
-        // 2. ✨ 音频权限与初始化（注意：确保你的音频初始化有正确的容错）
         if !hasPermission {
             recorder.requestAudioPermission()
         }
@@ -337,10 +309,8 @@ final class PTTManager: NSObject, ObservableObject {
 
         await self.publicJoinConnect()
 
-        // SSE 订阅当前频道,替换 10s POST 轮询做实时增量
         self.presence.start(channel: Defaults[.pttChannel])
 
-        self.serverStatus = Defaults[.pttChannel].users.count > 0 ? .online : .offline
         PTTChannelManager.shared.setTransmissionMode()
         PTTChannelManager.shared
             .setServerStatus(Defaults[.pttChannel].users.count > 0 ? .ready : .unavailable)
@@ -407,7 +377,6 @@ final class PTTManager: NSObject, ObservableObject {
             currentChannel.users = matchedResult.users
             self.onlineUsers = matchedResult.users
 
-            // 添加用户自己的位置信息(名字走 ChannelUser.displayName -> Defaults[.member].name)
             let userId = Defaults[.member].id
 
             if !self.onlineUsers.contains(where: { $0.id == userId }) {
@@ -419,12 +388,10 @@ final class PTTManager: NSObject, ObservableObject {
                 self.onlineUsers.insert(selfUser, at: 0)
             }
 
-            // 对轮询到的所有远程用户预热昵称缓存
             for user in self.onlineUsers where user.id != userId {
                 MemberNameCache.shared.prefetch(id: user.id)
             }
 
-            // 重新应用会说话的标记（轮询会替换 onlineUsers 列表，需要恢复）
             applyActiveSpeaker()
 
             Defaults[.pttChannel] = currentChannel
@@ -442,7 +409,6 @@ final class PTTManager: NSObject, ObservableObject {
             self.serverStatus = .failed
         }
 
-        // 频道可能已经切换,让 SSE 跟上(内部会判定同频道 noop)
         if self.powerState {
             self.presence.start(channel: Defaults[.pttChannel])
         }
@@ -490,7 +456,6 @@ final class PTTManager: NSObject, ObservableObject {
         self.setStatus(message: message, read: true)
 
         Task {
-            // 实际接入你的播放器
             await send(.playStarted)
             if let currentUrl = message.filePath() {
                 // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下
@@ -500,7 +465,6 @@ final class PTTManager: NSObject, ObservableObject {
                 await self.player.playAudio(currentUrl)
                 self.setMapUserStatus(message: message, stop: true)
             }
-            // 播放结束回调
             await send(.playFinished)
         }
     }
@@ -523,7 +487,6 @@ final class PTTManager: NSObject, ObservableObject {
     private func applyActiveSpeaker() {
         var users = onlineUsers
 
-        // 先清除所有 active
         for index in users.indices {
             users[index].active = false
         }
@@ -537,12 +500,10 @@ final class PTTManager: NSObject, ObservableObject {
         let isSelf = activeId == myId
 
         if let index = users.firstIndex(where: { $0.id == activeId }) {
-            // 已存在,只需置为 active(name 由 ChannelUser.displayName 计算)
             var existing = users[index]
             existing.active = true
             users[index] = existing
         } else {
-            // 不在列表里,动态插入占位条目(远程用户可能没在轮询结果里)
             let coordinate: CLLocationCoordinate2D = isSelf
                 ? LocManager.shared.location.coordinate
                 : CLLocationCoordinate2D(latitude: 0, longitude: 0)
@@ -550,7 +511,6 @@ final class PTTManager: NSObject, ObservableObject {
                 ChannelUser(id: activeId, coordinate: coordinate, active: true),
                 at: 0
             )
-            // 远程用户异步补齐 name
             if !isSelf {
                 MemberNameCache.shared.prefetch(id: activeId)
             }
@@ -562,7 +522,6 @@ final class PTTManager: NSObject, ObservableObject {
     private func internalStopPlay() async {
         logger.info("Stop Play")
         await self.player.stopPlay()
-        // 移除地图上的说话标记
         setActiveSpeaker(userId: "", active: false)
 
         if case .interrupted = state {
@@ -577,7 +536,6 @@ final class PTTManager: NSObject, ObservableObject {
     private func beginRecord(_ activity: Bool = true) async {
         state = .recording
         logger.info("Start Record")
-        // 在地图上标记自己在说话
         setActiveSpeaker(userId: Defaults[.member].id, active: true)
         recorder.startRecording(activity, pttMusicPlay: Defaults[.pttMusicPlay])
         await self.send(.recordStarted)
@@ -585,7 +543,6 @@ final class PTTManager: NSObject, ObservableObject {
 
     private func internalStopRecord(isCancel: Bool) {
         logger.info("Stop Record")
-        // 移除地图上的说话标记
         setActiveSpeaker(userId: "", active: false)
 
         if let data = recorder.stopRecording(), !isCancel {
@@ -674,7 +631,6 @@ final class PTTManager: NSObject, ObservableObject {
         }
 
         let channelDataValue = channelData.pointee
-        // 4
         let channelDataValueArray = stride(
             from: 0,
             to: Int(buffer.frameLength),
@@ -682,40 +638,32 @@ final class PTTManager: NSObject, ObservableObject {
         )
         .map { channelDataValue[$0] }
 
-        // 5
         let rms = sqrt(channelDataValueArray.map {
             $0 * $0
         }
         .reduce(0, +) / Float(buffer.frameLength))
 
-        // 6
         let avgPower = 20 * log10(rms)
-        // 7
         let meterLevel = scaledPower(power: avgPower)
 
         return Double(meterLevel)
     }
 
     private func scaledPower(power: Float) -> Float {
-        // 1. 避免 NaN 或 Inf
         guard power.isFinite else {
             return 0.0
         }
 
-        // 参考的最小分贝值（静音阈值）
         let minDb: Float = -80.0
 
-        // 2. 小于阈值直接当作静音
         if power < minDb {
             return 0.0
         }
 
-        // 3. 如果超过 1.0（非常大声），直接归一化到 1.0
         if power >= 1.0 {
             return 1.0
         }
 
-        // 4. 按比例线性映射到 0~1
         return (abs(minDb) - abs(power)) / abs(minDb)
     }
 }
@@ -727,12 +675,10 @@ extension PTTManager: CLLocationManagerDelegate {
         if !force, userMapInteracted { return }
         if force { userMapInteracted = false }
 
-        // 获取所有用户（包括当前用户自己）
         var usersToShow = Defaults[.pttChannel].users
 
         let userId = Defaults[.member].id
 
-        // 如果列表中不包含自己，添加自己(名字由 displayName 计算)
         if !usersToShow.contains(where: { $0.id == userId }) {
             let selfUser = ChannelUser(
                 id: userId,
@@ -742,13 +688,11 @@ extension PTTManager: CLLocationManagerDelegate {
             usersToShow.insert(selfUser, at: 0)
         }
 
-        // 过滤掉无效坐标 (0,0)
         let validUsers = usersToShow.filter { user in
             user.latitude != 0.0 && user.longitude != 0.0
         }
 
         guard !validUsers.isEmpty else {
-            // 如果所有用户都无效，至少显示当前用户自己的位置
             let userCoordinate = LocManager.shared.location.coordinate
             withAnimation(.easeInOut(duration: 0.5)) {
                 region = MKCoordinateRegion(
@@ -874,7 +818,7 @@ extension PTTManager {
                     timeout: 5
                 )
             else {
-                throw "请求失败"
+                throw NoletError(message: "Bad Request!")
             }
             return result
         } catch {
@@ -917,7 +861,6 @@ extension PTTManager {
     }
 
     func sendVoice(message: AudioMessage) async {
-        // 重发机制,先重置一下状态
         self.setStatus(message: message, status: .send)
 
         let channel = Defaults[.pttChannel]
@@ -929,11 +872,10 @@ extension PTTManager {
 
         do {
             var data = try Data(contentsOf: filePath)
-            /// 加密
             let pttSignature = Defaults[.pttSignature]
             if pttSignature {
                 guard let encryptedData = CryptoModelConfig.data.encrypt(inputData: data) else {
-                    throw "encrypt error"
+                    throw NoletError(message: "encrypt error")
                 }
                 data = encryptedData
             }
@@ -978,10 +920,9 @@ extension PTTManager {
             guard response.check() else { return nil }
 
             var data = response.data
-            /// 解密
             if decode {
                 guard let decodeData = CryptoModelConfig.data.decrypt(inputData: data)
-                else { throw "decrypt error" }
+                else { throw NoletError(message: "decrypt error") }
                 data = decodeData
             }
 
@@ -1063,7 +1004,6 @@ extension PTTManager {
 
         case recordStarted
 
-        // 👈 新增：打断事件
         case interruptionBegan
         case interruptionEnded(shouldResume: Bool)
         case resume
@@ -1149,6 +1089,9 @@ extension PTTManager: PTTPresenceStreamDelegate {
         didChangeConnected connected: Bool
     ) {
         logger.debug("SSE connected=\(connected)")
+        Task { @MainActor in
+            self.serverStatus = connected ? .online : .offline
+        }
     }
 
     nonisolated func presenceStream(
@@ -1170,7 +1113,6 @@ extension PTTManager: PTTPresenceStreamDelegate {
 
         switch event.event {
         case .snapshot:
-            // 全量重建,保留自己的 active 状态(其它人 active 只在音频播放时设置)
             let previousActiveId = self.onlineUsers.first(where: { $0.active })?.id
             var users: [ChannelUser] = (event.users ?? []).map { u in
                 ChannelUser(
@@ -1196,7 +1138,6 @@ extension PTTManager: PTTPresenceStreamDelegate {
             for u in users where u.id != myId {
                 MemberNameCache.shared.prefetch(id: u.id)
             }
-            // 同步一份到 Defaults 让老代码依然可读
             var ch = currentChannel
             ch.users = users
             Defaults[.pttChannel] = ch
@@ -1204,7 +1145,6 @@ extension PTTManager: PTTPresenceStreamDelegate {
         case .join:
             guard let u = event.user, u.id != myId else { return }
             if let idx = self.onlineUsers.firstIndex(where: { $0.id == u.id }) {
-                // 已存在(理论上不该有,补丁式更新)
                 var existing = self.onlineUsers[idx]
                 existing.update(coordinate: CLLocationCoordinate2D(
                     latitude: u.latitude, longitude: u.longitude))
@@ -1240,13 +1180,11 @@ extension PTTManager: PTTPresenceStreamDelegate {
             break
         }
 
-        // SSE 增量后,如果用户没手动动过地图,自动重新聚拢
         self.zoomToFitAllUsers(force: false)
     }
 }
 
 nonisolated extension String {
-    /// Returns the localized string for the current key
     var localized: String {
         return NSLocalizedString(self, comment: "")
     }

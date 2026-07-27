@@ -115,28 +115,23 @@ struct QuickResponseCodeview: View {
         from string: String,
         size: CGSize = .init(width: 300, height: 300)
     ) -> UIImage? {
-        // 创建二维码生成器
         guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
             return nil
         }
 
-        // 设置输入数据
         let data = string.data(using: .utf8)
         filter.setValue(data, forKey: "inputMessage")
 
-        // 获取二维码图像
         guard let ciImage = filter.outputImage else {
             return nil
         }
 
-        // 设置二维码图像的大小
         let transform = CGAffineTransform(
             scaleX: size.width / ciImage.extent.size.width,
             y: size.height / ciImage.extent.size.height
         )
         let scaledImage = ciImage.transformed(by: transform)
 
-        // 转换为 UIImage
         let context = CIContext()
         if let cgImage = context.createCGImage(scaledImage, from: scaledImage.extent) {
             return UIImage(cgImage: cgImage)

@@ -89,7 +89,7 @@ class IconProcessor: NotificationContentProcessor {
             return nil
         }
 
-        if let icon = try? await PushIcon.query(NSPredicate(format: "name == %@", pngURL), from: NCONFIG.container.publicCloudDatabase).first,
+        if let icon = try? await PushIcon.query(NSPredicate(format: "name == %@", pngURL), from: NCONFIG.publicCloudDatabase).first,
            let previewImage = icon.previewImage,
            let data = previewImage.pngData()
         {

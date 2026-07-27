@@ -17,7 +17,6 @@ import SwiftUI
 /// Config
 struct Config {
     var backgroundColor: Color = Color.primary.opacity(0.25)
-    /// You can add extra properties here if you wish to.
 }
 
 /// It's a custom modifier
@@ -45,11 +44,9 @@ private struct PopViewHelper<ViewContent: View>: ViewModifier {
     @Binding var isPresented: Bool
     var onDismiss: () -> Void
     @ViewBuilder var viewContent: ViewContent
-    /// Local View Properties
     @State private var presentFullScreenCover: Bool = false
     @State private var animateView: Bool = false
     func body(content: Content) -> some View {
-        /// UnMutable Properties
         let screenHeight = screenSize.height
         let animateView = animateView
 
@@ -102,12 +99,6 @@ private struct PopViewHelper<ViewContent: View>: ViewModifier {
                         toggleView(false)
                     }
 
-                    /// Or You can use the default SwiftUI Animation Completion Modifier
-//                    withAnimation(.snappy(duration: 0.45, extraBounce: 0), completionCriteria: .logicallyComplete) {
-//                        self.animateView = false
-//                    } completion: {
-//                        toggleView(false)
-//                    }
                 }
             }
     }

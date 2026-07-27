@@ -15,6 +15,7 @@ struct PTTContentView: View {
     @State private var ispress: Bool = false
 
     @ObservedObject private var pttManager = PTTManager.shared
+    @ObservedObject private var appManager = AppManager.shared
 
     @State private var buttonType: TalkButtonType = .call
 
@@ -24,6 +25,11 @@ struct PTTContentView: View {
     @State private var khzTem: Int = -1
     @State private var showSettings: Bool = false
 
+    @State private var mhzDragBase: Int? = nil
+    @State private var khzDragBase: Int? = nil
+    @State private var mhzDragLastDelta: Int = 0
+    @State private var khzDragLastDelta: Int = 0
+
     @Default(.pttChannel) var pttChannel
     @Default(.pttVibration) var pttVibration
     @Default(.pttMusicPlay) var pttMusicPlay
@@ -31,7 +37,6 @@ struct PTTContentView: View {
     @Default(.pttHisChannel) var pttHisChannel
     @Default(.pttVoiceVolume) var pttVoiceVolume
     @Default(.pttSignature) var pttSignature
-    
 
     @State private var isCancel: Bool = false
 
@@ -55,11 +60,9 @@ struct PTTContentView: View {
 
     @State private var showBackup: Bool = false
 
-    /// logo1 缩放地图相关
     @GestureState private var isDraggingLogo = false
     @State private var dragInitialRegion: MKCoordinateRegion?
 
-    /// 是否对 map 缩放做动画：拖拽时 false（跟手），点击/tap zoom 时 true（平滑）
     private var animatesMapZoom: Bool { !isDraggingLogo }
 
     var showUserMap: Bool {
@@ -115,23 +118,16 @@ struct PTTContentView: View {
     }
 
     var stateTitle: String {
-        // 1. 特殊前置状态：未启动监听
         if !pttManager.powerState && !isPlaying {
             return String(localized: "未启动监听")
         }
 
-        // 2. 场景 A：当没显示用户地图时
         if !self.showUserMap {
             if pttManager.serverStatus == .failed && pttManager.state == .idle {
                 return String(localized: "服务器未连接")
             }
             return pttManager.state.title
         }
-
-//        // 3. 场景 B：当显示了用户地图时（只在播放或录制时显示 title，其余隐形）
-//        if isPlaying || isRecording {
-//            return pttManager.state.title
-//        }
 
         return ""
     }
@@ -151,6 +147,15 @@ struct PTTContentView: View {
     @State private var isAnimatingHint = false
 
     @State private var showTips = false
+    
+    var phoneH: Bool{
+        appManager.sizeClass == .compact &&
+           appManager.windowSize.height < appManager.windowSize.width
+    }
+
+    var topShowHeight: CGFloat {
+        phoneH ? appManager.windowSize.height : max(380, appManager.windowSize.height * 0.382)
+    }
 
     var body: some View {
         VStack {
@@ -159,10 +164,8 @@ struct PTTContentView: View {
 
                 VStack {
                     HStack {
-                        if AppManager.shared.sizeClass != .regular {
-                            HourAndMinuteView()
-                                .font(.numberStyle(size: 27))
-                        }
+                        HourAndMinuteView()
+                            .font(.numberStyle(size: 25))
 
                         Spacer()
 
@@ -214,8 +217,14 @@ struct PTTContentView: View {
                         }
                     }
                     .padding(.horizontal, 10)
+                    .padding(.leading, 10)
                     .frame(height: 55)
                     .padding(.top, 5)
+                    .overlay(alignment: .center) { 
+                        if phoneH{
+                            powerButton()
+                        }
+                    }
 
                     ChannelUsersView()
                         .padding(.horizontal, 15)
@@ -271,22 +280,21 @@ struct PTTContentView: View {
 
                         .animation(.default, value: pttManager.state)
 
-                        Spacer()
+                        Spacer(minLength: 0)
 
                         MhzAndKhzView()
+                            .fixedSize(horizontal: true, vertical: false)
                             .opacity(showUserMap ? 0 : 1)
 
-                        Spacer()
-                        // TODO: -
+                        Spacer(minLength: 0)
                         Image(systemName: "slider.horizontal.3")
                             .font(.title)
                             .foregroundStyle(.white)
-                            .offset(y: showUserMap ? -70 : 0)
                             .VButton { _ in
                                 self.showSettings.toggle()
                                 return true
                             }
-                       
+                            .offset(y: showUserMap ? -70 : 0)
                     }
                     .padding(.horizontal, 10)
                     .animation(.default, value: showUserMap)
@@ -313,12 +321,10 @@ struct PTTContentView: View {
                                 .offset(x: isPlaying ? 0 : 50)
                                 .animation(.linear(duration: 0.2), value: pttManager.state)
                                 .VButton { _ in
-                                    // TODO: - 停止播放
                                     Task {
                                         await self.pttManager.send(.stopPlay)
                                     }
 
-                                    // TODO: - 播放音乐
                                     Task {
                                         await pttManager.playWaitList()
                                     }
@@ -352,7 +358,6 @@ struct PTTContentView: View {
                             .opacity(isPlaying && pttManager.waitPlayList
                                 .count > 0 ? 1 : 0)
                             .VButton { _ in
-                                // TODO: - 下一条
                                 Task {
                                     await self.pttManager.playWaitList()
                                 }
@@ -395,31 +400,46 @@ struct PTTContentView: View {
                     .minimumScaleFactor(0.8)
 
                     HStack(alignment: .bottom) {
-                        Image("logo1")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 50)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .padding(3)
-                            .contentShape(Rectangle())
-                            .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
-                            .onTapGesture {
-                                // 轻点：缩放至显示所有人
-                                if showUserMapTem {
-                                    pttManager.zoomToFitAllUsers()
+                        if phoneH{
+                            TabBarBackButtonView(size: CGSize(width: 300, height: 0))
+                                .offset(x: 30)
+                        }else{
+                            Image("logo1")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .padding(3)
+                                .contentShape(Rectangle())
+                                .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
+                                .onTapGesture {
+                                    if showUserMapTem {
+                                        pttManager.zoomToFitAllUsers()
+                                    }
                                 }
-                            }
-                            .simultaneousGesture(logoZoomGesture)
+                                .simultaneousGesture(logoZoomGesture) 
+                        }
+                        
 
                         Spacer(minLength: 0)
 
-                        Picker(selection: $pttChannel.server) {
-                            var pttServers: [PushServerModel] {
-                                var servers = servers.filter { $0.status > 1 }
-                                servers.insert(PushServerModel.noServer, at: 0)
-                                return servers
+                        Picker(selection: Binding(get: {
+                            pttChannel.server
+                        }, set: {
+                            if !pttManager.powerState {
+                                if $0 != .noServer, $0.status < 2 {
+                                    Toast.info(title: "服务器不支持!")
+                                    return
+                                }
+                                pttChannel.server = $0
+                            } else {
+                                Toast.info(title: "请先关闭监听!")
                             }
-                            ForEach(pttServers, id: \.self) { server in
+                        })) {
+                            ForEach(
+                                servers.uniqued(by: \.url, PushServerModel.noServer),
+                                id: \.id
+                            ) { server in
                                 Text(server.name)
                                     .tag(server)
                             }
@@ -469,20 +489,23 @@ struct PTTContentView: View {
                 .padding(.horizontal, 15)
                 .padding(.bottom, 10)
             }
-            .frame(height: 380)
-
+            .frame(height: topShowHeight)
+            if !phoneH{
             CenterButtonsView()
 
             RoundedRectangle(cornerRadius: 5)
                 .foregroundStyle(.gray.opacity(0.3))
                 .frame(height: 5)
                 .padding(.horizontal, 10)
-
-            BottomBottonViews()
+           
+                BottomBottonViews()
+            }
+            
         }
         .background(.background)
         .ignoresSafeArea(.container, edges: .top)
         .toolbar(.hidden, for: .navigationBar)
+        .simultaneousGesture(freqDragGesture)
         .overlay {
             SetVolumePeakView(show: $showVolume, volume: $pttVoiceVolume, icon: iconVolume)
                 .onChange(of: pttVoiceVolume) { value in
@@ -492,8 +515,10 @@ struct PTTContentView: View {
                 }
         }
         .overlay(alignment: .bottomLeading) {
-            TabBarBackButtonView(size: CGSize(width: 300, height: 0))
-                .offset(x: 30)
+            if !phoneH{
+                TabBarBackButtonView(size: CGSize(width: 300, height: 0))
+                    .offset(x: 30)
+            }
         }
         .animation(.default, value: showVolume)
         .environment(\.colorScheme, .dark)
@@ -553,7 +578,6 @@ struct PTTContentView: View {
     }
 
     private func scheduleAutoHide() {
-        // 取消之前的任务
         hideWorkItem?.cancel()
 
         let workItem = DispatchWorkItem {
@@ -596,7 +620,7 @@ struct PTTContentView: View {
                             }
                         }
                         .animation(.default, value: pttChannel.users)
-                        .VButton{ _ in
+                        .VButton { _ in
                             self.showUserMapTem.toggle()
                             return true
                         }
@@ -614,6 +638,8 @@ struct PTTContentView: View {
             Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
                 .font(.numberStyle(size: 20))
                 .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
+            
+            
         }
     }
 
@@ -657,7 +683,7 @@ struct PTTContentView: View {
                             }
                         }
                     },
-                    alignment:  dragOffset >= (maxDragDistance - 30) / 2 ? .leading : .trailing
+                    alignment: dragOffset >= (maxDragDistance - 30) / 2 ? .leading : .trailing
                 )
                 .offset(x: 10)
 
@@ -751,7 +777,6 @@ struct PTTContentView: View {
                     Spacer(minLength: 0)
 
                     Button {
-                        // TODO: - 总设置
                         if pttHisChannel.count > 0 {
                             self.showChannelList.toggle()
                         } else {
@@ -847,7 +872,7 @@ struct PTTContentView: View {
                     .scaleEffect(buttonType == .call ? 1 : 0.5)
                     .opacity(buttonType == .call ? 1 : 0)
                 }
-                .frame(maxWidth: minDimension, maxHeight: minDimension) // 限制 iPad
+                .frame(maxWidth: minDimension, maxHeight: minDimension)
                 .animation(.easeInOut(duration: 0.1), value: ispress)
             }
             .frame(width: size.width, height: size.height, alignment: .center)
@@ -895,7 +920,79 @@ struct PTTContentView: View {
         .fontWeight(.black)
     }
 
-    /// logo1 上下滑动缩放手势
+    private var freqDragGesture: some Gesture {
+        DragGesture(minimumDistance: 10)
+            .onChanged { value in
+                guard !pttManager.powerState else { return }
+                switch buttonType {
+                case .mhz:
+                    if mhzDragBase == nil {
+                        mhzDragBase = pttChannel.mhz
+                        mhzDragLastDelta = 0
+                    }
+                    let base = mhzDragBase ?? pttChannel.mhz
+                    let delta = Self.exponentialDelta(-value.translation.height)
+                    let next = max(1, min(999, base + delta))
+                    if next != mhzTem {
+                        mhzTem = next
+                        if delta != mhzDragLastDelta { Haptic.selection() }
+                        mhzDragLastDelta = delta
+                    }
+                case .khz:
+                    if khzDragBase == nil {
+                        khzDragBase = pttChannel.khz
+                        khzDragLastDelta = 0
+                    }
+                    let base = khzDragBase ?? pttChannel.khz
+                    let delta = Self.exponentialDelta(-value.translation.height)
+                    let next = max(0, min(999, base + delta))
+                    if next != khzTem {
+                        khzTem = next
+                        if delta != khzDragLastDelta { Haptic.selection() }
+                        khzDragLastDelta = delta
+                    }
+                case .call:
+                    break
+                }
+            }
+            .onEnded { _ in
+                switch buttonType {
+                case .mhz:
+                    if mhzTem >= 0 { pttChannel.mhz = mhzTem }
+                    mhzTem = -1
+                    mhzDragBase = nil
+                    mhzDragLastDelta = 0
+                    Haptic.impact()
+                case .khz:
+                    if khzTem >= 0 { pttChannel.khz = khzTem }
+                    khzTem = -1
+                    khzDragBase = nil
+                    khzDragLastDelta = 0
+                    Haptic.impact()
+                case .call:
+                    break
+                }
+            }
+    }
+
+    private static func exponentialDelta(_ translation: CGFloat) -> Int {
+        let dead: CGFloat = 6
+        let linearZone: CGFloat = 40
+        let step: CGFloat = 25
+
+        let magnitude = abs(translation) - dead
+        guard magnitude > 0 else { return 0 }
+
+        let sign = translation >= 0 ? 1 : -1
+        if magnitude <= linearZone {
+            return sign
+        }
+        let over = magnitude - linearZone
+        let scaled = pow(2.0, over / step)
+        let value = max(1, Int(scaled.rounded()))
+        return sign * value
+    }
+
     private var logoZoomGesture: some Gesture {
         DragGesture(minimumDistance: 5)
             .updating($isDraggingLogo) { _, state, _ in
@@ -904,12 +1001,10 @@ struct PTTContentView: View {
             .onChanged { value in
                 guard showUserMap else { return }
 
-                // 首次开始拖拽时记录初始 region
                 if dragInitialRegion == nil {
                     dragInitialRegion = pttManager.region
                 }
 
-                // logo 缩放视为用户主动交互,阻止后续远程用户回执触发的自动 zoom
                 pttManager.userMapInteracted = true
 
                 guard let initialRegion = dragInitialRegion else { return }
@@ -1055,7 +1150,6 @@ private struct SetVolumePeakView: View {
     }
 
     private func scheduleAutoHide() {
-        // 取消之前的任务
         hideWorkItem?.cancel()
 
         let workItem = DispatchWorkItem {
@@ -1081,7 +1175,7 @@ struct HourAndMinuteView: View {
 
     private func timeString(from date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm" // 24小时制，如果要12小时制改成 "hh:mm a"
+        formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
     }
 }
@@ -1089,39 +1183,33 @@ struct HourAndMinuteView: View {
 struct ToastPttView: View {
     let message: String
     @Binding var isPresented: Bool
-    // 内部记录当前的定时器任务，用于在连续点击时重置时间
     @State private var dismissTask: Task<Void, Never>? = nil
 
     var body: some View {
         VStack {
             if isPresented {
                 Text(message)
-                    .transition(.move(edge: .top).combined(with: .opacity)) // 出现和消失时的动画效果
+                    .transition(.move(edge: .top).combined(with: .opacity))
                     .onAppear {
                         startDismissTimer()
                     }
                     .onChange(of: isPresented) { newValue in
-                        // 如果外部在显示期间再次激活（例如连续点击），重新触发定时器
                         if newValue {
                             startDismissTimer()
                         }
                     }
             }
         }
-        // 使用内置动画，让显示和隐藏更丝滑
         .animation(.snappy, value: isPresented)
     }
 
     /// 核心逻辑：开启 3 秒倒计时任务
     private func startDismissTimer() {
-        // 1. 如果之前已经有一个定时器在跑，先取消它（防止多次点击导致闪烁或提早关闭）
         dismissTask?.cancel()
 
-        // 2. 创建新任务
         dismissTask = Task {
-            try? await Task.sleep(nanoseconds: 3 * 1_000_000_000) // 等待 3 秒
+            try? await Task.sleep(nanoseconds: 3 * 1_000_000_000)
 
-            // 3. 检查任务是否被取消了，如果没有，在主线程关闭 View
             if !Task.isCancelled {
                 await MainActor.run {
                     isPresented = false

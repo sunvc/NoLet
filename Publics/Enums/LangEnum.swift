@@ -25,8 +25,8 @@ extension Defaults.Keys {
 enum Multilingual {
     struct Country: Identifiable, Equatable, Hashable, Codable {
         var id: String { code }
-        let code: String // e.g. "US"
-        let name: String // e.g. "United States"
+        let code: String
+        let name: String
         let flag: String
     }
 

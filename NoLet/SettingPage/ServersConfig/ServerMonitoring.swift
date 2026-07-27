@@ -28,7 +28,6 @@ struct ServerMonitoringView: View {
         let status = manager.status
         ScrollView {
             Section {
-                // CPU Card
                 SCCPUCardView(status: status)
                     .mbackground26(.message, radius: 16)
                     .padding(.horizontal, 5)
@@ -45,7 +44,6 @@ struct ServerMonitoringView: View {
             }
 
             Section {
-                // Memory Card
                 SCMemoryCardView(status: status)
                     .mbackground26(.message, radius: 16)
                     .padding(.horizontal, 5)
@@ -63,7 +61,6 @@ struct ServerMonitoringView: View {
             }
 
             Section {
-                // Network Card
                 SCNetworkCardView(status: status.network)
                     .mbackground26(.message, radius: 16)
                     .padding(.horizontal, 5)
@@ -79,7 +76,6 @@ struct ServerMonitoringView: View {
                 .padding(.top)
             }
 
-            // Docker Card
             if !status.containers.isEmpty {
                 Section {
                     SCDockerCardView(containers: status.containers)
@@ -98,7 +94,6 @@ struct ServerMonitoringView: View {
             }
             if !status.disks.isEmpty {
                 Section {
-                    // Disk Cards
                     ForEach(status.disks, id: \.id) { disk in
                         SCDiskCardView(disk: disk)
                             .mbackground26(.message, radius: 16)
@@ -172,7 +167,6 @@ struct SCProcessSheet: View {
     var body: some View {
         let sorted = sortedProcesses(processes, by: sort)
         VStack(spacing: 0) {
-            // Handle bar
             Capsule()
                 .fill(Color.gray.opacity(0.4))
                 .frame(width: 40, height: 5)
@@ -206,7 +200,6 @@ struct SCProcessSheet: View {
                             .padding(.horizontal)
                         }
                     } header: {
-                        // Header
                         VStack {
                             HStack {
                                 Text(verbatim: "Process")
@@ -262,7 +255,6 @@ struct SCProcessSheet: View {
     }
 
     private func bytes(from formatted: String) -> Double {
-        // formatted like "27M" or "512K" without space, convert back to bytes for sorting
         let suffix = formatted.suffix(1)
         let numberString = formatted.dropLast()
         guard let value = Double(numberString) else { return 0 }
@@ -288,7 +280,6 @@ struct SCCPUCardView: View {
         let load15Norm = min(1.0, status.load15 / coreCount)
 
         VStack(alignment: .leading, spacing: 15) {
-            // Top Stats
             HStack(alignment: .top) {
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
                     Text(verbatim: "\(Int(status.cpuUsage))")
@@ -330,13 +321,11 @@ struct SCCPUCardView: View {
 
             VStack {
                 ForEach(status.cores, id: \.id) { core in
-                    // Dot Chart Visualization
                     SCDotChartView(core: core)
                         .frame(height: 8)
                 }
             }
 
-            // Bottom Stats
             HStack {
                 VStack(alignment: .leading) {
                     Text("核数")
@@ -471,19 +460,15 @@ struct SCNetworkCardView: View {
             .max(by: { $0.uploadRatio + $0.downloadRatio < $1.uploadRatio + $1.downloadRatio })
 
         VStack(alignment: .leading, spacing: 20) {
-            // Summary Section
             HStack(alignment: .center) {
-                // Upload Speed
                 SCNetSpeedItem(icon: "arrow.up", label: "/S", value: status.totalUploadSpeed)
 
                 Spacer()
 
-                // Download Speed
                 SCNetSpeedItem(icon: "arrow.down", label: "/S", value: status.totalDownloadSpeed)
 
                 Spacer()
 
-                // Total Traffic
                 VStack(alignment: .trailing, spacing: 4) {
                     SCNetTrafficItem(icon: "arrow.up", value: status.totalUpload, color: .orange)
                     SCNetTrafficItem(icon: "arrow.down", value: status.totalDownload, color: .green)
@@ -491,12 +476,10 @@ struct SCNetworkCardView: View {
 
                 Spacer()
 
-                // Ring Chart
                 SCTrafficRingView(upRatio: status.uploadRatio, downRatio: status.downloadRatio)
                     .frame(width: 50, height: 50)
             }
 
-            // Connection Stats
             HStack {
                 SCNetStatItem(label: String(localized: "重传率"), value: status.retransRate)
                 Spacer()
@@ -525,7 +508,6 @@ struct SCNetworkCardView: View {
 
             Divider().background(Color.gray.opacity(0.3))
 
-            // Primary physical interface only
             if let primary = primaryInterface {
                 SCNetworkInterfaceRow(interface: primary)
                     .padding(.vertical, 8)
@@ -583,7 +565,6 @@ struct SCDiskCardView: View {
 
     var body: some View {
         VStack(spacing: 15) {
-            // Header: Mount point, Device, Usage Bar
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(verbatim: disk.mountPoint)
@@ -621,7 +602,6 @@ struct SCDiskCardView: View {
                     }
                 }
 
-                // Vertical Progress Bar
                 ZStack(alignment: .bottom) {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(Color.gray.opacity(0.3))
@@ -636,9 +616,7 @@ struct SCDiskCardView: View {
 
             Divider().background(Color.gray.opacity(0.3))
 
-            // IO Stats Grid
             HStack {
-                // Header Row
                 VStack(alignment: .center) {
                     BreathingDot(isOn: disk.readRate.plus(disk.writeRate) > 0)
                         .frame(width: 6, height: 6)
@@ -777,7 +755,6 @@ struct SCDockerCardView: View {
 
     var body: some View {
         VStack {
-            // Header
             HStack {
                 Text(verbatim: "CPU")
                     .frame(width: 50, alignment: .center)
@@ -797,7 +774,6 @@ struct SCDockerCardView: View {
             ForEach(containers, id: \.id) { container in
                 VStack(spacing: 12) {
                     HStack(alignment: .center, spacing: 10) {
-                        // CPU Ring
                         ZStack {
                             Circle()
                                 .stroke(Color(white: 0.2), lineWidth: 4)
@@ -900,7 +876,6 @@ struct SCNetworkInterfaceRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // Header: Icon, Name, IP
             HStack {
                 let allRatio = interface.downloadRatio + interface.uploadRatio
                 Image(systemName: "wifi")
@@ -953,7 +928,6 @@ struct SCNetworkInterfaceRow: View {
                 }
                 .padding(.trailing, 10)
 
-                // Mini Ring
                 SCTrafficRingView(
                     upRatio: interface.uploadRatio,
                     downRatio: interface.downloadRatio,
@@ -1044,17 +1018,14 @@ struct SCTrafficRingView: View {
 
     var body: some View {
         ZStack {
-            // Background
             Circle()
                 .stroke(Color.gray.opacity(0.3), lineWidth: strokeWidth)
 
-            // Upload (Orange)
             Circle()
                 .trim(from: 0, to: upRatio)
                 .stroke(Color.orange, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .butt))
                 .rotationEffect(.degrees(-90))
 
-            // Download (Green) - Start where upload ends
             Circle()
                 .trim(from: 0, to: downRatio)
                 .stroke(Color.green, style: StrokeStyle(lineWidth: strokeWidth, lineCap: .butt))
@@ -1159,7 +1130,6 @@ struct SCUnitValueText: View {
 struct SCDotChartView: View {
     let core: SCCoreUsage
 
-    // Constants for layout
     private let itemWidth: CGFloat = 4
     private let itemHeight: CGFloat = 8
     private let spacing: CGFloat = 3
@@ -1167,7 +1137,6 @@ struct SCDotChartView: View {
     var body: some View {
         GeometryReader { geometry in
             let totalItemWidth = itemWidth + spacing
-            // Calculate how many columns fit in the available width
             let columnCount = Int(geometry.size.width / totalItemWidth)
 
             HStack(spacing: spacing) {
@@ -1178,7 +1147,7 @@ struct SCDotChartView: View {
                 }
             }
         }
-        .drawingGroup() // Improve performance
+        .drawingGroup()
     }
 
     func color(for index: Int, totalColumns: Int) -> Color {
@@ -1258,7 +1227,6 @@ extension Color {
     }
 }
 
-// 预览
 #Preview {
     NavigationStack {
         ServerMonitoringView(server: PushServerModel(url: "http://127.0.0.1:8080"))

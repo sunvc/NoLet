@@ -32,7 +32,6 @@ enum PBMarkdown {
         cmark_gfm_core_extensions_ensure_registered()
 
         guard let parser = cmark_parser_new(CMARK_OPT_DEFAULT) else { return "" }
-        // 确保 parser 最终被释放
         defer { cmark_parser_free(parser) }
 
         for extensionName in extensionNames {

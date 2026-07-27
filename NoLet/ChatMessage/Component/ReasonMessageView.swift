@@ -57,15 +57,12 @@ struct ReasonMessageView: View {
     @ViewBuilder
     func reasonView(_ item: String) -> some View {
         HStack(alignment: .top, spacing: 0) {
-            // Left Track
             VStack(spacing: 0) {
-                // Top Icon
                 Circle()
                     .fill(Color.primary.opacity(0.5))
                     .frame(width: 8, height: 8)
                     .scaleEffect(1.2)
 
-                // Vertical Line
                 Rectangle()
                     .fill(Color.primary.opacity(0.1))
                     .frame(width: 2)
@@ -73,7 +70,6 @@ struct ReasonMessageView: View {
                     .padding(.vertical, 4)
 
                 if item == reasons.last {
-                    // Top Icon
                     Circle()
                         .fill(Color.primary.opacity(0.5))
                         .frame(width: 8, height: 8)
@@ -83,7 +79,6 @@ struct ReasonMessageView: View {
             .padding(.leading, 16)
             .padding(.trailing, 8)
 
-            // Right Content
             VStack(alignment: .leading, spacing: 0) {
                 MarkdownCustomView(content: item)
                     .padding(.vertical)
@@ -150,7 +145,7 @@ struct ReasonButton: View {
 
                             if show {
                                 Text(verbatim: "...")
-                                    .frame(width: 18, alignment: .leading) // 防抖
+                                    .frame(width: 18, alignment: .leading)
                             }
                         }
 

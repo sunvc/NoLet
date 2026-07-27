@@ -33,7 +33,6 @@ struct FileItem: Identifiable, Hashable {
         let exists = FileManager.default.fileExists(atPath: url.path, isDirectory: &isDir)
         isDirectory = exists && isDir.boolValue
 
-        // 获取文件大小
         do {
             let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
             size = attributes[.size] as? Int64 ?? 0
@@ -43,7 +42,6 @@ struct FileItem: Identifiable, Hashable {
             modificationDate = Date()
         }
 
-        // 如果是目录，懒加载子项
         if isDirectory {
             children = loadChildren()
         }
@@ -66,7 +64,6 @@ struct FileItem: Identifiable, Hashable {
 
             return contents.map { FileItem(url: $0) }
                 .sorted { item1, item2 in
-                    // 文件夹排在前面，然后按名称排序
                     if item1.isDirectory != item2.isDirectory {
                         return item1.isDirectory
                     }
@@ -79,7 +76,6 @@ struct FileItem: Identifiable, Hashable {
         }
     }
 
-    // 格式化文件大小
     var formattedSize: String {
         if isDirectory {
             return "文件夹"
@@ -91,7 +87,6 @@ struct FileItem: Identifiable, Hashable {
         return formatter.string(fromByteCount: size)
     }
 
-    // 文件图标
     var icon: String {
         isDirectory ? "folder.fill" : "doc.fill"
     }
@@ -146,7 +141,6 @@ class FileTreeManager: ObservableObject {
 
         return contents.map { FileItem(url: $0) }
             .sorted { item1, item2 in
-                // 文件夹排在前面，然后按名称排序
                 if item1.isDirectory != item2.isDirectory {
                     return item1.isDirectory
                 }
@@ -158,7 +152,6 @@ class FileTreeManager: ObservableObject {
     func deleteItem(_ item: FileItem) {
         do {
             try FileManager.default.removeItem(at: item.url)
-            // 重新加载根目录项
             Task { @MainActor in
                 self.loadRootItems()
             }
@@ -178,7 +171,6 @@ struct FileItemView: View {
 
     var body: some View {
         if item.isDirectory && !(item.children?.isEmpty ?? true) {
-            // 使用 DisclosureGroup 处理文件夹
             DisclosureGroup {
                 ForEach(item.children ?? []) { child in
                     FileItemView(item: child, fileManager: fileManager)
@@ -187,7 +179,6 @@ struct FileItemView: View {
                 FileRowContent(item: item, fileManager: fileManager)
             }
         } else {
-            // 普通文件或空文件夹
             FileRowContent(item: item, fileManager: fileManager)
         }
     }
@@ -206,7 +197,6 @@ struct FileRowContent: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // 文件图标
 
             if item.isDirectory {
                 Image(systemName: item.icon)
@@ -221,7 +211,6 @@ struct FileRowContent: View {
                 }
             }
 
-            // 文件信息
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
                     .font(.system(size: 15, weight: .medium))
@@ -342,14 +331,12 @@ struct NoletFileList: View {
     var body: some View {
         VStack(spacing: 0) {
             if fileManager.isLoading {
-                // 加载状态
                 VStack {
                     Spacer()
                     ProgressView("加载文件中...")
                     Spacer()
                 }
             } else if fileManager.rootItems.isEmpty {
-                // 空状态
                 VStack {
                     Spacer()
                     Image(systemName: "folder")
@@ -362,7 +349,6 @@ struct NoletFileList: View {
                     Spacer()
                 }
             } else {
-                // 文件列表
                 List {
                     ForEach(fileManager.rootItems) { item in
                         FileItemView(item: item, fileManager: fileManager)

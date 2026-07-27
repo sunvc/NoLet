@@ -35,18 +35,5 @@ struct SignInWithApple: View {
     }
 
     private func handleAuthorization(_ authResults: ASAuthorization) {
-//        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-//            let user = appleIDCredential.user
-//            let email = appleIDCredential.email
-//
-//            // 保存用户ID，用作后续登录识别
-//            id = user
-//
-//            Task.detached(priority: .userInitiated) {
-//                if let user = await CloudManager.shared.queryOrUpdateDeviceToken(user) {
-//                    logger.error(user)
-//                }
-//            }
-//        }
     }
 }

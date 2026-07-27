@@ -107,7 +107,6 @@ final class NoLetChatManager: ObservableObject {
     }
 
     private func startObservingUnreadCount() {
-        // 订阅 ChatGroup: 总数 + 当前组
         groupObservationTask?.cancel()
         groupObservationTask = Task { [weak self] in
             guard let stream = self?.groupDB.observeSummary() else { return }
@@ -117,13 +116,11 @@ final class NoLetChatManager: ObservableObject {
                     self.groupsCount = summary.groupsCount
                     self.chatGroup = summary.current
                 }
-                // 当前组变化 -> 重新订阅该组的消息数量
                 self.restartMessageCountObservation(groupID: summary.current?.id)
                 await self.updateMessage()
             }
         }
 
-        // 订阅 ChatPrompt 总数
         promptObservationTask?.cancel()
         promptObservationTask = Task { [weak self] in
             guard let stream = self?.promptDB.observeCount() else { return }
@@ -254,7 +251,6 @@ extension NoLetChatManager {
             )
         }
 
-        ///  增加system的前置参数
         if let promt = chatPrompt {
             params.append(.system(.init(content: .textContent(promt.content), name: promt.title)))
 
@@ -368,7 +364,7 @@ extension NoLetChatManager {
 
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: "No Account Or Query")
+                continuation.finish(throwing:NoletError(message: "No Account Or Query") )
             }
         }
 
@@ -387,7 +383,7 @@ extension NoLetChatManager {
         // MARK: - Configuration
 
         private let minCharsToFlush: Int
-        private let maxDelay: UInt64 // nanoseconds
+        private let maxDelay: UInt64
         private let onFlush: @Sendable (String) -> Void
 
         // MARK: - State
@@ -425,19 +421,16 @@ extension NoLetChatManager {
         private func scheduleFlushIfNeeded() {
             let now = DispatchTime.now().uptimeNanoseconds
 
-            // 条件 1：字符数量足够
             if buffer.count >= minCharsToFlush {
                 flush()
                 return
             }
 
-            // 条件 2：时间到了
             if now - lastFlushTime >= maxDelay {
                 flush()
                 return
             }
 
-            // 启动一个延迟任务（只允许一个）
             if flushTask == nil {
                 flushTask = Task {
                     try? await Task.sleep(nanoseconds: maxDelay)

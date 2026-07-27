@@ -9,9 +9,6 @@ import Defaults
 import PhotosUI
 import SwiftUI
 
-/// PTTSettingsView
-///
-///
 
 struct PTTSettingsView: View {
     @ObservedObject private var manager = PTTManager.shared
@@ -216,7 +213,7 @@ struct PTTSettingsView: View {
             if let image = imageHandler(image: self.pendingAvatarImage) {
                 member.newAvatar = image
             }
-            let response = try await member.save(to: NCONFIG.container.publicCloudDatabase)
+            let response = try await member.save(to: NCONFIG.publicCloudDatabase)
             
             if let data = response{
                 self.member = data
@@ -233,9 +230,6 @@ struct PTTSettingsView: View {
         
     }
 
-    /// 录音码率 Picker。持久化到 `Defaults[.pttBitrate]`;
-    /// 若 Defaults 里存的旧值不在预设档位,回落到最近的档位显示,写入时也用档位值,
-    /// 避免 Opus 收到异常码率报错。
     private var bitrateSection: some View {
         Section {
             Picker(selection: bitrateBinding) {
@@ -258,7 +252,6 @@ struct PTTSettingsView: View {
         }
     }
 
-    /// 当前档位:Defaults 里若是非预设值,靠差值最小的档位兜底
     private var currentBitrate: PTTBitrate {
         if let hit = PTTBitrate(rawValue: pttBitrate) { return hit }
         return PTTBitrate.allCases.min(by: {
@@ -339,7 +332,6 @@ struct LocationStatusView: View {
     @ObservedObject private var locManager = LocManager.shared
     var body: some View {
         Section {
-            // 1. 根据不同的权限状态显示不同的 UI
             switch locManager.authorizationStatus {
             case .notDetermined:
                 Button("授权使用位置") {
@@ -376,7 +368,6 @@ struct LocationStatusView: View {
                 }
             }
         } header: {
-            // 1. 根据不同的权限状态显示不同的 UI
             Group {
                 switch locManager.authorizationStatus {
                 case .notDetermined:

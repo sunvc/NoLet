@@ -91,7 +91,6 @@ struct ChatMessageArrayView: View {
                 }
             }
 
-            // Scroll to bottom button
             if !isNearBottom && !isSearching {
                 Button {
                     scrollPosition.scrollTo(edge: .bottom, animated: true)

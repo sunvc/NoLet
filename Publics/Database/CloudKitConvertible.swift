@@ -28,8 +28,6 @@ import SwiftUI
 nonisolated protocol CloudKitConvertible {
     var id: String { get }
     static var recordType: String { get }
-    /// 不参与反射序列化的字段名集合（例如仅客户端使用的字段、由服务端管理的时间戳等）。
-    /// 默认空集合，可在具体类型上覆盖。`id` 已经硬编码跳过，不需要再列。
     static var skippedKeys: Set<String> { get }
     var recordID: CKRecord.ID { get }
     init?(record: CKRecord)
@@ -85,14 +83,12 @@ nonisolated extension CloudKitConvertible {
                 if clearNilFields {
                     record[key] = nil
                 }
-                // 默认保留旧值：不写 nil
                 continue
             }
 
             if let ck = ckValue(from: value, key: key) {
                 record[key] = ck
             }
-            // ckValue 返回 nil 说明类型不支持，DEBUG 已在内部提示；此处保留 record 原值。
         }
 
         return record
@@ -103,25 +99,21 @@ nonisolated extension CloudKitConvertible {
         guard let value else { return nil }
 
         switch value {
-        // 标量
         case let v as String: return v as NSString
         case let v as Bool: return NSNumber(value: v)
-        case let v as Int: return NSNumber(value: v) // 64bit 平台 Int == Int64
+        case let v as Int: return NSNumber(value: v)
         case let v as Double: return NSNumber(value: v)
         case let v as Float: return NSNumber(value: v)
         case let v as Date: return v as NSDate
         case let v as Data: return v as NSData
 
-        // URL: 本地文件 → CKAsset; 其它 → absoluteString
         case let v as URL:
             return v.isFileURL ? CKAsset(fileURL: v) : (v.absoluteString as NSString)
 
-        // 已经是 CloudKit 原生类型
         case let v as CKAsset: return v
         case let v as CKRecord.Reference: return v
         case let v as CLLocation: return v
 
-        // List 类型 —— CloudKit 支持的元素类型
         case let v as [String]: return v as NSArray
         case let v as [Int]: return v as NSArray
         case let v as [Double]: return v as NSArray
@@ -138,7 +130,6 @@ nonisolated extension CloudKitConvertible {
             return mapped as NSArray
 
         default:
-            // RawRepresentable 枚举兜底 (String / Int / Double raw value)
             if let raw = (value as? any RawRepresentable)?.rawValue {
                 return ckValue(from: raw, key: key)
             }

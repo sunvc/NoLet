@@ -17,7 +17,6 @@ import SwiftUI
 
 // MARK: - Constants
 
-/// 瀑布流各方向间距
 private let waterfallSpacing: CGFloat = 5
 
 // MARK: - WaterfallMessageView
@@ -52,7 +51,6 @@ struct WaterfallMessageView: View {
             }
         }
         .onChange(of: messages.count) { _ in
-            // 数据更新后重置触发标记，允许再次触发
             paginationTriggered = false
         }
     }

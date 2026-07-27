@@ -23,7 +23,6 @@ extension View {
 private struct SnaphotModifier: ViewModifier {
     var trigger: Bool
     var onComplete: (UIImage) -> Void
-    /// Local View Modifier Properties
     @State private var view: UIView = .init(frame: .zero)
 
     func body(content: Content) -> some View {

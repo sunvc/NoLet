@@ -12,23 +12,7 @@
 import CryptoKit
 import SwiftUI
 
-public func NSLocalizedString(
-    _ key: String,
-    tableName: String? = nil,
-    bundle: Bundle = Bundle.main,
-    value: String = "",
-    comment: String? = nil
-) -> String {
-    NSLocalizedString(
-        key,
-        tableName: tableName,
-        bundle: bundle,
-        value: value,
-        comment: comment ?? ""
-    )
-}
 
-extension String: @retroactive Error {}
 
 nonisolated extension String {
     /// 移除 URL 的 HTTP/HTTPS 前缀
@@ -39,8 +23,6 @@ nonisolated extension String {
     var hasHttp: Bool { ["http", "https"].contains { self.lowercased().hasPrefix($0) } }
 
     func sha256() -> String {
-        // 计算 SHA-256 哈希值
-        // 将哈希值转换为十六进制字符串
         guard let data = data(using: .utf8) else {
             return String(prefix(10))
         }
@@ -67,10 +49,8 @@ extension String {
     /// - Returns: 清理后的字符串
     func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
         if allowUnicode {
-            // 使用 Unicode 属性，保留所有语言的字母和数字
             return replacing(/[^\p{L}\p{N}]/, with: "")
         } else {
-            // 只保留 ASCII 字母和数字
             return replacingOccurrences(
                 of: "[^A-Za-z0-9]",
                 with: "",
@@ -115,18 +95,14 @@ nonisolated extension String {
 nonisolated extension String {
     func normalizedURLString() -> String {
         if self.isEmpty { return self }
-        // 尝试解析
         if let url = URL(string: self),
            let scheme = url.scheme?.lowercased(), scheme.hasHttp
         {
-            // 已经是 http/https
             return self
         }
 
-        // 否则强制替换掉错误的 scheme 或缺省情况
         var trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // 如果原本就带 "://"，去掉前缀再补 https://
         if let range = trimmed.range(of: "://") {
             trimmed = String(trimmed[range.upperBound...])
         }

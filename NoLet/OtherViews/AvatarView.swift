@@ -84,7 +84,7 @@ struct AvatarView: View {
             return 
         }
         
-        if let icon = try? await PushIcon.query(NSPredicate(format: "name == %@", icon), from: NCONFIG.container.publicCloudDatabase).first,
+        if let icon = try? await PushIcon.query(NSPredicate(format: "name == %@", icon), from: NCONFIG.publicCloudDatabase).first,
            let previewImage = icon.previewImage,
            let data = previewImage.pngData()
         {

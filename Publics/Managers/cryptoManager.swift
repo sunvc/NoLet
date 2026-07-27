@@ -42,7 +42,6 @@ final class CryptoManager {
 
     func encrypt(_ plaintext: Data) -> BASE64? {
         let data: Data? = encrypt(data: plaintext)
-        /// .replacingOccurrences(of: "+", with: "%2B")
         return data?.base64EncodedString()
     }
 
@@ -59,7 +58,7 @@ final class CryptoManager {
         do {
             let nonce = try AES.GCM.Nonce(data: iv)
             let sealedBox = try AES.GCM.seal(data, using: symmetricKey, nonce: nonce)
-            return nonce + sealedBox.ciphertext + sealedBox.tag // Nonce + Ciphertext + Tag
+            return nonce + sealedBox.ciphertext + sealedBox.tag
         } catch {
             logger.error("GCM Encryption error: \(error)")
             return nil
@@ -125,9 +124,9 @@ enum CryptoMode: String, Codable, CaseIterable, RawRepresentable, Defaults.Seria
 }
 
 enum CryptoAlgorithm: Int, Codable, CaseIterable, RawRepresentable, Defaults.Serializable {
-    case AES128 = 16 // 16 bytes = 128 bits
-    case AES192 = 24 // 24 bytes = 192 bits
-    case AES256 = 32 // 32 bytes = 256 bits
+    case AES128 = 16
+    case AES192 = 24
+    case AES256 = 32
 
     var name: String {
         switch self {
@@ -213,13 +212,11 @@ extension CryptoModelConfig {
     }
     
     
-    
 }
 
 ///  pb://crypto?text=eIxk2XSXdVeC3zsMwmlJevVaXGncCTiUHg5lLiK0S2sG3QLuGMU
 extension [CryptoModelConfig] {
     func config(_ number: Int = 0) -> CryptoModelConfig {
-        /// number = 0 count > 0 , number = 1 count > 1, number = 3 count > 3
         count > number ? self[number] : first ?? .data
     }
 }

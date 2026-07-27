@@ -42,7 +42,6 @@ struct SettingsPage: View {
         }
     }
 
-    // 定义一个 NumberFormatter
     private var numberFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
