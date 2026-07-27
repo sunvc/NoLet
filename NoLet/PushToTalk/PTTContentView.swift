@@ -626,6 +626,7 @@ struct PTTContentView: View {
                         }
                 }
             }
+            .padding(.vertical, 5)
             .contentShape(Rectangle())
             .onTapGesture {
                 withAnimation(.easeInOut) {
