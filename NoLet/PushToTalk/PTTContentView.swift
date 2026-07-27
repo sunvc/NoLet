@@ -118,6 +118,10 @@ struct PTTContentView: View {
     }
 
     var stateTitle: String {
+        if pttManager.state == .recording && isCancel {
+            return String(localized: "松手取消")
+        }
+
         if !pttManager.powerState && !isPlaying {
             return String(localized: "未启动监听")
         }
@@ -147,10 +151,10 @@ struct PTTContentView: View {
     @State private var isAnimatingHint = false
 
     @State private var showTips = false
-    
-    var phoneH: Bool{
+
+    var phoneH: Bool {
         appManager.sizeClass == .compact &&
-           appManager.windowSize.height < appManager.windowSize.width
+            appManager.windowSize.height < appManager.windowSize.width
     }
 
     var topShowHeight: CGFloat {
@@ -161,11 +165,15 @@ struct PTTContentView: View {
         VStack {
             ZStack {
                 GreenbackgroundView()
+                    .simultaneousGesture(freqDragGesture)
 
                 VStack {
                     HStack {
                         HourAndMinuteView()
                             .font(.numberStyle(size: 25))
+                            .onTapGesture {
+                                appManager.homeViewMode = .doubleColumn
+                            }
 
                         Spacer()
 
@@ -211,20 +219,22 @@ struct PTTContentView: View {
                                     .scaleEffect(1.3)
                                     .offset(y: -3)
                             }
-
                             .fontWeight(.bold)
                             .animation(.linear(duration: 0.1), value: pttManager.state)
+                            .VButton { _ in
+                                guard pttManager.waitPlayList.count > 0 else {
+                                    Toast.info(title: "没有数据!")
+                                    return false
+                                }
+                                self.showVoiceList.toggle()
+                                return true
+                            }
                         }
                     }
                     .padding(.horizontal, 10)
                     .padding(.leading, 10)
                     .frame(height: 55)
                     .padding(.top, 5)
-                    .overlay(alignment: .center) { 
-                        if phoneH{
-                            powerButton()
-                        }
-                    }
 
                     ChannelUsersView()
                         .padding(.horizontal, 15)
@@ -277,7 +287,6 @@ struct PTTContentView: View {
                                 }
                             }
                         }
-
                         .animation(.default, value: pttManager.state)
 
                         Spacer(minLength: 0)
@@ -323,9 +332,6 @@ struct PTTContentView: View {
                                 .VButton { _ in
                                     Task {
                                         await self.pttManager.send(.stopPlay)
-                                    }
-
-                                    Task {
                                         await pttManager.playWaitList()
                                     }
                                     return true
@@ -333,30 +339,30 @@ struct PTTContentView: View {
                         }
 
                         Spacer(minLength: 0)
-
-                        Text(stateTitle)
-                            .foregroundStyle(.white)
-                            .minimumScaleFactor(0.5)
-                            .diff { view in
-                                Group {
-                                    if showUserMap && (isPlaying || isRecording) {
-                                        view
-                                            .padding(3)
-                                            .padding(.horizontal)
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(5)
-                                    } else {
-                                        view
+                        if !stateTitle.isEmpty {
+                            Text(stateTitle)
+                                .foregroundStyle(.white)
+                                .minimumScaleFactor(0.5)
+                                .diff { view in
+                                    Group {
+                                        if showUserMap && (isPlaying || isRecording) {
+                                            view
+                                                .padding(3)
+                                                .padding(.horizontal)
+                                                .background(.ultraThinMaterial)
+                                                .cornerRadius(5)
+                                        } else {
+                                            view
+                                        }
                                     }
                                 }
-                            }
 
-                        Spacer(minLength: 0)
+                            Spacer(minLength: 0)
+                        }
 
                         Image(systemName: "forward")
                             .padding(.horizontal, 10)
-                            .opacity(isPlaying && pttManager.waitPlayList
-                                .count > 0 ? 1 : 0)
+                            .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
                             .VButton { _ in
                                 Task {
                                     await self.pttManager.playWaitList()
@@ -400,26 +406,50 @@ struct PTTContentView: View {
                     .minimumScaleFactor(0.8)
 
                     HStack(alignment: .bottom) {
-                        if phoneH{
-                            TabBarBackButtonView(size: CGSize(width: 300, height: 0))
-                                .offset(x: 30)
-                        }else{
-                            Image("logo1")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                                .padding(3)
-                                .contentShape(Rectangle())
-                                .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
-                                .onTapGesture {
-                                    if showUserMapTem {
-                                        pttManager.zoomToFitAllUsers()
+                        Image("logo1")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: phoneH ? 70 : 50)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .contentShape(Rectangle())
+                            .padding(3)
+                            .environment(\.colorScheme, pttManager.powerState ? .light : .dark)
+                            .diff { view in
+                                Group {
+                                    if phoneH {
+                                        view
+                                            .pbutton(
+                                                $isCancel,
+                                                $ispress,
+                                                onBegan: {
+                                                    Task {
+                                                        await startRecording()
+                                                    }
+                                                },
+                                                onEnded: {
+                                                    Task {
+                                                        await endRecording()
+                                                    }
+                                                },
+                                                onCancelled: {
+                                                    Task {
+                                                        await cancelRecording()
+                                                    }
+                                                }
+                                            )
+
+                                            .disabled(!pttManager.powerState)
+                                    } else {
+                                        view
+                                            .simultaneousGesture(logoZoomGesture)
+                                            .onTapGesture {
+                                                if showUserMapTem {
+                                                    pttManager.zoomToFitAllUsers()
+                                                }
+                                            }
                                     }
                                 }
-                                .simultaneousGesture(logoZoomGesture) 
-                        }
-                        
+                            }
 
                         Spacer(minLength: 0)
 
@@ -448,6 +478,11 @@ struct PTTContentView: View {
                             .pickerStyle(MenuPickerStyle())
                             .offset(x: 10)
                             .opacity(showUserMap ? 0 : 1)
+                    }
+                    .overlay(alignment: .center) {
+                        if phoneH {
+                            powerButton()
+                        }
                     }
                     Spacer(minLength: 0)
 
@@ -490,22 +525,21 @@ struct PTTContentView: View {
                 .padding(.bottom, 10)
             }
             .frame(height: topShowHeight)
-            if !phoneH{
-            CenterButtonsView()
 
-            RoundedRectangle(cornerRadius: 5)
-                .foregroundStyle(.gray.opacity(0.3))
-                .frame(height: 5)
-                .padding(.horizontal, 10)
-           
+            if !phoneH {
+                CenterButtonsView()
+
+                RoundedRectangle(cornerRadius: 5)
+                    .foregroundStyle(.gray.opacity(0.3))
+                    .frame(height: 5)
+                    .padding(.horizontal, 10)
+
                 BottomBottonViews()
             }
-            
         }
         .background(.background)
-        .ignoresSafeArea(.container, edges: .top)
+        .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .simultaneousGesture(freqDragGesture)
         .overlay {
             SetVolumePeakView(show: $showVolume, volume: $pttVoiceVolume, icon: iconVolume)
                 .onChange(of: pttVoiceVolume) { value in
@@ -515,7 +549,7 @@ struct PTTContentView: View {
                 }
         }
         .overlay(alignment: .bottomLeading) {
-            if !phoneH{
+            if !phoneH && appManager.sizeClass == .compact {
                 TabBarBackButtonView(size: CGSize(width: 300, height: 0))
                     .offset(x: 30)
             }
@@ -639,8 +673,6 @@ struct PTTContentView: View {
             Text(verbatim: String(format: "%02d", pttManager.waitPlayList.count))
                 .font(.numberStyle(size: 20))
                 .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
-            
-            
         }
     }
 
@@ -761,6 +793,10 @@ struct PTTContentView: View {
                     Spacer()
 
                     Button {
+                        guard pttManager.waitPlayList.count > 0 else {
+                            Toast.info(title: "没有数据!")
+                            return
+                        }
                         self.showVoiceList.toggle()
                         Haptic.impact()
                     } label: {
@@ -924,7 +960,7 @@ struct PTTContentView: View {
     private var freqDragGesture: some Gesture {
         DragGesture(minimumDistance: 10)
             .onChanged { value in
-                guard !pttManager.powerState else { return }
+                guard !pttManager.powerState && phoneH else { return }
                 switch buttonType {
                 case .mhz:
                     if mhzDragBase == nil {
