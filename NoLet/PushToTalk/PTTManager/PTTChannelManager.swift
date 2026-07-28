@@ -183,8 +183,9 @@ final nonisolated class PTTChannelManager: NSObject,
         isRemotePushIncoming.withLock { $0 = true }
 
         if let remote = pushPayload["url"] as? String {
+            let sign = pushPayload["sign"] as? Bool
             Task {
-                if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote) {
+                if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote, sign: sign) {
                     await PTTManager.shared.send(.startPlay(voice), remote: true)
                 } else {
                     self.setActiveRemoteParticipant()
@@ -199,11 +200,11 @@ final nonisolated class PTTChannelManager: NSObject,
             return String(localized: "未知")
         }
         
-        
+       
         return .activeRemoteParticipant(
             .init(
                 name: name,
-                image: "哔,ff0000".avatarImage()
+                image: "\(name.prefix(1)),ff0000".avatarImage()
             )
         )
         

@@ -69,7 +69,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_: UIScene) {
         _syncAppInfo()
-        Task { @MainActor in
+        Task {
             PTTManager.shared.appWillEnterForeground()
         }
     }
@@ -85,7 +85,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UNUserNotificationCenter.current().setBadgeCount(unread)
         }
 
-        Task { @MainActor in
+        Task { 
             PTTManager.shared.appDidEnterBackground()
         }
     }

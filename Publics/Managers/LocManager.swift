@@ -21,6 +21,8 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    
+    private var _run: Bool = false
 
     let locationManager = CLLocationManager()
 
@@ -32,14 +34,18 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func runMonitoringSignificantLocationChanges(start: Bool = false) {
+
         switch authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
+           
             Task { @MainActor in
                 if start {
                     await self.requestLocation()
                     self.locationManager.startMonitoringSignificantLocationChanges()
+                    _run = true
                 } else {
                     self.locationManager.stopMonitoringSignificantLocationChanges()
+                    _run = false
                 }
             }
         default:

@@ -38,6 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if !ProcessInfo.processInfo.isiOSAppOnMac {
             Task {
                 try await PTTChannelManager.shared.start()
+                // FIXME: - 修复PTT位置拉起APP定位没有启动
+                if options?[.location] != nil {
+                    LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
+                }
             }
         }
 
@@ -45,11 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if !Defaults[.firstStart] {
                 await AppManager.shared.registerForRemoteNotifications()
             }
-        }
-
-        // FIXME: - 修复PTT位置拉起APP定位没有启动
-        if options?[.location] != nil {
-            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
         }
 
         WeChatManager.shared.register()

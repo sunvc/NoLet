@@ -366,22 +366,20 @@ final class PTTManager: NSObject, ObservableObject {
         self.powerState = false
         self.serverStatus = .offline
 
-        // 显式关闭频道: 先发 leave 广播离线,再断开 WS(sendLeave 内部会 stop)。
-        self.wsClient.sendLeave()
+        // 显式关闭频道: 走 HTTP POST /ptt/leave,与 WS 状态解耦
+        //(切后台后 WS 已 stop,靠 WS 发 leave 会静默丢失)。之后再 stop WS 断连。
+        await self.httpLeave(channel: Defaults[.pttChannel])
+        self.wsClient.stop()
 
         await self.publicLevelConnect(Defaults[.pttHisChannel])
         Defaults[.pttChannel].users = []
     }
-
-    /// 回前台: 若频道已开(powerState),重连 WS 并拉快照。
-    @MainActor
+    
     func appWillEnterForeground() {
         guard self.powerState else { return }
         self.wsClient.start(channel: Defaults[.pttChannel])
     }
-
-    /// 切后台: 只断 WS,不发 leave,仍在频道内,语音回落 APNs。
-    @MainActor
+    
     func appDidEnterBackground() {
         self.wsClient.stop()
     }
@@ -640,10 +638,10 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    func saveVoice(remoteUrl: String) async -> AudioMessage? {
+    func saveVoice(remoteUrl: String, sign: Bool? = nil) async -> AudioMessage? {
         do {
             guard let remoteFileUrl = URL(string: remoteUrl),
-                  let voice = AudioMessage(remote: remoteFileUrl),
+                  let voice = AudioMessage(remote: remoteFileUrl, sign: sign),
                   let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(voice.file),
                   let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign)
             else {
@@ -860,6 +858,7 @@ extension PTTManager {
 
     nonisolated struct JoinParams: Codable, Sendable {
         var id: String
+        var name: String
         var channels: [String]
         var latitude: Double
         var longitude: Double
@@ -891,6 +890,7 @@ extension PTTManager {
 
             let params = JoinParams(
                 id: Defaults[.member].id,
+                name: Defaults[.member].name,
                 channels: hzs,
                 latitude: LocManager.shared.location.coordinate.latitude,
                 longitude: LocManager.shared.location.coordinate.longitude,
@@ -929,6 +929,40 @@ extension PTTManager {
         )
     }
 
+    /// 显式退出频道: 走 HTTP POST /ptt/leave,不依赖 WS 状态。服务端收到后会
+    /// SyncChannels(user, []) 把 user 从旧频道摘除并 broadcast leave 事件给其它成员。
+    /// 失败(超时/网络错)也直接返回,不阻塞 UI 层的 stop 流程,靠对端下次心跳/重连恢复视图。
+    func httpLeave(channel: PTTChannel) async {
+        guard channel.serverOK else { return }
+
+        let params = JoinParams(
+            id: Defaults[.member].id,
+            name: Defaults[.member].name,
+            channels: [channel.hex()],
+            latitude: LocManager.shared.location.coordinate.latitude,
+            longitude: LocManager.shared.location.coordinate.longitude,
+            token: Defaults[.member].talk,
+            host: channel.server.url
+        )
+        let headers = CryptoManager.signature(
+            sign: channel.server.sign,
+            server: channel.server.key
+        )
+
+        do {
+            let _: baseResponse<Int>? = try await self.network.fetch(
+                url: channel.server.url,
+                path: "/ptt/leave",
+                method: .POST,
+                params: params,
+                headers: headers,
+                timeout: 5
+            )
+        } catch {
+            logger.error("httpLeave: \(error.localizedDescription)")
+        }
+    }
+
     func sendVoice(message: AudioMessage) async {
         self.setStatus(message: message, status: .send)
 
@@ -949,14 +983,41 @@ extension PTTManager {
                 data = encryptedData
             }
 
-            // 整段 Opus 走 WS 二进制帧;WS 不可用直接标 failed,由用户重发,不回退 HTTP。
-            let meta = PTTVoiceMeta(
-                channel: channel.hex(),
-                file: message.file,
-                sign: pttSignature,
-                sender: Defaults[.member].id
-            )
-            let ok = self.wsClient.sendVoice(meta: meta, audio: data)
+            // 前台走 WS 二进制帧(低延迟);锁屏/后台/APNs 唤醒场景 WS 不稳,走 HTTP 上传兜底。
+            let inForeground = await MainActor.run {
+                UIApplication.shared.applicationState == .active
+            }
+
+            let ok: Bool
+            if inForeground {
+                let meta = PTTVoiceMeta(
+                    channel: channel.hex(),
+                    file: message.file,
+                    sign: pttSignature,
+                    sender: Defaults[.member].id
+                )
+                ok = self.wsClient.sendVoice(meta: meta, audio: data)
+                if !ok {
+                    // 前台但 WS 刚断/未 authenticated: 回退 HTTP,避免直接标 failed。
+                    let http = await self.uploadVoiceHTTP(
+                        channel: channel,
+                        message: message,
+                        data: data,
+                        sign: pttSignature
+                    )
+                    self.setStatus(message: message, status: http ? .success : .failed)
+                    if !http { Toast.error(title: "发送语音失败") }
+                    return
+                }
+            } else {
+                ok = await self.uploadVoiceHTTP(
+                    channel: channel,
+                    message: message,
+                    data: data,
+                    sign: pttSignature
+                )
+            }
+
             self.setStatus(message: message, status: ok ? .success : .failed)
             if !ok {
                 Toast.error(title: "发送语音失败")
@@ -965,6 +1026,35 @@ extension PTTManager {
             logger.error("\(error.localizedDescription)")
             Toast.error(title: "发送语音失败")
             self.setStatus(message: message, status: .failed)
+        }
+    }
+
+    /// 走 HTTP POST /ptt/voice 上传整段 Opus,后台/APNs 场景使用。
+    /// 服务端收到后落盘并调用 DeliverVoice(WS 成员实时收 / 其它成员 APNs 拉取)。
+    private func uploadVoiceHTTP(
+        channel: PTTChannel,
+        message: AudioMessage,
+        data: Data,
+        sign: Bool
+    ) async -> Bool {
+        let signHeaders = CryptoManager.signature(
+            sign: channel.server.sign,
+            server: channel.server.key
+        )
+        var headers = signHeaders
+        headers["X-PFA"] = "\(sign ? "1" : "0")-\(message.file)"
+
+        do {
+            _ = try await self.network.uploadFile(
+                data: data,
+                url: channel.server.url,
+                path: "/ptt/voice",
+                headers: headers
+            )
+            return true
+        } catch {
+            logger.error("uploadVoiceHTTP: \(error.localizedDescription)")
+            return false
         }
     }
 
