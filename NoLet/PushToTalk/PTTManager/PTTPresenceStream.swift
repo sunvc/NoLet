@@ -13,28 +13,6 @@ import Defaults
 import Foundation
 import os
 
-/// 服务器推来的一条事件
-nonisolated struct PresenceEvent: Decodable, Sendable {
-    enum Kind: String, Decodable, Sendable {
-        case snapshot
-        case join
-        case leave
-        case update
-        case ping
-    }
-    struct User: Decodable, Sendable {
-        var id: String
-        var latitude: Double
-        var longitude: Double
-        var timestamp: Int64?
-    }
-    var event: Kind
-    var channel: String
-    var user: User?
-    var users: [User]?
-    var ts: Int64?
-}
-
 nonisolated protocol PTTPresenceStreamDelegate: AnyObject, Sendable {
     /// 收到事件回调,在任意线程被调用,实现方自行切主线程
     func presenceStream(_ stream: PTTPresenceStream, didReceive event: PresenceEvent)
