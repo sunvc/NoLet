@@ -56,7 +56,7 @@ final class PTTManager: NSObject, ObservableObject {
     private nonisolated let network = NetworkManager()
     private var observationTask: Task<Void, Never>?
     private var loopTask: Task<Void, Never>?
-    private let presence = PTTPresenceStream()
+    private let wsClient = PTTWebSocketClient()
 
     private var lastPresenceUpload: Date = .distantPast
     private var pendingPresenceUpload: Task<Void, Never>?
@@ -74,7 +74,7 @@ final class PTTManager: NSObject, ObservableObject {
         self.TaskHandler()
         self.setupNotifications()
         self.setupMemberNameCache()
-        self.presence.delegate = self
+        self.wsClient.delegate = self
     }
 
     deinit {
@@ -355,7 +355,7 @@ final class PTTManager: NSObject, ObservableObject {
 
         await self.publicJoinConnect()
 
-        self.presence.start(channel: Defaults[.pttChannel])
+        self.wsClient.start(channel: Defaults[.pttChannel])
 
         PTTChannelManager.shared.setTransmissionMode()
         PTTChannelManager.shared
@@ -366,7 +366,8 @@ final class PTTManager: NSObject, ObservableObject {
         self.powerState = false
         self.serverStatus = .offline
 
-        self.presence.stop()
+        // 显式关闭频道: 先发 leave 广播离线,再断开 WS(sendLeave 内部会 stop)。
+        self.wsClient.sendLeave()
 
         await self.publicLevelConnect(Defaults[.pttHisChannel])
         Defaults[.pttChannel].users = []
@@ -456,7 +457,7 @@ final class PTTManager: NSObject, ObservableObject {
         }
 
         if self.powerState {
-            self.presence.start(channel: Defaults[.pttChannel])
+            self.wsClient.start(channel: Defaults[.pttChannel])
         }
 
         self.zoomToFitAllUsers(force: false)
@@ -640,6 +641,36 @@ final class PTTManager: NSObject, ObservableObject {
             try await AudioMessageDBManager.shared.save(voice)
             return voice
         } catch {
+            return nil
+        }
+    }
+
+    /// 保存经 WS 收到的整段语音: 按 sign 解密后落盘并入库,返回 AudioMessage 供播放。
+    func saveVoice(fromWS meta: PTTVoiceMeta, audio: Data) async -> AudioMessage? {
+        do {
+            guard let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(meta.file) else {
+                return nil
+            }
+            var data = audio
+            if meta.sign {
+                guard let decoded = CryptoModelConfig.data.decrypt(inputData: data) else {
+                    throw NoletError(message: "decrypt error")
+                }
+                data = decoded
+            }
+            try data.write(to: filePath)
+            let voice = AudioMessage(
+                channel: meta.channel,
+                from: meta.sender,
+                file: meta.file,
+                read: false,
+                sign: meta.sign,
+                status: .success
+            )
+            try await AudioMessageDBManager.shared.save(voice)
+            return voice
+        } catch {
+            logger.error("saveVoice(fromWS): \(error.localizedDescription)")
             return nil
         }
     }
@@ -874,36 +905,15 @@ extension PTTManager {
         }
     }
 
-    /// 低频位置心跳。SSE 承载增量成员事件,但客户端自身的位置变化需要主动上报。
-    /// 服务端收到后会 broadcast update 到订阅了这个频道的其它成员。
+    /// 低频位置心跳。WS 承载增量成员事件,但客户端自身的位置变化需要主动上报。
+    /// 服务端收到 presence 文本帧后会 broadcast update 到该频道其它成员。
     func sendPresenceHeartbeat() async {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else { return }
-
-        do {
-            let params = JoinParams(
-                id: Defaults[.member].id,
-                channels: [channel.hex()],
-                latitude: LocManager.shared.location.coordinate.latitude,
-                longitude: LocManager.shared.location.coordinate.longitude,
-                token: Defaults[.member].talk,
-                host: channel.server.url
-            )
-            let headers = CryptoManager.signature(
-                sign: channel.server.sign,
-                server: channel.server.key
-            )
-            let _: baseResponse<Int>? = try await self.network.fetch(
-                url: channel.server.url,
-                path: "/ptt/presence",
-                method: .POST,
-                params: params,
-                headers: headers,
-                timeout: 5
-            )
-        } catch {
-            logger.debug("presence heartbeat: \(error.localizedDescription)")
-        }
+        self.wsClient.sendPresence(
+            latitude: LocManager.shared.location.coordinate.latitude,
+            longitude: LocManager.shared.location.coordinate.longitude
+        )
     }
 
     func sendVoice(message: AudioMessage) async {
@@ -926,24 +936,18 @@ extension PTTManager {
                 data = encryptedData
             }
 
-            let signHeaders = CryptoManager.signature(
-                sign: channel.server.sign,
-                server: channel.server.key
+            // 整段 Opus 走 WS 二进制帧;WS 不可用直接标 failed,由用户重发,不回退 HTTP。
+            let meta = PTTVoiceMeta(
+                channel: channel.hex(),
+                file: message.file,
+                sign: pttSignature,
+                sender: Defaults[.member].id
             )
-            let fileHeaders = [
-                "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
-            ]
-
-            let response = try await self.network.uploadFile(
-                data: data,
-                url: channel.server.url,
-                path: "/ptt/voice",
-                headers: fileHeaders.merging(signHeaders) { current, _ in current }
-            )
-
-            let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
-
-            self.setStatus(message: message, status: result.code == 200 ? .success : .failed)
+            let ok = self.wsClient.sendVoice(meta: meta, audio: data)
+            self.setStatus(message: message, status: ok ? .success : .failed)
+            if !ok {
+                Toast.error(title: "发送语音失败")
+            }
         } catch {
             logger.error("\(error.localizedDescription)")
             Toast.error(title: "发送语音失败")
@@ -1127,25 +1131,37 @@ extension PTTManager: PTTRecorderDelegate {
     }
 }
 
-// MARK: - PTTPresenceStreamDelegate
+// MARK: - PTTWebSocketClientDelegate
 
-extension PTTManager: PTTPresenceStreamDelegate {
-    nonisolated func presenceStream(
-        _ stream: PTTPresenceStream,
+extension PTTManager: PTTWebSocketClientDelegate {
+    nonisolated func webSocket(
+        _ client: PTTWebSocketClient,
         didChangeConnected connected: Bool
     ) {
-        logger.debug("SSE connected=\(connected)")
+        logger.debug("WS connected=\(connected)")
         Task { @MainActor in
             self.serverStatus = connected ? .online : .offline
         }
     }
 
-    nonisolated func presenceStream(
-        _ stream: PTTPresenceStream,
+    nonisolated func webSocket(
+        _ client: PTTWebSocketClient,
         didReceive event: PresenceEvent
     ) {
         Task { @MainActor in
             self.apply(presenceEvent: event)
+        }
+    }
+
+    nonisolated func webSocket(
+        _ client: PTTWebSocketClient,
+        didReceiveVoice meta: PTTVoiceMeta,
+        audio: Data
+    ) {
+        Task {
+            if let voice = await self.saveVoice(fromWS: meta, audio: audio) {
+                await self.send(.startPlay(voice), remote: true)
+            }
         }
     }
 
