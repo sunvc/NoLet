@@ -90,6 +90,11 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
         currentTask?.cancel()
         currentTask = nil
         currentChannel = nil
+        teardownTransport()
+    }
+
+    /// 关闭底层 socket/session(leave 帧发送完成后调用)。
+    private func teardownTransport() {
         socket?.cancel(with: .goingAway, reason: nil)
         socket = nil
         session?.finishTasksAndInvalidate()
@@ -98,16 +103,26 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
 
     /// 发送 leave 文本帧,然后 stop()。
     func sendLeave() {
-        if let data = try? JSONEncoder().encode(LeaveMsg()),
+        // 成员身份只靠显式 leave 移除,必须确保 leave 帧发出后再断开,
+        // 否则 stop() 立即 cancel 会丢弃未 flush 的 leave 帧,导致用户滞留频道。
+        guard let socket,
+            let data = try? JSONEncoder().encode(LeaveMsg()),
             let json = String(data: data, encoding: .utf8)
-        {
-            socket?.send(.string(json)) { error in
-                if let error {
-                    logger.error("WS sendLeave error: \(error)")
-                }
-            }
+        else {
+            stop()
+            return
         }
-        stop()
+        // 先标记停止并取消重连循环,但推迟真正断开到 leave 帧发完。
+        isStopped = true
+        currentTask?.cancel()
+        currentTask = nil
+        currentChannel = nil
+        socket.send(.string(json)) { [weak self] error in
+            if let error {
+                logger.error("WS sendLeave error: \(error)")
+            }
+            self?.teardownTransport()
+        }
     }
 
     /// 发送 presence 文本帧。
