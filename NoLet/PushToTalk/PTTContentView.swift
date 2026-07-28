@@ -222,7 +222,7 @@ struct PTTContentView: View {
                             .fontWeight(.bold)
                             .animation(.linear(duration: 0.1), value: pttManager.state)
                             .VButton { _ in
-                                guard pttManager.waitPlayList.count > 0 else {
+                                guard pttManager.messages.count > 0 else {
                                     Toast.info(title: "没有数据!")
                                     return false
                                 }
@@ -523,6 +523,7 @@ struct PTTContentView: View {
                 }
                 .padding(.horizontal, 15)
                 .padding(.bottom, 10)
+                .padding(.leading,  phoneH ? 30 : 0)
             }
             .frame(height: topShowHeight)
 
@@ -627,10 +628,10 @@ struct PTTContentView: View {
     func ChannelUsersView() -> some View {
         HStack {
             HStack(alignment: .bottom, spacing: 0) {
-                Text(verbatim: String(format: "%02d", pttChannel.users.count))
+                Text(verbatim: String(format: "%02d", pttManager.onlineUsers.count))
                     .font(.numberStyle(size: 20))
                     .offset(y: 2)
-                    .foregroundStyle(pttChannel.users.count > 0 ?
+                    .foregroundStyle(pttManager.onlineUsers.count > 0 ?
                         Color.white : Color.white.opacity(0.3))
                     .fontWeight(.bold)
                     .tracking(3)
@@ -643,7 +644,7 @@ struct PTTContentView: View {
                     Image(systemName: "person")
                         .diff { view in
                             Group {
-                                if item > pttChannel.users.count - 1 {
+                                if item > pttManager.onlineUsers.count - 1 {
                                     view
                                         .foregroundStyle(.white.opacity(0.1))
                                 } else {
@@ -653,7 +654,7 @@ struct PTTContentView: View {
                                 }
                             }
                         }
-                        .animation(.default, value: pttChannel.users)
+                        .animation(.default, value: pttManager.onlineUsers)
                         .VButton { _ in
                             self.showUserMapTem.toggle()
                             return true
@@ -793,7 +794,7 @@ struct PTTContentView: View {
                     Spacer()
 
                     Button {
-                        guard pttManager.waitPlayList.count > 0 else {
+                        guard pttManager.messages.count > 0 else {
                             Toast.info(title: "没有数据!")
                             return
                         }
