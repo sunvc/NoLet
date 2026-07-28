@@ -373,6 +373,19 @@ final class PTTManager: NSObject, ObservableObject {
         Defaults[.pttChannel].users = []
     }
 
+    /// 回前台: 若频道已开(powerState),重连 WS 并拉快照。
+    @MainActor
+    func appWillEnterForeground() {
+        guard self.powerState else { return }
+        self.wsClient.start(channel: Defaults[.pttChannel])
+    }
+
+    /// 切后台: 只断 WS,不发 leave,仍在频道内,语音回落 APNs。
+    @MainActor
+    func appDidEnterBackground() {
+        self.wsClient.stop()
+    }
+
     func publicLevelConnect(_ channels: [PTTChannel]) async {
         let result = await self.connect(channels: channels, join: false)
 
