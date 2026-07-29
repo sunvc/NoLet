@@ -924,9 +924,7 @@ extension PTTManager {
         }
     }
 
-    /// 低频位置心跳。WS 承载增量成员事件,但客户端自身的位置变化需要主动上报。
-    /// 服务端收到 presence 文本帧后会 broadcast update 到该频道其它成员。
-    /// 定位没就绪时静默跳过,别把 (0,0) 哨兵广播给频道内别的成员。
+
     func sendPresenceHeartbeat() async {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else { return }
@@ -937,9 +935,6 @@ extension PTTManager {
         )
     }
 
-    /// 显式退出频道: 走 HTTP POST /ptt/leave,不依赖 WS 状态。服务端收到后会
-    /// SyncChannels(user, []) 把 user 从旧频道摘除并 broadcast leave 事件给其它成员。
-    /// 失败(超时/网络错)也直接返回,不阻塞 UI 层的 stop 流程,靠对端下次心跳/重连恢复视图。
     func httpLeave(channel: PTTChannel) async {
         guard channel.serverOK else { return }
 
