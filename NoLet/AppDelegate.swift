@@ -38,11 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if !ProcessInfo.processInfo.isiOSAppOnMac {
             Task {
                 try await PTTChannelManager.shared.start()
-                // FIXME: - 修复PTT位置拉起APP定位没有启动
-                if options?[.location] != nil {
-                    LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
-                }
             }
+            // 启动就开位置监听,不再等用户 PTT join 才启动 significant location changes,
+            // 否则 LocManager.location 会一直停在 (0,0) 哨兵,首次上报/首次地图都是空坐标。
+            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
         }
 
         Task {

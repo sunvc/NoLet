@@ -152,9 +152,18 @@ struct PTTContentView: View {
 
     @State private var showTips = false
 
+
     var phoneH: Bool {
         appManager.sizeClass == .compact &&
             appManager.windowSize.height < appManager.windowSize.width
+    }
+    
+    var rightPadding: CGFloat{
+        phoneH && appManager.orientation == .landscapeLeft ? 30 : 0
+    }
+    
+    var leftPadding: CGFloat{
+        phoneH && appManager.orientation == .landscapeRight ? 30 : 0
     }
 
     var topShowHeight: CGFloat {
@@ -221,6 +230,7 @@ struct PTTContentView: View {
                             }
                             .fontWeight(.bold)
                             .animation(.linear(duration: 0.1), value: pttManager.state)
+                            .contentShape(Rectangle())
                             .VButton { _ in
                                 guard pttManager.messages.count > 0 else {
                                     Toast.info(title: "没有数据!")
@@ -523,7 +533,8 @@ struct PTTContentView: View {
                 }
                 .padding(.horizontal, 15)
                 .padding(.bottom, 10)
-                .padding(.leading,  phoneH ? 30 : 0)
+                .padding(.leading,  leftPadding)
+                .padding(.trailing, rightPadding)
             }
             .frame(height: topShowHeight)
 

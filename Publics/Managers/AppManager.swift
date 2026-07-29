@@ -51,6 +51,7 @@ final class AppManager: ObservableObject {
     @Published var sizeClass: UserInterfaceSizeClass?
     @Published var copyMessageId: String? = nil
     @Published var windowSize: CGSize = .zero
+    @Published var orientation:UIInterfaceOrientation = .portrait
 
     let network = NetworkManager()
 

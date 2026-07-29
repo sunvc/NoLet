@@ -62,10 +62,17 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
     private var currentChannel: PTTChannel?
     private var isStopped = true
 
+    /// 同一次 `start()` 生命周期内是否已经成功打过一次 hello。
+    /// 首次连接发 hello 走服务端 SyncChannels diff;之后所有重连发 rejoin 让服务端
+    /// 无条件广播 join,通知别人"我回来了"。
+    private var hasJoinedOnce = false
+
     private var session: URLSession?
     private var socket: URLSessionWebSocketTask?
 
-    private let backoffSchedule: [UInt64] = [1, 3, 5, 10, 30]
+    /// 断线重连节奏 —— 前 5 次 1s 追瞬断秒回,之后 3/5/10 递增,尾巴稳定 10s。
+    /// 永不放弃,直到显式 stop()。
+    private let backoffSchedule: [UInt64] = [1, 1, 1, 1, 1, 3, 5, 10]
 
     // MARK: - Public
 
@@ -77,6 +84,7 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
         stop()
         isStopped = false
         currentChannel = channel
+        hasJoinedOnce = false
 
         currentTask = Task.detached(priority: .utility) { [weak self] in
             guard let self else { return }
@@ -90,6 +98,14 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
         currentTask?.cancel()
         currentTask = nil
         currentChannel = nil
+        teardownTransport()
+    }
+
+    /// 回前台踢一脚: App 被挂起时 socket 已被 iOS 冻结,receive 可能还卡着没抛错。
+    /// 保留 currentChannel/isStopped=false,只把 socket 撤掉 → 现有 loop 内的 receive
+    /// 立刻抛错 → 走 backoff 重连。比等 timeout 快。
+    func kick() {
+        guard !isStopped, currentChannel != nil else { return }
         teardownTransport()
     }
 
@@ -180,13 +196,16 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
 
         var request = URLRequest(url: url)
         for (k, v) in headers { request.setValue(v, forHTTPHeaderField: k) }
-        request.timeoutInterval = 3600
+        // Upgrade 阶段 10s 拿不到 101 就 fail,让 loop 进 catch 走 backoff 重试。
+        request.timeoutInterval = 10
 
         let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 60
+        config.timeoutIntervalForRequest = 10
         config.timeoutIntervalForResource = 3600
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
-        config.waitsForConnectivity = true
+        // ❌ 不能开 waitsForConnectivity:server 挂后 iOS 会把新 connect 请求排队"永久等待",
+        // 既不抛错也不返回,loop 永远卡在这里,永远不会重连。
+        config.waitsForConnectivity = false
         let session = URLSession(configuration: config)
         self.session = session
         defer {
@@ -198,11 +217,28 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
         self.socket = socket
         socket.resume()
 
-        // 打开后立即发 hello 文本帧
-        if let helloData = try? JSONEncoder().encode(hello),
-            let helloJSON = String(data: helloData, encoding: .utf8)
-        {
-            try await socket.send(.string(helloJSON))
+        // 首次连接发 hello 走服务端 diff;重连发 rejoin 让服务端无条件广播 join。
+        // 只要 send 成功不抛,就置 hasJoinedOnce = true —— 断线后下一轮 loop 会走 rejoin。
+        let isRejoin = self.hasJoinedOnce
+        let handshakeJSON: String?
+        if isRejoin {
+            let r = Rejoin(
+                id: hello.id,
+                channels: hello.channels,
+                latitude: hello.latitude,
+                longitude: hello.longitude,
+                token: hello.token,
+                host: hello.host
+            )
+            handshakeJSON = (try? JSONEncoder().encode(r))
+                .flatMap { String(data: $0, encoding: .utf8) }
+        } else {
+            handshakeJSON = (try? JSONEncoder().encode(hello))
+                .flatMap { String(data: $0, encoding: .utf8) }
+        }
+        if let json = handshakeJSON {
+            try await socket.send(.string(json))
+            self.hasJoinedOnce = true
         }
 
         self.delegate?.webSocket(self, didChangeConnected: true)
@@ -264,6 +300,17 @@ nonisolated final class PTTWebSocketClient: NSObject, @unchecked Sendable {
 extension PTTWebSocketClient {
     nonisolated struct Hello: Encodable {
         let type = "hello"
+        let id: String
+        let channels: [String]
+        let latitude: Double
+        let longitude: Double
+        let token: String
+        let host: String
+    }
+    /// 断线重连的握手帧: 结构与 Hello 一致, type 不同。服务端收到 rejoin 后
+    /// 无条件广播 join, 让别人知道"这个人回来了", 不走 SyncChannels 的 diff。
+    nonisolated struct Rejoin: Encodable {
+        let type = "rejoin"
         let id: String
         let channels: [String]
         let latitude: Double

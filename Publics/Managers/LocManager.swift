@@ -19,9 +19,16 @@ import MapKit
 final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocManager()
 
-    @Published var location: CLLocation = .init(latitude: 31.1435, longitude: 121.6570)
+    /// 未定位时的哨兵值 (0,0)。UI/上报侧用 `hasValidLocation` 判定,别把这个当真实坐标发出去。
+    @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
-    
+
+    /// `location` 是否已被真实定位/兜底覆盖过。仍在 (0,0) 时视为未定位。
+    var hasValidLocation: Bool {
+        let c = location.coordinate
+        return c.latitude != 0 || c.longitude != 0
+    }
+
     private var _run: Bool = false
 
     let locationManager = CLLocationManager()
@@ -79,16 +86,22 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.requestAlwaysAuthorization()
     }
 
+    /// 触发一次定位。已授权走 CLLocationManager;未授权或还没拿到坐标 (`hasValidLocation == false`)
+    /// 时用 IP 地理位置兜底,避免全 App 拿到 (0,0) 哨兵。
     func requestLocation() async {
         switch authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
-        default:
-            if let local = await CLGeocoderManager.shared.queryLocation(),
-               self.location.coordinate.latitude == .zero ||
-               self.location.coordinate.longitude == .zero
+            if !hasValidLocation,
+               let local = await CLGeocoderManager.shared.queryLocation()
             {
-                self.location = local
+                await MainActor.run { self.location = local }
+            }
+        default:
+            if !hasValidLocation,
+               let local = await CLGeocoderManager.shared.queryLocation()
+            {
+                await MainActor.run { self.location = local }
             }
         }
     }

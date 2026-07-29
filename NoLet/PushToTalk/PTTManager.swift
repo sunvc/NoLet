@@ -34,11 +34,10 @@ final class PTTManager: NSObject, ObservableObject {
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
     @Published var hasPermission: Bool = false
+    /// 初值跟随 `LocManager.location`;未定位时是 (0,0) 哨兵,后续 `zoomToFitAllUsers`
+    /// 或 `handleLocationUpdated` 拿到真实坐标后会覆盖。避免硬编码城市。
     @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(
-            latitude: 31.2397,
-            longitude: 121.4998
-        ),
+        center: LocManager.shared.location.coordinate,
         span: MKCoordinateSpan(
             latitudeDelta: 0.05,
             longitudeDelta: 0.05
@@ -375,14 +374,18 @@ final class PTTManager: NSObject, ObservableObject {
         Defaults[.pttChannel].users = []
     }
     
+    /// App 回前台: 冷启动/挂起后没被杀的场景, WS loop 还在跑但底层 socket 可能已被 iOS 冻结。
+    /// 踢一下让 receive 立刻抛错走重连;若 loop 已因错退出且未启动过,start 会拉起。
     func appWillEnterForeground() {
         guard self.powerState else { return }
+        self.wsClient.kick()
         self.wsClient.start(channel: Defaults[.pttChannel])
     }
-    
-    func appDidEnterBackground() {
-        self.wsClient.stop()
-    }
+
+    /// App 切后台: 不主动 stop, 让 WS 常驻。iOS 会冻结底层 socket,但只要 App 未被
+    /// 系统杀,前台恢复时 `kick()` 会强制重连(或者被 PTT push / significant location
+    /// 唤醒时继续跑)。显式退出频道走 `levelConnect`,那里才 stop。
+    func appDidEnterBackground() {}
 
     func publicLevelConnect(_ channels: [PTTChannel]) async {
         let result = await self.connect(channels: channels, join: false)
@@ -781,6 +784,9 @@ extension PTTManager: CLLocationManagerDelegate {
         }
 
         guard !validUsers.isEmpty else {
+            // 频道内没人有有效坐标: 只有本机位置就用它,连本机也没定位就保留当前 region,
+            // 别把地图拽到 (0,0) 大西洋中央。
+            guard LocManager.shared.hasValidLocation else { return }
             let userCoordinate = LocManager.shared.location.coordinate
             withAnimation(.easeInOut(duration: 0.5)) {
                 region = MKCoordinateRegion(
@@ -920,9 +926,11 @@ extension PTTManager {
 
     /// 低频位置心跳。WS 承载增量成员事件,但客户端自身的位置变化需要主动上报。
     /// 服务端收到 presence 文本帧后会 broadcast update 到该频道其它成员。
+    /// 定位没就绪时静默跳过,别把 (0,0) 哨兵广播给频道内别的成员。
     func sendPresenceHeartbeat() async {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else { return }
+        guard LocManager.shared.hasValidLocation else { return }
         self.wsClient.sendPresence(
             latitude: LocManager.shared.location.coordinate.latitude,
             longitude: LocManager.shared.location.coordinate.longitude

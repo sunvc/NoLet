@@ -13,6 +13,15 @@
 import SwiftUI
 import UIKit
 
+extension UIApplication {
+    var interfaceOrientation: UIInterfaceOrientation? {
+        connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?
+            .interfaceOrientation
+    }
+}
+
 extension View {
     func hideKeyboard() {
         UIApplication.shared.sendAction(
