@@ -49,11 +49,11 @@ struct PTTContentView: View {
 
     @State private var newMessages: Int = 0
 
-    @State private var showVolume: Bool = false
     @State private var hideWorkItem: DispatchWorkItem?
 
     @State private var isButtonPressed = false
     @State private var dragOffset: CGFloat = 0.0
+    
     private let maxDragDistance: CGFloat = 130.0
 
     @State private var showUserMapTem: Bool = false
@@ -127,6 +127,9 @@ struct PTTContentView: View {
         }
 
         if !self.showUserMap {
+            if case .connecting(let attempt) = pttManager.serverStatus, attempt > 0 {
+                return pttManager.serverStatus.title
+            }
             if pttManager.serverStatus == .failed && pttManager.state == .idle {
                 return String(localized: "服务器未连接")
             }
@@ -152,17 +155,16 @@ struct PTTContentView: View {
 
     @State private var showTips = false
 
-
     var phoneH: Bool {
         appManager.sizeClass == .compact &&
             appManager.windowSize.height < appManager.windowSize.width
     }
-    
-    var rightPadding: CGFloat{
+
+    var rightPadding: CGFloat {
         phoneH && appManager.orientation == .landscapeLeft ? 30 : 0
     }
-    
-    var leftPadding: CGFloat{
+
+    var leftPadding: CGFloat {
         phoneH && appManager.orientation == .landscapeRight ? 30 : 0
     }
 
@@ -250,50 +252,33 @@ struct PTTContentView: View {
                         .padding(.horizontal, 15)
                     Spacer(minLength: 0)
                     HStack {
-                        ZStack {
-                            Image(systemName: iconVolume)
-                                .foregroundStyle(.white)
-                                .font(.title3)
-                                .opacity(!isRecording ? 1 : 0)
-                                .offset(x: !isRecording ? 0 : -50)
-                                .opacity(self.showVolume ? 0 : 1)
-                                .offset(y: self.showVolume ? 20 : 0)
-                                .animation(.default, value: showVolume)
-                                .opacity(showUserMap ? 0 : 1)
-                                .VButton(onRelease: { _ in
-                                    self.showVolume.toggle()
-                                    return true
-                                })
-                                .frame(width: 35)
+                        VStack(spacing: 5) {
+                            Text(verbatim: String(format: "%.1f", pttManager.elapsedTime))
+                                .font(.numberStyle(size: 28))
+                                .fontWeight(.black)
+                                .lineLimit(1)
+                                .opacity(isRecording ? 1 : 0)
+                                .scaleEffect(isRecording ? 1 : 0.1)
+                                .offset(y: isRecording ? 0 : -30)
 
-                            VStack(spacing: 5) {
-                                Text(verbatim: String(format: "%.1f", pttManager.elapsedTime))
-                                    .font(.numberStyle(size: 28))
-                                    .fontWeight(.black)
-                                    .lineLimit(1)
-                                    .opacity(isRecording ? 1 : 0)
-                                    .scaleEffect(isRecording ? 1 : 0.1)
-                                    .offset(y: isRecording ? 0 : -30)
-
-                                Text(verbatim: "TIME")
-                                    .lineLimit(1)
-                                    .opacity(isRecording ? 1 : 0)
-                                    .scaleEffect(isRecording ? 1 : 0.1)
-                                    .offset(y: isRecording ? 0 : 30)
-                            }
-                            .foregroundStyle(.white)
-                            .minimumScaleFactor(0.5)
-                            .frame(width: 50)
-                            .diff { view in
-                                Group {
-                                    if showUserMap && isRecording {
-                                        view
-                                            .padding(5)
-                                            .background(.ultraThinMaterial)
-                                            .cornerRadius(5)
-                                    } else {
-                                        view
-                                    }
+                            Text(verbatim: "TIME")
+                                .lineLimit(1)
+                                .opacity(isRecording ? 1 : 0)
+                                .scaleEffect(isRecording ? 1 : 0.1)
+                                .offset(y: isRecording ? 0 : 30)
+                        }
+                        .foregroundStyle(.white)
+                        .minimumScaleFactor(0.5)
+                        .frame(width: 50)
+                        .diff { view in
+                            Group {
+                                if showUserMap && isRecording {
+                                    view
+                                        .padding(5)
+                                        .background(.ultraThinMaterial)
+                                        .cornerRadius(5)
+                                } else {
+                                    view
                                 }
                             }
                         }
@@ -329,7 +314,7 @@ struct PTTContentView: View {
                                 .animation(.linear(duration: 0.2), value: pttManager.state)
                                 .VButton { _ in
                                     Task {
-                                        await pttManager.playWaitList()
+                                        await pttManager.send(.startPlay(nil))
                                     }
                                     return true
                                 }
@@ -342,7 +327,7 @@ struct PTTContentView: View {
                                 .VButton { _ in
                                     Task {
                                         await self.pttManager.send(.stopPlay)
-                                        await pttManager.playWaitList()
+                                        await pttManager.send(.startPlay(nil))
                                     }
                                     return true
                                 }
@@ -375,7 +360,7 @@ struct PTTContentView: View {
                             .opacity(pttManager.waitPlayList.count > 0 ? 1 : 0)
                             .VButton { _ in
                                 Task {
-                                    await self.pttManager.playWaitList()
+                                    await pttManager.send(.startPlay(nil))
                                 }
                                 return true
                             }
@@ -533,7 +518,7 @@ struct PTTContentView: View {
                 }
                 .padding(.horizontal, 15)
                 .padding(.bottom, 10)
-                .padding(.leading,  leftPadding)
+                .padding(.leading, leftPadding)
                 .padding(.trailing, rightPadding)
             }
             .frame(height: topShowHeight)
@@ -552,21 +537,11 @@ struct PTTContentView: View {
         .background(.background)
         .ignoresSafeArea()
         .toolbar(.hidden, for: .navigationBar)
-        .overlay {
-            SetVolumePeakView(show: $showVolume, volume: $pttVoiceVolume, icon: iconVolume)
-                .onChange(of: pttVoiceVolume) { value in
-                    Task {
-                        await pttManager.setDB(Float(value))
-                    }
-                }
-        }
         .overlay(alignment: .bottomLeading) {
             if !phoneH && appManager.sizeClass == .compact {
                 TabBarBackButtonView(size: CGSize(width: 300, height: 0))
-                    .offset(x: 30)
             }
         }
-        .animation(.default, value: showVolume)
         .environment(\.colorScheme, .dark)
         .sheet(isPresented: $showVoiceList) {
             PTTMessageView()
@@ -621,18 +596,6 @@ struct PTTContentView: View {
                     )
                 }
             }
-    }
-
-    private func scheduleAutoHide() {
-        hideWorkItem?.cancel()
-
-        let workItem = DispatchWorkItem {
-            withAnimation {
-                showVolume = false
-            }
-        }
-        hideWorkItem = workItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: workItem)
     }
 
     @ViewBuilder
@@ -1076,6 +1039,7 @@ struct PTTContentView: View {
     }
 
     func startRecording() async {
+        
         if pttMusicPlay {
             pttManager.playTips(.cbegin) {}
         }
@@ -1087,6 +1051,7 @@ struct PTTContentView: View {
     }
 
     func endRecording() async {
+        
         await pttManager.send(.stopRecord(false))
 
         if pttVibration {
@@ -1099,6 +1064,7 @@ struct PTTContentView: View {
     }
 
     func cancelRecording() async {
+       
         await pttManager.send(.stopRecord(true))
         if pttVibration {
             Haptic.notify(.error)
@@ -1229,44 +1195,6 @@ struct HourAndMinuteView: View {
     }
 }
 
-struct ToastPttView: View {
-    let message: String
-    @Binding var isPresented: Bool
-    @State private var dismissTask: Task<Void, Never>? = nil
-
-    var body: some View {
-        VStack {
-            if isPresented {
-                Text(message)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .onAppear {
-                        startDismissTimer()
-                    }
-                    .onChange(of: isPresented) { newValue in
-                        if newValue {
-                            startDismissTimer()
-                        }
-                    }
-            }
-        }
-        .animation(.snappy, value: isPresented)
-    }
-
-    /// 核心逻辑：开启 3 秒倒计时任务
-    private func startDismissTimer() {
-        dismissTask?.cancel()
-
-        dismissTask = Task {
-            try? await Task.sleep(nanoseconds: 3 * 1_000_000_000)
-
-            if !Task.isCancelled {
-                await MainActor.run {
-                    isPresented = false
-                }
-            }
-        }
-    }
-}
 
 #Preview {
     PTTContentView()

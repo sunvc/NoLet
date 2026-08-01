@@ -39,9 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             Task {
                 try await PTTChannelManager.shared.start()
             }
-            // 启动就开位置监听,不再等用户 PTT join 才启动 significant location changes,
-            // 否则 LocManager.location 会一直停在 (0,0) 哨兵,首次上报/首次地图都是空坐标。
-            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
         }
 
         Task {
@@ -64,7 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Defaults[.member].token = token
 
         Task.detached(priority: .userInitiated) {
-
             if Defaults[.servers].count == 0 {
                 if await !AppManager.shared.customServerURL.isEmpty {
                     _ = await AppManager.shared
@@ -79,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else {
                 await AppManager.shared.registers()
             }
-            
+
             try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
         }
 

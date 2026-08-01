@@ -36,7 +36,7 @@ struct TouchCaptureView: UIViewRepresentable {
     var onEnded: () -> Void
     var onCancelled: (() -> Void)? = nil
 
-    func makeUIView(context: Context) -> UIView {
+    func makeUIView(context: Context) -> TouchUIView {
         let view = TouchUIView()
         view.coordinator = context.coordinator
         view.onBegan = onBegan
@@ -45,7 +45,7 @@ struct TouchCaptureView: UIViewRepresentable {
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: TouchUIView, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
         Coordinator(hasMoveTopRight: $hasMoveTopRight, isPressing: $isPressing)
@@ -68,6 +68,14 @@ struct TouchCaptureView: UIViewRepresentable {
         var onEnded: (() -> Void)?
         var onCancelled: (() -> Void)?
         private var touchStartTime: Date?
+        @MainActor
+        deinit {
+            if let press = coordinator?.isPressing.wrappedValue, press{
+                onCancelled?()
+            }
+            coordinator?.isPressing.wrappedValue = false
+            coordinator?.hasMoveTopRight.wrappedValue = false
+        }
 
         override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
             guard let coord = coordinator else { return }
@@ -572,7 +580,7 @@ struct EQGlobalGainSlider: View {
                                 }
                                 .onEnded { _ in
                                     self.globalGain = gain
-                                    Task{
+                                    Task {
                                         await pttManager.changeEQ()
                                     }
                                 }
@@ -622,10 +630,9 @@ struct EQGlobalGainSlider: View {
     func quickSet(_ value: Double) {
         self.globalGain = value
         self.gain = value
-        Task{
+        Task {
             await pttManager.changeEQ()
         }
-        
     }
 }
 
@@ -633,7 +640,6 @@ struct EQGlobalGainSlider: View {
 ///
 ///
 struct RotateButtonView: View {
-
     @State private var angle: Double = 0
 
     @State private var lastAngle: Double = 0
@@ -644,16 +650,14 @@ struct RotateButtonView: View {
 
     var rotate: (Int) -> Void
 
-
     var body: some View {
         GeometryReader { proxy in
             let width = max(min(proxy.size.width, proxy.size.height), 150)
             ZStack {
-
                 Circle()
                     .fill(Color.gray.opacity(0.15))
                     .frame(width: width, height: width)
-                
+
                 ZStack {
                     Circle()
                         .fill(Color.black.gradient)
@@ -661,8 +665,7 @@ struct RotateButtonView: View {
                         .shadow(color: Color.white.opacity(0.2), radius: 5, x: 5, y: 5)
                         .shadow(color: Color.white.opacity(0.2), radius: 5, x: -5, y: -5)
                         .rotationEffect(.init(degrees: angle))
-                        
-                    
+
                     Circle()
                         .fill(.clear)
                         .overlay(
@@ -685,7 +688,7 @@ struct RotateButtonView: View {
                         .rotationEffect(.init(degrees: angle))
                         .rotationEffect(.init(degrees: -210))
                 }
-           
+
                 .background(Circle().fill(Color.clear))
                 .gesture(
                     DragGesture(minimumDistance: 0, coordinateSpace: .named("knobContainer"))
@@ -700,16 +703,15 @@ struct RotateButtonView: View {
                             isDragging = false
                         }
                 )
-                
-              
+
                 ZStack {
                     let highlightCount = min(abs(Int(angle) % 360) / 12 + 1, 30)
-                    
+
                     ForEach(0...29, id: \.self) { index in
                         ZStack {
                             Capsule()
                                 .fill(dotColor(0, Int(angle)))
-                            
+
                             if angle > 0 {
                                 Capsule()
                                     .fill((Int(angle) % 360 / 12 + 1) > index ? dotColor(
@@ -729,7 +731,7 @@ struct RotateButtonView: View {
                     }
                 }
             }
-         
+
             .coordinateSpace(name: "knobContainer")
             .onChange(of: angle) { newValue in
                 let roundedValue = Int(newValue)
@@ -783,7 +785,6 @@ struct RotateButtonView: View {
     }
 }
 
-
 struct VolumePeakView: View {
     var progress: CGFloat
     var activeTint: Color = .primary
@@ -806,7 +807,6 @@ struct VolumePeakView: View {
                         .scale(x: max(0.0001, min(progress, 1)), anchor: anchor)
                         .animation(.linear(duration: 0.2), value: progress)
                 }
-                
         }
     }
 }

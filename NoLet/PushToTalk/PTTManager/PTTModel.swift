@@ -67,47 +67,18 @@ struct AudioMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, 
 }
 
 extension AudioMessage {
-    /// 从 APNs 推送的 remote URL 中解析出 AudioMessage。
-    /// 支持两种 fileName 格式:
-    ///   - 3 段(新版 WS 迁移后):`<channelHex>-<userID>-<ts32>.opus`;sign 通过 APNs payload
-    ///     的 `sign` 字段传递(见 `init?(remote:sign:)`),不再内嵌在文件名里
-    ///   - 4 段(老版兼容):`<sign>-<channelHex>-<userID>-<ts32>.opus`,sign 在文件名首段
-    init?(remote address: URL, sign explicitSign: Bool? = nil) {
+    init?(remote address: URL) {
         let fileName = address.deletingPathExtension().lastPathComponent
         let params = fileName.split(separator: "-").compactMap { String($0) }
+        guard params.count == 4, let times = Int(params[3], radix: 32)
+        else { return nil }
 
-        let sign: Bool
-        let channel: String
-        let from: String
-        let tsRaw: String
-        let file: String
-
-        switch params.count {
-        case 4:
-            guard Int(params[3], radix: 32) != nil else { return nil }
-            sign = explicitSign ?? (params[0] == "1")
-            channel = params[1]
-            from = params[2]
-            tsRaw = params[3]
-            file = params[1...].joined(separator: "-") + "." + address.pathExtension
-        case 3:
-            guard Int(params[2], radix: 32) != nil else { return nil }
-            sign = explicitSign ?? false
-            channel = params[0]
-            from = params[1]
-            tsRaw = params[2]
-            file = fileName + "." + address.pathExtension
-        default:
-            return nil
-        }
-
-        guard let times = Int(tsRaw, radix: 32) else { return nil }
         self.timestamp = Date(timeIntervalSince1970: TimeInterval(times) / 1000)
-        self.sign = sign
-        self.from = from
-        self.channel = channel
+        self.sign = params.first == "1"
+        self.from = params[2]
+        self.channel = params[1]
         self.url = address.absoluteString
-        self.file = file
+        self.file = params[1...].joined(separator: "-") + "." + address.pathExtension
         self.status = .success
     }
 }
@@ -361,3 +332,4 @@ extension Int {
         formatted(.number.precision(.integerLength(3)))
     }
 }
+

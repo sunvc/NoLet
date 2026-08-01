@@ -19,11 +19,9 @@ import MapKit
 final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = LocManager()
 
-    /// 未定位时的哨兵值 (0,0)。UI/上报侧用 `hasValidLocation` 判定,别把这个当真实坐标发出去。
     @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
 
-    /// `location` 是否已被真实定位/兜底覆盖过。仍在 (0,0) 时视为未定位。
     var hasValidLocation: Bool {
         let c = location.coordinate
         return c.latitude != 0 || c.longitude != 0
@@ -38,25 +36,38 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.locationManager.delegate = self
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        self.runMonitoringSignificantLocationChanges(true)
     }
 
-    func runMonitoringSignificantLocationChanges(start: Bool = false) {
+    @MainActor
+    deinit {
+        self.runMonitoringSignificantLocationChanges(false)
+    }
 
+    private func runMonitoringSignificantLocationChanges(_ start: Bool = false) {
         switch authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-           
-            Task { @MainActor in
-                if start {
+            if start {
+                guard !_run else { return }
+                _run = true
+                Task { @MainActor in
                     await self.requestLocation()
                     self.locationManager.startMonitoringSignificantLocationChanges()
-                    _run = true
-                } else {
+                }
+            } else {
+                guard _run else { return }
+                _run = false
+                Task { @MainActor in
                     self.locationManager.stopMonitoringSignificantLocationChanges()
-                    _run = false
                 }
             }
         default:
-            break
+            if _run {
+                _run = false
+                Task { @MainActor in
+                    self.locationManager.stopMonitoringSignificantLocationChanges()
+                }
+            }
         }
     }
 
@@ -75,19 +86,16 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 return
             }
 
-            guard let data = data else { return }
-            let token = data.map { String(format: "%02.2hhx", $0) }.joined()
+            guard let token = data?.map({ String(format: "%02.2hhx", $0) }).joined() else { return }
             logger.info("Location TOKEN: \(token)")
             callback(token)
         }
     }
 
     func requestAuthorization() {
-        locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestAlwaysAuthorization()
     }
 
-    /// 触发一次定位。已授权走 CLLocationManager;未授权或还没拿到坐标 (`hasValidLocation == false`)
-    /// 时用 IP 地理位置兜底,避免全 App 拿到 (0,0) 哨兵。
     func requestLocation() async {
         switch authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
@@ -123,7 +131,9 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        self.authorizationStatus = manager.authorizationStatus
+        let newStatus = manager.authorizationStatus
+        self.authorizationStatus = newStatus
+        self.runMonitoringSignificantLocationChanges(true)
     }
 }
 

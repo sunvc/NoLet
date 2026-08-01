@@ -28,7 +28,8 @@ final nonisolated class PTTChannelManager: NSObject,
 
     private override init() {}
 
-    private let isRemotePushIncoming = OSAllocatedUnfairLock(initialState: false)
+    private let remotePlay = OSAllocatedUnfairLock(initialState: false)
+    private let localRecord = OSAllocatedUnfairLock(initialState: false)
 
     static let ChannelUUID = UUID(uuidString: "10000001-1001-1001-1001-100000000001")!
 
@@ -54,19 +55,11 @@ final nonisolated class PTTChannelManager: NSObject,
                 image: "書".avatarImage()
             )
         )
-        Task{@MainActor in
-            LocManager.shared.runMonitoringSignificantLocationChanges(start: true)
-        }
-       
     }
 
     func leave() {
         self.channelManager?.leaveChannel(channelUUID: Self.ChannelUUID)
-        Task{@MainActor in
-            LocManager.shared.runMonitoringSignificantLocationChanges(start: false)
-        }
     }
-
 
     func setActiveRemoteParticipant(name: String? = nil, avatar: UIImage? = nil) {
         var user: PTParticipant? {
@@ -123,28 +116,8 @@ final nonisolated class PTTChannelManager: NSObject,
         channelUUID: UUID,
         didBeginTransmittingFrom source: PTChannelTransmitRequestSource
     ) {
-        let message: String
-
-        switch source {
-        case .unknown:
-            message = "未知来源"
-
-        case .userRequest:
-            message = "用户发起"
-
-        case .developerRequest:
-            message = "应用发起"
-
-        case .handsfreeButton:
-            message = "耳机按钮发起"
-
-        @unknown default:
-            message = "未知来源"
-        }
-
-        logger.debug("🎤\(message): 开始发送 ")
-
-        isRemotePushIncoming.withLock { $0 = false }
+        logger.debug("开始录音: ")
+        localRecord.withLock { $0 = true }
     }
 
     // MARK: - End TX
@@ -155,6 +128,9 @@ final nonisolated class PTTChannelManager: NSObject,
         didEndTransmittingFrom source: PTChannelTransmitRequestSource
     ) {
         logger.debug("🎤 停止发送")
+        Task {
+            await PTTManager.shared.send(.stopRecord(false))
+        }
     }
 
     // MARK: - Push Token
@@ -178,36 +154,28 @@ final nonisolated class PTTChannelManager: NSObject,
         channelUUID: UUID,
         pushPayload: [String: Any]
     ) -> PTPushResult {
-        logger.debug("收到PTT Push: \(channelUUID)\(pushPayload)")
+        logger.debug("收到PTT Push: \(pushPayload)")
 
-        isRemotePushIncoming.withLock { $0 = true }
+        remotePlay.withLock { $0 = true }
 
-        if let remote = pushPayload["url"] as? String {
-            let sign = pushPayload["sign"] as? Bool
-            Task {
-                if let voice = await PTTManager.shared.saveVoice(remoteUrl: remote, sign: sign) {
-                    await PTTManager.shared.send(.startPlay(voice), remote: true)
-                } else {
-                    self.setActiveRemoteParticipant()
-                }
-            }
+        let remote = pushPayload["url"] as? String
+        Task.detached {
+            await PTTManager.shared.incomingPushResult(channelManager: channelManager, url: remote)
         }
-        
-        var name: String{
-            if let name =  pushPayload["name"] as? String, !name.isEmpty{
+
+        var name: String {
+            if let name = pushPayload["name"] as? String, !name.isEmpty {
                 return name
             }
             return String(localized: "未知")
         }
-        
-       
+
         return .activeRemoteParticipant(
             .init(
                 name: name,
-                image: "\(name.prefix(1)),ff0000".avatarImage()
+                image: "\(name.first ?? "伞"),ff0000".avatarImage()
             )
         )
-        
     }
 
     // MARK: - Audio Session
@@ -217,14 +185,11 @@ final nonisolated class PTTChannelManager: NSObject,
         didActivate audioSession: AVAudioSession
     ) {
         logger.debug("🔊 AudioSession Activated")
-        let remote = isRemotePushIncoming.withLock { $0 }
         Task {
-            if !remote {
+            if localRecord.withLock({ $0 }) {
                 await PTTManager.shared.send(.startRecord(false))
-            } else {
-                if case .interruptionEnded = await PTTManager.shared.state {
-                    await PTTManager.shared.send(.resume)
-                }
+            } else if !remotePlay.withLock({ $0 }) {
+                await PTTManager.shared.send(.startPlay(nil))
             }
         }
     }
@@ -234,12 +199,8 @@ final nonisolated class PTTChannelManager: NSObject,
         didDeactivate audioSession: AVAudioSession
     ) {
         logger.debug("🔇 AudioSession Deactivated")
-        let remote = isRemotePushIncoming.withLock { $0 }
-        if !remote {
-            Task {
-                await PTTManager.shared.send(.stopRecord(false))
-            }
-        }
+        remotePlay.withLock { $0 = false }
+        localRecord.withLock { $0 = false }
     }
 
     // MARK: - Restoration
@@ -253,7 +214,7 @@ final nonisolated class PTTChannelManager: NSObject,
 
         return PTChannelDescriptor(
             name: NCONFIG.AppName,
-            image: "哔".avatarImage()
+            image: "伞".avatarImage()
         )
     }
 

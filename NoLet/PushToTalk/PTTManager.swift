@@ -34,10 +34,11 @@ final class PTTManager: NSObject, ObservableObject {
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
     @Published var hasPermission: Bool = false
-    /// 初值跟随 `LocManager.location`;未定位时是 (0,0) 哨兵,后续 `zoomToFitAllUsers`
-    /// 或 `handleLocationUpdated` 拿到真实坐标后会覆盖。避免硬编码城市。
     @Published var region = MKCoordinateRegion(
-        center: LocManager.shared.location.coordinate,
+        center: CLLocationCoordinate2D(
+            latitude: 31.2397,
+            longitude: 121.4998
+        ),
         span: MKCoordinateSpan(
             latitudeDelta: 0.05,
             longitudeDelta: 0.05
@@ -54,8 +55,7 @@ final class PTTManager: NSObject, ObservableObject {
     private let player = PTTPlayerManager()
     private nonisolated let network = NetworkManager()
     private var observationTask: Task<Void, Never>?
-    private var loopTask: Task<Void, Never>?
-    private let wsClient = PTTWebSocketClient()
+    private let presence = PTTPresenceStream()
 
     private var lastPresenceUpload: Date = .distantPast
     private var pendingPresenceUpload: Task<Void, Never>?
@@ -70,15 +70,13 @@ final class PTTManager: NSObject, ObservableObject {
         }
 
         startObservingUnreadCount()
-        self.TaskHandler()
         self.setupNotifications()
         self.setupMemberNameCache()
-        self.wsClient.delegate = self
+        self.presence.delegate = self
     }
 
     deinit {
         observationTask?.cancel()
-        loopTask?.cancel()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -97,17 +95,14 @@ final class PTTManager: NSObject, ObservableObject {
         )
     }
 
-    /// LocManager 定位到新点时触发。带 5s 节流,避免 GPS 密集回调打爆服务端;
-    /// 频道未开时不上报,60s 心跳仍作为兜底。
     @objc private func handleLocationUpdated() {
         Task { @MainActor in
             guard self.powerState else { return }
-            self.schedulePresenceUpload()
+            self.scheduleJoinUpdate()
         }
     }
 
-    @MainActor
-    private func schedulePresenceUpload() {
+    private func scheduleJoinUpdate() {
         let now = Date()
         let elapsed = now.timeIntervalSince(lastPresenceUpload)
         if elapsed >= presenceMinInterval {
@@ -115,7 +110,7 @@ final class PTTManager: NSObject, ObservableObject {
             pendingPresenceUpload?.cancel()
             pendingPresenceUpload = nil
             Task { [weak self] in
-                await self?.sendPresenceHeartbeat()
+                await self?.sendJoinUpdate()
             }
             return
         }
@@ -129,7 +124,7 @@ final class PTTManager: NSObject, ObservableObject {
                 self.lastPresenceUpload = Date()
                 self.pendingPresenceUpload = nil
             }
-            await self.sendPresenceHeartbeat()
+            await self.sendJoinUpdate()
         }
     }
 
@@ -181,28 +176,6 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    private func TaskHandler() {
-        self.loopTask = Task.detached(priority: .utility) { [weak self] in
-            logger.info("🚀 后台常驻任务已在线程: \(Thread.current) 启动")
-            while !Task.isCancelled {
-                guard let self = self else { break }
-
-                do {
-                    if await self.powerState {
-                        await LocManager.shared.requestLocation()
-                        await self.sendPresenceHeartbeat()
-                    }
-                    try await Task.sleep(for: .seconds(60))
-                } catch {
-                    logger.info("Task 休眠被中断，准备退出")
-                    break
-                }
-            }
-
-            logger.info("🛑 后台常驻任务已安全退出")
-        }
-    }
-
     func deleteAll() {
         Task.detached(priority: .userInitiated) {
             do {
@@ -225,8 +198,7 @@ final class PTTManager: NSObject, ObservableObject {
             for await value in stream {
                 guard let self = self else { break }
                 await MainActor.run {
-                    self.messages = value.recent
-                    self.waitPlayList = value.unread
+                    self.messages = value
                 }
             }
         }
@@ -237,20 +209,17 @@ final class PTTManager: NSObject, ObservableObject {
         logger.info("EVENT: \(event.log)")
 
         switch (state, event) {
-
         case (.idle, .startPlay(let message)):
             if let message {
-                beginPlay(message)
-            } else {
-                await self.playWaitList()
+                enqueuePlay(message)
             }
+            beginNextIfIdle()
 
         case (.idle, .startRecord(let activity)):
             await beginRecord(activity)
 
         case (.idle, .recordStarted):
             internalStopRecord(isCancel: true)
-
 
         case (.preparingPlay, .playStarted):
             if case .preparingPlay(let message) = state {
@@ -260,30 +229,34 @@ final class PTTManager: NSObject, ObservableObject {
         case (.preparingPlay, .stopPlay):
             state = .idle
             await internalStopPlay()
+            beginNextIfIdle()
 
         case (.preparingPlay, .startRecord(let activity)):
             await internalStopPlay()
             await beginRecord(activity)
 
-
         case (.playing, .stopPlay):
             await internalStopPlay()
             state = .idle
+            beginNextIfIdle()
 
         case (.playing, .playFinished):
             currentPlayFile = nil
             state = .idle
-            await self.playWaitList()
+            beginNextIfIdle()
 
         case (.playing, .startPlay(let message)):
             guard let message else { break }
             if message == self.currentPlayFile {
                 await internalStopPlay()
                 currentPlayFile = nil
+                state = .idle
+                beginNextIfIdle()
                 return
             }
-            // FIXME: -  处理连续播放, 如果是远程, 忽略打断
-            if !remote {
+            if remote {
+                enqueuePlay(message)
+            } else {
                 await internalStopPlay()
                 beginPlay(message)
             }
@@ -293,15 +266,14 @@ final class PTTManager: NSObject, ObservableObject {
             currentPlayFile = nil
             await beginRecord(activity)
 
-
         case (.recording, .stopRecord(let cancel)):
             internalStopRecord(isCancel: cancel)
             state = .idle
-            await self.playWaitList()
+            beginNextIfIdle()
 
-        case (.recording, .startPlay):
-            logger.info("Ignore play while recording")
-
+        case (.recording, .startPlay(let message)):
+            if let message { enqueuePlay(message) }
+            logger.info("Queue play while recording")
 
         case (.playing(let message), .interruptionBegan),
              (.preparingPlay(let message), .interruptionBegan):
@@ -314,14 +286,14 @@ final class PTTManager: NSObject, ObservableObject {
         case (.interrupted(let message), .interruptionEnded(let shouldResume)):
             if shouldResume {
                 self.state = .interruptionEnded(shouldResume, message)
-
                 PTTChannelManager.shared.setActiveRemoteParticipant(
                     name: "恢复播放",
-                    avatar: "字,FF9500".avatarImage()
+                    avatar: "伞,FF9500".avatarImage()
                 )
             } else {
                 self.state = .idle
                 await self.internalStopPlay()
+                beginNextIfIdle()
             }
 
         case (.interruptionEnded(let resume, let message), .resume):
@@ -330,11 +302,13 @@ final class PTTManager: NSObject, ObservableObject {
             } else {
                 self.state = .idle
                 await self.internalStopPlay()
+                beginNextIfIdle()
             }
 
         case (.interrupted, .stopPlay):
             self.state = .idle
             await self.internalStopPlay()
+            beginNextIfIdle()
 
         default:
             logger.info("Ignore-STATE: \(self.state.log)")
@@ -342,9 +316,31 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
+    private func enqueuePlay(_ message: AudioMessage) {
+        if waitPlayList.contains(where: { $0.id == message.id }) { return }
+        waitPlayList.insert(message, at: 0)
+    }
+
+    private func beginNextIfIdle() {
+        guard case .idle = state else { return }
+        playNext()
+    }
+
+    private func playNext() {
+        guard let message = waitPlayList.popLast() else {
+            PTTChannelManager.shared.setActiveRemoteParticipant()
+            return
+        }
+        if message == currentPlayFile {
+            playNext()
+            return
+        }
+        beginPlay(message)
+    }
+
     func joinConnect() async throws {
         self.powerState = true
-        self.serverStatus = .connecting
+        self.serverStatus = .connecting(attempt: 0)
 
         PTTChannelManager.shared.setServerStatus(.connecting)
         if !hasPermission {
@@ -354,38 +350,19 @@ final class PTTManager: NSObject, ObservableObject {
 
         await self.publicJoinConnect()
 
-        self.wsClient.start(channel: Defaults[.pttChannel])
+        self.presence.start(channel: Defaults[.pttChannel])
 
         PTTChannelManager.shared.setTransmissionMode()
-        PTTChannelManager.shared
-            .setServerStatus(Defaults[.pttChannel].users.count > 0 ? .ready : .unavailable)
+        PTTChannelManager.shared.setServerStatus(.ready)
     }
 
     func levelConnect() async {
         self.powerState = false
         self.serverStatus = .offline
-
-        // 显式关闭频道: 走 HTTP POST /ptt/leave,与 WS 状态解耦
-        //(切后台后 WS 已 stop,靠 WS 发 leave 会静默丢失)。之后再 stop WS 断连。
-        await self.httpLeave(channel: Defaults[.pttChannel])
-        self.wsClient.stop()
-
+        self.presence.stop()
         await self.publicLevelConnect(Defaults[.pttHisChannel])
         Defaults[.pttChannel].users = []
     }
-    
-    /// App 回前台: 冷启动/挂起后没被杀的场景, WS loop 还在跑但底层 socket 可能已被 iOS 冻结。
-    /// 踢一下让 receive 立刻抛错走重连;若 loop 已因错退出且未启动过,start 会拉起。
-    func appWillEnterForeground() {
-        guard self.powerState else { return }
-        self.wsClient.kick()
-        self.wsClient.start(channel: Defaults[.pttChannel])
-    }
-
-    /// App 切后台: 不主动 stop, 让 WS 常驻。iOS 会冻结底层 socket,但只要 App 未被
-    /// 系统杀,前台恢复时 `kick()` 会强制重连(或者被 PTT push / significant location
-    /// 唤醒时继续跑)。显式退出频道走 `levelConnect`,那里才 stop。
-    func appDidEnterBackground() {}
 
     func publicLevelConnect(_ channels: [PTTChannel]) async {
         let result = await self.connect(channels: channels, join: false)
@@ -456,7 +433,6 @@ final class PTTManager: NSObject, ObservableObject {
             applyActiveSpeaker()
 
             Defaults[.pttChannel] = currentChannel
-            self.serverStatus = .online
         } else {
             currentChannel.users = []
             Defaults[.pttChannel] = currentChannel
@@ -471,7 +447,7 @@ final class PTTManager: NSObject, ObservableObject {
         }
 
         if self.powerState {
-            self.wsClient.start(channel: Defaults[.pttChannel])
+            self.presence.start(channel: Defaults[.pttChannel])
         }
 
         self.zoomToFitAllUsers(force: false)
@@ -492,20 +468,6 @@ final class PTTManager: NSObject, ObservableObject {
             )
         }
         return true
-    }
-
-    func playWaitList(_ next: Bool = false) async {
-        if next {
-            self.state = .idle
-            await self.internalStopPlay()
-        }
-
-        guard let message = waitPlayList.last else {
-            await self.send(.stopPlay)
-            PTTChannelManager.shared.setActiveRemoteParticipant()
-            return
-        }
-        await self.send(.startPlay(message))
     }
 
     private func beginPlay(_ message: AudioMessage) {
@@ -530,21 +492,16 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    // 设置谁在说话
     func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
         activeSpeakerId = stop ? nil : message.from
         applyActiveSpeaker()
     }
 
-    /// 标识当前说话的用户（自己 or 远程），stop 时清除
     private func setActiveSpeaker(userId: String, active: Bool) {
         activeSpeakerId = active ? userId : nil
         applyActiveSpeaker()
     }
 
-    /// 将 activeSpeakerId 应用到 onlineUsers 列表
-    /// - 录音时激活本机(name 空 → "本机"),播放远程音频时激活对应用户(name 空 → "未知")
-    /// - 若 activeSpeakerId 不在 onlineUsers 里,动态插入一个占位条目,保证地图上有激活标记
     private func applyActiveSpeaker() {
         var users = onlineUsers
 
@@ -584,14 +541,6 @@ final class PTTManager: NSObject, ObservableObject {
         logger.info("Stop Play")
         await self.player.stopPlay()
         setActiveSpeaker(userId: "", active: false)
-
-        if case .interrupted = state {
-            PTTChannelManager.shared.setActiveRemoteParticipant()
-        }
-
-        if self.waitPlayList.isEmpty {
-            PTTChannelManager.shared.setActiveRemoteParticipant()
-        }
     }
 
     private func beginRecord(_ activity: Bool = true) async {
@@ -641,10 +590,21 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    func saveVoice(remoteUrl: String, sign: Bool? = nil) async -> AudioMessage? {
+    func incomingPushResult(channelManager: PTChannelManager, url: String?) async {
+        if let voice = await self.saveVoice(remoteUrl: url) {
+            await self.send(.startPlay(voice), remote: true)
+        }
+
+        if case .idle = self.state {
+            PTTChannelManager.shared.setActiveRemoteParticipant()
+        }
+    }
+
+    func saveVoice(remoteUrl: String?) async -> AudioMessage? {
         do {
-            guard let remoteFileUrl = URL(string: remoteUrl),
-                  let voice = AudioMessage(remote: remoteFileUrl, sign: sign),
+            guard let remoteUrl,
+                  let remoteFileUrl = URL(string: remoteUrl),
+                  let voice = AudioMessage(remote: remoteFileUrl),
                   let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(voice.file),
                   let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign)
             else {
@@ -655,36 +615,6 @@ final class PTTManager: NSObject, ObservableObject {
             try await AudioMessageDBManager.shared.save(voice)
             return voice
         } catch {
-            return nil
-        }
-    }
-
-    /// 保存经 WS 收到的整段语音: 按 sign 解密后落盘并入库,返回 AudioMessage 供播放。
-    func saveVoice(fromWS meta: PTTVoiceMeta, audio: Data) async -> AudioMessage? {
-        do {
-            guard let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(meta.file) else {
-                return nil
-            }
-            var data = audio
-            if meta.sign {
-                guard let decoded = CryptoModelConfig.data.decrypt(inputData: data) else {
-                    throw NoletError(message: "decrypt error")
-                }
-                data = decoded
-            }
-            try data.write(to: filePath)
-            let voice = AudioMessage(
-                channel: meta.channel,
-                from: meta.sender,
-                file: meta.file,
-                read: false,
-                sign: meta.sign,
-                status: .success
-            )
-            try await AudioMessageDBManager.shared.save(voice)
-            return voice
-        } catch {
-            logger.error("saveVoice(fromWS): \(error.localizedDescription)")
             return nil
         }
     }
@@ -784,9 +714,6 @@ extension PTTManager: CLLocationManagerDelegate {
         }
 
         guard !validUsers.isEmpty else {
-            // 频道内没人有有效坐标: 只有本机位置就用它,连本机也没定位就保留当前 region,
-            // 别把地图拽到 (0,0) 大西洋中央。
-            guard LocManager.shared.hasValidLocation else { return }
             let userCoordinate = LocManager.shared.location.coordinate
             withAnimation(.easeInOut(duration: 0.5)) {
                 region = MKCoordinateRegion(
@@ -864,7 +791,6 @@ extension PTTManager {
 
     nonisolated struct JoinParams: Codable, Sendable {
         var id: String
-        var name: String
         var channels: [String]
         var latitude: Double
         var longitude: Double
@@ -896,7 +822,6 @@ extension PTTManager {
 
             let params = JoinParams(
                 id: Defaults[.member].id,
-                name: Defaults[.member].name,
                 channels: hzs,
                 latitude: LocManager.shared.location.coordinate.latitude,
                 longitude: LocManager.shared.location.coordinate.longitude,
@@ -924,45 +849,39 @@ extension PTTManager {
         }
     }
 
-
-    func sendPresenceHeartbeat() async {
+    /// 低频位置心跳。SSE 承载增量成员事件,但客户端自身的位置变化需要主动上报。
+    /// 服务端收到后会 broadcast update 到订阅了这个频道的其它成员。
+    func sendJoinUpdate() async {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else { return }
-        guard LocManager.shared.hasValidLocation else { return }
-        self.wsClient.sendPresence(
-            latitude: LocManager.shared.location.coordinate.latitude,
-            longitude: LocManager.shared.location.coordinate.longitude
-        )
-    }
-
-    func httpLeave(channel: PTTChannel) async {
-        guard channel.serverOK else { return }
-
-        let params = JoinParams(
-            id: Defaults[.member].id,
-            name: Defaults[.member].name,
-            channels: [channel.hex()],
-            latitude: LocManager.shared.location.coordinate.latitude,
-            longitude: LocManager.shared.location.coordinate.longitude,
-            token: Defaults[.member].talk,
-            host: channel.server.url
-        )
-        let headers = CryptoManager.signature(
-            sign: channel.server.sign,
-            server: channel.server.key
-        )
 
         do {
-            let _: baseResponse<Int>? = try await self.network.fetch(
+            let activeChannels = Defaults[.pttHisChannel].filter { $0.active }
+            let channels = ([channel] + activeChannels).map { $0.hex() }
+            let uniqueChannels = Array(Set(channels))
+
+            let params = JoinParams(
+                id: Defaults[.member].id,
+                channels: uniqueChannels,
+                latitude: LocManager.shared.location.coordinate.latitude,
+                longitude: LocManager.shared.location.coordinate.longitude,
+                token: Defaults[.member].talk,
+                host: channel.server.url
+            )
+            let headers = CryptoManager.signature(
+                sign: channel.server.sign,
+                server: channel.server.key
+            )
+            let _: baseResponse<[JoinResponse]>? = try await self.network.fetch(
                 url: channel.server.url,
-                path: "/ptt/leave",
+                path: "/ptt/connect",
                 method: .POST,
                 params: params,
                 headers: headers,
                 timeout: 5
             )
         } catch {
-            logger.error("httpLeave: \(error.localizedDescription)")
+            logger.debug("join update: \(error.localizedDescription)")
         }
     }
 
@@ -986,78 +905,28 @@ extension PTTManager {
                 data = encryptedData
             }
 
-            // 前台走 WS 二进制帧(低延迟);锁屏/后台/APNs 唤醒场景 WS 不稳,走 HTTP 上传兜底。
-            let inForeground = await MainActor.run {
-                UIApplication.shared.applicationState == .active
-            }
+            let signHeaders = CryptoManager.signature(
+                sign: channel.server.sign,
+                server: channel.server.key
+            )
+            let fileHeaders = [
+                "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
+            ]
 
-            let ok: Bool
-            if inForeground {
-                let meta = PTTVoiceMeta(
-                    channel: channel.hex(),
-                    file: message.file,
-                    sign: pttSignature,
-                    sender: Defaults[.member].id
-                )
-                ok = self.wsClient.sendVoice(meta: meta, audio: data)
-                if !ok {
-                    // 前台但 WS 刚断/未 authenticated: 回退 HTTP,避免直接标 failed。
-                    let http = await self.uploadVoiceHTTP(
-                        channel: channel,
-                        message: message,
-                        data: data,
-                        sign: pttSignature
-                    )
-                    self.setStatus(message: message, status: http ? .success : .failed)
-                    if !http { Toast.error(title: "发送语音失败") }
-                    return
-                }
-            } else {
-                ok = await self.uploadVoiceHTTP(
-                    channel: channel,
-                    message: message,
-                    data: data,
-                    sign: pttSignature
-                )
-            }
+            let response = try await self.network.uploadFile(
+                data: data,
+                url: channel.server.url,
+                path: "/ptt/voice",
+                headers: fileHeaders.merging(signHeaders) { current, _ in current }
+            )
 
-            self.setStatus(message: message, status: ok ? .success : .failed)
-            if !ok {
-                Toast.error(title: "发送语音失败")
-            }
+            let result = try JSONDecoder().decode(baseResponse<Int64>.self, from: response)
+
+            self.setStatus(message: message, status: result.code == 200 ? .success : .failed)
         } catch {
             logger.error("\(error.localizedDescription)")
             Toast.error(title: "发送语音失败")
             self.setStatus(message: message, status: .failed)
-        }
-    }
-
-    /// 走 HTTP POST /ptt/voice 上传整段 Opus,后台/APNs 场景使用。
-    /// 服务端收到后落盘并调用 DeliverVoice(WS 成员实时收 / 其它成员 APNs 拉取)。
-    private func uploadVoiceHTTP(
-        channel: PTTChannel,
-        message: AudioMessage,
-        data: Data,
-        sign: Bool
-    ) async -> Bool {
-        let signHeaders = CryptoManager.signature(
-            sign: channel.server.sign,
-            server: channel.server.key
-        )
-        var headers = signHeaders
-        headers["X-PFA"] = "\(sign ? "1" : "0")-\(message.file)"
-
-        do {
-            _ = try await self.network.uploadFile(
-                data: data,
-                url: channel.server.url,
-                path: "/ptt/voice",
-                headers: headers
-            )
-            return true
-        } catch {
-            logger.error("uploadVoiceHTTP: \(error.localizedDescription)")
-            return false
         }
     }
 
@@ -1093,11 +962,26 @@ extension PTTManager {
 extension PTTManager {
     // MARK: - State
 
-    enum ServerState {
+    enum ServerState: Equatable {
         case offline
-        case connecting
+        case connecting(attempt: Int)
         case online
         case failed
+
+        var title: String {
+            switch self {
+            case .offline:
+                return String(localized: "未启动监听")
+            case .connecting(let attempt) where attempt > 0:
+                return String(format: String(localized: "重连中(%d)"), attempt)
+            case .connecting:
+                return String(localized: "连接中...")
+            case .online:
+                return ""
+            case .failed:
+                return String(localized: "服务器未连接")
+            }
+        }
     }
 
     enum State: Equatable {
@@ -1237,37 +1121,32 @@ extension PTTManager: PTTRecorderDelegate {
     }
 }
 
-// MARK: - PTTWebSocketClientDelegate
+// MARK: - PTTPresenceStreamDelegate
 
-extension PTTManager: PTTWebSocketClientDelegate {
-    nonisolated func webSocket(
-        _ client: PTTWebSocketClient,
-        didChangeConnected connected: Bool
+extension PTTManager: PTTPresenceStreamDelegate {
+    nonisolated func presenceStream(
+        _ stream: PTTPresenceStream,
+        didChangeConnected connected: Bool,
+        attempt: Int
     ) {
-        logger.debug("WS connected=\(connected)")
         Task { @MainActor in
-            self.serverStatus = connected ? .online : .offline
+            if connected {
+                self.serverStatus = .online
+                if self.powerState {
+                    await self.sendJoinUpdate()
+                }
+            } else {
+                self.serverStatus = .connecting(attempt: attempt)
+            }
         }
     }
 
-    nonisolated func webSocket(
-        _ client: PTTWebSocketClient,
+    nonisolated func presenceStream(
+        _ stream: PTTPresenceStream,
         didReceive event: PresenceEvent
     ) {
         Task { @MainActor in
             self.apply(presenceEvent: event)
-        }
-    }
-
-    nonisolated func webSocket(
-        _ client: PTTWebSocketClient,
-        didReceiveVoice meta: PTTVoiceMeta,
-        audio: Data
-    ) {
-        Task {
-            if let voice = await self.saveVoice(fromWS: meta, audio: audio) {
-                await self.send(.startPlay(voice), remote: true)
-            }
         }
     }
 
@@ -1278,77 +1157,76 @@ extension PTTManager: PTTWebSocketClientDelegate {
         guard event.channel == currentChannel.hex() else { return }
 
         let myId = Defaults[.member].id
+        var needsZoom = false
 
         switch event.event {
         case .snapshot:
-            let previousActiveId = self.onlineUsers.first(where: { $0.active })?.id
+            let previousActiveId = onlineUsers.first(where: { $0.active })?.id
+            let existingById = Dictionary(uniqueKeysWithValues: onlineUsers.map { ($0.id, $0) })
             var users: [ChannelUser] = (event.users ?? []).map { u in
-                ChannelUser(
+                var user = existingById[u.id] ?? ChannelUser(
                     id: u.id,
-                    coordinate: CLLocationCoordinate2D(
-                        latitude: u.latitude,
-                        longitude: u.longitude
-                    ),
-                    active: u.id == previousActiveId
+                    coordinate: CLLocationCoordinate2D(latitude: u.latitude, longitude: u.longitude)
                 )
+                user.latitude = u.latitude
+                user.longitude = u.longitude
+                user.active = u.id == previousActiveId
+                return user
             }
             if !users.contains(where: { $0.id == myId }) {
-                users.insert(
-                    ChannelUser(
-                        id: myId,
-                        coordinate: LocManager.shared.location.coordinate,
-                        active: previousActiveId == myId
-                    ),
-                    at: 0
+                var selfUser = existingById[myId] ?? ChannelUser(
+                    id: myId,
+                    coordinate: LocManager.shared.location.coordinate
                 )
+                selfUser.latitude = LocManager.shared.location.coordinate.latitude
+                selfUser.longitude = LocManager.shared.location.coordinate.latitude
+                selfUser.active = previousActiveId == myId
+                users.insert(selfUser, at: 0)
             }
-            self.onlineUsers = users
+            onlineUsers = users
             for u in users where u.id != myId {
                 MemberNameCache.shared.prefetch(id: u.id)
             }
             var ch = currentChannel
             ch.users = users
             Defaults[.pttChannel] = ch
+            needsZoom = true
 
         case .join:
             guard let u = event.user, u.id != myId else { return }
-            if let idx = self.onlineUsers.firstIndex(where: { $0.id == u.id }) {
-                var existing = self.onlineUsers[idx]
-                existing.update(coordinate: CLLocationCoordinate2D(
-                    latitude: u.latitude, longitude: u.longitude))
-                self.onlineUsers[idx] = existing
-            } else {
-                let newUser = ChannelUser(
-                    id: u.id,
-                    coordinate: CLLocationCoordinate2D(
-                        latitude: u.latitude,
-                        longitude: u.longitude
-                    ),
-                    active: false
-                )
-                self.onlineUsers.append(newUser)
-                MemberNameCache.shared.prefetch(id: u.id)
-            }
+            upsertUser(id: u.id, latitude: u.latitude, longitude: u.longitude)
+            MemberNameCache.shared.prefetch(id: u.id)
+            needsZoom = true
 
         case .leave:
             guard let u = event.user else { return }
-            self.onlineUsers.removeAll { $0.id == u.id }
+            onlineUsers.removeAll { $0.id == u.id }
+            needsZoom = true
 
         case .update:
             guard let u = event.user else { return }
-            guard let idx = self.onlineUsers.firstIndex(where: { $0.id == u.id }) else {
-                return
-            }
-            var existing = self.onlineUsers[idx]
-            existing.update(coordinate: CLLocationCoordinate2D(
-                latitude: u.latitude, longitude: u.longitude))
-            self.onlineUsers[idx] = existing
+            upsertUser(id: u.id, latitude: u.latitude, longitude: u.longitude)
 
         case .ping:
             break
         }
 
-        self.zoomToFitAllUsers(force: false)
+        if needsZoom {
+            zoomToFitAllUsers(force: false)
+        }
+    }
+
+    @MainActor
+    private func upsertUser(id: String, latitude: Double, longitude: Double) {
+        if let idx = onlineUsers.firstIndex(where: { $0.id == id }) {
+            onlineUsers[idx].latitude = latitude
+            onlineUsers[idx].longitude = longitude
+        } else {
+            onlineUsers.append(ChannelUser(
+                id: id,
+                coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            ))
+        }
     }
 }
 

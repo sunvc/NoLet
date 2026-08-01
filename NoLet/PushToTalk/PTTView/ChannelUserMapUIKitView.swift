@@ -21,6 +21,7 @@ import UIKit
 struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
     let id: String
     let name: String
+    var avatar: UIImage?
     var latitude: CLLocationDegrees
     var longitude: CLLocationDegrees
     var active: Bool = false
@@ -50,6 +51,7 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
 
     enum CodingKeys: CodingKey {
         case id
+        case name
         case latitude
         case longitude
     }

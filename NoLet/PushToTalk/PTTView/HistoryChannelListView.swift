@@ -42,6 +42,15 @@ struct HistoryChannelListView: View {
                                 return
                             }
 
+                            // WS 只能连一台服务器,所以只允许监听同 server 上的次频道。
+                            // 想切服务器请走"默认"侧滑,那条路径会自动 deactivate 老 server 的频道。
+                            if !channel.active,
+                               channel.server.url != pttChannel.server.url
+                            {
+                                Toast.info(title: "不同服务器频道不能同时监听")
+                                return
+                            }
+
                             if let index = pttHisChannel.firstIndex(of: channel) {
                                 pttHisChannel[index].active = !channel.active
                                 if pttManager.powerState {
@@ -74,9 +83,29 @@ struct HistoryChannelListView: View {
 
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
-                                if PTTManager.shared.powerState {
-                                    pttHisChannel.set(channel, active: true)
+                                let oldServerURL = pttChannel.server.url
+                                let newServerURL = channel.server.url
+                                let crossServer = oldServerURL != newServerURL
 
+                                if PTTManager.shared.powerState {
+                                    // 跨服务器切主: 先把老 server 上其它 active 频道全部
+                                    // deactivate,再走 publicLevelConnect 通知服务端 leave;
+                                    // 否则 WS 只连新 server,老 server 的订阅会孤立在服务端,
+                                    // 也没人给它续 presence heartbeat。
+                                    if crossServer {
+                                        let toDrop = pttHisChannel.filter {
+                                            $0.active && $0.server.url == oldServerURL
+                                        }
+                                        for ch in toDrop {
+                                            pttHisChannel.set(ch, active: false)
+                                        }
+                                        if !toDrop.isEmpty {
+                                            Task {
+                                                await PTTManager.shared.publicLevelConnect(toDrop)
+                                            }
+                                        }
+                                    }
+                                    pttHisChannel.set(channel, active: true)
                                     Task {
                                         await PTTManager.shared.publicJoinConnect()
                                     }

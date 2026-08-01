@@ -97,3 +97,4 @@ nonisolated final class MemberNameCache: @unchecked Sendable {
         _ = store.withLock { $0.removeValue(forKey: id) }
     }
 }
+

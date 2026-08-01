@@ -85,6 +85,8 @@
 		<string>audio</string>
 		<string>push-to-talk</string>
 		<string>location</string>
+		<string>fetch</string>
+		<string>processing</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
 	<array>

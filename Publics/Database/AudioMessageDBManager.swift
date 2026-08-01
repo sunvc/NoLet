@@ -96,18 +96,13 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
     // MARK: - Observation
 
     /// 观察最新 50 条 + 全部未读。
-    nonisolated func observeMessages() -> AsyncStream<(recent: [AudioMessage], unread: [AudioMessage])> {
+    nonisolated func observeMessages() -> AsyncStream<[AudioMessage]> {
         AsyncStream { continuation in
-            let observation = ValueObservation.tracking { db -> ([AudioMessage], [AudioMessage]) in
-                let recent = try AudioMessage
+            let observation = ValueObservation.tracking { db -> [AudioMessage] in
+                return try AudioMessage
                     .order(AudioMessage.Columns.timestamp.desc)
                     .limit(20)
                     .fetchAll(db)
-                let unread = try AudioMessage
-                    .order(AudioMessage.Columns.timestamp.desc)
-                    .filter { !$0.read }
-                    .fetchAll(db)
-                return (recent, unread)
             }
 
             let cancellable = observation.start(
@@ -118,7 +113,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
                     continuation.finish()
                 },
                 onChange: { value in
-                    continuation.yield((recent: value.0, unread: value.1))
+                    continuation.yield(value)
                 }
             )
 

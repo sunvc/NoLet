@@ -17,6 +17,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var overlayWindow: UIWindow?
+    
 
     func scene(
         _ scene: UIScene,
@@ -69,9 +70,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_: UIScene) {
         _syncAppInfo()
-        Task {
-            PTTManager.shared.appWillEnterForeground()
-        }
     }
 
     func sceneDidEnterBackground(_: UIScene) {
@@ -83,10 +81,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         Task { @MainActor in
             let unread = MessagesManager.shared.unreadCount
             UNUserNotificationCenter.current().setBadgeCount(unread)
-        }
-
-        Task { 
-            PTTManager.shared.appDidEnterBackground()
         }
     }
 
@@ -164,6 +158,7 @@ class PassthroughWindow: UIWindow {
             return hitView == rootView ? nil : hitView
         }
     }
+    
 }
 
 enum QuickAction: String, CaseIterable {
