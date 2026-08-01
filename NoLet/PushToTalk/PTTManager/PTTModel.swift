@@ -203,7 +203,6 @@ nonisolated extension Defaults.Keys {
     static let server = Key<String>("pttServer", default: "")
 }
 
-/// PTT 录音 Opus 码率档位。最低 16k,数值越高越占带宽。
 nonisolated enum PTTBitrate: Int, CaseIterable, Identifiable {
     case low = 16_000
     case standard = 24_000

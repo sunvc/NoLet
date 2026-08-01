@@ -18,14 +18,13 @@ import Opus
 import SwiftUI
 
 nonisolated protocol PTTRecorderDelegate: AnyObject {
-    /// 实时回调录音音量和已录制时长
+
     func recorderManager(
         _ manager: PTTRecorderManager,
         didUpdateRecordingPower power: CGFloat,
         duration: TimeInterval
     )
 
-    /// 麦克风权限状态变化
     func recorderManager(
         _ manager: PTTRecorderManager,
         didUpdateMicrophonePermission hasPermission: Bool

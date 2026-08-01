@@ -13,7 +13,7 @@ import Defaults
 import Foundation
 import os
 
-/// 服务器推来的一条事件
+
 nonisolated struct PresenceEvent: Decodable, Sendable {
     enum Kind: String, Decodable, Sendable {
         case snapshot

@@ -36,10 +36,6 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
             let n = Defaults[.member].name
             return n.isEmpty ? String(localized: "本机") : n
         }
-        if let cached = MemberNameCache.shared.cached(id: id), !cached.isEmpty {
-            return cached
-        }
-        MemberNameCache.shared.prefetch(id: id)
         return String(localized: "未知")
     }
 
@@ -74,7 +70,6 @@ struct ChannelUser: Identifiable, Codable, Equatable, Hashable {
 }
 
 extension ChannelUser {
-    /// 主入口:不再接受 name 参数
     init(id: String, coordinate: CLLocationCoordinate2D, active: Bool = false) {
         self.id = id
         self.name = ""

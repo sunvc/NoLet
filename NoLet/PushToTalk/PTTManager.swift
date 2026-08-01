@@ -71,14 +71,15 @@ final class PTTManager: NSObject, ObservableObject {
 
         startObservingUnreadCount()
         self.setupNotifications()
-        self.setupMemberNameCache()
         self.presence.delegate = self
+ 
     }
 
     deinit {
         observationTask?.cancel()
         NotificationCenter.default.removeObserver(self)
     }
+
 
     private func setupNotifications() {
         NotificationCenter.default.addObserver(
@@ -128,26 +129,6 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    /// CloudKit 昵称回填后触发 UI 刷新: `onlineUsers` 未变但 `displayName` 结果变了,
-    /// 通过重新赋值 published 数组强制 SwiftUI/UIKit 层重绘 pin 标签
-    private func setupMemberNameCache() {
-        MemberNameCache.shared.onUpdate = { [weak self] _, _ in
-            Task { @MainActor in
-                guard let self else { return }
-                self.onlineUsers = self.onlineUsers
-            }
-        }
-
-        Task { [weak self] in
-            for await _ in Defaults.updates(.member) {
-                guard let self else { break }
-                await MainActor.run {
-                    self.onlineUsers = self.onlineUsers
-                }
-            }
-        }
-    }
-
     @objc private func handleInterruption(notification: Notification) {
         guard let userInfo = notification.userInfo,
               let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
@@ -192,9 +173,7 @@ final class PTTManager: NSObject, ObservableObject {
     private func startObservingUnreadCount() {
         observationTask?.cancel()
         observationTask = Task { [weak self] in
-            guard let stream = AudioMessageDBManager.shared.observeMessages() as AsyncStream? else {
-                return
-            }
+            let stream = AudioMessageDBManager.shared.observeMessages()
             for await value in stream {
                 guard let self = self else { break }
                 await MainActor.run {
@@ -427,7 +406,7 @@ final class PTTManager: NSObject, ObservableObject {
             }
 
             for user in self.onlineUsers where user.id != userId {
-                MemberNameCache.shared.prefetch(id: user.id)
+               // TODO: - 
             }
 
             applyActiveSpeaker()
@@ -529,9 +508,6 @@ final class PTTManager: NSObject, ObservableObject {
                 ChannelUser(id: activeId, coordinate: coordinate, active: true),
                 at: 0
             )
-            if !isSelf {
-                MemberNameCache.shared.prefetch(id: activeId)
-            }
         }
 
         self.onlineUsers = users
@@ -690,8 +666,7 @@ final class PTTManager: NSObject, ObservableObject {
 }
 
 extension PTTManager: CLLocationManagerDelegate {
-    /// - Parameter force: `true` 时忽略用户交互标记强制 zoom(点击 logo/用户数触发);
-    ///   `false` 时若用户手动动过地图则跳过,避免打断查看。用户显式 zoom 会清零交互标记。
+   
     func zoomToFitAllUsers(force: Bool = true) {
         if !force, userMapInteracted { return }
         if force { userMapInteracted = false }
@@ -849,8 +824,6 @@ extension PTTManager {
         }
     }
 
-    /// 低频位置心跳。SSE 承载增量成员事件,但客户端自身的位置变化需要主动上报。
-    /// 服务端收到后会 broadcast update 到订阅了这个频道的其它成员。
     func sendJoinUpdate() async {
         let channel = Defaults[.pttChannel]
         guard channel.serverOK else { return }
@@ -1150,7 +1123,6 @@ extension PTTManager: PTTPresenceStreamDelegate {
         }
     }
 
-    /// 应用一条 SSE 事件到当前频道的 onlineUsers。跨频道事件直接忽略。
     @MainActor
     private func apply(presenceEvent event: PresenceEvent) {
         let currentChannel = Defaults[.pttChannel]
@@ -1184,9 +1156,7 @@ extension PTTManager: PTTPresenceStreamDelegate {
                 users.insert(selfUser, at: 0)
             }
             onlineUsers = users
-            for u in users where u.id != myId {
-                MemberNameCache.shared.prefetch(id: u.id)
-            }
+           
             var ch = currentChannel
             ch.users = users
             Defaults[.pttChannel] = ch
@@ -1195,7 +1165,6 @@ extension PTTManager: PTTPresenceStreamDelegate {
         case .join:
             guard let u = event.user, u.id != myId else { return }
             upsertUser(id: u.id, latitude: u.latitude, longitude: u.longitude)
-            MemberNameCache.shared.prefetch(id: u.id)
             needsZoom = true
 
         case .leave:
