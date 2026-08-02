@@ -44,10 +44,10 @@ struct NoLetChatHomeView: View {
 
     var body: some View {
         ZStack {
-            if chatManager.messagesCount == 0 {
+            ChatMessageArrayView()
+            if chatManager.chatMessages.count == 0 {
                 spaceHome
             }
-            ChatMessageArrayView()
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
             ChatInputView(

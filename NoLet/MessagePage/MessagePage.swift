@@ -177,8 +177,8 @@ struct DeleteAlertViewModifier: ViewModifier{
 
 struct DeleteMessageViewModifier: ViewModifier {
     @Binding var show: Bool
-    @State private var date = Date()
-    @State private var maxDate = Date().addingTimeInterval(3600)
+    @State private var date = Date.now
+    @State private var maxDate = Date.now.addingTimeInterval(3600)
     @State private var showAlert = false
     @State private var showDate = false
     func body(content: Content) -> some View {
@@ -222,9 +222,13 @@ struct DeleteMessageViewModifier: ViewModifier {
                     }))
                     .onAppear{
                         self.showDate = true
+                        self.date = Date.now
+                        self.maxDate = Date.now.addingTimeInterval(3600)
+                        
                     }
                 }
             )
+            
     }
 }
 
