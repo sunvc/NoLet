@@ -126,10 +126,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions)
             -> Void
     ) {
-        completionHandler([.banner])
         Haptic.impact(.light)
-
         notificatonHandler(userInfo: notification.request.content.userInfo)
+        MessagesManager.shared.updateSign += 1
+        completionHandler([.banner])
     }
 
     func notificatonHandler(userInfo: [AnyHashable: Any]) {

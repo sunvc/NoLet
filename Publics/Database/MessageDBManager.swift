@@ -284,13 +284,16 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
     nonisolated func deleteExpired() async {
         do {
             try await DB.dbQueue.write { db in
-                let now = Date()
-                let cutoffDateExpr = now.addingTimeInterval(-1)
-                try db.execute(sql: """
-                        DELETE FROM message
-                        WHERE ttl != ?
-                          AND datetime(createdate, '+' || ttl || ' days') < ?
-                    """, arguments: [ExpirationTime.forever.rawValue, cutoffDateExpr])
+                try db.execute(
+                    sql: """
+                    DELETE FROM message
+                    WHERE ttl != ?
+                      AND datetime(createdate, '+' || ttl || ' seconds') < datetime('now')
+                    """,
+                    arguments: [
+                        ExpirationTime.forever.rawValue
+                    ]
+                )
             }
         } catch {
             logger.error("删除失败: \(error)")

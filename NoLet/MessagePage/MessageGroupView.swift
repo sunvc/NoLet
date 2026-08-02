@@ -153,9 +153,6 @@ struct MessageRow: View {
             }.tint(.red)
         }
         .task { loadCount() }
-        .onChange(of: messageManager.updateSign) { _ in
-            loadCount()
-        }
     }
 
     private func loadCount() {
