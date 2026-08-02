@@ -581,6 +581,25 @@ fileprivate nonisolated extension String {
     
 }
 
+extension URL {
+    func findNameAndKey() -> (String, String) {
+        guard let scheme = scheme, let host = host() else {
+            return ("", "")
+        }
+        var base = "\(scheme)://\(host)"
+
+        if let port = port { base += ":\(port)" }
+
+        let key = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+
+        return (base.trimmingCharacters(in: .whitespaces), key.trimmingCharacters(in: .whitespaces))
+    }
+
+    var hasHttp: Bool { scheme?.hasHttp ?? false }
+}
+
+
+
 #Preview {
     ChangeKeyCenterView()
 }

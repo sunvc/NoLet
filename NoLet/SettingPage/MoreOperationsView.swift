@@ -44,8 +44,7 @@ struct MoreOperationsView: View {
                         }
                     }
                 }
-                
-                
+
                 ListButton {
                     Label {
                         Text("云图标")
@@ -74,7 +73,7 @@ struct MoreOperationsView: View {
                     .bold()
                     .font(.footnote)
             }
-            
+
             LocationStatusView()
 
             Section {
@@ -147,7 +146,6 @@ struct MoreOperationsView: View {
             }
 
             Section {
-                
                 Picker(selection: $background) {
                     ForEach(ContentBackgroundStyle.allCases, id: \.self) { item in
                         Text(item.name)
@@ -163,12 +161,11 @@ struct MoreOperationsView: View {
                             .scaleEffect(0.9)
                     }
                 }
-                if background == .custom{
+                if background == .custom {
                     ColorPicker(selection: Binding(get: { customColor.color }, set: { value in
                         customColor = GradientColorNode(color: value)
-                        
-                    })) { 
-            
+
+                    })) {
                         Label {
                             Text("选择颜色")
                         } icon: {
@@ -179,7 +176,6 @@ struct MoreOperationsView: View {
                         }
                     }
                 }
-                
 
             } header: {
                 Text("全局背景样式")
@@ -236,12 +232,9 @@ struct MoreOperationsView: View {
 extension DefaultBrowserModel {
     var title: String {
         switch self {
-        case .auto:
-            String(localized: "自动")
-        case .safari:
-            "Safari"
-        case .app:
-            String(localized: "内部")
+        case .auto: String(localized: "自动")
+        case .safari: "Safari"
+        case .app: String(localized: "内部")
         }
     }
 }

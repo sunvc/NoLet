@@ -31,6 +31,7 @@ struct DataSettingView: View {
     @State private var showexportLoading: Bool = false
     @State private var showDriveCheckLoading: Bool = false
 
+    @State private var showDeleteView: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var resetAppShow: Bool = false
     @State private var restartAppShow: Bool = false
@@ -40,7 +41,6 @@ struct DataSettingView: View {
 
     @State private var cancelTask: Task<Void, Never>?
 
-    @State private var selectAction: MessageAction? = nil
     @State private var addLoading: Bool = false
 
     @State private var exampleValue = 10000.0
@@ -359,8 +359,8 @@ struct DataSettingView: View {
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
         .navigationTitle("数据管理")
-        .if(selectAction != nil) { view in
-            view.deleteTips($selectAction)
+        .if(showDeleteView) { view in
+            view.deleteTips($showDeleteView)
         }
         .if(restartAppShow) { view in
             view
@@ -426,28 +426,8 @@ struct DataSettingView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    ForEach(MessageAction.allCases, id: \.self) { item in
-                        if item == .cancel {
-                            Section {
-                                Button(role: .destructive) {} label: {
-                                    Label(item.title, systemImage: "xmark.seal")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, .primary)
-                                }
-                            }
-                        } else {
-                            Section {
-                                Button {
-                                    self.selectAction = item
-                                } label: {
-                                    Label(item.title, systemImage: "trash")
-                                        .symbolRenderingMode(.palette)
-                                        .customForegroundStyle(.accent, .primary)
-                                }
-                            }
-                        }
-                    }
+                Button {
+                    self.showDeleteView = true
                 } label: {
                     Label("按条件删除消息", systemImage: "trash")
                         .symbolRenderingMode(.palette)
@@ -459,7 +439,6 @@ struct DataSettingView: View {
             self.calculateSize()
         }
         .task { calculateSize() }
-        
     }
 
     fileprivate func resetApp() {
@@ -569,44 +548,51 @@ extension UInt64 {
     }
 }
 
-// MARK: - MessageAction model
-
-enum MessageAction: CaseIterable, Equatable, Hashable {
-    static var allCases: [MessageAction] {
-        [.hour(1), .day(1), .week(1), .month(1), .all, .cancel]
-    }
-
-    case hour(Int)
-    case day(Int)
-    case week(Int)
-    case month(Int)
-    case all
-    case cancel
-}
-
-extension MessageAction {
-    var title: String {
-        switch self {
-        case .hour(let hour): String(localized: "\(hour)小时前")
-        case .day(let day): String(localized: "\(day)天前")
-        case .week(let week): String(localized: "\(week)周前")
-        case .month(let month): String(localized: "\(month)月前")
-        case .all: String(localized: "所有消息")
-        case .cancel: String(localized: "取消")
-        }
-    }
-
-    var date: Date {
-        switch self {
-        case .hour(let hour): Date().someHourBefore(hour)
-        case .day(let day): Date().someDayBefore(day)
-        case .week(let week): Date().someDayBefore(week * 7)
-        case .month(let month): Date().someDayBefore(month * 30)
-        case .all: Date()
-        default: Date.s1970
-        }
-    }
-}
+//// MARK: - MessageAction model
+//
+//enum MessageAction: CaseIterable, Equatable, Hashable {
+//    static var allCases: [MessageAction] {
+//        [.hour, .day, .week, .month, .custom(.now), .all, .cancel]
+//    }
+//
+//    case hour
+//    case day
+//    case week
+//    case month
+//    case all
+//    case custom(Date)
+//    case cancel
+//}
+//
+//extension MessageAction {
+//    var title: String {
+//        switch self {
+//        case .hour: String(localized: "1 小时前")
+//        case .day: String(localized: "1 天前")
+//        case .week: String(localized: "1 周前")
+//        case .month: String(localized: "1 月前")
+//        case .all: String(localized: "所有消息")
+//        case .custom: String(localized: "自定义")
+//        case .cancel: String(localized: "取消")
+//        }
+//    }
+//
+//    var tips: String { 
+//        String(localized: "\(date.formatString()) 之前")
+//    }
+//
+//    var date: Date {
+//        switch self {
+//        case .hour: Date().someHourBefore(1)
+//        case .day: Date().someDayBefore(1)
+//        case .week: Date().someDayBefore(7)
+//        case .month: Date().someDayBefore(30)
+//        case .all: Date()
+//        case .custom(let date): date
+//        case .cancel: Date.distantFuture
+//        }
+//    }
+//}
 
 extension ExpirationTime {
     var title: String {

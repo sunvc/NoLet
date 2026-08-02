@@ -13,6 +13,7 @@
 
 import Defaults
 import SwiftUI
+import GRDB
 
 struct MessagePage: View {
     @ObservedObject private var manager = AppManager.shared
@@ -21,8 +22,10 @@ struct MessagePage: View {
     @ObservedObject private var messageManager = MessagesManager.shared
     @State private var showDeleteAction: Bool = false
     @State private var searchText: String = ""
-    @State private var selectAction: MessageAction? = nil
+    @State private var showDeleteView: Bool = false
     @FocusState private var searchFocused: Bool
+    @State private var selectedDate = Date()
+    @State private var maxDate = Date()
 
     private var debouncedSearchBinding: Binding<String> {
         Binding(
@@ -32,7 +35,7 @@ struct MessagePage: View {
             }
         )
     }
-   
+
     var body: some View {
         ZStack {
             if !manager.searchText.isEmpty || searchFocused {
@@ -69,9 +72,8 @@ struct MessagePage: View {
         .onSubmit(of: .search) {
             manager.searchText = searchText
         }
-        .deleteTips($selectAction)
+        .deleteTips($showDeleteView)
         .toolbar {
-        
             if #available(iOS 26.0, *) {
                 ToolbarItem(placement: messageManager
                     .allCount <= 5 ? .topBarLeading : .secondaryAction) { exampleButton }
@@ -103,7 +105,6 @@ struct MessagePage: View {
             }
         }
     }
-    
 
     private var groupButton: some View {
         Section {
@@ -125,28 +126,8 @@ struct MessagePage: View {
     }
 
     private var deleteButton: some View {
-        Menu {
-            ForEach(MessageAction.allCases, id: \.self) { item in
-                if item == .cancel {
-                    Section {
-                        Button(role: .destructive) {} label: {
-                            Label(item.title, systemImage: "xmark.seal")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
-                    }
-                } else {
-                    Section {
-                        Button {
-                            self.selectAction = item
-                        } label: {
-                            Label(item.title, systemImage: "trash")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent, .primary)
-                        }
-                    }
-                }
-            }
+        Button {
+            self.showDeleteView = true
         } label: {
             Label("删除消息", systemImage: "trash")
                 .symbolRenderingMode(.palette)
@@ -155,38 +136,109 @@ struct MessagePage: View {
     }
 }
 
-extension View {
-    @ViewBuilder
-    func deleteTips(_ selectAction: Binding<MessageAction?>) -> some View {
-        alert(
-            "确认删除",
-            isPresented: Binding(
-                get: { selectAction.wrappedValue != nil },
-                set: { _ in selectAction.wrappedValue = nil }
-            )
-        ) {
-            Button("取消", role: .cancel) {
-                selectAction.wrappedValue = nil
-            }
-            Button("删除", role: .destructive) {
-                if let mode = selectAction.wrappedValue {
+struct DeleteAlertViewModifier: ViewModifier{
+    @Binding var show: Bool
+    var date: Date
+    var onClose: (()-> Void)? = nil
+    @State private var count: Int = 0
+    func body(content: Content) -> some View {
+        content
+            .alert("确认删除", isPresented: $show) {
+                Button("取消", role: .cancel) {
+                    self.show = false
+                }
+                Button("删除", role: .destructive) {
                     Task.detached(priority: .userInitiated) {
-                        await MessagesManager.shared.delete(date: mode.date)
+                        await MessagesManager.shared.delete(date: date)
                         await MainActor.run {
-                            selectAction.wrappedValue = nil
+                            self.onClose?()
+                            self.show = false
                         }
                         Toast.success(title: "删除成功")
                     }
                 }
+            } message: {
+                VStack {
+                    Text("此操作将删除 \(date.formatString()) 之前的数据 [\(count)条数据], 且无法恢复。确定要继续吗？")
+                        .padding(5)
+                }
             }
-        } message: {
-            if let selectAction = selectAction.wrappedValue {
-                Text("此操作将删除 \(selectAction.title) 数据，且无法恢复。确定要继续吗？")
+            .task(id: show) {
+                if let count = try? DatabaseManager.shared.dbQueue.read({ db in
+                    return try Message
+                        .filter(Message.Columns.createDate < date)
+                        .fetchCount(db)
+                }){
+                    self.count = count
+                }
             }
-        }
     }
 }
 
+struct DeleteMessageViewModifier: ViewModifier {
+    @Binding var show: Bool
+    @State private var date = Date()
+    @State private var maxDate = Date().addingTimeInterval(3600)
+    @State private var showAlert = false
+    @State private var showDate = false
+    func body(content: Content) -> some View {
+        content
+            .popView(
+                isPresented: $show,
+                onDismiss: {
+                    self.showDate = false
+                },
+                content: {
+                    VStack {
+                        DatePicker(
+                            selection: $date,
+                            in: ...maxDate,
+                            displayedComponents: [.date, .hourAndMinute]
+                        ) {}
+                            .datePickerStyle(.graphical)
+                        HStack {
+                            Button(role: .destructive) {
+                                self.showAlert = false
+                                self.show = false
+                            } label: {
+                                Text("取消")
+                            }
+                            Spacer()
+
+                            Button {
+                                self.showAlert = true
+                            } label: {
+                                Text("确定")
+                            }
+                            .button26(.borderedProminent)
+                        }
+                        .padding(10)
+                    }
+                    .frame(maxWidth: 380)
+                    .padding(10)
+                    .glassCard()
+                    .modifier(DeleteAlertViewModifier(show: $showAlert, date: date, onClose: { 
+                        self.show = false
+                    }))
+                    .onAppear{
+                        self.showDate = true
+                    }
+                }
+            )
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func deleteTips(_ show: Binding<Bool>) -> some View {
+        modifier(DeleteMessageViewModifier(show: show))
+    }
+    
+    @ViewBuilder
+    func deleteTips(_ show: Binding<Bool>, date: Date) -> some View {
+        modifier(DeleteAlertViewModifier(show: show, date: date))
+    }
+}
 
 #Preview {
     ContentView()

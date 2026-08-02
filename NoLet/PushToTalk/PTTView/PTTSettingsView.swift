@@ -395,19 +395,3 @@ struct LocationStatusView: View {
     }
 }
 
-fileprivate extension View {
-    /// 包装 UIKit 后的图片选择修饰符
-    /// - Parameters:
-    ///   - isPresented: 是否展现选择器
-    ///   - onResult: 结果回调，成功返回 UIImage，失败返回 Error
-    @ViewBuilder
-    func imageImporter(
-        isPresented: Binding<Bool>,
-        onResult: @escaping (Result<UIImage, Error>) -> Void
-    ) -> some View {
-        self.sheet(isPresented: isPresented) {
-            ImagePickerRepresentable(isPresented: isPresented, onResult: onResult)
-                .ignoresSafeArea()
-        }
-    }
-}

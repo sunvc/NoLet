@@ -334,7 +334,7 @@ struct ContentView: View {
     }
 }
 
-extension View {
+fileprivate extension View {
     func router() -> some View {
         navigationDestination(for: RouterPage.self) { router in
             Group {

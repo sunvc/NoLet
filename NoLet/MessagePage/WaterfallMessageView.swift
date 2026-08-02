@@ -21,7 +21,6 @@ private let waterfallSpacing: CGFloat = 5
 
 // MARK: - WaterfallMessageView
 
-@available(iOS 16.0, *)
 struct WaterfallMessageView: View {
     let messages: [Message]
     let allCount: Int

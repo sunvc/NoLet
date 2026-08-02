@@ -31,7 +31,7 @@ final class MessagesManager: ObservableObject {
 
     private init() {
         groupMessages = MessageGroupCache.shared.get()
-        if !Bundle.main.isAppExtension {
+        if !Bundle.main.bundlePath.hasSuffix(".appex") {
             startObservingUnreadCount()
             setupDarwinListener()
         }

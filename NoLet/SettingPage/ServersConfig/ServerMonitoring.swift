@@ -1213,10 +1213,10 @@ struct SCRingShapeView: View {
     }
 }
 
-extension Color {
-    fileprivate static let transparent = Color.white.opacity(0)
+fileprivate extension Color {
+    static let transparent = Color.white.opacity(0)
 
-    fileprivate init(progress: Double) {
+    init(progress: Double) {
         if progress >= 0.9 {
             self = .red
         } else if progress >= 0.8 {

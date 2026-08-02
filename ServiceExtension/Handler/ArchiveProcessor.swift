@@ -159,7 +159,7 @@ class ArchiveProcessor: NotificationContentProcessor {
     }
 }
 
-extension String {
+fileprivate extension String {
     func markdownPre(_ max: Int = 15) -> Self {
         count > max ? String(prefix(max)) + "..." : self
     }

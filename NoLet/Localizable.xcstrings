@@ -81,70 +81,6 @@
         }
       }
     },
-    "%lld周前" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld weeks ago"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld周前"
-          }
-        }
-      }
-    },
-    "%lld天前" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld days ago"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld天前"
-          }
-        }
-      }
-    },
-    "%lld小时前" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld hours ago"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld小时前"
-          }
-        }
-      }
-    },
-    "%lld月前" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld months ago"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld月前"
-          }
-        }
-      }
-    },
     "❗️需要配置大模型" : {
       "localizations" : {
         "en" : {
@@ -3841,22 +3777,6 @@
         }
       }
     },
-    "所有消息" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "All"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有消息"
-          }
-        }
-      }
-    },
     "所有铃声" : {
       "localizations" : {
         "en" : {
@@ -5026,7 +4946,20 @@
       }
     },
     "更早" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Earlier"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更早"
+          }
+        }
+      }
     },
     "有异常" : {
       "localizations" : {
@@ -5812,18 +5745,18 @@
         }
       }
     },
-    "此操作将删除 %@ 数据，且无法恢复。确定要继续吗？" : {
+    "此操作将删除 %@ 之前的数据 [%lld条数据], 且无法恢复。确定要继续吗？" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete %@ data? Cannot be undone."
+            "value" : "This will delete data before %@ [%lld records] and cannot be undone. Are you sure you want to continue?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此操作将删除 %@ 数据，且无法恢复。确定要继续吗？"
+            "value" : "此操作将删除 %@ 之前的数据 [%lld条数据], 且无法恢复。确定要继续吗？"
           }
         }
       }

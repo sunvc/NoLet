@@ -38,7 +38,9 @@ struct NoLetChatHomeView: View {
     @State private var fengche: Bool = false
     @State private var hidenTabar: Bool = false
 
-    @State private var selectAction: MessageAction? = nil
+    @State private var showDeleteView: Bool = false
+    
+    @State private var deleteDate: Date = Date()
 
     var body: some View {
         ZStack {
@@ -119,7 +121,7 @@ struct NoLetChatHomeView: View {
                 .customPresentationCornerRadius(30)
                 .presentationDetents([.medium, .large])
         }
-        .deleteTips($selectAction)
+        .deleteTips($showDeleteView, date: deleteDate)
     }
 
     private var spaceHome: some View {
@@ -351,13 +353,10 @@ struct NoLetChatHomeView: View {
                         args: json
                     )
 
-                    if let type = result.0?.0, let count = result.0?.1 {
-                        switch type {
-                        case "hour": selectAction = .hour(count)
-                        case "day": selectAction = .day(count)
-                        case "all": selectAction = .all
-                        default: break
-                        }
+                    // BUG: - 
+                    if let date = result.0 {
+                        self.deleteDate = date
+                        self.showDeleteView = true
                     }
 
                     results += result.1

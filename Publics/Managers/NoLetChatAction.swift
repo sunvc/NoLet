@@ -39,7 +39,7 @@ enum NoLetChatAction: String, CaseIterable {
    static func runFunc(
         name: String,
         args: [String: Any]
-    ) async -> ((String, Int)?, [String: String]) {
+    ) async -> (Date?, [String: String]) {
         var results: [String: String] = ["name": name]
         let name = ActionName(rawValue: name)
         switch name {
@@ -53,21 +53,24 @@ enum NoLetChatAction: String, CaseIterable {
             }
             return (nil, results)
         case .message:
-            guard let count = args["count"] as? Int,
-                  let type = args["type"] as? String
-            else {
-                results = ["error": "Json Error"]
-                return (nil, results)
-            }
-            if type == "hour" || type == "day" || type == "all" {
-                results["type"] = type
-                results["count"] = "\(count)"
-                results["run_result"] = "A confirmation dialog box pops up"
-            } else {
-                results = ["error": "Json Error"]
-            }
+            guard let before = args["before"] as? String else {
+                   results = ["error": "Json Error"]
+                   return (nil, results)
+               }
 
-            return ((type, count), results)
+               let formatter = DateFormatter()
+               formatter.dateFormat = "yyyy/MM/dd HH:mm"
+               formatter.locale = Locale(identifier: "zh_CN")
+
+               guard let date = formatter.date(from: before) else {
+                   results = ["error": "Invalid date format"]
+                   return (nil, results)
+               }
+
+               results["before"] = before
+               results["run_result"] = "A confirmation dialog box pops up"
+
+               return (date, results)
         default:
             results = ["error": "Json Error"]
             return (nil, results)
@@ -325,22 +328,17 @@ enum NoLetChatAction: String, CaseIterable {
 
             FunctionDefinition(
                 name: ActionName.message.rawValue,
-                description: "CRITICAL: delete x before messages",
+                description: "Delete messages before the specified date and time",
                 parameters: .init(fields: [
                     .type(.object),
                     .properties([
-                        "type": JSONSchema(
+                        "before": JSONSchema(
                             .type(.string),
-                            .description("type"),
-                            .enumValues(["hour", "day", "all"])
-                        ),
-                        "count": JSONSchema(
-                            .type(.integer),
-                            .description("Quantity")
-                        ),
+                            .description("Delete all messages before this date. Format: yyyy/MM/dd HH:mm")
+                        )
                     ]),
-                    .required(["type", "count"]),
-                    .additionalProperties(.boolean(false)),
+                    .required(["before"]),
+                    .additionalProperties(.boolean(false))
                 ]),
                 strict: true
             ),

@@ -320,3 +320,46 @@ nonisolated extension Encodable {
         }
     }
 }
+
+
+// MARK: -  URLSession+.swift
+
+extension URLSession {
+    enum APIError: Error {
+        case invalidURL
+        case invalidCode(Int)
+    }
+
+    func data(for request: URLRequest) async throws -> Data {
+        let (data, response) = try await self.data(for: request)
+
+        guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
+        guard 200...299 ~= response.statusCode
+        else { throw APIError.invalidCode(response.statusCode) }
+        return data
+    }
+}
+
+// MARK: -  URLComponents+.swift
+
+extension URLComponents {
+    func getParams() -> [String: String] {
+        var parameters = [String: String]()
+        if let queryItems = queryItems {
+            for queryItem in queryItems {
+                if let value = queryItem.value {
+                    parameters[queryItem.name] = value
+                }
+            }
+        }
+        return parameters
+    }
+
+    func getParams(from params: [String: Any]) -> [URLQueryItem] {
+        var queryItems: [URLQueryItem] = []
+        for (key, value) in params {
+            queryItems.append(URLQueryItem(name: key, value: "\(value)"))
+        }
+        return queryItems
+    }
+}
