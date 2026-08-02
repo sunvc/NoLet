@@ -56,7 +56,7 @@ struct TabBarBackButtonView: View {
                 }.button26(.borderless)
             }
         }
-        .offset(x: show ? 0 : size.width, y: size.height)
+        .offset(x: show ? 10 : size.width, y: show ? 20 : size.height)
         .onAppear {
             withAnimation(.spring(
                 response: 0.3,
