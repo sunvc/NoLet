@@ -230,33 +230,75 @@ struct ChatGroupHistoryView: View {
         return count == 0 ? "rectangle.3.group.bubble" : "message.badge.circle"
     }
 
+    fileprivate enum ChatTimeSection: CaseIterable {
+        case today
+        case yesterday
+        case dayBeforeYesterday
+        case twoDaysAgo
+        case oneWeek
+        case twoWeeks
+        case oneMonth
+        case threeMonth
+        case halfYear
+        case earlier
+        
+        var title: String {
+            switch self {
+            case .today: String(localized: "今天")
+            case .yesterday: String(localized: "昨天")
+            case .dayBeforeYesterday: String(localized: "前天")
+            case .twoDaysAgo: String(localized: "2天前")
+            case .oneWeek: String(localized: "一周前")
+            case .twoWeeks: String(localized: "两周前")
+            case .oneMonth: String(localized: "1月前")
+            case .threeMonth: String(localized: "3月前")
+            case .halfYear: String(localized: "半年前")
+            case .earlier: String(localized: "更早")
+            }
+        }
+        
+        static func match(date: Date, calendar: Calendar, todayStart: Date) -> Self {
+            guard
+                let tomorrow = calendar.date(byAdding: .day, value: 1, to: todayStart),
+                let d1 = calendar.date(byAdding: .day, value: -1, to: todayStart),
+                let d2 = calendar.date(byAdding: .day, value: -2, to: todayStart),
+                let d3 = calendar.date(byAdding: .day, value: -3, to: todayStart),
+                let d7 = calendar.date(byAdding: .day, value: -7, to: todayStart),
+                let d14 = calendar.date(byAdding: .day, value: -14, to: todayStart),
+                let m1 = calendar.date(byAdding: .month, value: -1, to: todayStart),
+                let m3 = calendar.date(byAdding: .month, value: -3, to: todayStart),
+                let m6 = calendar.date(byAdding: .month, value: -6, to: todayStart)
+            else { return .earlier }
+            
+            switch date {
+            case todayStart..<tomorrow: return .today
+            case d1..<todayStart: return .yesterday
+            case d2..<d1: return .dayBeforeYesterday
+            case d3..<d2: return .twoDaysAgo
+            case d7..<d3: return .oneWeek
+            case d14..<d7: return .twoWeeks
+            case m1..<d14: return .oneMonth
+            case m3..<m1: return .threeMonth
+            case m6..<m3: return .halfYear
+            default: return .earlier
+            }
+        }
+    }
+
     private func getGroupedMessages(allMessages: [ChatGroup]) -> [ChatMessageSection] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-
-        func day(_ value: Int, _ component: Calendar.Component = .day) -> Date {
-            calendar.date(byAdding: .month, value: value, to: today)!
+        let todayStart = calendar.startOfDay(for: Date())
+        
+        var bucket: [ChatTimeSection: [ChatGroup]] = [:]
+        
+        allMessages.forEach { msg in
+            let sectionType = ChatTimeSection.match(date: msg.timestamp, calendar: calendar, todayStart: todayStart)
+            bucket[sectionType, default: []].append(msg)
         }
-
-        let timeIntervals: [(String, Date, Date)] = [
-            (String(localized: "今天"), today, day(1)),
-            (String(localized: "昨天"), day(-1), today),
-            (String(localized: "前天"), day(-2), day(-1)),
-            (String(localized: "2天前"), day(-3), day(-2)),
-            (String(localized: "一周前"), day(-7), day(-3)),
-            (String(localized: "两周前"), day(-14), day(-7)),
-            (String(localized: "1月前"), day(-1, .month), day(-14, .month)),
-            (String(localized: "3月前"), day(-3, .month), day(-1, .month)),
-            (String(localized: "半年前"), day(-6, .month), day(-3, .month)),
-        ]
-
-        return timeIntervals.compactMap { title, start, end in
-            let messages = allMessages.filter {
-                $0.timestamp >= start && $0.timestamp < end
-            }
-            return messages.isEmpty
-                ? nil
-                : ChatMessageSection(title: title, messages: messages)
+        
+        return ChatTimeSection.allCases.compactMap { sectionType in
+            guard let list = bucket[sectionType], !list.isEmpty else { return nil }
+            return ChatMessageSection(title: sectionType.title, messages: list)
         }
     }
 }

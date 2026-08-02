@@ -38,7 +38,7 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         var style: String? = userInfo.raw(.style)
 
-        if let location: String = userInfo.raw(.location), let location = location.location(){
+        if let location: String = userInfo.raw(.location), let location = location.location() {
             let location = normalizeToLatLngGlobal(location)
             let address = await CLGeocoderManager.shared.getFormattedAddress(
                 latitude: location.0,
@@ -82,13 +82,15 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         let other = userInfo.toJSONString(excluding: Params.names)
 
-        var saveDays: Int {
+        var seconds: Int {
             if let isArchive = ttl, let saveDaysTem = Int(isArchive) {
                 return saveDaysTem
             } else {
-                return Defaults[.messageExpiration].days
+                return Int(Defaults[.messageExpiration].seconds)
             }
         }
+        
+        
 
         Defaults[.allMessagecount] += 1
 
@@ -97,7 +99,7 @@ class ArchiveProcessor: NotificationContentProcessor {
             return bestAttemptContent
         }
 
-        guard saveDays > 0 else { return bestAttemptContent }
+        guard seconds > 0 else { return bestAttemptContent }
 
         let message = Message(
             id: messageID ?? UUID().uuidString,
@@ -110,7 +112,7 @@ class ArchiveProcessor: NotificationContentProcessor {
             url: url,
             image: image,
             reply: reply,
-            ttl: saveDays,
+            ttl: seconds,
             read: false,
             style: style,
             other: other
@@ -135,26 +137,24 @@ class ArchiveProcessor: NotificationContentProcessor {
 
         return processedLines.joined(separator: "\n")
     }
-    
 
-    func normalizeToLatLngGlobal(_ coordinates: (Double,Double)) -> (Double,Double) {
-        
+    func normalizeToLatLngGlobal(_ coordinates: (Double, Double)) -> (Double, Double) {
         let a = coordinates.0
         let b = coordinates.1
-        
+
         let aCanBeLat = abs(a) <= 90.0
         let bCanBeLat = abs(b) <= 90.0
         let aCanBeLng = abs(a) <= 180.0
         let bCanBeLng = abs(b) <= 180.0
-        
-        if !aCanBeLat && bCanBeLat && aCanBeLng {
+
+        if !aCanBeLat, bCanBeLat, aCanBeLng {
             return (b, a)
         }
-        
-        if !bCanBeLat && aCanBeLat && bCanBeLng {
+
+        if !bCanBeLat, aCanBeLat, bCanBeLng {
             return (a, b)
         }
-        
+
         return coordinates
     }
 }

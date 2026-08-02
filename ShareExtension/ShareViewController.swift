@@ -90,7 +90,7 @@ private struct ShareView: View {
             _ = provider.loadDataRepresentation(for: .data) { data, error in
                 guard let data = data else { return }
 
-                if let image = data.toThumbnail(max: 300) {
+                if let image = data.toThumbnail() {
                     let tempDir = FileManager.default.temporaryDirectory
                     let tempURL = tempDir.appendingPathComponent("cloudIcon.png")
 

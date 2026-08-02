@@ -271,7 +271,7 @@ struct CloudIcon: View {
     }
 
     func toPushIcon(_ data: Data) -> PushIcon? {
-        if let image = data.toThumbnail(max: 300) {
+        if let image = data.toThumbnail() {
             let tempDir = FileManager.default.temporaryDirectory
             let tempURL = tempDir.appendingPathComponent("cloudIcon.png")
 

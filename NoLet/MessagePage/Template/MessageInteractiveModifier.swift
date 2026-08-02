@@ -76,12 +76,11 @@ struct MessageInteractiveModifier: ViewModifier {
 
     // 发送回复的网络封装
     private func sendReply(replyURL: String) {
-        guard !replyText.removingAllWhitespace.isEmpty else { 
+        guard !replyText.removingAllWhitespace.isEmpty else {
             Toast.info(title: "内容不能为空")
             return
         }
         Task { @MainActor in
-            
             do {
                 let result = try await NetworkManager().fetch(url: replyURL + replyText)
                 Toast.success(title: result.check() ? "回复成功" : "回复失败")
@@ -122,14 +121,14 @@ extension View {
 }
 
 struct MessageActionMenu: View {
-    let message: Message 
-    let assistantAccounsCount: Int 
+    let message: Message
+    let assistantAccounsCount: Int
 
     @ObservedObject var manager: AppManager
     @Binding var showSnap: Bool
     @FocusState.Binding var showReply: Bool
 
-    var onDelete: () -> Void 
+    var onDelete: () -> Void
 
     var body: some View {
         Menu {
@@ -214,7 +213,6 @@ struct MessageActionMenu: View {
             }
 
         } label: {
-           
             Text(message.createDate, format: .relative(presentation: .named))
                 .font(.footnote)
                 .foregroundColor(.secondary)
@@ -226,7 +224,6 @@ struct MessageActionMenu: View {
         }
     }
 
-   
     private func shareImageAction(imagePath: String) {
         Task {
             if let imageLocalPath = await ImageManager.downloadImage(imagePath),
@@ -355,7 +352,7 @@ extension View {
     }
 }
 
-extension Message {
+nonisolated extension Message {
     func accessibilityValue() -> String {
         var text: [String] = []
 
@@ -387,30 +384,31 @@ extension Message {
         return text.joined(separator: "\n")
     }
 
+    // 放到类内部，静态缓存格式化器
+    private static var relativeFormatter: RelativeDateTimeFormatter {
+        let fmt = RelativeDateTimeFormatter()
+        fmt.unitsStyle = .full
+        fmt.calendar = Calendar.current
+        return fmt
+    }
+
     func expiredTime() -> String {
         if ttl == ExpirationTime.forever.rawValue {
             return "∞ ∞ ∞"
         }
 
-        let days = createDate.daysRemaining(afterSubtractingFrom: ttl)
-        if days <= 0 {
+        let expireDate = createDate.addingTimeInterval(TimeInterval(ttl))
+        let remainSeconds = Date.now.distance(to: expireDate)
+
+        guard remainSeconds > 0 else {
             return String(localized: "已过期")
         }
 
-        let calendar = Calendar.current
-        let now = Date()
-        let targetDate = calendar.date(byAdding: .day, value: days, to: now)!
-
-        let components = calendar.dateComponents([.year, .month, .day], from: now, to: targetDate)
-
-        if let years = components.year, years > 0 {
-            return String(localized: "\(years)年")
-        } else if let months = components.month, months > 0 {
-            return String(localized: "\(months)个月")
-        } else if let days = components.day {
-            return String(localized: "\(days)天")
+        if remainSeconds < 86400 {
+            return String(localized: "即将过期")
         }
 
-        return String(localized: "即将过期")
+        let text = Self.relativeFormatter.localizedString(for: expireDate, relativeTo: .now)
+        return text
     }
 }

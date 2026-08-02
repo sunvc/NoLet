@@ -14,13 +14,11 @@
 import Defaults
 import Foundation
 
-
 enum DefaultBrowserModel: String, CaseIterable {
     case auto
     case safari
     case app
 }
-
 
 enum ExpirationTime: Int, CaseIterable, Equatable {
     case forever = 999_999
@@ -29,5 +27,9 @@ enum ExpirationTime: Int, CaseIterable, Equatable {
     case oneDay = 1
     case no = 0
 
-    var days: Int { rawValue }
+    var seconds: TimeInterval {
+        self == .forever ? Date.now
+            .distance(to: Date.distantFuture) :
+            TimeInterval(rawValue * 24 * 60 * 60)
+    }
 }

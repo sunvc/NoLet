@@ -11,78 +11,58 @@
 //
 import SwiftUI
 
-extension Calendar {
+nonisolated extension Calendar {
     func startOfWeek(for date: Date) -> Date {
         self.date(from: dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
     }
 }
 
-// MARK: -  Date+.swift
+nonisolated extension Date {
+    // MARK: - 静态快捷日期
 
-extension Date {
-    
+    static var yesterday: Date { Date().startOfDay.dayBefore }
+    static var tomorrow: Date { Date().startOfDay.dayAfter }
+
+    private static let sharedDateFormatter: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.locale = Locale(identifier: "en_US_POSIX")
+        return fmt
+    }()
+
     nonisolated func formatString(format: String = "yyyy-MM-dd HH:mm:ss") -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = format
-        return dateFormatter.string(from: self)
+        let formatter = Date.sharedDateFormatter
+        formatter.dateFormat = format
+        return formatter.string(from: self)
     }
 
-    nonisolated
-    func daysRemaining(afterSubtractingFrom days: Int) -> Int {
-        guard let daysBetween = Calendar.current.dateComponents([.day], from: Date(), to: self).day
-        else {
-            return -1
-        }
-        return days - daysBetween
-    }
-}
-
-extension Date {
-    static var yesterday: Date { return Date().dayBefore }
-    static var tomorrow: Date { return Date().dayAfter }
     static var lastHour: Date {
-        return Calendar.current.date(byAdding: .hour, value: -1, to: Date())!
+        Calendar.current.date(byAdding: .hour, value: -1, to: Date()) ?? Date()
     }
+
+    /// Unix时间起点：1970-01-01 00:00:00 UTC
+    static var s1970: Date { Date(timeIntervalSince1970: 0) }
+
+    // MARK: - 日期偏移（基于自身self）
 
     var dayBefore: Date {
-        return Calendar.current.date(byAdding: .day, value: -1, to: noon)!
+        Calendar.current.date(byAdding: .day, value: -1, to: startOfDay) ?? self
     }
 
     var dayAfter: Date {
-        return Calendar.current.date(byAdding: .day, value: 1, to: noon)!
+        Calendar.current.date(byAdding: .day, value: 1, to: startOfDay) ?? self
     }
 
-    var noon: Date {
-        return Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: self)!
+    var startOfDay: Date {
+        Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: self) ?? self
     }
 
-    var month: Int {
-        return Calendar.current.component(.month, from: self)
-    }
-
-    var isLastDayOfMonth: Bool {
-        return dayAfter.month != month
-    }
-
+    /// 当前日期往前推 N 天（零点对齐）
     func someDayBefore(_ day: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: -day, to: noon)!
+        Calendar.current.date(byAdding: .day, value: -day, to: startOfDay) ?? self
     }
 
+    /// 当前日期【self】往前推 N 小时（修复原BUG）
     func someHourBefore(_ hour: Int) -> Date {
-        return Calendar.current.date(byAdding: .hour, value: -hour, to: Date())!
-    }
-
-    var s1970: Date {
-        return Calendar.current.date(from: DateComponents(year: 1970, month: 1, day: 1))!
-    }
-
-    func isExpired(days: Int) -> Bool {
-
-        guard let targetDate = Calendar.current.date(byAdding: .day, value: days, to: self),
-              days >= 0
-        else {
-            return false
-        }
-        return Date() > targetDate
+        Calendar.current.date(byAdding: .hour, value: -hour, to: self) ?? self
     }
 }

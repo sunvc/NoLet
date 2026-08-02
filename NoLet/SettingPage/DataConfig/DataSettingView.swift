@@ -603,7 +603,7 @@ extension MessageAction {
         case .week(let week): Date().someDayBefore(week * 7)
         case .month(let month): Date().someDayBefore(month * 30)
         case .all: Date()
-        default: Date().s1970
+        default: Date.s1970
         }
     }
 }

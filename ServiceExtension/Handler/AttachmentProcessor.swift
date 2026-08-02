@@ -17,7 +17,7 @@ class AttachmentProcessor: NotificationContentProcessor {
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
 
-        let days = await MainActor.run { Defaults[.imageSaveDays].days }
+        let seconds = await MainActor.run { Defaults[.imageSaveDays].seconds }
 
         if let location: String = userInfo.raw(.location),
            let localPath = await ImageManager.generateMapSnapshot(
@@ -32,7 +32,7 @@ class AttachmentProcessor: NotificationContentProcessor {
         if let imageURL: String = userInfo.raw(.image) {
             guard let localPath = await ImageManager.downloadImage(
                 imageURL,
-                expiration: .days(days)
+                expiration: .seconds(seconds)
             ) else { return bestAttemptContent }
 
             if let uiimage = UIImage(contentsOfFile: localPath),

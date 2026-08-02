@@ -96,7 +96,7 @@ class IconProcessor: NotificationContentProcessor {
             await ImageManager.storeImage(
                 data: data,
                 key: pngURL,
-                expiration: .days(Defaults[.imageSaveDays].days)
+                expiration: .seconds(Defaults[.imageSaveDays].seconds)
             )
 
             return data

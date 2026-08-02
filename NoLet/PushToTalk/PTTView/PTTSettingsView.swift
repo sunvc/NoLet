@@ -306,7 +306,7 @@ struct PTTSettingsView: View {
 
     private func imageHandler(image: UIImage?) -> URL? {
         if let data = image?.pngData(),
-           let image = data.toThumbnail(max: 300),
+           let image = data.toThumbnail(),
            let data = image.pngData()
         {
             do {
