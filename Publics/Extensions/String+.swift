@@ -13,8 +13,18 @@ import CryptoKit
 import SwiftUI
 
 
+nonisolated extension Character {
+    var isEmoji: Bool {
+        return unicodeScalars.contains { $0.properties.isEmoji } &&
+            (unicodeScalars.first?.properties.isEmojiPresentation == true || unicodeScalars
+                .count > 1)
+    }
+}
+
+
 
 nonisolated extension String {
+    
     /// 移除 URL 的 HTTP/HTTPS 前缀
     func removeHTTPPrefix() -> String {
         return replacingOccurrences(of: "^(https?:\\/\\/)?", with: "", options: .regularExpression)
@@ -33,66 +43,7 @@ nonisolated extension String {
         self.filter { !$0.isWhitespace }
     }
 
-}
-
-nonisolated extension Character {
-    var isEmoji: Bool {
-        return unicodeScalars.contains { $0.properties.isEmoji } &&
-            (unicodeScalars.first?.properties.isEmojiPresentation == true || unicodeScalars
-                .count > 1)
-    }
-}
-
-extension String {
-    /// 仅保留字母和数字字符
-    /// - Parameter allowUnicode: 是否保留所有语言的字母（默认仅保留英文和数字）
-    /// - Returns: 清理后的字符串
-    func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
-        if allowUnicode {
-            return replacing(/[^\p{L}\p{N}]/, with: "")
-        } else {
-            return replacingOccurrences(
-                of: "[^A-Za-z0-9]",
-                with: "",
-                options: .regularExpression
-            )
-        }
-    }
-
-    func jsonData() -> [String: Any]? {
-        if let data = data(using: .utf8),
-           let json = try? JSONSerialization
-           .jsonObject(with: data, options: []) as? [String: Any]
-        {
-            return json
-        }
-        return nil
-    }
-}
-
-// MARK: - 字符串 MD5 转 UUID
-
-nonisolated extension String {
-    /// 把当前字符串 MD5 后转为标准 UUID 格式
-    func toUUID() -> String {
-        guard let data = self.data(using: .utf8) else {
-            return ""
-        }
-        let md5Digest = Insecure.MD5.hash(data: data)
-
-        let md5Hex = md5Digest.map { String(format: "%02hhx", $0) }.joined()
-
-        let start8 = md5Hex.prefix(8)
-        let part2 = md5Hex.dropFirst(8).prefix(4)
-        let part3 = md5Hex.dropFirst(12).prefix(4)
-        let part4 = md5Hex.dropFirst(16).prefix(4)
-        let last12 = md5Hex.dropFirst(20).prefix(12)
-
-        return "\(start8)-\(part2)-\(part3)-\(part4)-\(last12)"
-    }
-}
-
-nonisolated extension String {
+    
     func normalizedURLString() -> String {
         if self.isEmpty { return self }
         if let url = URL(string: self),
@@ -108,5 +59,82 @@ nonisolated extension String {
         }
 
         return "https://" + trimmed
+    }
+    
+    func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
+        guard let textColor = (self.filter { !$0.isWhitespace }).decomposeTextAndColor()
+        else { return nil }
+
+        let singleEmoji = textColor.text.first?.isEmoji ?? false
+        let renderer = UIGraphicsImageRenderer(size: CGSize(width: size, height: size))
+        let backgroundColor: UIColor = singleEmoji ? .clear : textColor.background
+
+        return renderer.image { context in
+            let rect = CGRect(x: 0, y: 0, width: size, height: size)
+            backgroundColor.setFill()
+            context.cgContext.fillEllipse(in: rect)
+
+            let availableRect = rect.insetBy(dx: padding, dy: padding)
+
+            let fontSize = availableRect.height * (singleEmoji ? 1 : 0.85)
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: fontSize, weight: .medium),
+                .foregroundColor: textColor.color,
+            ]
+
+            let textSize = textColor.text.size(withAttributes: attributes)
+            let textOrigin = CGPoint(
+                x: rect.midX - textSize.width / 2,
+                y: rect.midY - textSize.height / 2
+            )
+
+            textColor.text.draw(at: textOrigin, withAttributes: attributes)
+        }
+    }
+    
+    func decomposeTextAndColor(
+        _ defaultColor: UIColor = .white,
+        _ backgroundColor: UIColor = .systemBlue
+    ) -> (text: String, color: UIColor, background: UIColor)? {
+        let parts = split(separator: ",", maxSplits: 2, omittingEmptySubsequences: false)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+
+        guard let first = parts.first, !first.isEmpty else {
+            return nil
+        }
+
+        let chars = Array(first)
+        var firstChar: String
+
+        if chars.first?.isEmoji == true {
+            firstChar = String(chars[0])
+        } else {
+            if chars.count >= 2 {
+                if chars[0].isLetter || chars[0].isNumber,
+                   chars[1].isLetter || chars[1].isNumber
+                {
+                    firstChar = String(chars[0...1])
+                } else {
+                    firstChar = String(chars[0])
+                }
+            } else {
+                firstChar = String(chars[0])
+            }
+        }
+
+        switch parts.count {
+        case 1:
+            return (firstChar, defaultColor, backgroundColor)
+        case 2:
+            return (firstChar, .white, UIColor(hexString: parts[1]) ?? backgroundColor)
+        case 3...:
+            return (
+                firstChar,
+                UIColor(hexString: parts[1]) ?? defaultColor,
+                UIColor(hexString: parts[2]) ?? backgroundColor
+            )
+        default:
+            return nil
+        }
     }
 }

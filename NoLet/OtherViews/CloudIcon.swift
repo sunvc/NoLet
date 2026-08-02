@@ -45,7 +45,7 @@ struct CloudIcon: View {
                         icons.append(icon)
                         self.dropImage = nil
                     } endEditing: {
-                        self.hideKeyboard()
+                        AppManager.hideKeyboard()
                     }
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {

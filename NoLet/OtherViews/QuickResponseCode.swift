@@ -140,3 +140,24 @@ struct QuickResponseCodeview: View {
         return nil
     }
 }
+
+extension Image {
+    @ViewBuilder
+    func customDraggable(
+        _ width: CGFloat = .zero,
+        appear: ((Image) -> Void)? = nil,
+        disappear: ((Image) -> Void)? = nil
+    ) -> some View {
+        draggable(self) {
+            resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: width == .zero ? 300 : width)
+                .onAppear {
+                    appear?(self)
+                }
+                .onDisappear {
+                    disappear?(self)
+                }
+        }
+    }
+}

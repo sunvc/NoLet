@@ -83,7 +83,7 @@ struct NoLetChatHomeView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    self.hideKeyboard()
+                    AppManager.hideKeyboard()
                     manager.router.append(.noletChatSetting(nil))
                     Haptic.impact()
                 }) {
@@ -143,14 +143,14 @@ struct NoLetChatHomeView: View {
         .padding(.horizontal)
         .transition(.opacity)
         .onTapGesture {
-            self.hideKeyboard()
+            AppManager.hideKeyboard()
             Haptic.impact()
         }
     }
 
     // 发送消息
     private func sendMessage(_ text: String) async {
-        hideKeyboard()
+        AppManager.hideKeyboard()
 
         guard assistantAccouns.first(where: { $0.current }) != nil else {
             manager.router.append(.noletChatSetting(nil))
@@ -367,6 +367,19 @@ struct NoLetChatHomeView: View {
             }
         }
         return results
+    }
+}
+
+fileprivate nonisolated extension String {
+    
+    func jsonData() -> [String: Any]? {
+        if let data = data(using: .utf8),
+           let json = try? JSONSerialization
+            .jsonObject(with: data, options: []) as? [String: Any]
+        {
+            return json
+        }
+        return nil
     }
 }
 

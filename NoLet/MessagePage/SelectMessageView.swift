@@ -363,7 +363,7 @@ struct SelectMessageView: View {
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())
             .animation(.spring(), value: messageShowMode)
-            .onAppear { self.hideKeyboard() }
+            .onAppear { AppManager.hideKeyboard() }
             .onDisappear { chatManager.cancellableRequest?.cancel() }
             .sheet(isPresented: $showAssistantSetting) {
                 NavigationStack {
@@ -497,4 +497,17 @@ struct SelectMessageView: View {
         read: true,
         other: ""
     )) {}
+}
+
+
+fileprivate extension UIApplication {
+    var currentKeyWindow: UIWindow? {
+        return connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    }
+    var topSafeAreaHeight: CGFloat {
+        currentKeyWindow?.safeAreaInsets.top ?? 50
+    }
 }

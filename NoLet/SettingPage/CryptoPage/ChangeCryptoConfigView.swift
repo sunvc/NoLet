@@ -184,7 +184,7 @@ struct ChangeCryptoConfigView: View {
                     }
                     Spacer()
                     Button("完成") {
-                        self.hideKeyboard()
+                        AppManager.hideKeyboard()
                     }
                 }
 

@@ -407,6 +407,15 @@ struct ContentSizeKey: PreferenceKey {
     }
 }
 
+fileprivate extension UIApplication {
+    var interfaceOrientation: UIInterfaceOrientation? {
+        connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?
+            .interfaceOrientation
+    }
+}
+
 #Preview {
     ContentView()
 }

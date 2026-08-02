@@ -78,11 +78,11 @@ struct ChatMessageArrayView: View {
             .revealConfiguration(.default)
             .onDragIntoBottomSafeArea {
                 chatManager.isFocusedInput = false
-                self.hideKeyboard()
+                AppManager.hideKeyboard()
             }
             .onTapBackground {
                 chatManager.isFocusedInput = false
-                self.hideKeyboard()
+                AppManager.hideKeyboard()
             }
             .onTiledScrollGeometryChange { geometry in
                 let nextIsNearBottom = geometry.pointsFromBottom < 100

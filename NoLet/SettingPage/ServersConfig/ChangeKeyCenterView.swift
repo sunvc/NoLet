@@ -427,7 +427,7 @@ struct ChangeKeyView: View {
                 } else {
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) {
                         viewState = .zero
-                        self.hideKeyboard()
+                        AppManager.hideKeyboard()
                     }
                 }
             }
@@ -519,6 +519,66 @@ struct CirclePreferenceKey: PreferenceKey {
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
     }
+}
+
+// MARK: - SlideFadeIn 视图
+fileprivate struct SlideFadeIn: ViewModifier {
+    var show: Bool
+    var offset: Double
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(show ? 1 : 0)
+            .offset(y: show ? 0 : offset)
+    }
+}
+
+fileprivate extension View{
+    func slideFadeIn(show: Bool, offset: Double = 10) -> some View {
+        modifier(SlideFadeIn(show: show, offset: offset))
+    }
+}
+
+// MARK: - Line 视图
+
+fileprivate struct OutlineModifier: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    var cornerRadius: CGFloat = 20
+
+    func body(content: Content) -> some View {
+        content.overlay(
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(
+                    .linearGradient(
+                        colors: [
+                            .white.opacity(colorScheme == .dark ? 0.1 : 0.3),
+                            .black.opacity(0.1),
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        )
+    }
+}
+
+fileprivate nonisolated extension String {
+    
+    /// 仅保留字母和数字字符
+    /// - Parameter allowUnicode: 是否保留所有语言的字母（默认仅保留英文和数字）
+    /// - Returns: 清理后的字符串
+    func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
+        if allowUnicode {
+            return replacing(/[^\p{L}\p{N}]/, with: "")
+        } else {
+            return replacingOccurrences(
+                of: "[^A-Za-z0-9]",
+                with: "",
+                options: .regularExpression
+            )
+        }
+    }
+    
 }
 
 #Preview {
