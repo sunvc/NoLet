@@ -539,7 +539,8 @@ struct PTTContentView: View {
         .toolbar(.hidden, for: .navigationBar)
         .overlay(alignment: .bottomLeading) {
             if !phoneH && appManager.sizeClass == .compact {
-                TabBarBackButtonView(size: CGSize(width: 300, height: 0))
+                TabBarBackButtonView(x: 300)
+                    .offset(x: 10, y: 10)
             }
         }
         .environment(\.colorScheme, .dark)

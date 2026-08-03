@@ -65,4 +65,35 @@ nonisolated extension Date {
     func someHourBefore(_ hour: Int) -> Date {
         Calendar.current.date(byAdding: .hour, value: -hour, to: self) ?? self
     }
+
+    func zeroDate(_ unit: Calendar.Component = .second) -> Date {
+        let calendar = Calendar.current
+        
+        switch unit {
+        case .second:
+            return calendar.date(
+                bySetting: .second,
+                value: 0,
+                of: self
+            ) ?? self
+
+        case .minute:
+            return calendar.date(
+                bySettingHour: calendar.component(.hour, from: self),
+                minute: 0,
+                second: 0,
+                of: self
+            ) ?? self
+
+        case .hour:
+            return calendar.date(
+                bySettingHour: 0,
+                minute: 0,
+                second: 0,
+                of: self
+            ) ?? self
+        default:
+            return calendar.startOfDay(for: self)
+        }
+    }
 }

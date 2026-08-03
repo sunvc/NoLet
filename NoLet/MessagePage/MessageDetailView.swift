@@ -39,15 +39,6 @@ struct MessageDetailView: View {
 
     @State private var loadData: Bool = false
 
-    private var debouncedSearchBinding: Binding<String> {
-        Binding(
-            get: { searchText },
-            set: { newValue in
-                if newValue != searchText { searchText = newValue }
-            }
-        )
-    }
-
     var body: some View {
         ZStack {
             ContentBackgroundView()
@@ -94,7 +85,12 @@ struct MessageDetailView: View {
                 }
             }
         }
-        .searchable(text: debouncedSearchBinding)
+        .searchable(text: $searchText)
+        .onChange(of: searchText) { value in
+            if value.isEmpty{
+                manager.searchText = value
+            }
+        }
         .diff { view in
             Group {
                 if #available(iOS 26.0, *) {
@@ -106,12 +102,12 @@ struct MessageDetailView: View {
             }
         }
         .onSubmit(of: .search) {
-            manager.searchText = searchText
-        }
-        .task(id: searchText.isEmpty) {
-            if searchText.isEmpty, !manager.searchText.isEmpty {
-                manager.searchText = ""
+            if manager.searchText != searchText {
+                manager.searchText = searchText
             }
+        }
+        .onDisappear{
+            manager.searchText = ""
         }
         .toolbar {
             if #available(iOS 26.0, *) {

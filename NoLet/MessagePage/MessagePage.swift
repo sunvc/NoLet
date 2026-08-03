@@ -27,18 +27,9 @@ struct MessagePage: View {
     @State private var selectedDate = Date()
     @State private var maxDate = Date()
 
-    private var debouncedSearchBinding: Binding<String> {
-        Binding(
-            get: { searchText },
-            set: { newValue in
-                if newValue != searchText { searchText = newValue }
-            }
-        )
-    }
-
     var body: some View {
         ZStack {
-            if !manager.searchText.isEmpty || searchFocused {
+            if !searchText.isEmpty || searchFocused {
                 MessagSearchView()
             } else {
                 if showGroup {
@@ -50,7 +41,7 @@ struct MessagePage: View {
         }
         .animation(.easeInOut, value: showGroup)
         .toolbarTitleMenu { groupButton }
-        .searchable(text: debouncedSearchBinding)
+        .searchable(text: $searchText)
         .diff { view in
             Group {
                 if #available(iOS 26.0, *) {
@@ -71,6 +62,11 @@ struct MessagePage: View {
         }
         .onSubmit(of: .search) {
             manager.searchText = searchText
+        }
+        .onChange(of: searchText) { value in
+            if value.isEmpty{
+                manager.searchText = value
+            }
         }
         .deleteTips($showDeleteView)
         .toolbar {
@@ -177,7 +173,7 @@ struct DeleteAlertViewModifier: ViewModifier{
 
 struct DeleteMessageViewModifier: ViewModifier {
     @Binding var show: Bool
-    @State private var date = Date.now
+    @State private var date = Date()
     @State private var maxDate = Date.now.addingTimeInterval(3600)
     @State private var showAlert = false
     @State private var showDate = false
@@ -190,12 +186,6 @@ struct DeleteMessageViewModifier: ViewModifier {
                 },
                 content: {
                     VStack {
-                        DatePicker(
-                            selection: $date,
-                            in: ...maxDate,
-                            displayedComponents: [.date, .hourAndMinute]
-                        ) {}
-                            .datePickerStyle(.graphical)
                         HStack {
                             Button(role: .destructive) {
                                 self.showAlert = false
@@ -203,6 +193,10 @@ struct DeleteMessageViewModifier: ViewModifier {
                             } label: {
                                 Text("取消")
                             }
+                            .padding(10)
+                            .frame(minWidth: 60)
+                            .glassCard(borderColor: .blue)
+                            
                             Spacer()
 
                             Button {
@@ -210,11 +204,26 @@ struct DeleteMessageViewModifier: ViewModifier {
                             } label: {
                                 Text("确定")
                             }
-                            .button26(.borderedProminent)
+                            .padding(10)
+                            .frame(minWidth: 60)
+                            .glassCard(borderColor: .pink)
                         }
                         .padding(10)
+                        
+                        DatePicker(
+                            selection: Binding(
+                                get: { date.zeroDate() },
+                                set: { newDate in
+                                    date = newDate.zeroDate()
+                                }
+                            ),
+                            in: ...maxDate,
+                            displayedComponents: [.date, .hourAndMinute]
+                        ) { }
+                        .datePickerStyle(.graphical)
+                        
                     }
-                    .frame(maxWidth: 380)
+                    .frame(maxWidth: min(380, UIScreen.main.bounds.width * 0.9))
                     .padding(10)
                     .glassCard()
                     .modifier(DeleteAlertViewModifier(show: $showAlert, date: date, onClose: { 
@@ -222,9 +231,8 @@ struct DeleteMessageViewModifier: ViewModifier {
                     }))
                     .onAppear{
                         self.showDate = true
-                        self.date = Date.now
-                        self.maxDate = Date.now.addingTimeInterval(3600)
-                        
+                        self.date = Date.now.zeroDate()
+                        self.maxDate = Date.now.addingTimeInterval(100).zeroDate()
                     }
                 }
             )

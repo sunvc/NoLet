@@ -14,7 +14,8 @@
 import SwiftUI
 
 struct TabBarBackButtonView: View {
-    var size: CGSize
+    var x: CGFloat = 0
+    var y: CGFloat = 0
     @ObservedObject private var manager = AppManager.shared
     @State var show = false
 
@@ -56,7 +57,7 @@ struct TabBarBackButtonView: View {
                 }.button26(.borderless)
             }
         }
-        .offset(x: show ? 10 : size.width, y: show ? 20 : size.height)
+        .offset(x: show ? 0 : x, y: show ? 0 : y)
         .onAppear {
             withAnimation(.spring(
                 response: 0.3,

@@ -96,7 +96,7 @@ struct MessagSearchView: View {
                 self.allCount = messageManager.allCount
             }
         }
-        .task(id: manager.searchText) {
+        .onChange(of: manager.searchText){value in 
             loadData(limit: messagePage)
         }
     }
@@ -113,6 +113,7 @@ struct MessagSearchView: View {
                 Spacer()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var emptyStateView: some View {
@@ -131,6 +132,7 @@ struct MessagSearchView: View {
                 Spacer()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     func loadData(limit: Int = 30, item: Message? = nil) {

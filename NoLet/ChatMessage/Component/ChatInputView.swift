@@ -41,7 +41,7 @@ struct ChatInputView: View {
 
             HStack(spacing: 10) {
                 if !chatManager.isFocusedInput && manager.sizeClass == .compact {
-                    TabBarBackButtonView(size: CGSize(width: 100, height: 0))
+                    TabBarBackButtonView(x: 100)
                 }
                 if !manager.isLoading {
                     inputField

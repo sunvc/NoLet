@@ -112,8 +112,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         return request
     }
 
-    nonisolated func query(
-        search: String,
+    nonisolated func query(search: String,
         group: String? = nil,
         limit lim: Int = 50,
         before date: Date? = nil

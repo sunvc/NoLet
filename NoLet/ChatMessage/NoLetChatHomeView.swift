@@ -40,7 +40,7 @@ struct NoLetChatHomeView: View {
 
     @State private var showDeleteView: Bool = false
     
-    @State private var deleteDate: Date = Date()
+    @State private var deleteDate: Date = Date().zeroDate()
 
     var body: some View {
         ZStack {

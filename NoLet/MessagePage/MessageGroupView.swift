@@ -52,10 +52,17 @@ struct MessageGroupView: View {
                         .accessibilityLabel("分组消息")
                         .accessibilityHint("点击进入分组列表")
                 }
+                
             }
             .navigationTitle("消息")
             .scrollContentBackground(.hidden)
-            .background(ContentBackgroundView())
+            .background(
+                ContentBackgroundView()
+                    .overlay(
+                        emptyStateView
+                            .opacity(messageManager.groupMessages.count == 0 ? 1 : 0)
+                    )
+            )
             .listStyle(.grouped)
             .animation(.default, value: messageManager.groupMessages)
             .onChange(of: messageManager.allCount) { _ in
@@ -63,7 +70,19 @@ struct MessageGroupView: View {
                     proxyTo(proxy: proxy, selectGroup: selectGroup)
                 }
             }
+            
         }
+    }
+    
+    private var emptyStateView: some View {
+        VStack {
+            Spacer()
+            Text("暂无消息")
+                .font(.title3.bold())
+                .foregroundStyle(.secondary)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func proxyTo(proxy: ScrollViewProxy, selectGroup: String?) {
