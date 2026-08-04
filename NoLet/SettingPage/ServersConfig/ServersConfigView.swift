@@ -35,6 +35,8 @@ struct ServersConfigView: View {
         servers.filter { $0.status <= 0 }
     }
 
+    @State private var loading: Bool = false
+
     var body: some View {
         List {
             Section {
@@ -179,12 +181,14 @@ struct ServersConfigView: View {
         .listRowSpacing(10)
         .listStyle(.grouped)
         .refreshable {
-            Task(priority: .userInitiated) {
-                await AppManager.syncServer()
+            guard !loading else {
+                Toast.question(title: "处理中...")
+                return
             }
-
-            if servers.count > 0 {
-                Task {
+            self.loading = true
+            Task(priority: .userInitiated) {
+                
+                if servers.count > 0 {
                     await manager.registers()
                     let updateCount = servers.filter { $0.status > 0 }.count
                     if updateCount == servers.count {
@@ -192,10 +196,14 @@ struct ServersConfigView: View {
                     } else if updateCount > 0 && updateCount < servers.count {
                         Toast.question(title: "部分注册成功")
                     }
-                }
 
-            } else {
-                Toast.question(title: "请先添加服务器")
+                } else {
+                    await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
+                }
+                await AppManager.syncServer()
+                await MainActor.run {
+                    self.loading = false
+                }
             }
         }
         .toolbar {
@@ -301,11 +309,11 @@ struct CloudServersView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
                         Task { @MainActor in
-                            do{
+                            do {
                                 try await item.delete(from: NCONFIG.privateCloudDatabase)
                                 manager.servers.removeAll(where: { $0.id == item.id })
                                 Toast.success(title: "删除成功")
-                            }catch{
+                            } catch {
                                 Toast.success(title: "发生错误")
                             }
                         }

@@ -171,6 +171,10 @@ struct PTTContentView: View {
     var topShowHeight: CGFloat {
         phoneH ? appManager.windowSize.height : max(380, appManager.windowSize.height * 0.382)
     }
+    
+    var talkServers:[PushServerModel]{
+        servers.uniqued(by: \.url, PushServerModel.noServer)
+    }
 
     var body: some View {
         VStack {
@@ -449,7 +453,10 @@ struct PTTContentView: View {
                         Spacer(minLength: 0)
 
                         Picker(selection: Binding(get: {
-                            pttChannel.server
+                            if talkServers.first(where: {$0 == pttChannel.server}) == nil{
+                                pttChannel.server = .noServer
+                            }
+                            return  pttChannel.server
                         }, set: {
                             if !pttManager.powerState {
                                 if $0 != .noServer, $0.status < 2 {

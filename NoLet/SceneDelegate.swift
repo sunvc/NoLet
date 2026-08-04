@@ -17,6 +17,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var overlayWindow: UIWindow?
+    
+    private var syncTask: Task<Void, Never>?
 
     func scene(
         _ scene: UIScene,
@@ -87,7 +89,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    private var syncTask: Task<Void, Never>?
+   
     func _syncAppInfo() {
         syncTask?.cancel()
         syncTask = Task.detached(name: "sceneWillEnterForeground", priority: .background) {

@@ -15,7 +15,7 @@ import Defaults
 import SwiftUI
 
 extension Defaults.Keys {
-    static let background = Key<ContentBackgroundStyle>("ContentBackgroundStyle", .custom)
+    static let background = Key<ContentBackgroundStyle>("ContentBackgroundStyle", .none)
     static let customColor = Key<[GradientColorNode]>(
         "CustomGradientColors",
         default: [
@@ -26,12 +26,14 @@ extension Defaults.Keys {
 }
 
 enum ContentBackgroundStyle: String, CaseIterable, Defaults.Serializable {
+    case none
     case custom
     case tiffany
     case aurora
 
     var name: String {
         switch self {
+        case .none: String(localized: "无")
         case .custom: String(localized: "自定义")
         case .tiffany: String(localized: "蒂芙尼")
         case .aurora: String(localized: "暮色极光")
@@ -46,6 +48,9 @@ struct ContentBackgroundView: View {
 
     var body: some View {
         switch background {
+        case .none:
+            Color.gray.opacity(0.16)
+                .ignoresSafeArea()
         case .tiffany:
             TiffanyBlueBackground()
         case .aurora:

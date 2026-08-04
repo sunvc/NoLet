@@ -52,6 +52,7 @@ final class AppManager: ObservableObject {
     @Published var copyMessageId: String? = nil
     @Published var windowSize: CGSize = .zero
     @Published var orientation:UIInterfaceOrientation = .portrait
+    
 
     let network = NetworkManager()
 
@@ -516,6 +517,7 @@ extension AppManager {
         }
     }
 
+    @discardableResult
     nonisolated func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
         guard await !appending && !Defaults[.member].token.isEmpty else { return false }
         await MainActor.run {
@@ -609,10 +611,15 @@ extension AppManager {
             }
         }
     }
+    
+    
 
     nonisolated static func syncServer() async {
         let database = NCONFIG.privateCloudDatabase
         let localServers = Defaults[.servers]
+        
+        guard localServers.count > 0 else { return }
+        
         let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
 
         let serversToSave = localServers.filter { !cloudServers.contains($0) }
