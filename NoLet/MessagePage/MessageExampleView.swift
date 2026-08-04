@@ -106,6 +106,7 @@ struct MessageExampleView: View {
                             .background(Color.blue)
                     }
                 }
+                
             }
         }
         .listStyle(GroupedListStyle())

@@ -383,8 +383,6 @@ extension NotificationViewController {
         guard let account = Defaults[.assistantAccouns].first(where: \.current) else {
             throw ClientError.noAccount
         }
-
-        let lang = Defaults[.lang]
         let query = ChatQuery(
             messages: [
                 .system(.init(content: .textContent(mode.prompt.content))),

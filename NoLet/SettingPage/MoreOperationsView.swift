@@ -167,13 +167,11 @@ struct MoreOperationsView: View {
                             get: { stop.color },
                             set: { stop.color = $0 }
                         )) {
-                            Label { 
+                            Label {
                                 Text("颜色")
-                            } icon: { 
+                            } icon: {
                                 Image(systemName: "\((customColor.firstIndex(of: stop) ?? 0) + 1).circle")
                             }
-
-                            
                         }
                     }
                     .onDelete { customColor.remove(atOffsets: $0) }
