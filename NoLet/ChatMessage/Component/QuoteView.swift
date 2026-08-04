@@ -13,27 +13,13 @@
 
 import Foundation
 import SwiftUI
-import OpenAI
 
-typealias ReasoningEffort = ChatQuery.ReasoningEffort
-
-extension ReasoningEffort: @retroactive Hashable {
-    var rawValue: String {
-        switch self {
-        case .none: return "none"
-        case .minimal: return "minimal"
-        case .low: return "low"
-        case .medium: return "medium"
-        case .high: return "high"
-        case .customValue(let value): return value
-        }
-    }
-
+extension ReasoningEffort {
     static func allCases(_ value: String) -> [ReasoningEffort] {
         [.none, .minimal, .low, .medium, .high]
     }
 
-    public var level: Int {
+    var level: Int {
         switch self {
         case .none: 0
         case .minimal: 1
@@ -41,17 +27,6 @@ extension ReasoningEffort: @retroactive Hashable {
         case .medium: 3
         case .high: 4
         case .customValue: 5
-        }
-    }
-
-    public init(rawValue: String) {
-        switch rawValue {
-        case "none": self = .none
-        case "minimal": self = .minimal
-        case "low": self = .low
-        case "medium": self = .medium
-        case "high": self = .high
-        default: self = .customValue(rawValue)
         }
     }
 
@@ -64,10 +39,6 @@ extension ReasoningEffort: @retroactive Hashable {
         case .high: "gauge.high"
         case .customValue: "gauge.medium.badge.plus"
         }
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(level)
     }
 
     var emptyData: Bool {

@@ -23,8 +23,9 @@ struct PromptChooseView: View {
     @Binding var show: Bool
     @Environment(\.colorScheme) private var colorScheme
     @ObservedObject private var chatManager = NoLetChatManager.shared
-
-    @State private var prompts: [ChatPrompt] = []
+    
+    @Default(.prompts) var prompts
+    @Default(.lang) var lang
 
     @State private var isAddingPrompt = false
     @State private var searchText = ""
@@ -33,15 +34,16 @@ struct PromptChooseView: View {
     @Default(.customReasoningEffort) private var customReasoningEffort
 
     private var filteredBuiltInPrompts: [ChatPrompt] {
-        guard !searchText.isEmpty else { return prompts.filter { $0.inside } }
-        return prompts.filter { $0.inside }.filter {
+        let datas = ChatPrompt.ChatPromptMode.prompts(lang: lang)
+        guard !searchText.isEmpty else { return datas }
+        return datas.filter {
             $0.title.localizedCaseInsensitiveContains(searchText)
         }
     }
 
     private var filteredCustomPrompts: [ChatPrompt] {
-        guard !searchText.isEmpty else { return prompts.filter { !$0.inside } }
-        return prompts.filter { !$0.inside }.filter {
+        guard !searchText.isEmpty else { return prompts}
+        return prompts.filter {
             $0.title.localizedCaseInsensitiveContains(searchText)
         }
     }
@@ -125,21 +127,8 @@ struct PromptChooseView: View {
                     }
                 }
             }
-            .task {  loadData() }
-            .onChange(of: chatManager.promptCount) { _ in
-                loadData()
-            }
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())
-        }
-    }
-
-    private func loadData() {
-        Task.detached(priority: .background) {
-            let results = await ChatPromptDBManager.shared.fetchAll()
-            await MainActor.run {
-                self.prompts = results
-            }
         }
     }
 
@@ -185,9 +174,7 @@ private struct PromptSection: View {
             Button("取消", role: .cancel) {}
             Button("删除", role: .destructive) {
                 if let prompt = promptToDelete {
-                    Task.detached(priority: .userInitiated) {
-                        await ChatPromptDBManager.shared.delete(id: prompt.id)
-                    }
+                    Defaults[.prompts].removeAll(where: {$0.id == prompt.id})
                 }
             }
         } message: { prompt in
@@ -231,7 +218,7 @@ private struct PromptRowView: View {
                     }
 
                     if prompt.mode == .mcp || prompt.mode == .call {
-                        Text(prompt.mode.name)
+                        Text(prompt.mode.rawValue)
                             .font(.caption)
                             .foregroundColor(.white)
                             .padding(.horizontal, 6)
@@ -318,23 +305,14 @@ struct AddPromptView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("保存") {
-                        let chatprompt = ChatPrompt(
+                        Defaults[.prompts].append(ChatPrompt(
                             id: UUID().uuidString,
                             timestamp: Date(),
                             title: title,
                             content: content,
                             inside: false
-                        )
-                        Task.detached(priority: .userInitiated) {
-                            do {
-                                try await ChatPromptDBManager.shared.insert(chatprompt)
-                                await MainActor.run {
-                                    AppManager.shared.open(sheet: nil)
-                                }
-                            } catch {
-                                logger.error("插入 ChatPrompt 失败: \(error)")
-                            }
-                        }
+                        ))
+                        AppManager.shared.open(sheet: nil)
                         self.show.toggle()
                     }
                     .disabled(title.isEmpty || content.isEmpty)

@@ -117,47 +117,10 @@ struct ChatMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, H
         static let reason = Column(CodingKeys.reason)
         static let result = Column(CodingKeys.result)
     }
-    
+
     enum Role: String {
         case user
         case assistant
         case tool
     }
-}
-
-struct ChatPrompt: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable {
-    var id: String = UUID().uuidString
-    var timestamp: Date = .now
-    var title: String
-    var content: String
-    var inside: Bool
-    var mode: PromptMode = .promt
-
-    enum Columns {
-        static let id = Column(CodingKeys.id)
-        static let timestamp = Column(CodingKeys.timestamp)
-        static let title = Column(CodingKeys.title)
-        static let content = Column(CodingKeys.content)
-        static let inside = Column(CodingKeys.inside)
-    }
-
-    enum PromptMode: String, Codable {
-        case promt
-        case mcp
-        case call
-
-        var name: String {
-            switch self {
-            case .promt: String(localized: "提示词")
-            case .mcp: "MCP"
-            case .call: "CALL"
-            }
-        }
-    }
-}
-
-enum ChatPromptMode: Equatable {
-    case mcp(String?)
-    case translate(String?)
-    case abstract(String?)
 }

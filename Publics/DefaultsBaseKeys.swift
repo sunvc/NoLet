@@ -40,3 +40,15 @@ nonisolated extension Defaults.Keys {
     static let nearbyShow = Key<Bool>("nearbyShow", false)
     static let usePtt = Key<Bool>("usePushToTalk", false)
 }
+
+nonisolated extension Defaults{
+    static func lang() -> String {
+        let currentLang = Defaults[.lang]
+        if let code = Locale(identifier: currentLang).language.languageCode?.identifier,
+           let lang = Locale.current.localizedString(forLanguageCode: code)
+        {
+            return lang
+        }
+        return "English"
+    }
+}

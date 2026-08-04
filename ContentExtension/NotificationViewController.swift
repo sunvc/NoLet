@@ -32,9 +32,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     private var replyText: String?
 
     // 翻译 / 总结
-    private enum ResultMode: Hashable { case translate, abstract }
-    private var resultMode: ResultMode?
-    private var results: [ResultMode: String] = [:]
+    private var resultMode: ChatPrompt.ChatPromptMode?
+    private var results: [ChatPrompt.ChatPromptMode: String] = [:]
     private var originalHTML: String?
     private var sourceText: String = ""
     private var streamTask: Task<Void, Never>?
@@ -198,10 +197,10 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 showTips(text: String(localized: "[\(group)]分组静音成功"))
 
             case .translateAction:
-                toggleResult(.translate)
+                toggleResult(.translate(Defaults[.lang]))
 
             case .abstractAction:
-                toggleResult(.abstract)
+                toggleResult(.abstract(Defaults[.lang]))
             }
         } else if response.actionIdentifier == Identifiers.reply.rawValue {
             let userInfo = response.notification.request.content.userInfo
@@ -257,7 +256,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
     // MARK: - 翻译 / 总结
 
-    private func toggleResult(_ mode: ResultMode) {
+    private func toggleResult(_ mode: ChatPrompt.ChatPromptMode) {
         // 再次点击当前模式 → 还原原文
         if resultMode == mode {
             streamTask?.cancel()
@@ -275,8 +274,10 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         streamTask?.cancel()
         resultMode = mode
 
+        let lang = Defaults[.lang]
+
         let text: String
-        if mode == .abstract {
+        if case .abstract = mode {
             text = sourceText.removingAllWhitespace
         } else {
             text = sourceText
@@ -295,10 +296,19 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         results[mode] = ""
         renderResult(String(localized: "正在处理中..."))
 
-        let clientMode: ExtensionChatClient.Mode = mode == .translate ? .translate : .abstract
+       
+        var clientMode: ChatPrompt.ChatPromptMode{
+            if case .translate =  mode{
+                return .translate(lang)
+            }else{
+                return .abstract(lang)
+            }
+        }
+
         streamTask = Task { @MainActor [weak self] in
+            guard let self else { return }
             do {
-                try await ExtensionChatClient().stream(text: text, mode: clientMode) { [weak self] delta in
+                try await self.stream(text: text, mode: clientMode) { [weak self] delta in
                     guard let self, self.resultMode == mode else { return }
                     var acc = self.results[mode] ?? ""
                     acc += delta
@@ -309,16 +319,16 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             } catch {
                 if Task.isCancelled { return } // 用户切换 / 还原
                 logger.error("\(error)")
-                self?.results[mode] = ""
-                self?.resultMode = nil
-                if let originalHTML = self?.originalHTML {
-                    self?.web.isHidden = false
-                    self?.web.loadHTMLString(originalHTML, baseURL: self?.cssBaseURL())
+                self.results[mode] = ""
+                self.resultMode = nil
+                if let originalHTML = self.originalHTML {
+                    self.web.isHidden = false
+                    self.web.loadHTMLString(originalHTML, baseURL: self.cssBaseURL())
                 } else {
-                    self?.web.isHidden = true
-                    self?.updateLayout(webHeight: 0)
+                    self.web.isHidden = true
+                    self.updateLayout(webHeight: 0)
                 }
-                self?.showTips(
+                self.showTips(
                     text: "\(String(localized: "发生错误")): \(error.localizedDescription)",
                     color: .red, afterClose: true
                 )
@@ -361,8 +371,40 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 }
 
 extension NotificationViewController {
-    func ImageHandler(imageURL: URL) {
+    enum ClientError: Error {
+        case noAccount
+    }
 
+    func stream(
+        text: String,
+        mode: ChatPrompt.ChatPromptMode,
+        onDelta: @escaping @MainActor (String) -> Void
+    ) async throws {
+        guard let account = Defaults[.assistantAccouns].first(where: \.current) else {
+            throw ClientError.noAccount
+        }
+
+        let lang = Defaults[.lang]
+        let query = ChatQuery(
+            messages: [
+                .system(.init(content: .textContent(mode.prompt.content))),
+                .user(.init(content: .string(text))),
+            ],
+            model: account.model
+        )
+
+        let stream = NoLetChatClient(account: account).chatsStream(query: query)
+
+        for try await result in stream {
+            if let content = result.choices.first?.delta.content, !content.isEmpty {
+                onDelta(content)
+            }
+        }
+    }
+}
+
+extension NotificationViewController {
+    func ImageHandler(imageURL: URL) {
         if imageURL.startAccessingSecurityScopedResource() {
             if let image = UIImage(contentsOfFile: imageURL.path()) {
                 let size = self.sizecalculation(size: image.size)

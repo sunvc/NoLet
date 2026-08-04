@@ -26,7 +26,6 @@
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
 		B5835D612DEDFD070066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D602DEDFD070066B32E /* Defaults */; };
-		BA4350313008C8820062B2FE /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = BA4350303008C8820062B2FE /* OpenAI */; };
 		BA5D59F02FECE05200F89D1A /* LocationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BA5D59E92FECE05200F89D1A /* LocationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BA5D59F82FED176A00F89D1A /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = BA5D59F72FED176A00F89D1A /* Defaults */; };
 		BA66AB682F2CC02E00ADEDF5 /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D772DEDFFF90066B32E /* cmark-gfm */; };
@@ -211,8 +210,10 @@
 				"Extensions/other+.swift",
 				"Extensions/String+.swift",
 				Managers/NetworkManager.swift,
+				Managers/NoLetChatClient.swift,
 				Markdown.swift,
 				Models/AssistantAccountModel.swift,
+				Models/ChatPromptModel.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
@@ -461,7 +462,6 @@
 			files = (
 				BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */,
 				BAAA19482F391CB200E0D66F /* Splash in Frameworks */,
-				BA4350313008C8820062B2FE /* OpenAI in Frameworks */,
 				BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BAAA19462F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */,
@@ -648,7 +648,6 @@
 				BAAA19232F390F5600E0D66F /* QRScanner */,
 				BAC9B9EF2FD6B35200E9ABDE /* Opus */,
 				BAB264343004C5380082E8D9 /* MessagingUI */,
-				BA4350303008C8820062B2FE /* OpenAI */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -800,7 +799,6 @@
 				BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */,
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
 				BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */,
-				BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -1504,14 +1502,6 @@
 				minimumVersion = 0.7.1;
 			};
 		};
-		BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/OpenAI.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/swift-markdown-ui";
@@ -1629,11 +1619,6 @@
 		BA2F863F2F2311AC00CEBC4F /* Splash */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Splash;
-		};
-		BA4350303008C8820062B2FE /* OpenAI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BA43502F3008C8820062B2FE /* XCRemoteSwiftPackageReference "OpenAI" */;
-			productName = OpenAI;
 		};
 		BA47C6162F305FF900866562 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;

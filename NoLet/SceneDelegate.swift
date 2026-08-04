@@ -17,7 +17,6 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var overlayWindow: UIWindow?
-    
 
     func scene(
         _ scene: UIScene,
@@ -63,7 +62,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_: UIScene) {
-        setLangAssistantPrompt()
+        if let currentLang = Locale.preferredLanguages.first,
+           Defaults[.lang] != currentLang
+        {
+            Defaults[.lang] = currentLang
+        }
     }
 
     func sceneWillResignActive(_: UIScene) {}
@@ -91,23 +94,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             await MessagesManager.shared.deleteExpired()
             await AppManager.syncServer()
             await NoLetChatManager.shared.clearunuse()
-        }
-    }
-
-    func setLangAssistantPrompt() {
-        if let currentLang = Locale.preferredLanguages.first {
-            let prompts = ChatPromptMode.prompts
-            Task.detached(priority: .background) {
-                let count = await ChatPromptDBManager.shared.count(inside: true)
-
-                if Defaults[.lang] != currentLang || count == 0 {
-                    try? await ChatPromptDBManager.shared.replaceInsidePrompts(prompts)
-
-                    DispatchQueue.main.async {
-                        Defaults[.lang] = currentLang
-                    }
-                }
-            }
         }
     }
 
@@ -158,7 +144,6 @@ class PassthroughWindow: UIWindow {
             return hitView == rootView ? nil : hitView
         }
     }
-    
 }
 
 enum QuickAction: String, CaseIterable {

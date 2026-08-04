@@ -21,6 +21,8 @@ struct PromptDetailView: View {
     @State private var content: String
     @State private var showDeleteConfirmation = false
     @State private var isEditing = false
+    
+    @Default(.prompts) var prompts
 
     init(prompt: ChatPrompt?) {
         self.prompt = prompt
@@ -88,7 +90,7 @@ struct PromptDetailView: View {
                     if prompt.inside {
                         InfoBanner(
                             icon: "info.circle",
-                            title: String(localized: "内置") + prompt.mode.name,
+                            title: String(localized: "内置") + prompt.mode.rawValue,
                             message: prompt
                                 .mode == .mcp ? String(localized: "使用自然语言设置你的App") :
                                 String(localized: "你可以基于它创建一个新的自定义提示词")
@@ -169,32 +171,21 @@ struct PromptDetailView: View {
             content: content,
             inside: false
         )
-        Task.detached(priority: .userInitiated) {
-            do {
-                try await ChatPromptDBManager.shared.insert(chatPrompt)
-                await MainActor.run {
-                    AppManager.shared.open(sheet: nil)
-                }
-            } catch {
-                logger.error("插入 ChatPrompt 失败: \(error)")
-            }
-        }
+        
+        prompts.append(chatPrompt)
+        AppManager.shared.open(sheet: nil)
     }
 
     private func handleSavePrompt() {
         let title = self.title
         let content = self.content
-        Task.detached(priority: .userInitiated) {
-            if let id = prompt?.id {
-                await ChatPromptDBManager.shared.update(id: id, title: title, content: content)
-            }
-            await MainActor.run {
-                if prompt == nil {
-                    self.dismiss()
-                } else {
-                    self.isEditing = false
-                }
-            }
+        
+        if let id = prompt?.id, let index = prompts.firstIndex(where: {$0.id == id}){
+            prompts[index].title = title
+            prompts[index].content = content
+            self.isEditing = false
+        }else{
+            self.dismiss()
         }
     }
 }

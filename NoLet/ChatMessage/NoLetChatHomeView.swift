@@ -13,7 +13,6 @@
 
 import Combine
 import Defaults
-import OpenAI
 import SwiftUI
 
 struct NoLetChatHomeView: View {

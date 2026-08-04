@@ -101,6 +101,7 @@
       }
     },
     "提示词" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

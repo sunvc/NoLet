@@ -12,7 +12,6 @@
 //    Created by Neo on 2026/1/18 16:25.
 
 import Foundation
-import OpenAI
 
 enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
@@ -305,7 +304,7 @@ enum NoLetChatAction: String, CaseIterable {
         case message = "manage_message"
     }
 
-    typealias FunctionDefinition = ChatQuery.ChatCompletionToolParam.FunctionDefinition
+    typealias FunctionDefinition = ChatCompletionToolParam.FunctionDefinition
 
     static func funcs() -> [FunctionDefinition] {
         let properties: [String: JSONSchema] =

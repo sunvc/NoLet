@@ -12,7 +12,6 @@
 import Defaults
 import Kingfisher
 import MarkdownUI
-import OpenAI
 import SwiftUI
 
 enum SelectMessageViewMode: Int, Equatable {

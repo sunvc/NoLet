@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - Dictionary+.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -11,11 +11,10 @@
 //  History:
 //    Created by Neo on 2026/8/2 17:09.
 
+import CryptoKit
 import Foundation
 import UIKit
-import CryptoKit
 import UniformTypeIdentifiers
-
 
 nonisolated extension Encodable {
     func toEncodableDictionary() -> [String: Any]? {
@@ -32,8 +31,7 @@ nonisolated extension UTType {
     static let trnExportType = UTType(exportedAs: "me.uuneo.nolet.exv")
 }
 
-
-extension Dictionary {
+nonisolated extension Dictionary {
     static func + (lhs: inout Dictionary, rhs: Dictionary) {
         lhs.merge(rhs) { _, new in new }
     }
@@ -43,7 +41,7 @@ extension Dictionary {
     }
 }
 
-extension Dictionary where Key == String, Value == String {
+nonisolated extension Dictionary where Key == String, Value == String {
     func text() -> String? {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -55,8 +53,6 @@ extension Dictionary where Key == String, Value == String {
         return String(data: data, encoding: .utf8)
     }
 }
-
-
 
 nonisolated extension Dictionary where Key == AnyHashable, Value == Any {
     func toStringDict(excluding keysToExclude: [String] = []) -> [String: String] {
@@ -92,24 +88,19 @@ nonisolated extension Dictionary where Key == AnyHashable, Value == Any {
     }
 }
 
-
-
-
 // MARK: -  keyPath+.swift
 
-func == <T, Value: Equatable>(keyPath: KeyPath<T, Value>, value: Value) -> (T) -> Bool {
+nonisolated func == <T, Value: Equatable>(keyPath: KeyPath<T, Value>, value: Value) -> (T) -> Bool {
     { $0[keyPath: keyPath] == value }
 }
 
-
 // data+
-extension Data {
+nonisolated extension Data {
     func sha256() -> String {
         return SHA256.hash(data: self).compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    nonisolated
-    func toThumbnail(max: Int = 300) -> UIImage? {
+    nonisolated func toThumbnail(max: Int = 300) -> UIImage? {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceCreateThumbnailFromImageAlways: true,
@@ -125,7 +116,7 @@ extension Data {
     }
 }
 
-extension Array where Element: Hashable {
+nonisolated extension Array where Element: Hashable {
     func uniqued<Value: Hashable>(
         by keyPath: KeyPath<Element, Value>,
         _ data: Element? = nil
@@ -136,5 +127,3 @@ extension Array where Element: Hashable {
         return result
     }
 }
-
-
