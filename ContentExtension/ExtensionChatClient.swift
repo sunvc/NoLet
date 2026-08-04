@@ -64,7 +64,7 @@ struct ExtensionChatClient {
         mode: Mode,
         onDelta: @escaping @MainActor (String) -> Void
     ) async throws {
-        guard let account = Defaults[.assistantAccouns].first else {
+        guard let account = Defaults[.assistantAccouns].first(where: \.current) else {
             throw ClientError.noAccount
         }
         
