@@ -548,52 +548,6 @@ extension UInt64 {
     }
 }
 
-//// MARK: - MessageAction model
-//
-//enum MessageAction: CaseIterable, Equatable, Hashable {
-//    static var allCases: [MessageAction] {
-//        [.hour, .day, .week, .month, .custom(.now), .all, .cancel]
-//    }
-//
-//    case hour
-//    case day
-//    case week
-//    case month
-//    case all
-//    case custom(Date)
-//    case cancel
-//}
-//
-//extension MessageAction {
-//    var title: String {
-//        switch self {
-//        case .hour: String(localized: "1 小时前")
-//        case .day: String(localized: "1 天前")
-//        case .week: String(localized: "1 周前")
-//        case .month: String(localized: "1 月前")
-//        case .all: String(localized: "所有消息")
-//        case .custom: String(localized: "自定义")
-//        case .cancel: String(localized: "取消")
-//        }
-//    }
-//
-//    var tips: String { 
-//        String(localized: "\(date.formatString()) 之前")
-//    }
-//
-//    var date: Date {
-//        switch self {
-//        case .hour: Date().someHourBefore(1)
-//        case .day: Date().someDayBefore(1)
-//        case .week: Date().someDayBefore(7)
-//        case .month: Date().someDayBefore(30)
-//        case .all: Date()
-//        case .custom(let date): date
-//        case .cancel: Date.distantFuture
-//        }
-//    }
-//}
-
 extension ExpirationTime {
     var title: String {
         switch self {

@@ -31,6 +31,14 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     private var tips: String?
     private var replyText: String?
 
+    // 翻译 / 总结
+    private enum ResultMode: Hashable { case translate, abstract }
+    private var resultMode: ResultMode?
+    private var results: [ResultMode: String] = [:]
+    private var originalHTML: String?
+    private var sourceText: String = ""
+    private var streamTask: Task<Void, Never>?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tipsView.text = ""
@@ -70,6 +78,10 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         imageView.isHidden = true
         imageView.image = nil
 
+        streamTask?.cancel()
+        resultMode = nil
+        results = [:]
+
         web.frame.size.width = view.bounds.width
 
         if let autoCopy: Bool = userInfo.raw(.autoCopy), autoCopy {
@@ -98,10 +110,16 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
            let html = convertMarkdownToHTML(body),
            let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css")
         {
+            self.sourceText = body
+            self.originalHTML = html
+            self.resultMode = nil
             let cssURL = URL(fileURLWithPath: cssPath).deletingLastPathComponent()
             web.isHidden = false
             web.loadHTMLString(html, baseURL: cssURL)
         } else {
+            self.sourceText = notification.request.content.body
+            self.originalHTML = nil
+            self.resultMode = nil
             web.isHidden = true
             markdownHeight = 0
             web.frame = .zero
@@ -178,6 +196,12 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 let group = response.notification.request.content.threadIdentifier
                 Defaults[.muteSetting][group] = Date().addingTimeInterval(3600)
                 showTips(text: String(localized: "[\(group)]分组静音成功"))
+
+            case .translateAction:
+                toggleResult(.translate)
+
+            case .abstractAction:
+                toggleResult(.abstract)
             }
         } else if response.actionIdentifier == Identifiers.reply.rawValue {
             let userInfo = response.notification.request.content.userInfo
@@ -229,6 +253,82 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 }
             }
         }
+    }
+
+    // MARK: - 翻译 / 总结
+
+    private func toggleResult(_ mode: ResultMode) {
+        // 再次点击当前模式 → 还原原文
+        if resultMode == mode {
+            streamTask?.cancel()
+            resultMode = nil
+            if let originalHTML {
+                web.isHidden = false
+                web.loadHTMLString(originalHTML, baseURL: cssBaseURL())
+            } else {
+                web.isHidden = true
+                updateLayout(webHeight: 0)
+            }
+            return
+        }
+
+        streamTask?.cancel()
+        resultMode = mode
+
+        let text: String
+        if mode == .abstract {
+            text = sourceText.removingAllWhitespace
+        } else {
+            text = sourceText
+        }
+
+        guard !text.isEmpty else {
+            showTips(text: String(localized: "没有可处理的内容"), color: .red, afterClose: true)
+            return
+        }
+
+        if let cached = results[mode], !cached.isEmpty {
+            renderResult(cached)
+            return
+        }
+
+        results[mode] = ""
+        renderResult(String(localized: "正在处理中..."))
+
+        let clientMode: ExtensionChatClient.Mode = mode == .translate ? .translate : .abstract
+        streamTask = Task { @MainActor [weak self] in
+            do {
+                try await ExtensionChatClient().stream(text: text, mode: clientMode) { [weak self] delta in
+                    guard let self, self.resultMode == mode else { return }
+                    var acc = self.results[mode] ?? ""
+                    acc += delta
+                    self.results[mode] = acc
+                    self.renderResult(acc)
+                    Haptic.selection(limitFrequency: true)
+                }
+            } catch {
+                if Task.isCancelled { return } // 用户切换 / 还原
+                logger.error("\(error)")
+                self?.results[mode] = ""
+                self?.showTips(
+                    text: "\(String(localized: "发生错误")): \(error.localizedDescription)",
+                    color: .red, afterClose: true
+                )
+            }
+        }
+    }
+
+    private func renderResult(_ markdown: String) {
+        guard let html = convertMarkdownToHTML(markdown) else { return }
+        web.isHidden = false
+        web.loadHTMLString(html, baseURL: cssBaseURL())
+    }
+
+    private func cssBaseURL() -> URL? {
+        guard let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css") else {
+            return nil
+        }
+        return URL(fileURLWithPath: cssPath).deletingLastPathComponent()
     }
 
     // MARK: - Markdown → HTML

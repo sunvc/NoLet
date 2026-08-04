@@ -22,11 +22,15 @@ enum Identifiers: String, CaseIterable, Codable {
     enum Action: String, CaseIterable, Codable {
         case copyAction = "copy"
         case muteAction = "mute"
+        case translateAction = "translate"
+        case abstractAction = "abstract"
 
         var title: String {
             switch self {
             case .copyAction: String(localized: "复制")
             case .muteAction: String(localized: "静音分组1小时")
+            case .translateAction: String(localized: "翻译")
+            case .abstractAction: String(localized: "总结")
             }
         }
 
@@ -34,6 +38,16 @@ enum Identifiers: String, CaseIterable, Codable {
             switch self {
             case .copyAction: "doc.on.doc"
             case .muteAction: "speaker.slash"
+            case .translateAction: "globe.europe.africa"
+            case .abstractAction: "doc.text.magnifyingglass"
+            }
+        }
+
+        /// 翻译/总结由通知扩展就地处理，不拉起主 App
+        var inExtension: Bool {
+            switch self {
+            case .translateAction, .abstractAction: true
+            default: false
             }
         }
     }
@@ -43,7 +57,7 @@ enum Identifiers: String, CaseIterable, Codable {
             UNNotificationAction(
                 identifier: item.rawValue,
                 title: item.title,
-                options: [.foreground],
+                options: item.inExtension ? [] : [.foreground],
                 icon: .init(systemImageName: item.icon)
             )
         }

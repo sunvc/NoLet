@@ -212,6 +212,7 @@
 				"Extensions/String+.swift",
 				Managers/NetworkManager.swift,
 				Markdown.swift,
+				Models/AssistantAccountModel.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
