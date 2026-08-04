@@ -721,22 +721,6 @@
         }
       }
     },
-    "中文" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chinese"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "中文"
-          }
-        }
-      }
-    },
     "中进行配置" : {
       "localizations" : {
         "en" : {
@@ -1117,22 +1101,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用自然语言设置你的App"
-          }
-        }
-      }
-    },
-    "俄语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Russian"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "俄语"
           }
         }
       }
@@ -2109,38 +2077,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "半年前"
-          }
-        }
-      }
-    },
-    "印地语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hindi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "印地语"
-          }
-        }
-      }
-    },
-    "印尼语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indonesian"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "印尼语"
           }
         }
       }
@@ -3585,22 +3521,6 @@
         }
       }
     },
-    "德语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "German"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "德语"
-          }
-        }
-      }
-    },
     "必选权限未选择" : {
       "localizations" : {
         "en" : {
@@ -4637,22 +4557,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "日期"
-          }
-        }
-      }
-    },
-    "日语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Japanese"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日语"
           }
         }
       }
@@ -5921,22 +5825,6 @@
         }
       }
     },
-    "法语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "French"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "法语"
-          }
-        }
-      }
-    },
     "注册KEY" : {
       "localizations" : {
         "en" : {
@@ -5997,22 +5885,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "注册成功"
-          }
-        }
-      }
-    },
-    "泰语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thai"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "泰语"
           }
         }
       }
@@ -6224,6 +6096,9 @@
           }
         }
       }
+    },
+    "添加颜色" : {
+
     },
     "清理成功" : {
       "localizations" : {
@@ -7329,22 +7204,6 @@
         }
       }
     },
-    "英语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "English"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "英语"
-          }
-        }
-      }
-    },
     "获取位置" : {
       "localizations" : {
         "en" : {
@@ -7409,22 +7268,6 @@
         }
       }
     },
-    "葡萄牙语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Portuguese"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "葡萄牙语"
-          }
-        }
-      }
-    },
     "蒂芙尼" : {
       "localizations" : {
         "en" : {
@@ -7441,22 +7284,6 @@
         }
       }
     },
-    "蒂芙尼蓝" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiffany Blue"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "蒂芙尼蓝"
-          }
-        }
-      }
-    },
     "被动建连" : {
       "localizations" : {
         "en" : {
@@ -7469,22 +7296,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "被动建连"
-          }
-        }
-      }
-    },
-    "西班牙语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spanish"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "西班牙语"
           }
         }
       }
@@ -7985,22 +7796,6 @@
         }
       }
     },
-    "越南语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vietnamese"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "越南语"
-          }
-        }
-      }
-    },
     "跳转第三方" : {
       "localizations" : {
         "en" : {
@@ -8381,22 +8176,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择铃声，超出30秒的将截断"
-          }
-        }
-      }
-    },
-    "选择颜色" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Color"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择颜色"
           }
         }
       }
@@ -8833,22 +8612,6 @@
         }
       }
     },
-    "阿拉伯语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arabic"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "阿拉伯语"
-          }
-        }
-      }
-    },
     "附件: 一张图片" : {
       "localizations" : {
         "en" : {
@@ -9057,22 +8820,6 @@
         }
       }
     },
-    "韩语" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Korean"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "韩语"
-          }
-        }
-      }
-    },
     "音效调整器" : {
       "localizations" : {
         "en" : {
@@ -9152,6 +8899,9 @@
           }
         }
       }
+    },
+    "颜色" : {
+
     },
     "高穿透性通知提醒" : {
       "localizations" : {

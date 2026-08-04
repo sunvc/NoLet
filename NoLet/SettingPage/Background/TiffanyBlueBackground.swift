@@ -110,58 +110,6 @@ struct TiffanyBlueBackground: View {
     }
 }
 
-struct TiffanyBlueBackground2: View {
-    var colors: [Color] = [
-        Color(red: 0.35, green: 0.78, blue: 0.80),
-        Color(red: 0.55, green: 0.45, blue: 0.90),
-        Color(red: 0.95, green: 0.60, blue: 0.75),
-        Color(red: 0.20, green: 0.50, blue: 0.85)
-    ]
-    
-    var body: some View {
-        TimelineView(.animation) { context in
-            GeometryReader { geometry in
-                let w = geometry.size.width
-                let h = geometry.size.height
-                let t = context.date.timeIntervalSinceReferenceDate
-                
-                ZStack {
-                    colors[0].ignoresSafeArea()
-                    
-                    ZStack {
-                        Circle()
-                            .fill(colors[1])
-                            .frame(width: w * 1.2)
-                            .position(
-                                x: w * 0.1 + CGFloat(sin(t * 0.4)) * (w * 0.15),
-                                y: h * 0.2 + CGFloat(cos(t * 0.3)) * (h * 0.1)
-                            )
-                        
-                        Circle()
-                            .fill(colors[2])
-                            .frame(width: w * 1.0)
-                            .position(
-                                x: w * 0.8 + CGFloat(cos(t * 0.5 + 1.0)) * (w * 0.2),
-                                y: h * 0.7 + CGFloat(sin(t * 0.4 + 1.5)) * (h * 0.15)
-                            )
-                        
-                        Circle()
-                            .fill(colors[3])
-                            .frame(width: w * 0.9)
-                            .position(
-                                x: w * 0.5 + CGFloat(sin(t * 0.6 + 2.0)) * (w * 0.25),
-                                y: h * 0.5 + CGFloat(cos(t * 0.5 + 0.5)) * (h * 0.2)
-                            )
-                    }
-                    .blur(radius: 90)
-                    .blendMode(.screen)
-                }
-            }
-        }
-        .ignoresSafeArea()
-    }
-}
-
 // MARK: - Preview
 struct PremiumBlobThemeView_Previews: PreviewProvider {
     static var previews: some View {

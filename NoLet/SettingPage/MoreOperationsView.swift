@@ -162,19 +162,27 @@ struct MoreOperationsView: View {
                     }
                 }
                 if background == .custom {
-                    ColorPicker(selection: Binding(get: { customColor.color }, set: { value in
-                        customColor = GradientColorNode(color: value)
+                    ForEach($customColor) { $stop in
+                        ColorPicker(selection: Binding(
+                            get: { stop.color },
+                            set: { stop.color = $0 }
+                        )) {
+                            Label { 
+                                Text("颜色")
+                            } icon: { 
+                                Image(systemName: "\((customColor.firstIndex(of: stop) ?? 0) + 1).circle")
+                            }
 
-                    })) {
-                        Label {
-                            Text("选择颜色")
-                        } icon: {
-                            Image(systemName: "paintpalette")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.red)
-                                .scaleEffect(0.9)
+                            
                         }
                     }
+                    .onDelete { customColor.remove(atOffsets: $0) }
+                    Button {
+                        customColor.append(.init(color: .accentColor))
+                    } label: {
+                        Label("添加颜色", systemImage: "plus.circle")
+                    }
+                    .disabled(customColor.count >= 6)
                 }
 
             } header: {
