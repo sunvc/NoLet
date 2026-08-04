@@ -317,6 +317,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				BaseConfig.swift,
+				DefaultsBaseKeys.swift,
 				"Extensions/other+.swift",
 				"Extensions/String+.swift",
 				Managers/NetworkManager.swift,

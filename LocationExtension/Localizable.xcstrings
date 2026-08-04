@@ -1,50 +1,66 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "iCloud 服务暂时不可用，请稍后再试": {
+    "APP内部没有明确授权!": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No explicit authorization in the app!"
+          }
+        },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "iCloud 服务暂时不可用，请稍后再试"
+            "value": "APP内部没有明确授权!"
           }
-        },
+        }
+      }
+    },
+    "iCloud 服务暂时不可用，请稍后再试": {
+      "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud service is temporarily unavailable, please try again later."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 服务暂时不可用，请稍后再试"
           }
         }
       }
     },
     "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud access restricted, possibly caused by parental controls or MDM device management policies"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 访问受限，可能由家长控制或 MDM 设备管理策略导致"
           }
         }
       }
     },
     "iCloud 账户可用": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "iCloud 账户可用"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud account available"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 账户可用"
           }
         }
       }
@@ -67,64 +83,64 @@
     },
     "无法确定 iCloud 账户状态，可能是网络问题": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "无法确定 iCloud 账户状态，可能是网络问题"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Unable to determine iCloud account status, possibly a network issue"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法确定 iCloud 账户状态，可能是网络问题"
           }
         }
       }
     },
     "未登录 iCloud，请登录 iCloud 账户": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未登录 iCloud，请登录 iCloud 账户"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Not logged into iCloud, please log into iCloud account"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未登录 iCloud，请登录 iCloud 账户"
           }
         }
       }
     },
     "未知 iCloud 状态": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "未知 iCloud 状态"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Unknown iCloud status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未知 iCloud 状态"
           }
         }
       }
     },
     "检查 iCloud 账户状态出错": {
       "localizations": {
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "检查 iCloud 账户状态出错"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Error checking iCloud account status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查 iCloud 账户状态出错"
           }
         }
       }

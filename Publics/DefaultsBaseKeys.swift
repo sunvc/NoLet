@@ -31,6 +31,7 @@ nonisolated extension Defaults.Keys {
     static let showAssistantAnimation = Key<Bool>("showAssistantAnimation", false)
     static let freeCloudImageCount = Key<Int>("freeCloudImageCount", 30)
     static let muteSetting = Key<[String: Date]>("muteSetting", [:])
+    static let locPer = Key<Bool>("LocationPermission", false)
 
     static let imageSaves = Key<[String]>("imageSaves", [])
     static let lang = Key<String>("LocalePreferredLanguagesFirst", "")

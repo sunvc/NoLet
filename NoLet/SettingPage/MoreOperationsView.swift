@@ -26,6 +26,7 @@ struct MoreOperationsView: View {
     @Default(.usePtt) var usePtt
     @Default(.background) var background
     @Default(.customColor) private var customColor
+    @Default(.locPer) private var locPer
 
     var body: some View {
         List {

@@ -913,6 +913,22 @@
         }
       }
     },
+    "位置权限": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location Permission"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置权限"
+          }
+        }
+      }
+    },
     "低音增强": {
       "localizations": {
         "en": {
@@ -3213,22 +3229,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "已用"
-          }
-        }
-      }
-    },
-    "已获得定位权限": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Location Granted"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已获得定位权限"
           }
         }
       }

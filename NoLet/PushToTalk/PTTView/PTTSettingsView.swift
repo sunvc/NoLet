@@ -330,6 +330,7 @@ struct PTTSettingsView: View {
 
 struct LocationStatusView: View {
     @ObservedObject private var locManager = LocManager.shared
+    @Default(.locPer) private var locPer
     var body: some View {
         Section {
             switch locManager.authorizationStatus {
@@ -340,9 +341,9 @@ struct LocationStatusView: View {
                 .buttonStyle(.borderedProminent)
 
             case .authorizedWhenInUse, .authorizedAlways:
-                Toggle(isOn: .constant(true)) {
+                Toggle(isOn: $locPer) {
                     Label {
-                        Text("已获得定位权限")
+                        Text("位置权限")
                     } icon: {
                         Image(systemName: "location.circle")
                             .foregroundStyle(.green, .primary)

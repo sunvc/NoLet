@@ -45,6 +45,16 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
         self.params.subTitle = payload["subtitle"] as? String
         self.params.body = payload["body"] as? String ?? String(localized: "位置信息获取成功")
 
+        guard Defaults[.locPer] else {
+            Task {
+                _ = await self.fetchCallback(message:
+                    String(localized: "APP内部没有明确授权!")
+                )
+                self.completion?()
+            }
+            return
+        }
+
         self.locationManager = CLLocationManager()
         self.locationManager!.delegate = self
         self.locationManager!.requestLocation()
@@ -82,10 +92,16 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
         self.stopLocation()
     }
 
-    func fetchCallback() async -> Bool {
+    func fetchCallback(message: String? = nil) async -> Bool {
         guard let callback = self.params.callback else {
             return false
         }
+
+        if let message {
+            self.params.location = nil
+            self.params.body = message
+        }
+
         do {
             let res = try await NetworkManager().fetch(
                 url: callback,
