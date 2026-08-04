@@ -69,7 +69,7 @@ struct ExtensionChatClient {
         }
         
        
-        let lang =  Defaults[.lang]
+        let lang = Self.systemLanguageName()
         let basePath = account.basePath.isEmpty == false ? account.basePath : "/v1"
         let host = account.host.hasPrefix("http") ? account.host : "https://\(account.host)"
         guard let url = URL(string: "\(host)\(basePath)/chat/completions") else {
@@ -116,54 +116,8 @@ struct ExtensionChatClient {
             else {
                 continue
             }
-            await onDelta(content)
+            onDelta(content)
         }
-    }
-
-    /// 主 App 用 Defaults 的 `iCloud: true` 存储时，值同时写在 App Group suite 和
-    /// NSUbiquitousKeyValueStore 中（后者被包装成 `[时间戳, 值]`）。扩展刚启动时
-    /// 本地 suite 可能还没同步到，这里两路都试一次。注意 Defaults 会给空数组注册
-    /// 默认值 `"[]"`，需解码后判空才算命中。
-    private static func loadAccounts(suite: UserDefaults) -> [Account] {
-        let candidates = [
-            suite.string(forKey: "AssistantAccount"),
-            ubiquitousValue(forKey: "AssistantAccount"),
-        ]
-        for raw in candidates {
-            if let raw,
-               let data = raw.data(using: .utf8),
-               let accounts = try? JSONDecoder().decode([Account].self, from: data),
-               !accounts.isEmpty
-            {
-                return accounts
-            }
-        }
-        return []
-    }
-
-    private static func loadLanguageName(suite: UserDefaults) -> String? {
-        let candidates = [
-            suite.string(forKey: "MultilingualCountry"),
-            ubiquitousValue(forKey: "MultilingualCountry"),
-        ]
-        for raw in candidates {
-            if let raw,
-               let data = raw.data(using: .utf8),
-               let country = try? JSONDecoder().decode(Country.self, from: data)
-            {
-                return country.name
-            }
-        }
-        return nil
-    }
-
-    private static func ubiquitousValue(forKey key: String) -> String? {
-        let kvStore = NSUbiquitousKeyValueStore.default
-        kvStore.synchronize()
-        if let pair = kvStore.array(forKey: key), pair.count >= 2 {
-            return pair[1] as? String
-        }
-        return nil
     }
 
     private static func systemLanguageName() -> String {

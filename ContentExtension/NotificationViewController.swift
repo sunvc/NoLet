@@ -310,6 +310,14 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 if Task.isCancelled { return } // 用户切换 / 还原
                 logger.error("\(error)")
                 self?.results[mode] = ""
+                self?.resultMode = nil
+                if let originalHTML = self?.originalHTML {
+                    self?.web.isHidden = false
+                    self?.web.loadHTMLString(originalHTML, baseURL: self?.cssBaseURL())
+                } else {
+                    self?.web.isHidden = true
+                    self?.updateLayout(webHeight: 0)
+                }
                 self?.showTips(
                     text: "\(String(localized: "发生错误")): \(error.localizedDescription)",
                     color: .red, afterClose: true
