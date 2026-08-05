@@ -136,7 +136,7 @@ struct TouchCaptureView: UIViewRepresentable {
     }
 }
 
-nonisolated struct LineShape: Shape {
+struct LineShape: Shape {
     var values: [Double]
 
     var animatableData: AnimatableLine {
@@ -160,7 +160,7 @@ nonisolated struct LineShape: Shape {
     }
 }
 
-nonisolated struct AnimatableLine: VectorArithmetic {
+struct AnimatableLine: VectorArithmetic {
     var values: [Double]
 
     var magnitudeSquared: Double {

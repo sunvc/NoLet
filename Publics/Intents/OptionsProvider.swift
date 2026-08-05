@@ -14,6 +14,7 @@ import Defaults
 
 
 struct SoundOptionsProvider: DynamicOptionsProvider {
+    @MainActor
     func results() async throws -> [String] {
         let (customSounds, defaultSounds) = AudioManager.shared.getFileList()
         return ["Default"] + (customSounds + defaultSounds).map {

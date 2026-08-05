@@ -19,7 +19,7 @@ import UIKit
 
 
 
-nonisolated extension String{
+extension String{
     func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
         guard let textColor = (self.filter { !$0.isWhitespace }).decomposeTextAndColor()
         else { return nil }
@@ -98,7 +98,7 @@ nonisolated extension String{
     }
 }
 
-nonisolated extension UIColor {
+extension UIColor {
     convenience init?(hexString: String) {
         let hex = hexString.uppercased().filter { "0123456789ABCDEF".contains($0) }
         guard !hex.isEmpty else { return nil }

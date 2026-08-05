@@ -17,7 +17,7 @@ import SwiftUI
 
 // MARK: - PushServerModel
 
-nonisolated struct PushServerModel: Codable, Identifiable, Equatable {
+struct PushServerModel: Codable, Identifiable, Equatable {
     var id: String
     var url: String
     var key: String = ""
@@ -70,7 +70,7 @@ nonisolated struct PushServerModel: Codable, Identifiable, Equatable {
     }
 }
 
-nonisolated extension PushServerModel: Hashable, CloudKitConvertible {
+extension PushServerModel: Hashable, CloudKitConvertible {
     static let recordType = "PushServerModal"
 
     static var skippedKeys: Set<String> {

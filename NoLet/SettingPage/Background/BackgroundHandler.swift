@@ -66,7 +66,7 @@ struct ContentBackgroundView: View {
     }
 }
 
-nonisolated struct StoredRGBA: Codable, Equatable {
+struct StoredRGBA: Codable, Equatable {
     var red: Double
     var green: Double
     var blue: Double
@@ -126,7 +126,7 @@ nonisolated struct StoredRGBA: Codable, Equatable {
 }
 
 // 供设置面板和 Defaults 直接使用的节点
-nonisolated struct GradientColorNode: Identifiable, Codable, Equatable, Defaults.Serializable {
+struct GradientColorNode: Identifiable, Codable, Equatable, Defaults.Serializable {
     var id = UUID()
     var rgba: StoredRGBA
 

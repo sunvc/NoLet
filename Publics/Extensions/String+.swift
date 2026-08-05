@@ -14,7 +14,7 @@ import SwiftUI
 import UIKit
 
 
-nonisolated extension Character {
+extension Character {
     var isEmoji: Bool {
         return unicodeScalars.contains { $0.properties.isEmoji } &&
             (unicodeScalars.first?.properties.isEmojiPresentation == true || unicodeScalars
@@ -24,7 +24,7 @@ nonisolated extension Character {
 
 
 
-nonisolated extension String {
+extension String {
     
     /// 移除 URL 的 HTTP/HTTPS 前缀
     func removeHTTPPrefix() -> String {

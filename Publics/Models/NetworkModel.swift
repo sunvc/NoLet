@@ -15,14 +15,14 @@ import Foundation
 
 // MARK: - Remote Response
 
-nonisolated struct baseResponse<T>: Sendable, Codable where T: Codable & Sendable {
+struct baseResponse<T>: Sendable, Codable where T: Codable & Sendable {
     var code: Int
     var message: String
     var data: T?
     var timestamp: Int?
 }
 
-nonisolated struct DeviceInfo: Codable, Sendable {
+struct DeviceInfo: Codable, Sendable {
     var deviceKey: String
     var deviceToken: String
     var talk: String?
@@ -43,7 +43,7 @@ nonisolated struct DeviceInfo: Codable, Sendable {
     }
 }
 
-nonisolated enum requestHeader: String {
+enum requestHeader: String {
     case https = "https://"
     case http = "http://"
 }

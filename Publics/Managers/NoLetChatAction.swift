@@ -13,6 +13,7 @@
 
 import Foundation
 
+@MainActor
 enum NoLetChatAction: String, CaseIterable {
     case voiceFeedback
     case autoSaveImages

@@ -18,23 +18,21 @@ import MapKit
 import OSLog
 
 
-final class CLGeocoderManager {
-    
-    nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "CLGeocoderManager")
-    
+final class CLGeocoderManager: Sendable {
+
+    let logger = Logger(subsystem: "app.wzs.logger", category: "CLGeocoderManager")
+
     static let shared = CLGeocoderManager()
-    
+
     private init(){}
-    
-    let geocoder = CLGeocoder()
-    
-    
+
+
     func resolveLocationTitle(for coordinate: CLLocationCoordinate2D) async -> String? {
-     
+
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
 
         do {
-            let placemarks = try await geocoder.reverseGeocodeLocation(location)
+            let placemarks = try await CLGeocoder().reverseGeocodeLocation(location)
             guard let placemark = placemarks.first else { return nil }
 
             let candidates = [
@@ -89,7 +87,7 @@ final class CLGeocoderManager {
 
     func getCoordinate(from addressString: String) async -> CLLocationCoordinate2D? {
         do {
-            let placemarks = try await geocoder.geocodeAddressString(addressString)
+            let placemarks = try await CLGeocoder().geocodeAddressString(addressString)
             guard let location = placemarks.first?.location else {
                 throw NSError(
                     domain: "GeocoderError",
@@ -118,7 +116,7 @@ final class CLGeocoderManager {
         }
     }
 
-    private nonisolated struct UserSessionInfo: Codable, Sendable {
+    private struct UserSessionInfo: Codable, Sendable {
         let greetHeader: String
         let nickname: String
         let ip: String

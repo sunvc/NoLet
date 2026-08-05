@@ -218,7 +218,7 @@ extension View {
         }
     }
 
-    @ViewBuilder nonisolated func `if`<Content: View>(
+    @ViewBuilder func `if`<Content: View>(
         _ condition: Bool,
         _ transform: () -> Content
     ) -> some View {
@@ -229,7 +229,7 @@ extension View {
         }
     }
 
-    @ViewBuilder nonisolated func diff<Content: View>(_ transform: (Self) -> Content) -> some View {
+    @ViewBuilder func diff<Content: View>(_ transform: (Self) -> Content) -> some View {
         transform(self)
     }
 
@@ -307,7 +307,7 @@ extension View {
     }
 
     @ViewBuilder
-    nonisolated func glassCard(
+    func glassCard(
         _ radius: CGFloat = 12,
         padding: CGFloat = 0,
         borderColor: Color? = nil

@@ -13,7 +13,7 @@
 import CloudKit
 import SwiftUI
 
-nonisolated struct PushIcon: Identifiable {
+struct PushIcon: Identifiable {
     var id: String = UUID().uuidString
     var name: String
     var description: [String]
@@ -23,7 +23,7 @@ nonisolated struct PushIcon: Identifiable {
     var previewImage: UIImage? = nil
 }
 
-nonisolated extension PushIcon: CloudKitConvertible {
+extension PushIcon: CloudKitConvertible {
     // MARK: - CloudKitConvertible
 
     static let recordType = "PushIcon"

@@ -13,13 +13,13 @@
 
 import Foundation
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
     static let prompts = Key<[ChatPrompt]>("imageSaveDays", [])
 }
 
-nonisolated extension ChatPrompt: Defaults.Serializable {}
+extension ChatPrompt: Defaults.Serializable {}
 
-nonisolated struct ChatPrompt: Codable, Identifiable, Hashable {
+struct ChatPrompt: Codable, Identifiable, Hashable {
     var id: String = UUID().uuidString
     var timestamp: Date = .now
     var title: String

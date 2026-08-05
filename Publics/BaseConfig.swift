@@ -20,12 +20,12 @@ import UniformTypeIdentifiers
 typealias NURL = String
 
 extension NURL {
-    nonisolated var url: URL { URL(string: self)! }
+    var url: URL { URL(string: self)! }
 }
 
-nonisolated let logger = Logger(subsystem: "app.wzs.logger", category: "main")
+let logger = Logger(subsystem: "app.wzs.logger", category: "main")
 
-nonisolated class NCONFIG {
+class NCONFIG {
     static let appSymbol = "NoLet"
     static let groupName = "group.pushback"
     static let databaseName = "pushback.sqlite"
@@ -194,7 +194,7 @@ nonisolated class NCONFIG {
     }
 }
 
-public nonisolated func NSLocalizedString(
+public func NSLocalizedString(
     _ key: String,
     tableName: String? = nil,
     bundle: Bundle = Bundle.main,
@@ -210,7 +210,7 @@ public nonisolated func NSLocalizedString(
     )
 }
 
-nonisolated struct NoletError: LocalizedError {
+struct NoletError: LocalizedError {
     let message: String?
     var errorDescription: String? { message }
 }

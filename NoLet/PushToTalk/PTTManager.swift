@@ -15,6 +15,7 @@ import PushToTalk
 import SwiftUI
 import UIKit
 
+@MainActor
 final class PTTManager: NSObject, ObservableObject {
     static let shared = PTTManager()
 
@@ -53,7 +54,7 @@ final class PTTManager: NSObject, ObservableObject {
 
     private let recorder = PTTRecorderManager()
     private let player = PTTPlayerManager()
-    private nonisolated let network = NetworkManager()
+    private let network = NetworkManager()
     private var observationTask: Task<Void, Never>?
     private let presence = PTTPresenceStream()
 
@@ -608,7 +609,7 @@ final class PTTManager: NSObject, ObservableObject {
 
     // MARK: - OTHER
 
-    nonisolated func playTips(
+    func playTips(
         _ fileName: TipsSound,
         fileExtension: String = "aac",
         complete: (() -> Void)? = nil
@@ -764,7 +765,7 @@ extension PTTManager {
         }
     }
 
-    nonisolated struct JoinParams: Codable, Sendable {
+    struct JoinParams: Codable, Sendable {
         var id: String
         var channels: [String]
         var latitude: Double
@@ -773,7 +774,7 @@ extension PTTManager {
         var host: String
     }
 
-    nonisolated struct JoinResponse: Codable, Sendable {
+    struct JoinResponse: Codable, Sendable {
         var host: String
         var channel: String
         var users: [ChannelUser]
@@ -1073,7 +1074,7 @@ extension PTTManager: PTTPlayerDelegate {
 }
 
 extension PTTManager: PTTRecorderDelegate {
-    func recorderManager(
+    nonisolated func recorderManager(
         _ manager: PTTRecorderManager,
         didUpdateRecordingPower power: CGFloat,
         duration: TimeInterval
@@ -1084,7 +1085,7 @@ extension PTTManager: PTTRecorderDelegate {
         }
     }
 
-    func recorderManager(
+    nonisolated func recorderManager(
         _ manager: PTTRecorderManager,
         didUpdateMicrophonePermission hasPermission: Bool
     ) {
@@ -1199,7 +1200,7 @@ extension PTTManager: PTTPresenceStreamDelegate {
     }
 }
 
-nonisolated extension String {
+extension String {
     var localized: String {
         return NSLocalizedString(self, comment: "")
     }

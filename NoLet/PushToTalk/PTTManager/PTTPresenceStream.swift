@@ -14,7 +14,7 @@ import Foundation
 import os
 
 
-nonisolated struct PresenceEvent: Decodable, Sendable {
+struct PresenceEvent: Decodable, Sendable {
     enum Kind: String, Decodable, Sendable {
         case snapshot
         case join
@@ -35,12 +35,12 @@ nonisolated struct PresenceEvent: Decodable, Sendable {
     var ts: Int64?
 }
 
-nonisolated protocol PTTPresenceStreamDelegate: AnyObject, Sendable {
+protocol PTTPresenceStreamDelegate: AnyObject, Sendable {
     func presenceStream(_ stream: PTTPresenceStream, didReceive event: PresenceEvent)
     func presenceStream(_ stream: PTTPresenceStream, didChangeConnected connected: Bool, attempt: Int)
 }
 
-nonisolated final class PTTPresenceStream: NSObject, @unchecked Sendable {
+final class PTTPresenceStream: NSObject, @unchecked Sendable {
     weak var delegate: PTTPresenceStreamDelegate?
 
     private struct State {

@@ -16,6 +16,7 @@ import Foundation
 
 // MARK: - Manager
 
+@MainActor
 final class SCServerStatusManager: ObservableObject {
     private let server: PushServerModel
 
@@ -35,7 +36,7 @@ final class SCServerStatusManager: ObservableObject {
         self.start()
     }
 
-    @MainActor deinit { self.stop() }
+    deinit { refreshTask?.cancel() }
 
     func start() {
         stop()
@@ -60,23 +61,21 @@ final class SCServerStatusManager: ObservableObject {
         refreshTask = nil
     }
 
-    nonisolated func refresh() async {
+    func refresh() async {
         do {
             async let fetchedStatus = fetchStatus()
-            if await showProcessSheet {
+            if showProcessSheet {
                 async let fetchedProcesses = fetchProcesses()
                 let (s, p) = try await (fetchedStatus, fetchedProcesses)
-                await updateUI(status: s, processes: p)
+                updateUI(status: s, processes: p)
             } else {
                 let s = try await fetchedStatus
-                await updateUI(status: s, processes: nil)
+                updateUI(status: s, processes: nil)
             }
-            await MainActor.run { self.errorCount = 0 }
+            self.errorCount = 0
         } catch {
             Toast.error(title: "连接失败!")
-            await MainActor.run {
-                self.errorCount += 1
-            }
+            self.errorCount += 1
         }
     }
 

@@ -15,7 +15,7 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class BadgeProcessor: NotificationContentProcessor {
+final class BadgeProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

@@ -15,6 +15,7 @@ import CryptoKit
 import SwiftUI
 import WechatOpenSDK
 
+@MainActor
 final class WeChatManager: NSObject, ObservableObject {
     static let shared = WeChatManager()
 
@@ -140,7 +141,7 @@ final class WeChatManager: NSObject, ObservableObject {
     }
 }
 
-extension WeChatManager: WechatAuthAPIDelegate {
+extension WeChatManager: @MainActor WechatAuthAPIDelegate {
     func qrCode() async {
         self.QRCodeLoading = true
 
@@ -209,7 +210,7 @@ extension WeChatManager: WechatAuthAPIDelegate {
     }
 }
 
-extension WeChatManager: WXApiDelegate {
+extension WeChatManager: @MainActor WXApiDelegate {
     func onReq(_ req: BaseReq) {
         logger.log("\(req)")
     }
@@ -294,8 +295,8 @@ struct ShareWeChatView: View {
     }
 }
 
-nonisolated extension WeChatManager {
-    nonisolated struct WeChatTokenResponse: Codable {
+extension WeChatManager {
+    struct WeChatTokenResponse: Codable {
         let accessToken: String?
         let expiresIn: Int?
         let refreshToken: String?
@@ -316,7 +317,7 @@ nonisolated extension WeChatManager {
         }
     }
 
-    nonisolated struct WeChatUserResponse: Codable {
+    struct WeChatUserResponse: Codable {
         let openid: String?
         let nickname: String?
         let sex: Int?
@@ -335,7 +336,7 @@ nonisolated extension WeChatManager {
         }
     }
 
-    nonisolated struct WeChatTicketResponse: Codable {
+    struct WeChatTicketResponse: Codable {
         let errcode: Int
         let errmsg: String
         let ticket: String?
@@ -353,7 +354,7 @@ nonisolated extension WeChatManager {
         }
     }
 
-    nonisolated enum SendType: Int32, CaseIterable {
+    enum SendType: Int32, CaseIterable {
         case WXSceneSession = 0
         case WXSceneTimeline = 1
         case WXSceneFavorite = 2
@@ -375,7 +376,7 @@ nonisolated extension WeChatManager {
         }
     }
 
-    nonisolated struct WeChatAccessTokenResponse: Codable {
+    struct WeChatAccessTokenResponse: Codable {
         let accessToken: String
         let expiresIn: Int
 

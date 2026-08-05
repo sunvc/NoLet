@@ -25,7 +25,7 @@ import SwiftUI
 ///   `toRecord(existing:clearNilFields: true)`。
 /// - 若字段类型未匹配到任一分支，DEBUG 下会打印警告；生产环境静默丢弃。
 /// - 类型可通过 `skippedKeys` 声明"不参与反射"的字段（用于客户端展示字段、本地状态字段等）。
-nonisolated protocol CloudKitConvertible {
+protocol CloudKitConvertible {
     var id: String { get }
     static var recordType: String { get }
     static var skippedKeys: Set<String> { get }
@@ -34,7 +34,7 @@ nonisolated protocol CloudKitConvertible {
     func toRecord(existing: CKRecord?, clearNilFields: Bool) -> CKRecord
 }
 
-nonisolated extension CloudKitConvertible {
+extension CloudKitConvertible {
     static var skippedKeys: Set<String> { [] }
 
     var recordID: CKRecord.ID {
@@ -152,7 +152,7 @@ nonisolated extension CloudKitConvertible {
 
 // MARK: - CloudKit 数据库便捷操作
 
-nonisolated extension CloudKitConvertible {
+extension CloudKitConvertible {
     /// 按 id 从 CloudKit 拉一条记录。
     ///
     /// - Returns: 找不到记录（`CKError.unknownItem`）时返回 `nil`；其它错误抛出。
@@ -170,7 +170,7 @@ nonisolated extension CloudKitConvertible {
     }
 
     /// 按 predicate 查询记录列表。
-    nonisolated static func query(
+    static func query(
         _ predicate: NSPredicate = NSPredicate(value: true),
         limit: Int = 100,
         from database: CKDatabase

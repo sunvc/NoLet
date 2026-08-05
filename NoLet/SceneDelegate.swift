@@ -148,7 +148,7 @@ class PassthroughWindow: UIWindow {
     }
 }
 
-enum QuickAction: String, CaseIterable {
+@MainActor enum QuickAction: String, CaseIterable {
     static var selectAction: UIApplicationShortcutItem?
     case assistant
     case scan

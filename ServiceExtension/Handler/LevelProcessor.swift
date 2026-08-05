@@ -10,7 +10,7 @@ import Foundation
 import LiveCommunicationKit
 import UserNotifications
 
-class LevelProcessor: NotificationContentProcessor {
+final class LevelProcessor: NotificationContentProcessor {
     let soundsDirectoryURL = NCONFIG.getDir(.sounds)
 
     func processor(

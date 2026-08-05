@@ -15,7 +15,7 @@ import AVFoundation
 import os
 import SwiftUI
 
-nonisolated protocol PTTPlayerDelegate: AnyObject, Sendable {
+protocol PTTPlayerDelegate: AnyObject, Sendable {
     /// 实时回调播放进度
     func playerManager(
         _ manager: PTTPlayerManager,

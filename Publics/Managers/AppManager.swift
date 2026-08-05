@@ -19,6 +19,7 @@ import StoreKit
 import SwiftUI
 import UIKit
 
+@MainActor
 final class AppManager: ObservableObject {
     static let shared = AppManager()
 
@@ -149,7 +150,7 @@ final class AppManager: ObservableObject {
             return nil
         case .server(let url, let key, let group, let sign):
             Task.detached(priority: .userInitiated) {
-                let crypto = await CryptoModelConfig(inputText: sign ?? "", sign: true)?
+                let crypto =  CryptoModelConfig(inputText: sign ?? "", sign: true)?
                     .obfuscator()
                 let server = PushServerModel(url: url, key: key, group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
@@ -420,7 +421,7 @@ extension AppManager {
 }
 
 extension AppManager {
-    nonisolated func restore(
+    func restore(
         address: String,
         deviceKey: String,
         sign: String? = nil
@@ -434,7 +435,7 @@ extension AppManager {
                 )
 
             guard 200...299 ~= response.code else {
-                await Toast.shared.present(title: response.message, symbol: .error)
+                 Toast.shared.present(title: response.message, symbol: .error)
                 return false
             }
 
@@ -453,7 +454,7 @@ extension AppManager {
         }
     }
 
-    nonisolated func registers() async {
+    func registers() async {
         guard Defaults[.servers].count > 0 else { return }
         let servers = Defaults[.servers]
         let results = await withTaskGroup(of: (Int, PushServerModel).self) { group in
@@ -476,7 +477,7 @@ extension AppManager {
         }
     }
 
-    nonisolated func register(
+    func register(
         server: PushServerModel,
         reset: Bool = false
     ) async -> PushServerModel {
@@ -501,7 +502,7 @@ extension AppManager {
             )
 
             guard 200...299 ~= response.code else {
-                await Toast.shared.present(title: response.message, symbol: .error)
+                Toast.shared.present(title: response.message, symbol: .error)
                 throw NoletError(message: response.message)
             }
 
@@ -518,8 +519,8 @@ extension AppManager {
     }
 
     @discardableResult
-    nonisolated func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
-        guard await !appending && !Defaults[.member].token.isEmpty else { return false }
+    func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
+        guard  !appending && !Defaults[.member].token.isEmpty else { return false }
         await MainActor.run {
             appending = true
         }
@@ -614,7 +615,7 @@ extension AppManager {
     
     
 
-    nonisolated static func syncServer() async {
+    static func syncServer() async {
         let database = NCONFIG.privateCloudDatabase
         let localServers = Defaults[.servers]
         

@@ -104,11 +104,6 @@ struct PttPlayInfo: Codable {
     }
 }
 
-extension Bool {
-    static var ISPAD: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
-    }
-}
 
 enum InterruptedType {
     case begin
@@ -136,7 +131,7 @@ enum TalkButtonType: String, CaseIterable {
     case call
 }
 
-nonisolated struct PTTChannel: Identifiable, Equatable, Codable {
+struct PTTChannel: Identifiable, Equatable, Codable {
     var id: String { "\(channel)\(server.url)".toUUID() }
     var timestamp: Date = .now
     var mhz: Int = 98
@@ -177,7 +172,7 @@ nonisolated struct PTTChannel: Identifiable, Equatable, Codable {
     }
 }
 
-nonisolated extension PTTChannel: Defaults.Serializable {}
+extension PTTChannel: Defaults.Serializable {}
 
 extension [PTTChannel] {
     mutating func set(_ channel: PTTChannel, active: Bool) {
@@ -193,7 +188,7 @@ extension [PTTChannel] {
     }
 }
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
     static let pttChannel = Key<PTTChannel>("pushTalkInteger", default: PTTChannel())
     static let pttHisChannel = Key<[PTTChannel]>("pttHisChannels", default: [])
     static let pttVibration = Key<Bool>("pttVibration", default: true)
@@ -204,7 +199,7 @@ nonisolated extension Defaults.Keys {
     static let server = Key<String>("pttServer", default: "")
 }
 
-nonisolated enum PTTBitrate: Int, CaseIterable, Identifiable {
+enum PTTBitrate: Int, CaseIterable, Identifiable {
     case low = 16_000
     case standard = 24_000
     case normal = 32_000
@@ -234,7 +229,7 @@ extension Font {
     }
 }
 
-nonisolated struct EQBand: Identifiable, Codable, Equatable {
+struct EQBand: Identifiable, Codable, Equatable {
     var id: Int { index }
     var frequency: String
     var min: Float
@@ -243,9 +238,9 @@ nonisolated struct EQBand: Identifiable, Codable, Equatable {
     let index: Int
 }
 
-nonisolated extension EQBand: Defaults.Serializable {}
+extension EQBand: Defaults.Serializable {}
 
-nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
+enum EqualizerPreset: String, CaseIterable, Codable {
     case flat
     case bass
     case vocal
@@ -319,9 +314,9 @@ nonisolated enum EqualizerPreset: String, CaseIterable, Codable {
     }
 }
 
-nonisolated extension EqualizerPreset: Defaults.Serializable {}
+extension EqualizerPreset: Defaults.Serializable {}
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
     static let eqBands = Key<[EQBand]>("EQBands", default: EqualizerPreset.flat.bands)
     static let eqPreset = Key<EqualizerPreset>("EqualizerPreset", default: .flat)
     static let globalGain = Key<Double>("EqualizerGlobalGain", default: 0.0)
@@ -333,7 +328,7 @@ extension Int {
     }
 }
 
-fileprivate nonisolated extension String {
+fileprivate extension String {
     
     
     /// 把当前字符串 MD5 后转为标准 UUID 格式

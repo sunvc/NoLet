@@ -88,7 +88,7 @@ private struct WaveformShape: Shape {
     var samples: [Float]
     var spacing: Float = 2
     var width: Float = 2
-    nonisolated func path(in rect: CGRect) -> Path {
+    func path(in rect: CGRect) -> Path {
         Path { path in
             var x: CGFloat = 0
             for sample in samples {
@@ -130,7 +130,7 @@ extension WaveformScrubber {
         }
     }
 
-    private nonisolated func extractAudioSamples(_ file: AVAudioFile) throws -> [Float] {
+    nonisolated private func extractAudioSamples(_ file: AVAudioFile) throws -> [Float] {
         let format = file.processingFormat
         let frameCount = UInt32(file.length)
 
@@ -151,7 +151,7 @@ extension WaveformScrubber {
         return []
     }
 
-    private nonisolated func downSampleAudioSamples(_ samples: [Float], _ count: Int) -> [Float] {
+    nonisolated private func downSampleAudioSamples(_ samples: [Float], _ count: Int) -> [Float] {
         let chunk = samples.count / count
         var downSamples: [Float] = []
 
@@ -167,7 +167,7 @@ extension WaveformScrubber {
         return downSamples
     }
 
-    private nonisolated func extractAudioInfo(_ file: AVAudioFile) -> AudioInfo {
+    nonisolated private func extractAudioInfo(_ file: AVAudioFile) -> AudioInfo {
         let format = file.processingFormat
         let sampleRate = format.sampleRate
 

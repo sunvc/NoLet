@@ -12,7 +12,7 @@ import Intents
 import UIKit
 import UserNotifications
 
-class IconProcessor: NotificationContentProcessor {
+final class IconProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

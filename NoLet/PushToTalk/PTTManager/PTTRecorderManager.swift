@@ -17,7 +17,7 @@ import Defaults
 import Opus
 import SwiftUI
 
-nonisolated protocol PTTRecorderDelegate: AnyObject {
+protocol PTTRecorderDelegate: AnyObject {
 
     func recorderManager(
         _ manager: PTTRecorderManager,
@@ -31,7 +31,7 @@ nonisolated protocol PTTRecorderDelegate: AnyObject {
     )
 }
 
-final nonisolated class PTTRecorderManager {
+final class PTTRecorderManager {
     var delegate: PTTRecorderDelegate?
 
     private var audioEngine: AVAudioEngine?

@@ -15,7 +15,7 @@ import Defaults
 import Foundation
 import UserNotifications
 
-class ArchiveProcessor: NotificationContentProcessor {
+final class ArchiveProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

@@ -13,14 +13,14 @@
 import Foundation
 import GRDB
 
-final nonisolated class AudioMessageDBManager: @unchecked Sendable {
+final class AudioMessageDBManager: @unchecked Sendable {
     static let shared = AudioMessageDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
 
     // MARK: - 读
 
-    nonisolated func recentMessages(limit: Int = 50) async -> [AudioMessage] {
+    func recentMessages(limit: Int = 50) async -> [AudioMessage] {
         do {
             return try await DB.dbQueue.read { db in
                 try AudioMessage
@@ -34,7 +34,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func unread() async -> [AudioMessage] {
+    func unread() async -> [AudioMessage] {
         do {
             return try await DB.dbQueue.read { db in
                 try AudioMessage
@@ -48,7 +48,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func fetchOne(id: String) async -> AudioMessage? {
+    func fetchOne(id: String) async -> AudioMessage? {
         do {
             return try await DB.dbQueue.read { db in
                 try AudioMessage.fetchOne(db, id: id)
@@ -61,14 +61,14 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
 
     // MARK: - 写
 
-    nonisolated func save(_ message: AudioMessage) async throws {
+    func save(_ message: AudioMessage) async throws {
         try await DB.dbQueue.write { db in
             try message.save(db)
         }
     }
 
     /// 更新 read / status 字段;两个参数都为 nil 时不做任何事,返回 false。
-    nonisolated func setStatus(
+    func setStatus(
         id: String,
         read: Bool? = nil,
         status: AudioMessage.Status? = nil
@@ -87,7 +87,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
         }) ?? false
     }
 
-    nonisolated func deleteAll() async throws {
+    func deleteAll() async throws {
         _ = try await DB.dbQueue.write { db in
             try AudioMessage.deleteAll(db)
         }
@@ -96,7 +96,7 @@ final nonisolated class AudioMessageDBManager: @unchecked Sendable {
     // MARK: - Observation
 
     /// 观察最新 50 条 + 全部未读。
-    nonisolated func observeMessages() -> AsyncStream<[AudioMessage]> {
+    func observeMessages() -> AsyncStream<[AudioMessage]> {
         AsyncStream { continuation in
             let observation = ValueObservation.tracking { db -> [AudioMessage] in
                 return try AudioMessage

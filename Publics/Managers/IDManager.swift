@@ -13,7 +13,7 @@
 import Foundation
 import Security
 
-final nonisolated class IDManager: Sendable {
+final class IDManager: Sendable {
     
     private static let shared = IDManager()
 

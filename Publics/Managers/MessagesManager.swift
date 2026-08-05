@@ -15,6 +15,7 @@
 import Foundation
 import GRDB
 
+@MainActor
 final class MessagesManager: ObservableObject {
     static let shared = MessagesManager()
     private let DB: MessageDBManager = .shared
@@ -104,11 +105,11 @@ final class MessagesManager: ObservableObject {
 // MARK: - Forwarders to MessageDBManager
 
 extension MessagesManager {
-    nonisolated func updateRead() async -> Int {
+    func updateRead() async -> Int {
         await MessageDBManager.shared.markUnreadAsRead()
     }
 
-    nonisolated func unreadCount(group: String? = nil) async -> Int {
+    func unreadCount(group: String? = nil) async -> Int {
         await MessageDBManager.shared.unreadCount(group: group)
     }
 
@@ -125,15 +126,15 @@ extension MessagesManager {
         }
     }
 
-    nonisolated func query(id: String) -> Message? {
+    func query(id: String) -> Message? {
         MessageDBManager.shared.fetchOneSync(id: id)
     }
 
-    nonisolated func query(id: String) async -> Message? {
+    func query(id: String) async -> Message? {
         await MessageDBManager.shared.fetchOne(id: id)
     }
 
-    nonisolated func searchRequest(
+    func searchRequest(
         search: String,
         group: String? = nil,
         date: Date? = nil
@@ -141,7 +142,7 @@ extension MessagesManager {
         MessageDBManager.shared.searchRequest(search: search, group: group, date: date)
     }
 
-    nonisolated func query(
+    func query(
         search: String,
         group: String? = nil,
         limit lim: Int = 50,
@@ -150,11 +151,11 @@ extension MessagesManager {
         await MessageDBManager.shared.query(search: search, group: group, limit: lim, before: date)
     }
 
-    nonisolated func queryGroup() async -> [Message] {
+    func queryGroup() async -> [Message] {
         await MessageDBManager.shared.queryGroupHeads()
     }
 
-    nonisolated func query(
+    func query(
         group: String? = nil,
         limit lim: Int = 100,
         _ date: Date? = nil,
@@ -168,20 +169,20 @@ extension MessagesManager {
         )
     }
 
-    nonisolated func markAllRead(group: String? = nil) async {
+    func markAllRead(group: String? = nil) async {
         await MessageDBManager.shared.markAllRead(group: group)
     }
 
-    nonisolated func delete(allRead: Bool = false, date: Date? = nil) async {
+    func delete(allRead: Bool = false, date: Date? = nil) async {
         await MessageDBManager.shared.delete(allRead: allRead, before: date)
     }
 
-    nonisolated func delete(_ message: Message, in group: Bool = false) async -> Int {
+    func delete(_ message: Message, in group: Bool = false) async -> Int {
         await MessageDBManager.shared.delete(message, inGroup: group)
     }
 
     /// 同步删除 (保持原签名,内部转成同步等待)。
-    nonisolated func delete(_ messageID: String) -> String? {
+    func delete(_ messageID: String) -> String? {
         final class Box: @unchecked Sendable { var value: String? }
         let box = Box()
         let semaphore = DispatchSemaphore(value: 0)
@@ -193,7 +194,7 @@ extension MessagesManager {
         return box.value
     }
 
-    nonisolated func deleteExpired() async {
+    func deleteExpired() async {
         await MessageDBManager.shared.deleteExpired()
     }
 }
@@ -213,7 +214,7 @@ extension MessagesManager {
 // MARK: - MessageGroupCache
 
 extension MessagesManager {
-    final nonisolated class MessageGroupCache: Sendable {
+    final class MessageGroupCache: Sendable {
         static let shared = MessageGroupCache()
 
         private let cacheDirectory: URL

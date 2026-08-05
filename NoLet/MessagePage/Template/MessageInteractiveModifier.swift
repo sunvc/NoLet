@@ -352,7 +352,7 @@ extension View {
     }
 }
 
-nonisolated extension Message {
+extension Message {
     func accessibilityValue() -> String {
         var text: [String] = []
 

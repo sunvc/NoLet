@@ -14,7 +14,7 @@
 import CoreLocation
 import OSLog
 
-nonisolated struct MessageParams: Codable, Sendable {
+struct MessageParams: Codable, Sendable {
     var title: String?
     var subTitle: String?
     var body: String?

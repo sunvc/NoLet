@@ -16,7 +16,7 @@ import Defaults
 import Foundation
 import SwiftUI
 
-nonisolated struct MemberModel: Codable, Hashable, Equatable, Sendable {
+struct MemberModel: Codable, Hashable, Equatable, Sendable {
     var id: String
     var name: String = ""
     var token: String = ""
@@ -36,7 +36,7 @@ nonisolated struct MemberModel: Codable, Hashable, Equatable, Sendable {
     }
 }
 
-nonisolated extension MemberModel: CloudKitConvertible {
+extension MemberModel: CloudKitConvertible {
     static let recordType = "Member"
 
     static var skippedKeys: Set<String> { ["avatar", "newAvatar"] }
@@ -83,9 +83,8 @@ nonisolated extension MemberModel: CloudKitConvertible {
 }
 
 
-//nonisolated extension TokensModel: Defaults.Serializable {}
-nonisolated extension MemberModel: Defaults.Serializable {}
+extension MemberModel: Defaults.Serializable {}
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
     static let member = Key<MemberModel>("MemberModel", MemberModel(id: IDManager.id))
 }

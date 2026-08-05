@@ -14,7 +14,7 @@
 import Foundation
 import UserNotifications
 
-class CiphertextProcessor: NotificationContentProcessor {
+final class CiphertextProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

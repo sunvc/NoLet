@@ -85,11 +85,11 @@ struct WebInlineImageProvider: InlineImageProvider {
             )
         }
 
-        let maxWidth = UIScreen.main.bounds.width - 30
-
-        let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)
-
-        return Image(uiImage: resized)
+        return await MainActor.run {
+            let maxWidth = UIScreen.main.bounds.width - 30
+            let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)
+            return Image(uiImage: resized)
+        }
     }
 
     // MARK: - Helper：按逻辑点宽度缩放

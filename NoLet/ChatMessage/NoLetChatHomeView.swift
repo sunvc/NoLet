@@ -368,7 +368,7 @@ struct NoLetChatHomeView: View {
     }
 }
 
-fileprivate nonisolated extension String {
+fileprivate extension String {
     
     func jsonData() -> [String: Any]? {
         if let data = data(using: .utf8),

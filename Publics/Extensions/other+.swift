@@ -16,7 +16,7 @@ import Foundation
 import UIKit
 import UniformTypeIdentifiers
 
-nonisolated extension Encodable {
+extension Encodable {
     func toEncodableDictionary() -> [String: Any]? {
         guard let data = try? JSONEncoder().encode(self) else { return nil }
         guard let dictionary = try? JSONSerialization.jsonObject(
@@ -27,11 +27,11 @@ nonisolated extension Encodable {
     }
 }
 
-nonisolated extension UTType {
+extension UTType {
     static let trnExportType = UTType(exportedAs: "me.uuneo.nolet.exv")
 }
 
-nonisolated extension Dictionary {
+extension Dictionary {
     static func + (lhs: inout Dictionary, rhs: Dictionary) {
         lhs.merge(rhs) { _, new in new }
     }
@@ -41,7 +41,7 @@ nonisolated extension Dictionary {
     }
 }
 
-nonisolated extension Dictionary where Key == String, Value == String {
+extension Dictionary where Key == String, Value == String {
     func text() -> String? {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -54,7 +54,7 @@ nonisolated extension Dictionary where Key == String, Value == String {
     }
 }
 
-nonisolated extension Dictionary where Key == AnyHashable, Value == Any {
+extension Dictionary where Key == AnyHashable, Value == Any {
     func toStringDict(excluding keysToExclude: [String] = []) -> [String: String] {
         var result: [String: String] = [:]
         for (keyAny, valueAny) in self {
@@ -90,17 +90,17 @@ nonisolated extension Dictionary where Key == AnyHashable, Value == Any {
 
 // MARK: -  keyPath+.swift
 
-nonisolated func == <T, Value: Equatable>(keyPath: KeyPath<T, Value>, value: Value) -> (T) -> Bool {
+func == <T, Value: Equatable>(keyPath: KeyPath<T, Value>, value: Value) -> (T) -> Bool {
     { $0[keyPath: keyPath] == value }
 }
 
 // data+
-nonisolated extension Data {
+extension Data {
     func sha256() -> String {
         return SHA256.hash(data: self).compactMap { String(format: "%02x", $0) }.joined()
     }
 
-    nonisolated func toThumbnail(max: Int = 300) -> UIImage? {
+    func toThumbnail(max: Int = 300) -> UIImage? {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceCreateThumbnailFromImageAlways: true,
@@ -116,7 +116,7 @@ nonisolated extension Data {
     }
 }
 
-nonisolated extension Array where Element: Hashable {
+extension Array where Element: Hashable {
     func uniqued<Value: Hashable>(
         by keyPath: KeyPath<Element, Value>,
         _ data: Element? = nil

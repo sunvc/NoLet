@@ -15,13 +15,13 @@ import CloudKit
 import Defaults
 import Foundation
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
     static let apnsInfo = Key<ApnsInfo?>("ApnsInfo", nil)
 }
 
-nonisolated extension ApnsInfo: Defaults.Serializable {}
+extension ApnsInfo: Defaults.Serializable {}
 
-nonisolated struct ApnsInfo: Codable, Sendable, CloudKitConvertible {
+struct ApnsInfo: Codable, Sendable, CloudKitConvertible {
     var id: String
     var timestamp: Date
     var token: String

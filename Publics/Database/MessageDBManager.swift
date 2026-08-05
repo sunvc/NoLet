@@ -13,14 +13,14 @@
 import Foundation
 import GRDB
 
-final nonisolated class MessageDBManager: @unchecked Sendable {
+final class MessageDBManager: @unchecked Sendable {
     static let shared = MessageDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
 
     // MARK: - 读
 
-    nonisolated func fetchOne(id: String) async -> Message? {
+    func fetchOne(id: String) async -> Message? {
         do {
             return try await DB.dbQueue.read { db in
                 try Message.fetchOne(db, key: id)
@@ -32,7 +32,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
     }
 
     /// 同步版本 (供 NoLetChatManager 里的 sync 流程使用)
-    nonisolated func fetchOneSync(id: String) -> Message? {
+    func fetchOneSync(id: String) -> Message? {
         do {
             return try DB.dbQueue.read { db in
                 try Message.fetchOne(db, key: id)
@@ -43,7 +43,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func count(group: String? = nil) async -> Int {
+    func count(group: String? = nil) async -> Int {
         do {
             return try await DB.dbQueue.read { db in
                 if let group = group {
@@ -58,7 +58,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func unreadCount(group: String? = nil) async -> Int {
+    func unreadCount(group: String? = nil) async -> Int {
         do {
             return try await DB.dbQueue.read { db in
                 var request = Message.filter(Message.Columns.read == false)
@@ -73,7 +73,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func searchRequest(
+    func searchRequest(
         search: String,
         group: String? = nil,
         date: Date? = nil
@@ -112,7 +112,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         return request
     }
 
-    nonisolated func query(search: String,
+    func query(search: String,
         group: String? = nil,
         limit lim: Int = 50,
         before date: Date? = nil
@@ -139,7 +139,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func queryGroupHeads() async -> [Message] {
+    func queryGroupHeads() async -> [Message] {
         do {
             return try await DB.dbQueue.read { db in
                 try Message.fetchAll(db, sql: """
@@ -158,7 +158,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func query(
+    func query(
         group: String? = nil,
         limit lim: Int = 100,
         before date: Date? = nil,
@@ -185,13 +185,13 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
 
     // MARK: - 写
 
-    nonisolated func upsert(_ message: Message) async throws {
+    func upsert(_ message: Message) async throws {
         try await DB.dbQueue.write { db in
             try message.insert(db, onConflict: .replace)
         }
     }
 
-    nonisolated func markAllRead(group: String? = nil) async {
+    func markAllRead(group: String? = nil) async {
         do {
             try await DB.dbQueue.write { db in
                 var request = Message.filter(Message.Columns.read == false)
@@ -205,7 +205,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func markUnreadAsRead() async -> Int {
+    func markUnreadAsRead() async -> Int {
         return (try? await DB.dbQueue.write { db in
             try Message
                 .filter(Message.Columns.read == false)
@@ -213,7 +213,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }) ?? 0
     }
 
-    nonisolated func delete(allRead: Bool = false, before date: Date? = nil) async {
+    func delete(allRead: Bool = false, before date: Date? = nil) async {
         do {
             try await DB.dbQueue.write { db in
                 var request = Message.all()
@@ -235,7 +235,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func delete(_ message: Message, inGroup: Bool = false) async -> Int {
+    func delete(_ message: Message, inGroup: Bool = false) async -> Int {
         do {
             if inGroup {
                 return try await DB.dbQueue.write { db in
@@ -256,7 +256,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         return -1
     }
 
-    nonisolated func delete(id: String) async -> String? {
+    func delete(id: String) async -> String? {
         do {
             let result: String? = try await DB.dbQueue.write { db in
                 if let message = try Message.filter(Message.Columns.id == id).fetchOne(db) {
@@ -272,7 +272,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func delete(beforeDate: Date) async throws {
+    func delete(beforeDate: Date) async throws {
         _ = try await DB.dbQueue.write { db in
             try Message
                 .filter(Message.Columns.createDate < beforeDate)
@@ -280,7 +280,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func deleteExpired() async {
+    func deleteExpired() async {
         do {
             try await DB.dbQueue.write { db in
                 try db.execute(
@@ -344,7 +344,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
         try handle.write(contentsOf: Data("]".utf8))
     }
 
-    nonisolated func bulkInsertStress(count: Int, body: String) async throws {
+    func bulkInsertStress(count: Int, body: String) async throws {
         try await DB.dbQueue.write { db in
             try autoreleasepool {
                 for k in 0..<count {
@@ -362,7 +362,7 @@ final nonisolated class MessageDBManager: @unchecked Sendable {
     // MARK: - Observation
 
     /// 观察 Message 表的 (未读数, 总数) 变化,产生 AsyncStream。
-    nonisolated func observeCounts() -> AsyncStream<(unread: Int, total: Int)> {
+    func observeCounts() -> AsyncStream<(unread: Int, total: Int)> {
         AsyncStream { continuation in
             let observation = ValueObservation.tracking { db -> (Int, Int) in
                 let unread = try Message.filter(Message.Columns.read == false).fetchCount(db)

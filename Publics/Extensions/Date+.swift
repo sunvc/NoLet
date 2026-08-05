@@ -11,13 +11,13 @@
 //
 import SwiftUI
 
-nonisolated extension Calendar {
+extension Calendar {
     func startOfWeek(for date: Date) -> Date {
         self.date(from: dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
     }
 }
 
-nonisolated extension Date {
+extension Date {
     // MARK: - 静态快捷日期
 
     static var yesterday: Date { Date().startOfDay.dayBefore }
@@ -29,7 +29,7 @@ nonisolated extension Date {
         return fmt
     }()
 
-    nonisolated func formatString(format: String = "yyyy-MM-dd HH:mm:ss") -> String {
+    func formatString(format: String = "yyyy-MM-dd HH:mm:ss") -> String {
         let formatter = Date.sharedDateFormatter
         formatter.dateFormat = format
         return formatter.string(from: self)

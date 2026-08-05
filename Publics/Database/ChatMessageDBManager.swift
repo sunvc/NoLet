@@ -12,7 +12,7 @@
 import Foundation
 import GRDB
 
-final nonisolated class ChatMessageDBManager: @unchecked Sendable {
+final class ChatMessageDBManager: @unchecked Sendable {
     static let shared = ChatMessageDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
@@ -20,7 +20,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
     // MARK: - 读
 
     /// 修复 bug: 按 chat 列(而非 message 列)过滤
-    nonisolated func count(inGroup groupID: String) async -> Int {
+    func count(inGroup groupID: String) async -> Int {
         do {
             return try await DB.dbQueue.read { db in
                 try ChatMessage
@@ -34,7 +34,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
     }
 
     /// SwiftUI 行内计算属性使用的同步版本
-    nonisolated func countSync(inGroup groupID: String) -> Int {
+    func countSync(inGroup groupID: String) -> Int {
         (try? DB.dbQueue.read { db in
             try ChatMessage
                 .filter(ChatMessage.Columns.chat == groupID)
@@ -42,7 +42,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
         }) ?? 0
     }
 
-    nonisolated func fetch(
+    func fetch(
         inGroup groupID: String,
         ascending: Bool = true,
         limit: Int
@@ -61,7 +61,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func fetchHistory(
+    func fetchHistory(
         groupID: String,
         after point: Date?,
         limit: Int
@@ -84,7 +84,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func fetchHistorySync(
+    func fetchHistorySync(
         groupID: String,
         after point: Date?,
         limit: Int
@@ -104,13 +104,13 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
 
     // MARK: - 写
 
-    nonisolated func insert(_ message: ChatMessage) async throws {
+    func insert(_ message: ChatMessage) async throws {
         try await DB.dbQueue.write { db in
             try message.insert(db)
         }
     }
 
-    nonisolated func deleteByGroup(_ groupID: String) async {
+    func deleteByGroup(_ groupID: String) async {
         do {
             _ = try await DB.dbQueue.write { db in
                 try ChatMessage
@@ -122,7 +122,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func deleteAll() async {
+    func deleteAll() async {
         do {
             _ = try await DB.dbQueue.write { db in
                 try ChatMessage.deleteAll(db)
@@ -136,7 +136,7 @@ final nonisolated class ChatMessageDBManager: @unchecked Sendable {
 
     /// 观察指定 group 内 ChatMessage 数量。
     /// 传 nil 时不追加 group 过滤。
-    nonisolated func observeCount(inGroup groupID: String?) -> AsyncStream<Int> {
+    func observeCount(inGroup groupID: String?) -> AsyncStream<Int> {
         AsyncStream { continuation in
             let observation = ValueObservation.tracking { db -> Int in
                 if let groupID = groupID {

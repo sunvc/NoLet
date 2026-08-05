@@ -149,8 +149,8 @@ struct DeleteAlertViewModifier: ViewModifier{
                         await MainActor.run {
                             self.onClose?()
                             self.show = false
+                            Toast.success(title: "删除成功")
                         }
-                        Toast.success(title: "删除成功")
                     }
                 }
             } message: {

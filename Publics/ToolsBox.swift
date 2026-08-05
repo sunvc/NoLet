@@ -63,7 +63,7 @@ public final class Clipboard {
     }
 }
 
-public enum Haptic {
+@MainActor public enum Haptic {
     private static var lastImpactTime: Date?
     private static var minInterval: TimeInterval = 0.2
     private static let generator = UIImpactFeedbackGenerator(style: .medium)

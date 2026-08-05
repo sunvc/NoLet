@@ -65,11 +65,11 @@ struct PushToDeviceIntent: AppIntent {
         var params: [String: String] = [:]
 
         if let level, !level.isEmpty,
-           let level = await LevelTitle.rawValue(fromDisplayName: level)
+           let level = LevelTitle.rawValue(fromDisplayName: level)
         {
             params["level"] = level
 
-            if await level == LevelTitle.critical.name {
+            if level == LevelTitle.critical.name {
                 params["volume"] = String(describing: volume)
             }
         }
@@ -120,14 +120,14 @@ struct PushToDeviceIntent: AppIntent {
 
         if let cipherKey, !cipherKey.isEmpty {
             if let algorithm = CryptoAlgorithm(rawValue: cipherKey.count) {
-                var cryptoConfig = await CryptoModelConfig.data
+                var cryptoConfig = CryptoModelConfig.data
 
                 cryptoConfig.algorithm = algorithm
                 cryptoConfig.key = cipherKey
 
                 let jsonData = try JSONSerialization.data(withJSONObject: params)
 
-                guard let cipherResult = await CryptoManager(cryptoConfig).encrypt(jsonData)
+                guard let cipherResult =  CryptoManager(cryptoConfig).encrypt(jsonData)
                 else {
                     return .result(value: "cipher fail")
                 }
@@ -143,7 +143,7 @@ struct PushToDeviceIntent: AppIntent {
         }
 
         do {
-            if let address = URL(string: address), await address.hasHttp {
+            if let address = URL(string: address),  address.hasHttp {
                 let res: APIPushToDeviceResponse? = try await NetworkManager()
                     .fetch(
                         url: address.absoluteString,

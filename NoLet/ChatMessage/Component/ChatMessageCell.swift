@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - ChatMessageCell.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -9,13 +9,13 @@
 //  Description:
 
 //  History:
-//    Created by Neo on 2026/7/15 09:13.
-    
+//    Created by Neo 2026/7/15 09:13.
+
 import SwiftUI
 import MessagingUI
 
 
-struct ChatMessageCell: TiledCellContent {
+struct ChatMessageCell {
     typealias StateValue = Void
 
     let item: ChatMessage
@@ -27,12 +27,15 @@ struct ChatMessageCell: TiledCellContent {
         formatter.timeStyle = .short
         return formatter
     }
-    
+
+    @MainActor
     private var quote: Message? {
         guard let messageID = AppManager.shared.askMessageID else { return nil }
         return MessagesManager.shared.query(id: messageID)
     }
 
+    @MainActor
+    @ViewBuilder
     func body(context: CellContext<Void>) -> some View {
         let revealOffset = context.cellReveal?.rubberbandedOffset(max: maxRevealOffset) ?? 0
         let isUserMessage = item.role == ChatMessage.Role.user.rawValue
@@ -62,7 +65,7 @@ struct ChatMessageCell: TiledCellContent {
                     if isUserMessage {
                         Spacer()
                     }
-                    
+
                     ScrollView {
                         MarkdownCustomView(content: item.content)
                             .padding()
@@ -80,7 +83,7 @@ struct ChatMessageCell: TiledCellContent {
                         Clipboard.set(item.content)
                         Toast.success(title: "复制成功")
                     }
-                    
+
                     if !isUserMessage {
                         Spacer()
                     }
@@ -102,3 +105,5 @@ struct ChatMessageCell: TiledCellContent {
         .padding(.vertical, 8)
     }
 }
+
+extension ChatMessageCell: @MainActor TiledCellContent {}

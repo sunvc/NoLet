@@ -145,8 +145,7 @@ enum CryptoAlgorithm: Int, Codable, CaseIterable, RawRepresentable, Defaults.Ser
     }
 }
 
-struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable,
-    @MainActor Defaults.Serializable
+struct CryptoModelConfig: Identifiable, Equatable, Codable, Hashable, Defaults.Serializable
 {
     var id: String = UUID().uuidString
     var algorithm: CryptoAlgorithm

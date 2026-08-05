@@ -12,7 +12,7 @@
 import SwiftUI
 import Defaults
 
-class Toast: ObservableObject {
+@MainActor class Toast: ObservableObject {
     static let shared = Toast()
     private init() {}
     @Published fileprivate var toasts: [ToastItem] = []
@@ -63,7 +63,7 @@ class Toast: ObservableObject {
         }
     }
 
-    nonisolated class func success(
+    class func success(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: CGFloat = 2.0
@@ -78,7 +78,7 @@ class Toast: ObservableObject {
         }
     }
 
-    nonisolated class func info(
+    class func info(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: CGFloat = 2.0
@@ -93,7 +93,7 @@ class Toast: ObservableObject {
         }
     }
 
-    nonisolated class func question(
+    class func question(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: CGFloat = 2.0
@@ -108,7 +108,7 @@ class Toast: ObservableObject {
         }
     }
 
-    nonisolated class func error(
+    class func error(
         title: String.LocalizationValue,
         isUserInteractionEnabled: Bool = true,
         timing: CGFloat = 2.0
@@ -123,7 +123,7 @@ class Toast: ObservableObject {
         }
     }
 
-    nonisolated class func copy(
+    class func copy(
         title: String.LocalizationValue = "复制成功",
         isUserInteractionEnabled: Bool = true,
         timing: CGFloat = 2.0

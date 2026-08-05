@@ -14,13 +14,13 @@
 import Foundation
 
 
-nonisolated extension Defaults.Key {
+extension Defaults.Key {
     convenience init(_ name: String, _ defaultValue: Value, iCloud: Bool = false) {
         self.init(name, default: defaultValue, suite: NCONFIG.defaultStore(), iCloud: iCloud)
     }
 }
 
-nonisolated extension Defaults.Keys {
+extension Defaults.Keys {
   
     static let firstStart = Key<Bool>("firstStartApp", true)
     static let autoSaveToAlbum = Key<Bool>("autoSaveImageToPhotoAlbum", false)
@@ -42,7 +42,7 @@ nonisolated extension Defaults.Keys {
     static let usePtt = Key<Bool>("usePushToTalk", false)
 }
 
-nonisolated extension Defaults{
+extension Defaults{
     static func lang() -> String {
         let currentLang = Defaults[.lang]
         if let code = Locale(identifier: currentLang).language.languageCode?.identifier,

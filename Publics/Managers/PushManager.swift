@@ -13,7 +13,7 @@ import CryptoKit
 import Foundation
 import Security
 
-final nonisolated class APNs: Sendable {
+final class APNs: Sendable {
     static let shared = APNs()
 
     private init() {}
@@ -217,7 +217,7 @@ final nonisolated class APNs: Sendable {
 
 // MARK: - Base64URL Encode
 
-nonisolated extension Data {
+extension Data {
     fileprivate func base64URLEncodedString() -> String {
         return base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
@@ -226,7 +226,7 @@ nonisolated extension Data {
     }
 }
 
-nonisolated extension APNs {
+extension APNs {
     struct PushPayload: Codable {
         struct APS: Codable {
             struct Alert: Codable {

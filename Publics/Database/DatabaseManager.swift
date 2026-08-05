@@ -13,7 +13,7 @@
 import Foundation
 import GRDB
 
-final nonisolated class DatabaseManager: @unchecked Sendable {
+final class DatabaseManager: @unchecked Sendable {
     static let shared: DatabaseManager = {
         do {
             return try DatabaseManager()

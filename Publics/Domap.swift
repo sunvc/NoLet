@@ -13,7 +13,7 @@
 import CryptoKit
 import Foundation
 
-public nonisolated enum Domap {
+public enum Domap {
     static let Beta = false
     static let KEY = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF"
     static let IV = "ABCDEFGHIJKLMNOP"

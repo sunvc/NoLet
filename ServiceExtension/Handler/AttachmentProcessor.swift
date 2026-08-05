@@ -10,7 +10,7 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class AttachmentProcessor: NotificationContentProcessor {
+final class AttachmentProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

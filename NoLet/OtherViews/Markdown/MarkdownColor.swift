@@ -59,6 +59,7 @@ enum MarkdownColors {
     )
 }
 
+@MainActor
 extension View {
     func markdownHeadingStyle(
         fontSize: CGFloat,
@@ -80,6 +81,7 @@ extension View {
     }
 }
 
+@MainActor
 enum MarkdownTheme {
     static func defaultTheme(_ defaultSize: CGFloat = 16, scaleFactor: CGFloat = 1.0) -> Theme {
         Theme()

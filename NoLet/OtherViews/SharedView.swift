@@ -87,7 +87,7 @@ struct ActivityViewController: UIViewControllerRepresentable {
     func updateUIViewController(_: UIActivityViewController, context _: Context) {}
 }
 
-nonisolated class MyCustomActivity: UIActivity {
+class MyCustomActivity: UIActivity {
     let type: WeChatManager.SendType
     let data: Any?
 

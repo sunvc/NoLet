@@ -14,8 +14,6 @@
 import AVFoundation
 
 final class AudioConversion: Sendable {
-    
-    private var composition = AVMutableComposition()
 
     func toCAFLong(
         inputURL: URL,
@@ -62,7 +60,7 @@ final class AudioConversion: Sendable {
                     userInfo: [NSLocalizedDescriptionKey: "Invalid source duration"]
                 )
             }
-            composition = AVMutableComposition()
+            let composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
                     withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
@@ -81,7 +79,7 @@ final class AudioConversion: Sendable {
                 )
                 cursor = cursor + chunk
             }
-            let compTracks = try await perform(composition)
+            let compTracks = try await composition.loadTracks(withMediaType: .audio)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -13,
@@ -129,12 +127,6 @@ final class AudioConversion: Sendable {
         )
     }
 
-    func perform(_ composition: sending AVMutableComposition) async throws
-        -> [AVMutableCompositionTrack]
-    {
-        return try await composition.loadTracks(withMediaType: .audio)
-    }
-
     func toCAFShort(
         inputURL: URL,
         outputURL: URL,
@@ -160,7 +152,7 @@ final class AudioConversion: Sendable {
         let reader: AVAssetReader
         let readerOutput: AVAssetReaderTrackOutput
         if maxSeconds > 0 && sourceDuration > maxDuration {
-            composition = AVMutableComposition()
+            let composition = AVMutableComposition()
             guard
                 let compTrack = composition.addMutableTrack(
                     withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid
@@ -174,7 +166,7 @@ final class AudioConversion: Sendable {
             try compTrack.insertTimeRange(
                 CMTimeRange(start: .zero, duration: maxDuration), of: srcTrack, at: .zero
             )
-            let compTracks = try await perform(composition)
+            let compTracks = try await composition.loadTracks(withMediaType: .audio)
             guard let compAudioTrack = compTracks.first else {
                 throw NSError(
                     domain: "AudioCAF", code: -22,

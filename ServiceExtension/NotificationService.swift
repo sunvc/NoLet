@@ -13,7 +13,7 @@
 import Foundation
 @preconcurrency import UserNotifications
 
-nonisolated class NotificationService: UNNotificationServiceExtension {
+class NotificationService: UNNotificationServiceExtension {
     private var contentActor: NotificationServiceActor?
 
     override func didReceive(

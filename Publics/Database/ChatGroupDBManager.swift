@@ -13,26 +13,26 @@
 import Foundation
 import GRDB
 
-final nonisolated class ChatGroupDBManager: @unchecked Sendable {
+final class ChatGroupDBManager: @unchecked Sendable {
     static let shared = ChatGroupDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
 
     // MARK: - 读
 
-    nonisolated func fetchCurrent() async -> ChatGroup? {
+    func fetchCurrent() async -> ChatGroup? {
         (try? await DB.dbQueue.read { db in
             try ChatGroup.filter { $0.current }.fetchOne(db)
         }) ?? nil
     }
 
-    nonisolated func fetchCurrentSync() -> ChatGroup? {
+    func fetchCurrentSync() -> ChatGroup? {
         (try? DB.dbQueue.read { db in
             try ChatGroup.filter { $0.current }.fetchOne(db)
         }) ?? nil
     }
 
-    nonisolated func fetchAll() async -> [ChatGroup] {
+    func fetchAll() async -> [ChatGroup] {
         do {
             return try await DB.dbQueue.read { db in
                 try ChatGroup.order(ChatGroup.Columns.timestamp.desc).fetchAll(db)
@@ -43,7 +43,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func fetchOne(id: String) async -> ChatGroup? {
+    func fetchOne(id: String) async -> ChatGroup? {
         do {
             return try await DB.dbQueue.read { db in
                 try ChatGroup.fetchOne(db, key: id)
@@ -56,14 +56,14 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
 
     // MARK: - 写
 
-    nonisolated func insert(_ group: ChatGroup) async throws {
+    func insert(_ group: ChatGroup) async throws {
         try await DB.dbQueue.write { db in
             try group.insert(db)
         }
     }
 
     /// 引用消息生成 group: 若已有则返回,否则插入并设为当前。
-    nonisolated func upsertQuoteGroup(id: String, name: String) async -> ChatGroup? {
+    func upsertQuoteGroup(id: String, name: String) async -> ChatGroup? {
         do {
             return try await DB.dbQueue.write { db in
                 if let existing = try ChatGroup.fetchOne(db, key: id) {
@@ -89,7 +89,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
     }
 
     /// 传入 nil 时把所有 group 的 current 置 false。
-    nonisolated func setCurrent(_ group: ChatGroup?) async {
+    func setCurrent(_ group: ChatGroup?) async {
         do {
             try await DB.dbQueue.write { db in
                 if let group = group {
@@ -110,7 +110,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func setPointToNow(id: String) async -> Bool {
+    func setPointToNow(id: String) async -> Bool {
         do {
             return try await DB.dbQueue.write { db in
                 if var group = try ChatGroup.filter(id: id).fetchOne(db) {
@@ -125,7 +125,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func rename(id: String, newName: String, makeCurrent: Bool = false) async {
+    func rename(id: String, newName: String, makeCurrent: Bool = false) async {
         do {
             try await DB.dbQueue.write { db in
                 if var group = try ChatGroup.filter(ChatGroup.Columns.id == id).fetchOne(db) {
@@ -142,7 +142,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
     }
 
     /// 级联: 先删同 group 的 ChatMessage,再删该 ChatGroup。
-    nonisolated func delete(id: String) async {
+    func delete(id: String) async {
         do {
             try await DB.dbQueue.write { db in
                 try ChatMessage
@@ -156,7 +156,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
     }
 
     /// 一次性清空所有 ChatGroup + ChatMessage。
-    nonisolated func deleteAll() async {
+    func deleteAll() async {
         do {
             try await DB.dbQueue.write { db in
                 try ChatMessage.deleteAll(db)
@@ -168,7 +168,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
     }
 
     /// 清理无消息的 group (原 clearunuse)
-    nonisolated func deleteEmpty() async {
+    func deleteEmpty() async {
         do {
             try await DB.dbQueue.write { db in
                 let allGroups = try ChatGroup.fetchAll(db)
@@ -189,7 +189,7 @@ final nonisolated class ChatGroupDBManager: @unchecked Sendable {
     // MARK: - Observation
 
     /// 观察 group 总数 + 当前 group。
-    nonisolated func observeSummary() -> AsyncStream<(groupsCount: Int, current: ChatGroup?)> {
+    func observeSummary() -> AsyncStream<(groupsCount: Int, current: ChatGroup?)> {
         AsyncStream { continuation in
             let observation = ValueObservation.tracking { db -> (Int, ChatGroup?) in
                 let count = try ChatGroup.fetchCount(db)

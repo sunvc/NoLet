@@ -515,7 +515,7 @@ struct ChangeKeyView: View {
 // MARK: -   PreferenceKey+.swift
 
 struct CirclePreferenceKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
+    nonisolated(unsafe) static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
     }
@@ -562,7 +562,7 @@ fileprivate struct OutlineModifier: ViewModifier {
     }
 }
 
-fileprivate nonisolated extension String {
+fileprivate extension String {
     
     /// 仅保留字母和数字字符
     /// - Parameter allowUnicode: 是否保留所有语言的字母（默认仅保留英文和数字）

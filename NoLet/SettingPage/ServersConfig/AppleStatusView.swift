@@ -95,6 +95,7 @@ struct ServiceRow: View {
     }
 }
 
+@MainActor
 final class ApnsServerMonitoring: ObservableObject {
     @Published var services: [Service] = []
     @Published var isLoading = false

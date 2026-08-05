@@ -16,7 +16,8 @@ import CoreLocation
 import Foundation
 import MapKit
 
-final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
+@MainActor
+final class LocManager: NSObject, ObservableObject {
     static let shared = LocManager()
 
     @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
@@ -37,11 +38,6 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.authorizationStatus = locationManager.authorizationStatus
         self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         self.runMonitoringSignificantLocationChanges(true)
-    }
-
-    @MainActor
-    deinit {
-        self.runMonitoringSignificantLocationChanges(false)
     }
 
     private func runMonitoringSignificantLocationChanges(_ start: Bool = false) {
@@ -71,7 +67,7 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
-    nonisolated static func openMap(latitude: Double, longitude: Double, destinationName: String) {
+    static func openMap(latitude: Double, longitude: Double, destinationName: String) {
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: nil)
         let mapItem = MKMapItem(placemark: placemark)
@@ -136,6 +132,8 @@ final class LocManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         self.runMonitoringSignificantLocationChanges(true)
     }
 }
+
+extension LocManager: @MainActor CLLocationManagerDelegate {}
 
 extension Notification.Name {
     static let locationUpdated = Notification.Name("locationUpdated")

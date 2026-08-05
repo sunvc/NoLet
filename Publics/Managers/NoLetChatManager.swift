@@ -15,6 +15,7 @@ import Defaults
 import Foundation
 import UIKit
 
+@MainActor
 final class NoLetChatManager: ObservableObject {
     static let shared = NoLetChatManager()
 

@@ -19,6 +19,7 @@ import SwiftUI
 
 // MARK: - 铃声界面播放铃声 Actor
 
+@MainActor
 final class AudioManager: ObservableObject {
     static let shared = AudioManager()
 
@@ -137,11 +138,6 @@ final class AudioManager: ObservableObject {
         isPlaying = false
     }
 
-    @MainActor
-    deinit {
-        cleanup()
-    }
-
     // 定义一个异步函数来加载audio的持续时间
     func loadVideoDuration(fromURL audioURL: URL) async throws -> Double {
         return try AVAudioPlayer(contentsOf: audioURL).duration
@@ -225,7 +221,7 @@ extension AudioManager {
     }
 }
 
-nonisolated enum Tone {
+enum Tone {
     
     static func play(_ sound: TipsSound, fileExtension: String = "aac") async {
         await play(sound.rawValue, fileExtension: fileExtension)

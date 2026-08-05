@@ -94,6 +94,7 @@ struct FileItem: Identifiable, Hashable {
 
 // MARK: - 文件管理器
 
+@MainActor
 class FileTreeManager: ObservableObject {
     @Published var rootItems: [FileItem] = []
     @Published var isLoading = false

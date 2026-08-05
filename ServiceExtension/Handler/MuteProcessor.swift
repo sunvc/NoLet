@@ -15,7 +15,7 @@ import Defaults
 import UIKit
 import UniformTypeIdentifiers
 
-class MuteProcessor: NotificationContentProcessor {
+final class MuteProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent

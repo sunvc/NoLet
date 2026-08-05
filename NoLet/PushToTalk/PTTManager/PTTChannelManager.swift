@@ -20,7 +20,7 @@ import SwiftUI
 /// PTTChannelDelegate
 ///
 ///
-final nonisolated class PTTChannelManager: NSObject,
+final class PTTChannelManager: NSObject,
     PTChannelManagerDelegate,
     PTChannelRestorationDelegate, Sendable
 {
@@ -224,6 +224,6 @@ final nonisolated class PTTChannelManager: NSObject,
         error: any Error
     ) {
         logger.error("\(error.localizedDescription)")
-        Toast.error(title: "系统资源被占用")
+        Task { @MainActor in Toast.error(title: "系统资源被占用") }
     }
 }
