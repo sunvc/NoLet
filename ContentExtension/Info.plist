@@ -11,6 +11,32 @@
 				<string>markdown</string>
 				<string>myNotificationCategory</string>
 				<string>reply</string>
+                <string>alfa</string>
+                <string>bravo</string>
+                <string>charlie</string>
+                <string>delta</string>
+                <string>echo</string>
+                <string>foxtrot</string>
+                <string>golf</string>
+                <string>hotel</string>
+                <string>india</string>
+                <string>juliett</string>
+                <string>kilo</string>
+                <string>lima</string>
+                <string>mike</string>
+                <string>november</string>
+                <string>oscar</string>
+                <string>papa</string>
+                <string>quebec</string>
+                <string>romeo</string>
+                <string>sierra</string>
+                <string>tango</string>
+                <string>uniform</string>
+                <string>victor</string>
+                <string>whiskey</string>
+                <string>xray</string>
+                <string>yankee</string>
+                <string>zulu</string>
 			</array>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>0.01</real>

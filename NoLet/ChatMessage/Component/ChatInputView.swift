@@ -26,7 +26,7 @@ struct ChatInputView: View {
     @State private var selectedPromptIndex: Int?
     @State private var focused: Bool = false
 
-    private var quote: Message? {
+    private var quote: MessageEntity? {
         guard let messageID = manager.askMessageID else { return nil }
         return MessagesManager.shared.query(id: messageID)
     }
@@ -54,7 +54,7 @@ struct ChatInputView: View {
             .padding(.horizontal)
             .animation(.default, value: text)
         }
-        .padding(.bottom, isFocusedInput ? (ProcessInfo.processInfo.isiOSAppOnMac ? 30 : 10) : 30)
+        .padding(.bottom, isFocusedInput ? (.isiOSAppOnMac ? 30 : 10) : 30)
         .onAppear{
             withAnimation(.spring(
                 response: 0.3, 
@@ -80,7 +80,7 @@ struct ChatInputView: View {
 
     private var inputField: some View {
         HStack {
-            TextField("请开始你的哔哔", text: $text, axis: .vertical)
+            TextField("请伞兵开始发言", text: $text, axis: .vertical)
                 .lineLimit(5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -141,23 +141,6 @@ struct ChatInputView: View {
                     }
                 } label: {
                     QuoteView(message: quote.search)
-                        .onAppear {
-                            Task.detached(priority: .background) {
-                                if let group = await ChatGroupDBManager.shared.upsertQuoteGroup(
-                                    id: quote.id,
-                                    name: quote.search.removingAllWhitespace
-                                ) {
-                                    await MainActor.run {
-                                        chatManager.setGroup(group: group)
-                                    }
-                                }
-                            }
-                        }
-                        .onDisappear {
-                            Task { @MainActor in
-                                chatManager.setGroup()
-                            }
-                        }
                 }
             }
         }

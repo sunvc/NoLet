@@ -9,6 +9,7 @@
 //  History:
 //    Created by Neo on 2025/5/2.
 //
+import CoreData
 import Defaults
 import Kingfisher
 import MarkdownUI
@@ -21,7 +22,7 @@ enum SelectMessageViewMode: Int, Equatable {
 }
 
 struct SelectMessageView: View {
-    var message: Message
+    var message: MessageEntity
     var dismiss: () -> Void
     @ObservedObject private var chatManager = NoLetChatManager.shared
     @Default(.assistantAccouns) var assistantAccouns
@@ -53,7 +54,7 @@ struct SelectMessageView: View {
             ScrollView {
                 VStack {
                     VStack {
-                        if let image = message.image {
+                        if let image = message.value(for: .image) {
                             AsyncPhotoView(url: image)
                                 .contextMenu {
                                     saveToAlbumButton(albumName: nil, imageURL: image, image: nil)
@@ -65,7 +66,7 @@ struct SelectMessageView: View {
 
                     VStack {
                         HStack {
-                            Text(message.createDate.formatString())
+                            Text((message.createDate ?? .now).formatString())
                                 .font(.system(size: basedateSize * scaleFactor))
 
                             Spacer()
@@ -103,7 +104,7 @@ struct SelectMessageView: View {
                             }
                             .overlay(alignment: .topTrailing) {
                                 Button {
-                                    Clipboard.set(abstractResult)
+                                    NCONFIG.copy(abstractResult)
                                     Toast.copy()
                                 } label: {
                                     Image(systemName: "doc.on.clipboard")
@@ -138,7 +139,7 @@ struct SelectMessageView: View {
                             .overlay(alignment: .topTrailing) {
                                 if !translateResult.isEmpty {
                                     Button {
-                                        Clipboard.set(translateResult)
+                                        NCONFIG.copy(translateResult)
                                         Toast.copy()
                                     } label: {
                                         Image(systemName: "doc.on.clipboard")
@@ -183,10 +184,10 @@ struct SelectMessageView: View {
                                 )
                                 .padding(.horizontal, 3)
 
-                            if !message.body.isEmpty {
+                            if !message.bodyText.isEmpty {
                                 HStack {
                                     MarkdownCustomView(
-                                        content: message.body,
+                                        content: message.bodyText,
                                         searchText: "",
                                         scaleFactor: scaleFactor,
                                         select: showCopy
@@ -195,7 +196,7 @@ struct SelectMessageView: View {
                                 }
                             }
 
-                            if message.url != nil || message.image != nil {
+                            if message.url != nil || message.value(for: .image) != nil {
                                 Divider().padding(.top, 10)
 
                                 DisclosureGroup(String("URL"), isExpanded: $showURL) {
@@ -203,7 +204,7 @@ struct SelectMessageView: View {
                                         URLParamsView(url: url)
                                     }
 
-                                    if let url = message.image {
+                                    if let url = message.value(for: .image) {
                                         URLParamsView(url: url)
                                     }
                                 }
@@ -217,7 +218,7 @@ struct SelectMessageView: View {
                                         HStack {
                                             Spacer()
                                             Button {
-                                                Clipboard.set(other)
+                                                NCONFIG.copy(other)
                                             } label: {
                                                 Image(systemName: "doc.on.clipboard")
                                             }
@@ -341,9 +342,10 @@ struct SelectMessageView: View {
                             self.messageShowMode = .raw
                         } else {
                             self.messageShowMode = .abstract
+                            let search = message.search.removingAllWhitespace
                             chatManager.cancellableRequest?.cancel()
                             chatManager.cancellableRequest = Task.detached(priority: .high) {
-                                await abstractMessage(message.search.removingAllWhitespace)
+                                await abstractMessage(search)
                             }
                         }
                         Haptic.impact()
@@ -382,7 +384,7 @@ struct SelectMessageView: View {
                         Spacer()
 
                         Button {
-                            Clipboard.set(url)
+                            NCONFIG.copy(url)
                             Toast.copy()
                             Haptic.impact()
                         } label: {
@@ -422,8 +424,8 @@ struct SelectMessageView: View {
             datas += "\(subtitle) <br>"
         }
 
-        if !message.body.isEmpty {
-            datas += "\(message.body)"
+        if !message.bodyText.isEmpty {
+            datas += "\(message.bodyText)"
         }
 
         guard assistantAccouns.first(where: { $0.current }) != nil else {
@@ -480,22 +482,18 @@ struct SelectMessageView: View {
 }
 
 #Preview {
-    SelectMessageView(message: Message(
-        id: UUID().uuidString,
-        createDate: .now,
-        group: "",
-        title: "123",
-        subtitle: "123",
-        body: """
-            # 123
-
-            ### 1231231231
-            """,
-        image: "https://s3.wzs.app/og.png",
-        ttl: 7,
-        read: true,
-        other: ""
-    )) {}
+    SelectMessageView(message: MessageEntity.preview([
+        "id": UUID().uuidString,
+        "createDate": Int(Date.now.timeIntervalSince1970),
+        "group": "",
+        "title": "123",
+        "subtitle": "123",
+        "body": "# 123\n\n### 1231231231",
+        "image": "https://s3.wzs.app/og.png",
+        "ttl": Int(Date.now.timeIntervalSince1970) + 7,
+        "read": true,
+        "other": "",
+    ])) {}
 }
 
 

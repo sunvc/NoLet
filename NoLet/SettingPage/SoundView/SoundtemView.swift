@@ -85,7 +85,7 @@ struct SoundItemView: View {
                 .symbolRenderingMode(.palette)
                 .foregroundStyle(.tint, Color.primary)
                 .onTapGesture {
-                    Clipboard.set(self.name)
+                    NCONFIG.copy(self.name)
                     Toast.copy(title: "复制成功")
                     Haptic.impact()
                 }
@@ -111,7 +111,7 @@ struct SoundItemView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("铃声" + name)
         .accessibilityAction(named: "复制") {
-            Clipboard.set(self.name)
+            NCONFIG.copy(self.name)
             Toast.copy(title: "复制成功")
             Haptic.impact()
         }

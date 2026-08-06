@@ -21,12 +21,14 @@ struct ReasonMessageView: View {
 
     var body: some View {
         VStack {
-            ReasonButton(message: message, openShow: false) {
-                self.message = nil
+            if let message {
+                ReasonButton(message: message, openShow: false) {
+                    self.message = nil
+                }
+                .padding(.vertical)
+                .padding(.horizontal)
+                .contentShape(Rectangle())
             }
-            .padding(.vertical)
-            .padding(.horizontal)
-            .contentShape(Rectangle())
 
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
@@ -97,24 +99,24 @@ struct ReasonMessageView: View {
 }
 
 struct ReasonButton: View {
-    var message: ChatMessage?
+    var message: ChatMessage
     var openShow: Bool = true
     var close: (() -> Void)? = nil
     @ObservedObject private var chatManager = NoLetChatManager.shared
 
     var show: Bool {
-        chatManager.startReason == message?.id
+        chatManager.startReason == message.id
     }
 
     var showResult: Bool {
-        if let result = message?.result, !result.isEmpty {
+        if let result = message.result, !result.isEmpty {
             return true
         }
         return false
     }
 
     var showReason: Bool {
-        if let reason = message?.reason, !reason.isEmpty {
+        if let reason = message.reason, !reason.isEmpty {
             return true
         }
         return false

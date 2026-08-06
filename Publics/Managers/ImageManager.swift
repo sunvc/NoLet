@@ -17,9 +17,7 @@ import MapKit
 import Photos
 import UIKit
 
-
-
-extension String{
+extension String {
     func avatarImage(size: CGFloat = 300, padding: CGFloat = 16) -> UIImage? {
         guard let textColor = (self.filter { !$0.isWhitespace }).decomposeTextAndColor()
         else { return nil }
@@ -50,7 +48,7 @@ extension String{
             textColor.text.draw(at: textOrigin, withAttributes: attributes)
         }
     }
-    
+
     func decomposeTextAndColor(
         _ defaultColor: UIColor = .white,
         _ backgroundColor: UIColor = .systemBlue
@@ -125,12 +123,11 @@ extension UIColor {
     }
 }
 
-
 enum ImageManager {
     static let customCache: ImageCache = {
         let cache = (try? ImageCache(
-            name: "shared",
-            cacheDirectoryURL: NCONFIG.FolderType.image.path
+            name: "NoletAlbum",
+            cacheDirectoryURL: NCONFIG.Path(.library)
         )) ??
             ImageCache.default
         return cache
@@ -191,8 +188,14 @@ enum ImageManager {
 
     static func loadThumbnail(path: String, maxPixel: CGFloat) async -> UIImage? {
         let url = URL(fileURLWithPath: path)
-        let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions)
+        // On iOS CGImageSourceCreateWithURL picks its decoder from the file
+        // extension, so extensionless files (Kingfisher cache) fail. Create
+        // from mapped data so ImageIO sniffs the content type instead.
+        guard let data = try? Data(contentsOf: url, options: .mappedIfSafe),
+              let source = CGImageSourceCreateWithData(
+                  data as CFData,
+                  [kCGImageSourceShouldCache: false] as CFDictionary
+              )
         else { return nil }
 
         let options = [

@@ -11,18 +11,23 @@
 //
 
 import Foundation
-import QuickLookThumbnailing
+import ImageIO
+import QuickLook
 import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
 
 // MARK: - 文件项数据模型
 
 struct FileItem: Identifiable, Hashable {
-    let id = UUID()
+    
+    var id: String { url.path }
     let name: String
     let url: URL
     let isDirectory: Bool
     let size: Int64
     let modificationDate: Date
+
     var children: [FileItem]?
 
     init(url: URL) {
@@ -41,44 +46,11 @@ struct FileItem: Identifiable, Hashable {
             size = 0
             modificationDate = Date()
         }
-
-        if isDirectory {
-            children = loadChildren()
-        }
-    }
-
-    // 懒加载子项
-    private func loadChildren() -> [FileItem]? {
-        guard isDirectory else { return nil }
-
-        do {
-            let contents = try FileManager.default.contentsOfDirectory(
-                at: url,
-                includingPropertiesForKeys: [
-                    .isDirectoryKey,
-                    .fileSizeKey,
-                    .contentModificationDateKey,
-                ],
-                options: [.skipsHiddenFiles]
-            )
-
-            return contents.map { FileItem(url: $0) }
-                .sorted { item1, item2 in
-                    if item1.isDirectory != item2.isDirectory {
-                        return item1.isDirectory
-                    }
-                    return item1.name
-                        .localizedCaseInsensitiveCompare(item2.name) == .orderedAscending
-                }
-        } catch {
-            logger.error("加载子项失败: \(error)")
-            return []
-        }
     }
 
     var formattedSize: String {
         if isDirectory {
-            return "文件夹"
+            return String(localized: "文件夹")
         }
 
         let formatter = ByteCountFormatter()
@@ -90,6 +62,69 @@ struct FileItem: Identifiable, Hashable {
     var icon: String {
         isDirectory ? "folder.fill" : "doc.fill"
     }
+
+    var isPreferencesProtected: Bool {
+        guard let libraryURL = NCONFIG.Path(.preferences) else {
+            return false
+        }
+
+        let folderPath = libraryURL.standardizedFileURL.path
+        let urlPath = url.standardizedFileURL.path
+
+        return urlPath == folderPath || urlPath.hasPrefix(folderPath + "/")
+    }
+
+    /// Library 文件夹受保护，不允许清空（内含 Preferences 等应用数据）。
+    var isLibraryProtected: Bool {
+        guard let libraryURL = NCONFIG.Path(.library) else {
+            return false
+        }
+        return url.standardizedFileURL.path == libraryURL.standardizedFileURL.path
+    }
+
+    var isPreviewForbidden: Bool {
+        url.pathExtension.lowercased() == "plist"
+    }
+
+    var isImageFile: Bool {
+        if let utType = UTType(filenameExtension: url.pathExtension),
+           utType.conforms(to: .image)
+        {
+            return true
+        }
+        return imageContentType != nil
+    }
+
+    var imageContentType: UTType? {
+        guard let data = try? Data(contentsOf: url, options: .mappedIfSafe),
+              let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let typeID = CGImageSourceGetType(source) as String?,
+              let type = UTType(typeID)
+        else { return nil }
+        return type.conforms(to: .image) ? type : nil
+    }
+
+    var previewURL: URL {
+        if !url.pathExtension.isEmpty { return url }
+        guard let type = imageContentType,
+              let ext = type.preferredFilenameExtension
+              ?? type.tags[.filenameExtension]?.first
+        else { return url }
+
+        let linkDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("NoLetPreviews", isDirectory: true)
+        try? FileManager.default.createDirectory(at: linkDir, withIntermediateDirectories: true)
+        let copy = linkDir.appendingPathComponent("\(url.lastPathComponent).\(ext)")
+        if FileManager.default.fileExists(atPath: copy.path) {
+            try? FileManager.default.removeItem(at: copy)
+        }
+        do {
+            try FileManager.default.copyItem(at: url, to: copy)
+        } catch {
+            return url
+        }
+        return copy
+    }
 }
 
 // MARK: - 文件管理器
@@ -99,6 +134,8 @@ class FileTreeManager: ObservableObject {
     @Published var rootItems: [FileItem] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+
+    @Published var expandedPaths: Set<String> = []
 
     private let rootURL: URL
 
@@ -112,23 +149,21 @@ class FileTreeManager: ObservableObject {
         isLoading = true
         errorMessage = nil
 
-        Task {
+        Task { @MainActor in
             do {
-                let items = try self.loadItems(at: self.rootURL)
-                DispatchQueue.main.async {
-                    self.rootItems = items
-                    self.isLoading = false
+                self.rootItems = try self.loadItems(at: self.rootURL)
+                for path in self.expandedPaths {
+                    self.loadChildren(for: URL(fileURLWithPath: path))
                 }
+                self.isLoading = false
             } catch {
-                DispatchQueue.main.async {
-                    self.errorMessage = "加载文件失败: \(error)"
-                    self.isLoading = false
-                }
+                self.errorMessage = String(localized: "加载文件失败")
+                self.isLoading = false
             }
         }
     }
 
-    // 加载指定目录的项
+    // 加载指定目录的项 (非递归)
     private func loadItems(at url: URL) throws -> [FileItem] {
         let contents = try FileManager.default.contentsOfDirectory(
             at: url,
@@ -149,17 +184,70 @@ class FileTreeManager: ObservableObject {
             }
     }
 
+    func loadChildren(for url: URL) {
+        let loaded = (try? loadItems(at: url)) ?? []
+        assignChildren(loaded, to: url, in: &rootItems)
+    }
+
+    private func assignChildren(_ children: [FileItem], to url: URL, in items: inout [FileItem]) {
+        for index in items.indices where items[index].url == url {
+            items[index].children = children
+            return
+        }
+        for index in items.indices where items[index].children != nil {
+            var nested = items[index].children!
+            assignChildren(children, to: url, in: &nested)
+            items[index].children = nested
+        }
+    }
+
+    func setExpanded(_ expanded: Bool, for item: FileItem) {
+        if expanded {
+            expandedPaths.insert(item.url.path)
+            if item.children == nil {
+                let url = item.url
+                Task { @MainActor in self.loadChildren(for: url) }
+            }
+        } else {
+            expandedPaths.remove(item.url.path)
+        }
+    }
+
     // 删除文件或文件夹
     func deleteItem(_ item: FileItem) {
+        guard !item.isPreferencesProtected, !item.isLibraryProtected else {
+            errorMessage = String(localized: "没有权限")
+            return
+        }
         do {
             try FileManager.default.removeItem(at: item.url)
-            Task { @MainActor in
-                self.loadRootItems()
-            }
+            expandedPaths.remove(item.url.path)
+            loadRootItems()
         } catch {
-            Task { @MainActor in
-                self.errorMessage = "删除失败: \(error)"
+            errorMessage = String(localized: "删除失败")
+        }
+    }
+
+    // 清空文件夹内容（保留文件夹本身），Library 文件夹除外
+    func clearFolder(_ item: FileItem) {
+        guard item.isDirectory, !item.isLibraryProtected else {
+            errorMessage = String(localized: "没有权限")
+            return
+        }
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(
+                at: item.url,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            )
+            for url in contents {
+                let child = FileItem(url: url)
+                if child.isPreferencesProtected { continue }
+                try? FileManager.default.removeItem(at: url)
             }
+            loadRootItems()
+        } catch {
+            errorMessage = String(localized: "清空失败")
         }
     }
 }
@@ -170,14 +258,33 @@ struct FileItemView: View {
     let item: FileItem
     let fileManager: FileTreeManager
 
+    @State private var isExpanded = false
+
     var body: some View {
-        if item.isDirectory && !(item.children?.isEmpty ?? true) {
-            DisclosureGroup {
-                ForEach(item.children ?? []) { child in
-                    FileItemView(item: child, fileManager: fileManager)
+        if item.isDirectory {
+            DisclosureGroup(isExpanded: $isExpanded) {
+                switch item.children {
+                case .none:
+                    ProgressView()
+                        .padding(.leading, 8)
+                case .some(let children) where children.isEmpty:
+                    Text("空文件夹")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 8)
+                case .some(let children):
+                    ForEach(children) { child in
+                        FileItemView(item: child, fileManager: fileManager)
+                    }
                 }
             } label: {
                 FileRowContent(item: item, fileManager: fileManager)
+            }
+            .onAppear {
+                isExpanded = fileManager.expandedPaths.contains(item.url.path)
+            }
+            .onChange(of: isExpanded) { newValue in
+                fileManager.setExpanded(newValue, for: item)
             }
         } else {
             FileRowContent(item: item, fileManager: fileManager)
@@ -187,29 +294,55 @@ struct FileItemView: View {
 
 // MARK: - 文件行内容
 
+private struct FilePreviewTapModifier: ViewModifier {
+    @Binding var previewItem: FileRowContent.PreviewItem?
+    let item: FileItem
+
+    func body(content: Content) -> some View {
+        if item.isDirectory {
+            content
+        } else {
+            content.onTapGesture {
+                if item.isPreviewForbidden {
+                    Toast.info(title: "没有权限")
+                } else {
+                    previewItem = FileRowContent.PreviewItem(url: item.previewURL)
+                }
+            }
+        }
+    }
+}
+
 struct FileRowContent: View {
     let item: FileItem
     let fileManager: FileTreeManager
     @State private var showDeleteAlert = false
+    @State private var showClearAlert = false
+    @State private var imageIcon: Image?
+    @State private var sharedFile: URL?
+    @State private var previewItem: PreviewItem?
 
-    @State private var imageIcon: Image? = nil
-
-    @State private var sharedFile: URL? = nil
+    struct PreviewItem: Identifiable {
+        let url: URL
+        var id: String { url.path }
+    }
 
     var body: some View {
         HStack(spacing: 12) {
-
             if item.isDirectory {
                 Image(systemName: item.icon)
                     .foregroundColor(.blue)
                     .font(.title2)
+            } else if let imageIcon {
+                imageIcon
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 25, height: 25)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
             } else {
-                if let imageIcon {
-                    imageIcon
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25, height: 25)
-                }
+                Image(systemName: item.icon)
+                    .foregroundColor(.secondary)
+                    .font(.title2)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -235,52 +368,81 @@ struct FileRowContent: View {
         }
         .padding(.vertical, 8)
         .contentShape(Rectangle())
-        .contextMenu(menuItems: { 
-            if let uiImage = imageIcon, let sharedFile, !item.isDirectory {
-                ShareLink(
-                    item: sharedFile,
-                    preview: SharePreview(
-                        item.url.lastPathComponent,
-                        image: uiImage
-                    )
-                ) {
-                    Label("分享", systemImage: "square.and.arrow.up")
+        .modifier(FilePreviewTapModifier(previewItem: $previewItem, item: item))
+        .contextMenu(
+            menuItems: {
+                if item.isDirectory && !item.isLibraryProtected {
+                    Button(role: .destructive) {
+                        showClearAlert = true
+                    } label: {
+                        Label("清空文件夹", systemImage: "trash.slash")
+                    }
+                    Divider()
                 }
-                Divider()
-            }
 
-            Button(role: .destructive) {
-                showDeleteAlert = true
-            } label: {
-                Label("删除", systemImage: "trash")
-            }
-        }, preview: { 
-            if let image = imageIcon{
-                image
-                    .font(.system(size: 200))
-            }else{
-                Image(systemName: "doc.append")
-                    .font(.title2)
-            }
-        })
+                if let uiImage = imageIcon, let sharedFile, !item.isDirectory {
+                    ShareLink(
+                        item: sharedFile,
+                        preview: SharePreview(item.url.lastPathComponent, image: uiImage)
+                    ) {
+                        Label("分享", systemImage: "square.and.arrow.up")
+                    }
+                    Divider()
+                }
 
+                if !item.isLibraryProtected {
+                    Button(role: .destructive) {
+                        if item.isPreferencesProtected {
+                            Toast.info(title: "没有权限")
+                        } else {
+                            showDeleteAlert = true
+                        }
+                    } label: {
+                        Label("删除", systemImage: "trash")
+                    }
+                }
+            },
+            preview: {
+                if let image = imageIcon {
+                    image
+                        .font(.system(size: 200))
+                } else {
+                    Image(systemName: item.icon)
+                        .font(.title2)
+                }
+            }
+        )
         .alert("确认删除", isPresented: $showDeleteAlert) {
             Button("取消", role: .cancel) {}
             Button("删除", role: .destructive) {
-                let excludedExtensions: Set<String> = ["plist", "sqlite"]
-
-                if !excludedExtensions.contains(item.url.pathExtension) {
-                    fileManager.deleteItem(item)
-                } else {
+                if item.isPreferencesProtected || item.isLibraryProtected {
+                    Toast.info(title: "没有权限")
+                } else if ["plist", "sqlite"].contains(item.url.pathExtension) {
                     Toast.info(title: "系统保留文件!")
+                } else {
+                    fileManager.deleteItem(item)
+                    AudioManager.shared.updateFileList()
                 }
-                AudioManager.shared.updateFileList()
             }
         } message: {
             Text("确定要删除 \"\(item.name)\" 吗？此操作无法撤销。")
         }
+        .alert("清空文件夹", isPresented: $showClearAlert) {
+            Button("取消", role: .cancel) {}
+            Button("清空", role: .destructive) {
+                fileManager.clearFolder(item)
+                AudioManager.shared.updateFileList()
+            }
+        } message: {
+            Text("确定要清空 \"\(item.name)\" 内的所有文件吗？此操作无法撤销。")
+        }
+        .sheet(item: $previewItem) { item in
+            QuickLookPreview(url: item.url) { previewItem = nil }
+                .ignoresSafeArea()
+        }
         .task(id: item.url) {
-            self.imageIcon = await thumbnail( url: item.url, defaultIcon: item.icon )
+            guard !item.isDirectory else { return }
+            self.imageIcon = await thumbnail()
 
             if item.url.pathExtension == "plist" {
                 self.sharedFile = AppManager.createDatabaseFileTem()
@@ -290,33 +452,20 @@ struct FileRowContent: View {
         }
     }
 
-    func thumbnail(url: URL, size: CGFloat = 100, defaultIcon _: String) async -> Image {
-        do {
-            if url.path.contains("ImageCache"),!item.isDirectory,
-               let uiImage = await ImageManager.loadThumbnail(path: url.path(), maxPixel: 300)
-            {
-                return Image(uiImage: uiImage)
-
-            } else if url.pathExtension == "sqlite" {
-                return Image("sqlite")
-            }
-
-            let request = QLThumbnailGenerator.Request(
-                fileAt: url,
-                size: CGSize(width: size, height: size),
-                scale: UIScreen.main.scale,
-                representationTypes: .all
-            )
-            let data = try await QLThumbnailGenerator.shared
-                .generateBestRepresentation(for: request)
-            
-            return Image(uiImage: data.uiImage)
-
-        } catch {
-            
-            
-            return Image(systemName: "photo.stack").resizable()
+    func thumbnail(size: CGFloat = 100) async -> Image? {
+        if item.url.pathExtension == "sqlite" {
+            return Image("sqlite")
         }
+
+        if item.isImageFile,
+           let uiImage = await ImageManager.loadThumbnail(
+               path: item.url.path(),
+               maxPixel: size * UIScreen.main.scale
+           )
+        {
+            return Image(uiImage: uiImage)
+        }
+        return nil
     }
 }
 
@@ -360,7 +509,6 @@ struct NoletFileList: View {
         }
         .navigationTitle("文件管理")
         .navigationBarTitleDisplayMode(.large)
-        .searchable(text: .constant(""), prompt: Text("搜索"))
         .alert("错误", isPresented: .constant(fileManager.errorMessage != nil)) {
             Button("确定") {
                 fileManager.errorMessage = nil
@@ -374,6 +522,69 @@ struct NoletFileList: View {
 }
 
 // MARK: - 扩展
+
+struct QuickLookPreview: UIViewControllerRepresentable {
+    let url: URL
+    let onDone: () -> Void
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let ql = PreviewController()
+        ql.dataSource = context.coordinator
+        ql.currentPreviewItemIndex = 0
+        ql.onDone = { [weak coordinator = context.coordinator] in coordinator?.done() }
+
+        let nav = UINavigationController(rootViewController: ql)
+        nav.modalPresentationStyle = .fullScreen
+        return nav
+    }
+
+    func updateUIViewController(_: UIViewController, context _: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator(url: url, onDone: onDone) }
+
+    final class Coordinator: NSObject, QLPreviewControllerDataSource {
+        private let url: URL
+        private let onDone: () -> Void
+
+        init(url: URL, onDone: @escaping () -> Void) {
+            self.url = url
+            self.onDone = onDone
+        }
+
+        func numberOfPreviewItems(in _: QLPreviewController) -> Int { 1 }
+
+        func previewController(_: QLPreviewController, previewItemAt index: Int) -> QLPreviewItem {
+            url as NSURL
+        }
+
+        @objc func done() { onDone() }
+    }
+
+    final class PreviewController: QLPreviewController {
+        var onDone: (() -> Void)?
+
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            installDoneButton()
+        }
+
+        override func viewDidLayoutSubviews() {
+            super.viewDidLayoutSubviews()
+            installDoneButton()
+        }
+
+        private func installDoneButton() {
+            guard navigationItem.leftBarButtonItem?
+                .action != #selector(PreviewController.doneTapped) else { return }
+            navigationItem.leftBarButtonItem = UIBarButtonItem(
+                barButtonSystemItem: .done, target: self,
+                action: #selector(PreviewController.doneTapped)
+            )
+        }
+
+        @objc private func doneTapped() { onDone?() }
+    }
+}
 
 extension DateFormatter {
     static let fileDate: DateFormatter = {

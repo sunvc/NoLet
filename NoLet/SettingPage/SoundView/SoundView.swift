@@ -113,58 +113,50 @@ struct SoundView: View {
         .background(ContentBackgroundView())
         .navigationTitle("所有铃声")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Section {
-                        Button {
-                            self.downLoading = true
-                            Task {
-                                do {
-                                    try await self.downloadSounds()
-                                    Toast.success(title: "下载成功")
+            ToolbarItem(placement: .secondaryAction) {
+                Section {
+                    Button {
+                        self.downLoading = true
+                        Task {
+                            do {
+                                try await self.downloadSounds()
+                                Toast.success(title: "下载成功")
 
-                                } catch {
-                                    logger.error("\(error)")
-                                    Toast.error(title: "下载失败")
-                                }
-                                self.downLoading = false
+                            } catch {
+                                logger.error("\(error)")
+                                Toast.error(title: "下载失败")
                             }
-                        } label: {
-                            Label("获取所有铃声", systemImage: "arrow.down.doc")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.green, .primary)
-                                .accessibilityLabel("同步所有铃声")
+                            self.downLoading = false
                         }
+                    } label: {
+                        Label("获取所有铃声", systemImage: "arrow.down.doc")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.green, .primary)
+                            .accessibilityLabel("同步所有铃声")
                     }
+                }
+            }
 
-                    Section {
-                        Button {
-                            guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
-                                return
-                            }
-                            
-                            do{
-                                try FileManager.default.removeItem(at: soundsDirURL)
-                                tipsManager.updateFileList()
-                                Toast.success(title: "删除成功")
-                            }catch{
-                                Toast.error(title: "删除失败")
-                            }
-
-                        } label: {
-                            Label("删除下载铃声", systemImage: "trash")
-                                .symbolRenderingMode(.palette)
-                                .foregroundStyle(.red, .primary)
-                                .accessibilityLabel("删除下载铃声")
+            ToolbarItem(placement: .secondaryAction) {
+                Section {
+                    Button {
+                        guard let soundsDirURL = NCONFIG.Path(.sounds) else {
+                            return
                         }
-                    }
 
-                } label: {
-                    if downLoading {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                    } else {
-                        Label("更多", systemImage: "menubar.arrow.down.rectangle")
+                        do {
+                            try FileManager.default.removeItem(at: soundsDirURL)
+                            tipsManager.updateFileList()
+                            Toast.success(title: "删除成功")
+                        } catch {
+                            Toast.error(title: "删除失败")
+                        }
+
+                    } label: {
+                        Label("删除下载铃声", systemImage: "trash")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.red, .primary)
+                            .accessibilityLabel("删除下载铃声")
                     }
                 }
             }
@@ -187,8 +179,14 @@ struct SoundView: View {
                 directoryHint: .isDirectory
             )
 
-        guard let soundsDirURL = NCONFIG.getDir(.sounds) else {
-            throw NoletError(message: "Not Dir")
+        defer {
+            tipsManager.updateFileList()
+            try? fileManager.removeItem(at: soundsTem)
+            try? fileManager.removeItem(at: fromURL)
+        }
+
+        guard let soundsDirURL = NCONFIG.Path(.sounds) else {
+            throw NoletError("Not Dir")
         }
 
         try AppleArchiveManager.extractArchive(from: fromURL, to: soundsTem)
@@ -235,11 +233,6 @@ struct SoundView: View {
                 try fileManager.moveItem(at: item, to: outputURL)
             }
         }
-
-        tipsManager.updateFileList()
-
-        try? fileManager.removeItem(at: soundsTem)
-        try? fileManager.removeItem(at: fromURL)
     }
 
     /// 通用文件保存方法
@@ -248,7 +241,7 @@ struct SoundView: View {
         name lastPath: String? = nil,
         maxNameLength: Int = 13
     ) async {
-        guard let groupDirectoryURL = NCONFIG.getDir(.sounds) else { return }
+        guard let groupDirectoryURL = NCONFIG.Path(.sounds) else { return }
 
         var fileName: String {
             String((lastPath ?? sourceURL.lastPathComponent).suffix(maxNameLength))
@@ -278,15 +271,10 @@ struct SoundView: View {
     }
 
     func deleteSound(url: URL) {
-        guard let soundsDirectoryURL = NCONFIG.getDir(.sounds) else { return }
-
         try? FileManager.default.removeItem(at: url)
-
-        let groupSoundURL = soundsDirectoryURL.appendingPathComponent(
-            "\(NCONFIG.longSoundPrefix).\(url.lastPathComponent)")
-
-        try? FileManager.default.removeItem(at: groupSoundURL)
-
+        if let groupSoundURL = NCONFIG.SoundName.long.path(url.lastPathComponent) {
+            try? FileManager.default.removeItem(at: groupSoundURL)
+        }
         tipsManager.updateFileList()
     }
 }

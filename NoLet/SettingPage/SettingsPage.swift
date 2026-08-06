@@ -18,12 +18,11 @@ struct SettingsPage: View {
     @ObservedObject private var manager = AppManager.shared
 
     @Default(.appIcon) var setting_active_app_icon
-
-    @Default(.sound) var sound
     @Default(.servers) var servers
     @Default(.assistantAccouns) var assistantAccouns
     @Default(.usePtt) var usePtt
-
+    @Default(.sound) var sound
+    
     @State private var webShow: Bool = false
     @State private var showLoading: Bool = false
     @State private var showPaywall: Bool = false
@@ -113,25 +112,11 @@ struct SettingsPage: View {
                         return true
                     }.id("servers")
                 }
-
+                
+                
                 ListButton {
                     Label {
-                        Text("智能助手")
-                    } icon: {
-                        Image("agent")
-                            .resizable()
-                            .scaledToFit()
-                            .customForegroundStyle(.accent, .primary)
-                    }
-
-                } action: {
-                    manager.router = [.noletChatSetting(nil)]
-                    return true
-                }.id("noletchatsettings")
-
-                ListButton {
-                    Label {
-                        Text("铃声设置")
+                        Text("铃声配置")
                     } icon: {
                         Image(systemName: "speaker.wave.2.circle")
                             .symbolRenderingMode(.palette)
@@ -144,10 +129,24 @@ struct SettingsPage: View {
                     manager.router = [.sound]
                     return true
                 }.id("sounds")
+                
 
                 ListButton {
                     Label {
-                        Text("算法配置")
+                        Text("快捷动作")
+                    } icon: {
+                        Image(systemName: "bell.and.waveform")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                    }
+                } action: {
+                    manager.router = [.notificationActions]
+                    return true
+                }.id("notificationactions")
+
+                ListButton {
+                    Label {
+                        Text("加密配置")
                     } icon: {
                         Image(systemName: "key.viewfinder")
                             .symbolRenderingMode(.palette)
@@ -158,6 +157,19 @@ struct SettingsPage: View {
                     manager.router = [.crypto]
                     return true
                 }.id("cryptoview")
+
+                ListButton {
+                    Label {
+                        Text("脚本管理")
+                    } icon: {
+                        Image(systemName: "applescript")
+                            .symbolRenderingMode(.palette)
+                            .customForegroundStyle(.accent, Color.primary)
+                    }
+                } action: {
+                    manager.router = [.script]
+                    return true
+                }.id("applescript")
 
                 ListButton {
                     Label {

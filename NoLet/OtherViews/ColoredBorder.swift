@@ -63,7 +63,7 @@ struct ColoredBorder: View {
             bottomLeft = cornerRadius
             bottomRight = cornerRadius
         } else {
-            let data: Double = ProcessInfo.processInfo.isiOSAppOnMac ? 5 : 55
+            let data: Double = .isiOSAppOnMac ? 5 : 55
             topLeft = data
             topRight = data
             bottomLeft = data

@@ -13,11 +13,12 @@
 
 import Defaults
 import Kingfisher
+import CoreData
 import SwiftUI
 import UniformTypeIdentifiers
 
 struct MarkdownMessageCard: MessageCardProtocol {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration
 
     @State private var showLoading: Bool = false
@@ -31,9 +32,9 @@ struct MarkdownMessageCard: MessageCardProtocol {
             message.expiredTime()
         } else {
             switch timeMode {
-            case 1: message.createDate.formatString()
+            case 1: (message.createDate ?? .now).formatString()
             case 2: message.expiredTime()
-            default: message.createDate.agoFormatString()
+            default: (message.createDate ?? .now).agoFormatString()
             }
         }
     }
@@ -47,7 +48,7 @@ struct MarkdownMessageCard: MessageCardProtocol {
         if manager.copyMessageId == message.id {
             return .orange
         } else {
-            return message.reply == nil ? .gray.opacity(0.6) : .green
+            return message.value(for: "reply") == nil ? .gray.opacity(0.6) : .green
         }
     }
 
@@ -103,7 +104,7 @@ struct MarkdownMessageCard: MessageCardProtocol {
                     .padding(.horizontal, 3)
             }
 
-            if let url = message.image {
+            if let url = message.value(for: .image, as: String.self) {
                 AsyncPhotoView(url: url, zoom: false, height: 230)
                     .padding(5)
                     .contentShape(Rectangle())
@@ -112,9 +113,9 @@ struct MarkdownMessageCard: MessageCardProtocol {
                     }
             }
 
-            if !message.body.isEmpty {
+            if !message.bodyText.isEmpty {
                 MarkdownCustomView(
-                    content: message.body,
+                    content: message.bodyText,
                     searchText: config.searchText,
                     select: manager.copyMessageId == message.id
                 )
@@ -129,19 +130,19 @@ struct MarkdownMessageCard: MessageCardProtocol {
             }
             Divider()
             HStack(alignment: .center) {
-                AvatarView(icon: message.icon)
+                AvatarView(icon: message.value(for: .icon, as: String.self))
                     .frame(width: 30, height: 30, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .padding(.bottom, 5)
 
                 if config.showGroup {
                     HighlightedText(
-                        text: message.group,
+                        text: message.groupText,
                         searchText: config.searchText
                     )
                     .textSelection(.enabled)
                     .accessibilityLabel("群组名")
-                    .accessibilityValue(message.group)
+                    .accessibilityValue(message.groupText)
                     Spacer()
                 }
 
@@ -214,7 +215,7 @@ struct MarkdownMessageCard: MessageCardProtocol {
 #Preview {
     List {
         MarkdownMessageCard(
-            message: MessagesManager.examples().first!, config: .init()
+            message: MessageEntity.preview(MessagesManager.examples().first!), config: .init()
         )
         .listRowBackground(Color.clear)
         .listSectionSeparator(.hidden)

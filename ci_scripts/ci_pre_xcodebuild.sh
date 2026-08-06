@@ -18,7 +18,7 @@ if [[ "${NOLET_BUILD_MODE}" = "main" && "${CI_XCODEBUILD_ACTION}" = "archive" ]]
 
     #----- 2. Remove existing icons ------------------------------------------
     echo "Removing existing App Icon and Logo..."
-    rm -rf "${APP_ICON_PATH}" "${APP_LOGO_PATH}"
+    rm -rf "${APP_ICON_PATH}" "${APP_LOGO_PATH}" "${APP_AUDIO_PATH}"
 
     #----- 3. Move new icon files --------------------------------------------
     move_file() {

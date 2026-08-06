@@ -13,7 +13,6 @@ import CryptoKit
 import SwiftUI
 import UIKit
 
-
 extension Character {
     var isEmoji: Bool {
         return unicodeScalars.contains { $0.properties.isEmoji } &&
@@ -22,34 +21,29 @@ extension Character {
     }
 }
 
-
-
 extension String {
-    
     /// 移除 URL 的 HTTP/HTTPS 前缀
     func removeHTTPPrefix() -> String {
         return replacingOccurrences(of: "^(https?:\\/\\/)?", with: "", options: .regularExpression)
     }
 
-    var hasHttp: Bool { ["http", "https"].contains { self.lowercased().hasPrefix($0) } }
-
-    func sha256() -> String {
+    func sha256(max length: Int = 32) -> String {
         guard let data = data(using: .utf8) else {
             return String(prefix(10))
         }
-        return SHA256.hash(data: data).compactMap { String(format: "%02x", $0) }.joined()
+        return SHA256.hash(data: data)
+            .prefix(length)
+            .compactMap { String(format: "%02x", $0) }
+            .joined()
     }
 
     var removingAllWhitespace: String {
         self.filter { !$0.isWhitespace }
     }
 
-    
     func normalizedURLString() -> String {
         if self.isEmpty { return self }
-        if let url = URL(string: self),
-           let scheme = url.scheme?.lowercased(), scheme.hasHttp
-        {
+        if URL(remote: self) != nil {
             return self
         }
 
@@ -60,5 +54,11 @@ extension String {
         }
 
         return "https://" + trimmed
+    }
+}
+
+extension String {
+    var deletingPathExtension: String {
+        (self as NSString).deletingPathExtension
     }
 }

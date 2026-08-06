@@ -12,6 +12,10 @@
 
 import Foundation
 @preconcurrency import UserNotifications
+import OSLog
+
+let logger = Logger(subsystem: "app.wzs.logger", category: "NotificationService")
+
 
 class NotificationService: UNNotificationServiceExtension {
     private var contentActor: NotificationServiceActor?
@@ -26,7 +30,7 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(request.content)
             return
         }
-
+        
         contentActor = NotificationServiceActor(bestAttemptContent, contentHandler: contentHandler)
 
         let identifier = request.identifier

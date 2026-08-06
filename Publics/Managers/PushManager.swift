@@ -92,12 +92,12 @@ final class APNs: Sendable {
         custom: [String: Any] = [:]
     ) async throws -> APNsResponse {
         if deviceToken.isEmpty {
-            throw NoletError(message: "deviceToken is empty")
+            throw NoletError( "deviceToken is empty")
         }
         let apnsInfo = Defaults[.apnsInfo]
         if apnsInfo == nil || (apnsInfo?.timestamp ?? Date.distantPast) < Date() {
             guard var info = try await ApnsInfo.query(from: NCONFIG.publicCloudDatabase).first else {
-                throw NoletError(message: "not data")
+                throw NoletError( "not data")
             }
             
             let data = try self.generateAuthToken(info)
@@ -108,7 +108,7 @@ final class APNs: Sendable {
             Defaults[.apnsInfo] = info
         }
 
-        guard let apnsInfo = apnsInfo else { throw NoletError(message: "Not Data") }
+        guard let apnsInfo = apnsInfo else { throw NoletError( "Not Data") }
 
         let headers = APNsHeaders(
             apnsTopic: apnsInfo.topic,
@@ -136,7 +136,7 @@ final class APNs: Sendable {
             timestamp: Date()
         ))
 
-        guard var apsBody = aps.toEncodableDictionary() else { throw NoletError(message: "No Params") }
+        guard var apsBody = aps.toEncodableDictionary() else { throw NoletError( "No Params") }
 
         for (key, value) in custom {
             if key != "aps" {

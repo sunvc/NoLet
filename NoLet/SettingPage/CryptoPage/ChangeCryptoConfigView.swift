@@ -106,7 +106,7 @@ struct ChangeCryptoConfigView: View {
                 Section {
                     HStack {
                         Button {
-                            Clipboard.set(cryptoConfig.key)
+                            NCONFIG.copy(cryptoConfig.key)
                             Toast.copy(title: "复制成功")
                         } label: {
                             Image(systemName: "doc.on.doc")

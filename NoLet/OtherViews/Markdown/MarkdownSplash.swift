@@ -34,7 +34,7 @@ struct CodeBlock: View {
                 Spacer()
 
                 Button(action: {
-                    Clipboard.set(configuration.content)
+                    NCONFIG.copy(configuration.content)
                     Haptic.impact()
                     Toast.copy(title: "复制成功")
                 }) {

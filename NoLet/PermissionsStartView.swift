@@ -206,7 +206,7 @@ struct PermissionsStartView: View {
                                     self.basePer.isSelected = true
                                 }
                             }
-                        if !ProcessInfo.processInfo.isiOSAppOnMac {
+                        if !.isiOSAppOnMac {
                             PermissionOptionCard(option: $voicePer)
                         }
                     }
@@ -334,17 +334,6 @@ struct PermissionsStartView: View {
         _alertMessage = State(initialValue: String(localized: "网络权限是应用正常运行的基础，请授予网络权限以继续。"))
     }
 
-    // 验证URL是否有效
-    private static func isValidURL(_ urlString: String) -> Bool {
-        if urlString.isEmpty {
-            return false
-        }
-        if let url = URL(string: urlString) {
-            return url.scheme != nil && url.host != nil
-        }
-
-        return urlString.hasHttp
-    }
 }
 
 /// 权限选项卡片视图 - Toggle风格
@@ -422,7 +411,7 @@ struct PermissionOptionCard: View {
     ContentView()
         .sheet(isPresented: .constant(true)) {
             PermissionsStartView()
-                .presentationDetents([.large])
+                .customDetents([.large])
                 .customPresentationCornerRadius(30)
         }
 }

@@ -43,12 +43,8 @@ enum Identifiers: String, CaseIterable, Codable {
             }
         }
 
-        /// 翻译/总结由通知扩展就地处理，不拉起主 App
-        var inExtension: Bool {
-            switch self {
-            case .translateAction, .abstractAction: true
-            default: false
-            }
+        var model: NotificationActionModel {
+            NotificationActionModel(identifier: rawValue, builtInId: rawValue, title: "", icon: "")
         }
     }
 
@@ -57,10 +53,37 @@ enum Identifiers: String, CaseIterable, Codable {
             UNNotificationAction(
                 identifier: item.rawValue,
                 title: item.title,
-                options: item.inExtension ? [] : [.foreground],
+                options: [],
                 icon: .init(systemImageName: item.icon)
             )
         }
+
+        let customCategories = Defaults[.customNotificationCategories]
+            .compactMap { category -> UNNotificationCategory? in
+                let unActions = category.actions.map { item in
+                    if let builtInId = item.builtInId, let action = Action(rawValue: builtInId) {
+                        return UNNotificationAction(
+                            identifier: item.identifier,
+                            title: action.title,
+                            options: [],
+                            icon: .init(systemImageName: action.icon)
+                        )
+                    } else {
+                        return UNNotificationAction(
+                            identifier: item.identifier,
+                            title: item.title,
+                            options: [.foreground],
+                            icon: item.icon.isEmpty ? nil : .init(systemImageName: item.icon)
+                        )
+                    }
+                }
+                return UNNotificationCategory(
+                    identifier: category.id,
+                    actions: unActions,
+                    intentIdentifiers: [],
+                    options: .customDismissAction
+                )
+            }
 
         let replyActions = [
             UNTextInputNotificationAction(
@@ -70,15 +93,73 @@ enum Identifiers: String, CaseIterable, Codable {
             ),
         ]
 
-        let categories = Self.allCases.compactMap { item in
-            UNNotificationCategory(
-                identifier: item.rawValue,
-                actions: item == .reply ? replyActions : actions,
-                intentIdentifiers: [],
-                options: .customDismissAction
-            )
+        let categories = Self.allCases.compactMap { item -> UNNotificationCategory? in
+            switch item {
+            case .reply:
+                return UNNotificationCategory(
+                    identifier: item.rawValue,
+                    actions: replyActions,
+                    intentIdentifiers: [],
+                    options: .customDismissAction
+                )
+            default:
+                return UNNotificationCategory(
+                    identifier: item.rawValue,
+                    actions: actions,
+                    intentIdentifiers: [],
+                    options: .customDismissAction
+                )
+            }
         }
 
-        UNUserNotificationCenter.current().setNotificationCategories(Set(categories))
+        UNUserNotificationCenter.current()
+            .setNotificationCategories(Set(categories + customCategories))
+    }
+}
+
+/// NATO 字母表，作为自定义分类 identifier 的可选值
+enum NotificationCategoryIdentifier: String, CaseIterable, Identifiable, Codable, Equatable {
+    case alfa
+    case bravo
+    case charlie
+    case delta
+    case echo
+    case foxtrot
+    case golf
+    case hotel
+    case india
+    case juliett
+    case kilo
+    case lima
+    case mike
+    case november
+    case oscar
+    case papa
+    case quebec
+    case romeo
+    case sierra
+    case tango
+    case uniform
+    case victor
+    case whiskey
+    case xray
+    case yankee
+    case zulu
+
+    var id: String { rawValue }
+}
+
+extension NotificationActionModel {
+    var builtInAction: Identifiers.Action? {
+        guard let builtInId else { return nil }
+        return Identifiers.Action(rawValue: builtInId)
+    }
+
+    var displayTitle: String {
+        builtInAction?.title ?? title
+    }
+
+    var displayIcon: String {
+        builtInAction?.icon ?? icon
     }
 }

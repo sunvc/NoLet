@@ -321,6 +321,38 @@
         }
       }
     },
+    "执行成功": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Execution Successful"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "执行成功"
+          }
+        }
+      }
+    },
+    "执行脚本中": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running Script"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "执行脚本中"
+          }
+        }
+      }
+    },
     "摘要助手": {
       "localizations": {
         "en": {
@@ -525,6 +557,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "翻译助手"
+          }
+        }
+      }
+    },
+    "脚本最后一个表达式必须是一个函数": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The script's last expression must be a function"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "脚本最后一个表达式必须是一个函数"
+          }
+        }
+      }
+    },
+    "脚本执行超时": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Script Execution Timeout"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "脚本执行超时"
+          }
+        }
+      }
+    },
+    "语法错误": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syntax Error"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语法错误"
           }
         }
       }

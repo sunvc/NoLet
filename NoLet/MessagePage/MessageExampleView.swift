@@ -45,7 +45,10 @@ struct MessageExampleView: View {
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
             }
-            ForEach(createExample(cryptoData: cryptoConfigs.config(), server: pickerSelection), id: \.id) { item in
+            ForEach(
+                createExample(cryptoData: cryptoConfigs.config(), server: pickerSelection),
+                id: \.id
+            ) { item in
                 let resultURL = server + item.params
 
                 Section {
@@ -85,7 +88,7 @@ struct MessageExampleView: View {
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.tint, Color.primary)
                                 .VButton(onRelease: { _ in
-                                    if resultURL.hasHttp, let url = URL(string: resultURL) {
+                                    if let url = URL(remote: resultURL) {
                                         UIApplication.shared.open(url)
                                     }
                                     return true
@@ -106,7 +109,6 @@ struct MessageExampleView: View {
                             .background(Color.blue)
                     }
                 }
-                
             }
         }
         .listStyle(GroupedListStyle())
@@ -140,12 +142,15 @@ struct MessageExampleView: View {
 }
 
 extension MessageExampleView {
-    func createExample(cryptoData: CryptoModelConfig, server: PushServerModel?) -> [PushExampleModel] {
+    func createExample(
+        cryptoData: CryptoModelConfig,
+        server: PushServerModel?
+    ) -> [PushExampleModel] {
         let ciphertext = CryptoManager(cryptoData).encrypt(NCONFIG.testData)?.replacingOccurrences(
             of: "+",
             with: "%2B"
         ) ?? ""
-        
+
         return [
             PushExampleModel(
                 header: Text("点击右上角按钮可以复制测试URL、预览推送效果"),
@@ -157,7 +162,7 @@ extension MessageExampleView {
                     * ttl: 消息保存时间 可选值 0...
                     """),
                 title: String(localized: "基本用法示例"),
-                params: String(localized: "标题/副标题/内容?group=默认&badge=1&ttl=1"),
+                params: String(localized: "标题/副标题/内容?group=默认") + "&badge=1&ttl=100",
                 index: 1
             ),
 
@@ -165,7 +170,7 @@ extension MessageExampleView {
                 header: Spacer(),
                 footer: Text("GET方法需要URIConponent编码"),
                 title: String(localized: "Markdown样式"),
-                params: "?markdown=%7C%20Name%20%20%20%7C%20Age%20%7C%20City%20%20%20%20%20%20%7C%0A%7C--------%7C-----%7C-----------%7C%0A%7C%20Alice%20%20%7C%2024%20%20%7C%20New%20York%20%20%7C%0A%7C%20Bob%20%20%20%20%7C%2030%20%20%7C%20San%20Francisco%20%7C%0A%7C%20Carol%20%20%7C%2028%20%20%7C%20London%20%20%20%20%7C%0A",
+                params: "?markdown=%7C%20Name%20%20%20%7C%20Age%20%7C%20City%20%20%20%20%20%20%7C%0A%7C--------%7C-----%7C-----------%7C%0A%7C%20Alice%20%20%7C%2024%20%20%7C%20New%20York%20%20%7C%0A%7C%20Bob%20%20%20%20%7C%2030%20%20%7C%20San%20Francisco%20%7C%0A%7C%20Carol%20%20%7C%2028%20%20%7C%20London%20%20%20%20%7C%0A&ttl=100",
                 index: 2
             ),
 
@@ -183,7 +188,7 @@ extension MessageExampleView {
                 },
                 footer: Text("可以为推送设置不同的铃声"),
                 title: String(localized: "推送铃声"),
-                params: "\(String(localized: "推送内容"))?sound=double",
+                params: "\(String(localized: "推送内容"))?sound=double&ttl=100",
                 index: 3
             ),
 
@@ -203,7 +208,7 @@ extension MessageExampleView {
                 },
                 footer: Text("支持文字图标、Emoji图标、自定义背景"),
                 title: String(localized: "自定义icon"),
-                params: "\(String(localized: "推送内容"))?icon=\(NCONFIG.logoImage)",
+                params: "\(String(localized: "推送内容"))?icon=\(NCONFIG.logoImage)&ttl=100",
                 index: 5
             ),
 
@@ -211,7 +216,7 @@ extension MessageExampleView {
                 header: Text("下拉消息会显示图片"),
                 footer: Text("携带一个image,会自动下载缓存"),
                 title: String(localized: "携带图片"),
-                params: "?title=\(String(localized: "标题"))&body=\(String(localized: "内容"))&image=\(NCONFIG.logoImage)",
+                params: "?title=\(String(localized: "标题"))&body=\(String(localized: "内容"))&image=\(NCONFIG.logoImage)&ttl=100",
                 index: 6
             ),
 
@@ -226,7 +231,7 @@ extension MessageExampleView {
                     * 参数可使用 0-10代替，具体查看文档
                     """),
                 title: String(localized: "通知类型"),
-                params: "\(String(localized: "重要提醒通知,70%音量"))?level=critical&volume=7",
+                params: "\(String(localized: "重要提醒通知,70%音量"))?level=critical&volume=7&ttl=100",
                 index: 7
             ),
 
@@ -234,7 +239,7 @@ extension MessageExampleView {
                 header: Text("URLScheme或者网址"),
                 footer: Text("点击跳转app"),
                 title: String(localized: "跳转第三方"),
-                params: "\(String(localized: "推送内容"))?url=weixin://",
+                params: "\(String(localized: "推送内容"))?url=weixin://&ttl=100",
                 index: 8
             ),
 
@@ -242,7 +247,7 @@ extension MessageExampleView {
                 header: Text("持续响铃"),
                 footer: Text("通知铃声将持续播放30s，同时收到多个将按顺序依次响铃"),
                 title: String(localized: "持续响铃"),
-                params: "\(String(localized: "持续响铃"))?call=1",
+                params: "\(String(localized: "持续响铃"))?call=1&ttl=100",
                 index: 9
             ),
 
@@ -253,7 +258,7 @@ extension MessageExampleView {
                     Button {
                         manager.router = [.example, .crypto]
                     } label: {
-                        Text("算法配置")
+                        Text("加密配置")
                             .font(.callout)
                             .padding(.horizontal, 10)
                     }
@@ -261,7 +266,7 @@ extension MessageExampleView {
                 },
                 footer: Text("加密后请求需要注意特殊字符的处理"),
                 title: String(localized: "端到端加密推送"),
-                params: "?ciphertext=\(ciphertext)",
+                params: "?ciphertext=\(ciphertext)&ttl=100",
                 index: 10
             ),
 
@@ -269,7 +274,7 @@ extension MessageExampleView {
                 header: Text("快捷回复"),
                 footer: Text("回复内容会拼接在用户指定的reply参数结尾"),
                 title: String(localized: "快捷回复"),
-                params: "\(String(localized: "快捷回复"))?reply=\(NCONFIG.server)?text=",
+                params: "\(String(localized: "快捷回复"))?ttl=100&reply=\(NCONFIG.server)?text=",
                 index: 11
             ),
 
@@ -277,7 +282,7 @@ extension MessageExampleView {
                 header: Text("获取设备位置"),
                 footer: Text("设备授权获取位置后,可以获取设备位置"),
                 title: String(localized: "获取位置"),
-                params: "\(String(localized: "获取位置"))?location=\(server?.server ?? "")",
+                params: "\(String(localized: "获取位置"))?location=\(server?.server ?? "")&ttl=100",
                 index: 12
             ),
         ]

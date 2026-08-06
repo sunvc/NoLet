@@ -43,6 +43,7 @@ struct ChatPrompt: Codable, Identifiable, Hashable {
             switch self {
             case .mcp:
                 ChatPrompt(
+                    id: "001",
                     timestamp: .now,
                     title: String(localized: "APP助手"),
                     content: String(
@@ -53,6 +54,7 @@ struct ChatPrompt: Codable, Identifiable, Hashable {
                 )
             case .translate(let lang):
                 ChatPrompt(
+                    id:  "002",
                     timestamp: .now,
                     title: String(localized: "翻译助手"),
                     content: String(localized: """
@@ -67,6 +69,7 @@ struct ChatPrompt: Codable, Identifiable, Hashable {
                 )
             case .abstract(let lang):
                 ChatPrompt(
+                    id:  "003",
                     timestamp: .now,
                     title: String(localized: "摘要助手"),
                     content: String(localized: """

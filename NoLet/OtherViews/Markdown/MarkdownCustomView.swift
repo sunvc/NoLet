@@ -75,42 +75,17 @@ struct WebImageProvider: ImageProvider {
 
 struct WebInlineImageProvider: InlineImageProvider {
     func image(with url: URL, label _: String) async throws -> Image {
-        guard let imagePath = await ImageManager.downloadImage(url.absoluteString),
-              let original = UIImage(contentsOfFile: imagePath)
-        else {
+        let maxWidth = await MainActor.run { UIScreen.main.bounds.width - 30 }
+        guard let thumb = await ImageManager.thumbImage(
+            url.absoluteString, maxPixel: maxWidth
+        ) else {
             throw NSError(
                 domain: "WebInlineImageProvider",
                 code: 1,
                 userInfo: [NSLocalizedDescriptionKey: "No Image!"]
             )
         }
-
-        return await MainActor.run {
-            let maxWidth = UIScreen.main.bounds.width - 30
-            let resized = resizedImageIfNeeded(original: original, maxWidth: maxWidth)
-            return Image(uiImage: resized)
-        }
-    }
-
-    // MARK: - Helper：按逻辑点宽度缩放
-
-    private func resizedImageIfNeeded(original: UIImage, maxWidth: CGFloat) -> UIImage {
-        let originalWidth = original.size.width
-        let originalHeight = original.size.height
-
-        guard originalWidth > maxWidth else {
-            return original
-        }
-
-        let scale = maxWidth / originalWidth
-        let newSize = CGSize(width: originalWidth * scale, height: originalHeight * scale)
-
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-        let newImage = renderer.image { _ in
-            original.draw(in: CGRect(origin: .zero, size: newSize))
-        }
-
-        return newImage
+        return Image(uiImage: thumb)
     }
 }
 
@@ -129,9 +104,8 @@ struct WebImageView: View {
         case .empty:
             Label("正在处理中...", systemImage: "rays")
                 .task {
-                    Task.detached(priority: .background) {
-                        await self.loadImage(url: url)
-                    }
+                    // 结构化任务:cell 消失即取消,不再用 detached 孤儿任务。
+                    await loadImage(url: url)
                 }
         case .success(let image):
             ResizeToFit(idealSize: image.size) {
@@ -149,17 +123,20 @@ struct WebImageView: View {
     }
 
     func loadImage(url: URL?) async {
-        if let url = url {
-            if let imageURL = await ImageManager.downloadImage(url.absoluteString),
-               let uiImage = UIImage(contentsOfFile: imageURL)
-            {
-                image = uiImage
-                status = .success(uiImage)
-            } else {
-                status = .failure(String(localized: "加载失败"))
-            }
-        } else {
+        guard let url else {
             status = .failure(String(localized: "地址错误"))
+            return
+        }
+        // 下采样到屏宽,正文大图不再全像素解码常驻内存。
+        if let thumb = await ImageManager.thumbImage(
+            url.absoluteString,
+            maxPixel: UIScreen.main.bounds.width
+        ) {
+            guard !Task.isCancelled else { return }
+            image = thumb
+            status = .success(thumb)
+        } else {
+            status = .failure(String(localized: "加载失败"))
         }
     }
 }

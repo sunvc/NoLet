@@ -93,7 +93,6 @@ final class WeChatManager: NSObject, ObservableObject {
                 url: url,
                 method: .GET,
                 params: params,
-                headers: [:]
             )
 
             let res: WeChatTokenResponse = try data.decode()

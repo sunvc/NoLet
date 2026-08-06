@@ -96,7 +96,6 @@ struct TiffanyBlueBackground: View {
         .ignoresSafeArea()
     }
 
-    // 封装的强类型果冻球绘制函数，完美避免编译歧义
     private func drawBlob(in context: GraphicsContext, x: CGFloat, y: CGFloat, size: CGFloat) {
         context.fill(
             Path(ellipseIn: CGRect(
@@ -109,52 +108,3 @@ struct TiffanyBlueBackground: View {
         )
     }
 }
-
-// MARK: - Preview
-struct PremiumBlobThemeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ZStack{
-            TiffanyBlueBackground()
-            
-            VStack {
-                Spacer()
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("Tiffany Blossom")
-                            .font(.system(size: 20, weight: .bold, design: .rounded))
-                            .foregroundColor(.black.opacity(0.85))
-                        Spacer()
-                        Image(systemName: "drop.fill")
-                            .foregroundColor(Color(red: 0.35, green: 0.78, blue: 0.80))
-                    }
-
-                    Text("当前画布已注入多轨不规则频率算法。5 个独立的流体微粒在全屏进行随机拓扑游走，碰撞时会触发高张力的液态拉丝与吞噬合并效果。")
-                        .font(.system(size: 14))
-                        .lineSpacing(6)
-                        .foregroundColor(.black.opacity(0.6))
-
-                    Button(action: {}) {
-                        Text("进入奇幻空间")
-                            .font(.system(size: 15, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Capsule().fill(Color(red: 0.25, green: 0.70, blue: 0.72)))
-                    }
-                    .padding(.top, 8)
-                }
-                .padding(28)
-                .background(.ultraThinMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 32, style: .continuous)
-                        .stroke(.white.opacity(0.6), lineWidth: 1)
-                )
-                .padding(24)
-                .shadow(color: Color.black.opacity(0.04), radius: 15, x: 0, y: 8)
-            }
-        }
-        
-    }
-}
-

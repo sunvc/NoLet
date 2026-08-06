@@ -11,10 +11,11 @@
 //  History:
 //    Created by Neo on 2026/6/17 13:25.
 
+import CoreData
 import SwiftUI
 
 struct GitHubMessageCard: View {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration = .init()
     @State private var isActionDispatched = false
 
@@ -25,7 +26,7 @@ struct GitHubMessageCard: View {
     @State private var showSnap: Bool = false
 
     var severity: String {
-        message.value(for: "severity", "EVENT").uppercased()
+       (message.value(for: "severity") ?? "EVENT").uppercased()
     }
 
     var levelColor: Color {
@@ -56,7 +57,7 @@ struct GitHubMessageCard: View {
                             .font(.system(size: 11))
                             .foregroundColor(.secondary)
 
-                        Text(verbatim: message.value(for: "header", "GITHUB"))
+                        Text(verbatim: message.value(for: "header") ?? "GITHUB")
                             .font(.system(size: 12, weight: .bold, design: .monospaced))
                             .foregroundColor(.primary)
                             .lineLimit(1)
@@ -64,7 +65,7 @@ struct GitHubMessageCard: View {
                         Text(verbatim: "•")
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
-                        Text(message.group)
+                        Text(message.groupText)
                             .font(.system(size: 11, weight: .semibold))
                             .foregroundColor(.secondary)
 
@@ -79,7 +80,7 @@ struct GitHubMessageCard: View {
                             onDelete: config.delete
                         )
 
-                        if message.ttl > 0 && !message.isExpired {
+                        if message.ttl > Int(Date.now.timeIntervalSince1970) {
                             Circle()
                                 .trim(from: 0.0, to: CGFloat(message.lifePercent))
                                 .stroke(levelColor, lineWidth: 1.5)
@@ -101,7 +102,7 @@ struct GitHubMessageCard: View {
                         .background(levelColor)
                         .cornerRadius(4)
 
-                        if let branch = message.value(for: "branch", "main") {
+                        if let branch = message.value(for: "branch") {
                             HStack(spacing: 4) {
                                 Image(systemName: "arrow.triangle.branch")
                                     .font(.system(size: 9))
@@ -115,7 +116,7 @@ struct GitHubMessageCard: View {
                             .cornerRadius(4)
                         }
 
-                        if let host = message.value(for: "from", ""),
+                        if let host = message.value(for: "from"),
                            let url = URL(string: host),
                            let host = url.host()
                         {
@@ -146,14 +147,14 @@ struct GitHubMessageCard: View {
                         }
                     }
 
-                    if !message.body.isEmpty {
+                    if !message.bodyText.isEmpty {
                         HStack(spacing: 8) {
                             Rectangle()
                                 .fill(levelColor.opacity(0.5))
                                 .frame(width: 2)
 
                             SCSelectableTextRepresentable(
-                                text: message.body.plainText,
+                                text: message.bodyText.plainText,
                                 font: .systemFont(ofSize: 11, weight: .medium),
                                 textColor: .textBlack,
                                 textAlignment: .left,
@@ -166,7 +167,7 @@ struct GitHubMessageCard: View {
                     }
 
                     HStack(spacing: 8) {
-                        if let footer = message.value(for: "footer", "") {
+                        if let footer = message.value(for: "footer") {
                             Text(footer)
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundColor(.secondary.opacity(0.8))
@@ -210,28 +211,27 @@ struct GitHubMessageCard: View {
 
 #Preview {
     ScrollView {
-        GitHubMessageCard(message: Message(
-            id: UUID().uuidString,
-            createDate: Date().addingTimeInterval(-1),
-            group: "主机通知",
-            title: "Merge pull request #157 from feature/jwt-auth",
-            subtitle: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。",
-            body: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。支持自动令牌刷新与设备白名单校验。",
-            icon: "",
-            url: "https://github.com/apple/swift",
-            image: nil,
-            reply: "https://wzs.app/reply",
-            ttl: 600,
-            read: false,
-            other: """
+        GitHubMessageCard(message: MessageEntity.preview([
+            "id": UUID().uuidString,
+            "createDate": Int(Date().addingTimeInterval(-1).timeIntervalSince1970),
+            "group": "主机通知",
+            "title": "Merge pull request #157 from feature/jwt-auth",
+            "subtitle": "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。",
+            "body": "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。支持自动令牌刷新与设备白名单校验。",
+            "icon": "",
+            "url": "https://github.com/apple/swift",
+            "reply": "https://wzs.app/reply",
+            "ttl": Int(Date.now.timeIntervalSince1970) + 600,
+            "read": false,
+            "other": """
                 {
-                    "footer" : "SHA:alksdjfklaj", 
-                    "header" : "GITHUB/REPO", 
+                    "footer" : "SHA:alksdjfklaj",
+                    "header" : "GITHUB/REPO",
                     "from" : "https://api.githun.com",
                     "branch" : "main <- jwt-auth",
-                    "severity" : "success",
+                    "severity" : "success"
                 }
-                """
-        ))
+                """,
+        ]))
     }
 }

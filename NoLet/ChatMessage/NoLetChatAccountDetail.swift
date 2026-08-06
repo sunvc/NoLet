@@ -20,7 +20,6 @@ struct NoLetChatAccountDetail: View {
     @State private var isTestingAPI = false
     @State private var isAdd: Bool = false
 
-    @State private var buttonState: AnimatedButton.buttonState = .normal
     let close: () -> Void
     init(account: AssistantAccount, isAdd: Bool = false, close: @escaping () -> Void) {
         self.isAdd = isAdd
@@ -73,41 +72,37 @@ struct NoLetChatAccountDetail: View {
                 Section {
                     HStack {
                         Spacer()
-                        AnimatedButton(
-                            state: $buttonState,
-                            normal:
-                            .init(
-                                title: String(localized: "测试后保存"),
-                                background: .blue,
-                                symbolImage: "person.crop.square.filled.and.at.rectangle"
-                            ),
-                            success:
-                            .init(
-                                title: String(localized: "测试/保存成功"),
-                                background: .green,
-                                symbolImage: "checkmark.circle"
-                            ),
-                            fail:
-                            .init(
-                                title: String(localized: "连接失败"),
-                                background: .red,
-                                symbolImage: "xmark.circle"
-                            ),
-                            loadings: [
-                                .init(title: String(localized: "测试中..."), background: .cyan),
-                            ]
-                        ) { view in
-                            await view.next(.loading(1))
+                        AnimatedButton(normal: .init(
+                            title: "测试后保存",
+                            background: .blue,
+                            symbolImage: "person.crop.square.filled.and.at.rectangle"
+                        )) { handle in
+                            await handle.loading(
+                                title: "测试中...",
+                                background: .cyan
+                            )
                             data.trimAssistantAccountParameters()
                             if data.key.isEmpty || data.host.isEmpty || isTestingAPI {
                                 try? await Task.sleep(for: .seconds(1))
-                                await view.next(.fail)
+                                await handle.fail()
                                 return
                             }
 
                             self.isTestingAPI = true
                             let success = await chatManager.test(account: data)
-                            await view.next(success ? .success : .fail)
+                            if success {
+                                await handle.succeed(
+                                    title: "测试/保存成功",
+                                    background: .green,
+                                    symbolImage: "checkmark.circle"
+                                )
+                            } else {
+                                await handle.fail(
+                                    title: "连接失败",
+                                    background: .red,
+                                    symbolImage: "xmark.circle"
+                                )
+                            }
                             await MainActor.run {
                                 self.isTestingAPI = false
                             }
@@ -184,7 +179,7 @@ struct NoLetChatAccountDetail: View {
             }
             .textInputAutocapitalization(.never)
             .customField(icon: "key.icloud") {
-                if let text = Clipboard.getText(), !text.isEmpty {
+                if let text = NCONFIG.text(), !text.isEmpty {
                     self.data.key = text
                 }
             }
@@ -203,7 +198,7 @@ struct NoLetChatAccountDetail: View {
             .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "atom") {
-                if let text = Clipboard.getText(), !text.isEmpty {
+                if let text = NCONFIG.text(), !text.isEmpty {
                     self.data.name = text
                 }
             }
@@ -214,7 +209,7 @@ struct NoLetChatAccountDetail: View {
             .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "network") {
-                if let text = Clipboard.getText(), !text.isEmpty {
+                if let text = NCONFIG.text(), !text.isEmpty {
                     let (host, path) = parseAPI(from: text)
                     self.data.host = host
                     if let path = path, !path.isEmpty {
@@ -231,7 +226,7 @@ struct NoLetChatAccountDetail: View {
             .customField(
                 icon: "point.filled.topleft.down.curvedto.point.bottomright.up"
             ) {
-                if let text = Clipboard.getText(), !text.isEmpty {
+                if let text = NCONFIG.text(), !text.isEmpty {
                     self.data.basePath = text
                 }
             }
@@ -242,7 +237,7 @@ struct NoLetChatAccountDetail: View {
             .textInputAutocapitalization(.never)
             .keyboardType(.URL)
             .customField(icon: "slider.horizontal.2.square.badge.arrow.down") {
-                if let text = Clipboard.getText() {
+                if let text = NCONFIG.text() {
                     self.data.model = text
                 }
             }

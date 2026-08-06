@@ -52,7 +52,7 @@ struct PTTMessageView: View {
 }
 
 struct PTTMessageRow: View {
-    let message: AudioMessage
+    let message: AudioMessageEntity
 
     let tiffanyColor = Color(red: 0.35, green: 0.78, blue: 0.80)
 
@@ -92,14 +92,14 @@ struct PTTMessageRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                if message.url.isEmpty {
+                if (message.url ?? "").isEmpty {
                     HStack{
                         Image(systemName: "paperplane")
                             .font(.title3)
-                            .foregroundStyle(message.status.color)
+                            .foregroundStyle(message.statusValue.color)
                             
                         
-                        if message.status == .failed, !sendStatus {
+                        if message.statusValue == .failed, !sendStatus {
                             Text("重试")
                                 .font(.numberStyle(size: 17))
                                 .foregroundStyle(.red)
@@ -107,10 +107,10 @@ struct PTTMessageRow: View {
                     }
                     .VButton { _ in
                         
-                        guard message.timestamp.timeIntervalSinceNow < 15 else{
+                        guard (message.timestamp ?? .now).timeIntervalSinceNow < 15 else{
                             return false
                         }
-                        guard !sendStatus, message.status == .failed else { return false}
+                        guard !sendStatus, message.statusValue == .failed else { return false}
                         self.sendStatus = true
                         Task {
                             await pttManager.sendVoice(message: message)
@@ -125,14 +125,14 @@ struct PTTMessageRow: View {
                         .font(.title)
                 }
 
-                if let channel = PTTChannel.decimal(message.channel) {
+                if let channel = PTTChannel.decimal(message.channel ?? "") {
                     Text(verbatim: "\(channel.mhz).\(channel.khz)")
                         .font(.numberStyle(size: 20))
                 }
                 
                 Spacer()
                 
-                Text(message.timestamp, format: .relative(presentation: .named))
+                Text(message.timestamp ?? .now, format: .relative(presentation: .named))
                     .font(.system(size: 11, weight: .medium, design: .monospaced))
                     .padding(.trailing, 10)
             }
@@ -183,7 +183,7 @@ struct PTTMessageRow: View {
             )
         }
         .padding(15)
-        .glassCard(20, borderColor: message.status.color)
+        .glassCard(20, borderColor: message.statusValue.color)
         .onAppear { self.getDuration() }
     }
 
@@ -198,6 +198,6 @@ struct PTTMessageRow: View {
 }
 
 #Preview {
-    PTTMessageRow(message: AudioMessage(channel: "923", from: "123", file: "file", status: .failed))
+    PTTMessageRow(message: AudioMessageDBManager.previewMessage)
         .frame(height: 100)
 }

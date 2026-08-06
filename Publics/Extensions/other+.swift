@@ -127,3 +127,36 @@ extension Array where Element: Hashable {
         return result
     }
 }
+
+extension Array {
+    subscript(safe index: Index) -> Element? {
+        guard indices.contains(index) else {
+            return nil
+        }
+        return self[index]
+    }
+}
+
+extension URL {
+    /// 只允许 http/https 的远程 URL
+    init?(remote: String) {
+        guard let url = URL(string: remote), url.remote else {
+            return nil
+        }
+        self = url
+    }
+
+    var remote: Bool {
+        guard let scheme = self.scheme?.lowercased() else {
+            return false
+        }
+
+        return scheme == "http" || scheme == "https"
+    }
+}
+
+extension Bool {
+    static var isiOSAppOnMac: Self {
+        ProcessInfo.processInfo.isiOSAppOnMac
+    }
+}

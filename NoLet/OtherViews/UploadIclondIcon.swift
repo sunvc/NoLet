@@ -11,8 +11,14 @@
 //
 
 import SwiftUI
+import OSLog
+
 
 struct UploadIclondIcon: View {
+    
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "UploadIclondIcon")
+
+    
     var dismiss: (PushIcon) -> Void
     var endEditing: () -> Void
 

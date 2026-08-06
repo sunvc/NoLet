@@ -20,7 +20,7 @@ import OSLog
 
 final class CLGeocoderManager: Sendable {
 
-    let logger = Logger(subsystem: "app.wzs.logger", category: "CLGeocoderManager")
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "CLGeocoderManager")
 
     static let shared = CLGeocoderManager()
 
@@ -105,11 +105,12 @@ final class CLGeocoderManager: Sendable {
     private func queryIpAndAddress() async -> UserSessionInfo? {
         do {
             let network = NetworkManager()
-            let res: UserSessionInfo? = try await network.fetch(
+            let data = try await network.fetch(
                 url: "http://ip.360.cn/IPShare/info",
+                method: .GET,
                 headers: ["referer": "http://ip.360.cn/"]
             )
-            return res
+            return try data.decode() 
         } catch {
             debugPrint(error.localizedDescription)
             return nil

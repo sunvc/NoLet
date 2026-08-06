@@ -69,9 +69,7 @@ Aero is a powerful iOS push tool that enables you to send custom notifications f
 
 * [Defaults](https://github.com/sindresorhus/Defaults)
 * [QRScanner](https://github.com/mercari/QRScanner)
-* [GRDB](https://github.com/groue/GRDB.swift.git)
-* [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
 * [Kingfisher](https://github.com/onevcat/Kingfisher)
-* [OpenAI](https://github.com/MacPaw/OpenAI)
 * [Splash](https://github.com/AugustDev/Splash)
 * [swift-markdown-ui](https://github.com/gonzalezreal/swift-markdown-ui)
+* [swiftui-messaging-ui](https://github.com/FluidGroup/swiftui-messaging-ui)

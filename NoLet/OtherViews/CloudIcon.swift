@@ -49,7 +49,7 @@ struct CloudIcon: View {
                     }
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
-                        if ProcessInfo.processInfo.isiOSAppOnMac {
+                        if .isiOSAppOnMac {
                             VStack {
                                 Text("拖动图片到此处")
                                     .font(.largeTitle)
@@ -80,10 +80,10 @@ struct CloudIcon: View {
                                             }
 
                                             Button {
-                                                Clipboard.set(icon.name)
+                                                NCONFIG.copy(icon.name)
                                                 Toast.copy(title: "复制成功")
                                             } label: {
-                                                Label("复制key", systemImage: "doc.on.doc")
+                                                Label("复制KEY", systemImage: "doc.on.doc")
                                                     .customForegroundStyle(.accent, .primary)
                                             }
 
@@ -93,7 +93,7 @@ struct CloudIcon: View {
                                                         do {
                                                             try await icon
                                                                 .delete(from: NCONFIG.container
-                                                                    .privateCloudDatabase)
+                                                                    .publicCloudDatabase)
                                                             Toast.success(title: "图片删除成功")
                                                             icons.removeAll(where: {
                                                                 $0.id == icon.id
@@ -164,6 +164,8 @@ struct CloudIcon: View {
                                 .font(.headline)
                                 .foregroundColor(.gray)
                                 .frame(maxWidth: .infinity)
+                                .lineLimit(1)
+                                .frame(minWidth: 260)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(40)

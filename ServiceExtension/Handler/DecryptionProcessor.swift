@@ -1,5 +1,5 @@
 //
-//  CiphertextHandler.swift
+//  DecryptionHandler.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -14,26 +14,26 @@
 import Foundation
 import UserNotifications
 
-final class CiphertextProcessor: NotificationContentProcessor {
+final class DecryptionProcessor: NotificationContentProcessor {
     func processor(
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         var userInfo = bestAttemptContent.userInfo
-
-        guard let ciphertext: String = userInfo.raw(.cipherText) else {
+        
+        guard let ciphertext = userInfo.raw(.cipherText, as: String.self) else {
             return bestAttemptContent
         }
 
         do {
-            let ciphertNumber: Int = userInfo.raw(.cipherNumber) ?? 0
+            let ciphertNumber = userInfo.raw(.cipherNumber, as: Int64.self) ?? 0
 
-            let map = try decrypt(ciphertext: ciphertext, number: ciphertNumber)
+            let map = try decrypt(ciphertext: ciphertext, number: Int(ciphertNumber))
 
             var alert = [String: Any]()
             var soundName: String? = nil
 
-            if let category: String = map.raw(.category),
+            if let category = map.raw(.category, as: String.self),
                category == Identifiers.markdown.rawValue
             {
                 bestAttemptContent.categoryIdentifier = category
@@ -41,35 +41,35 @@ final class CiphertextProcessor: NotificationContentProcessor {
                 bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
             }
 
-            if let id: String = map.raw(.id) {
+            if let id = map.raw(.id, as: String.self) {
                 bestAttemptContent.targetContentIdentifier = id
             }
 
-            if let title: String = map.raw(.title) {
+            if let title = map.raw(.title, as: String.self) {
                 bestAttemptContent.title = title
                 alert[Params.title.name] = title
             }
 
-            if let subtitle: String = map.raw(.subtitle) {
+            if let subtitle = map.raw(.subtitle, as: String.self) {
                 bestAttemptContent.subtitle = subtitle
                 alert[Params.subtitle.name] = subtitle
             }
-            if let body: String = map.raw(.body) {
+            if let body = map.raw(.body, as: String.self) {
                 bestAttemptContent.body = body
                 alert[Params.body.name] = body
             }
 
-            if let markdown: String = map.raw(.markdown) {
+            if let markdown = map.raw(.markdown, as: String.self) {
                 bestAttemptContent.body = markdown
                 alert[Params.body.name] = markdown
                 bestAttemptContent.categoryIdentifier = Params.markdown.name
             }
 
-            if let group: String = map.raw(.group) {
+            if let group = map.raw(.group, as: String.self) {
                 bestAttemptContent.threadIdentifier = group
             }
 
-            if var sound: String = map.raw(.sound) {
+            if var sound = map.raw(.sound, as: String.self) {
                 if !sound.hasSuffix(Params.caf.name) {
                     sound = "\(sound).\(Params.caf.name)"
                 }
@@ -112,7 +112,7 @@ final class CiphertextProcessor: NotificationContentProcessor {
         guard let json = CryptoManager(cryptoConfig).decrypt(base64: ciphertext),
               let data = json.data(using: .utf8),
               let map = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-        else { throw NoletError(message: "JSON parsing failed") }
+        else { throw NoletError("JSON parsing failed") }
 
         return map.reduce(into: [AnyHashable: Any]()) { $0[$1.key.lowercased()] = $1.value }
     }

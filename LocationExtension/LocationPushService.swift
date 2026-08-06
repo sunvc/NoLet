@@ -32,6 +32,8 @@ struct MessageParams: Codable, Sendable {
 class LocationPushService: NSObject, CLLocationPushServiceExtension,
     CLLocationManagerDelegate
 {
+    
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "LocationPushService")
     var completion: (() -> Void)?
     var locationManager: CLLocationManager?
     var params = MessageParams()
@@ -106,7 +108,7 @@ class LocationPushService: NSObject, CLLocationPushServiceExtension,
             let res = try await NetworkManager().fetch(
                 url: callback,
                 method: .POST,
-                params: self.params
+                body: self.params
             )
             return res.check()
         } catch {

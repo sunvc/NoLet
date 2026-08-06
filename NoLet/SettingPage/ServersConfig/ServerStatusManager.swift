@@ -90,8 +90,8 @@ final class SCServerStatusManager: ObservableObject {
         let response = try await http.fetch(
             url: self.server.url,
             path: "/info",
-            params: ["mode": "monitor"],
             headers: CryptoManager.signature(sign: self.server.sign, server: server.key),
+            params: ["mode": "monitor"],
             timeout: 3
         )
         let result: SCServerStatusResponse = try response.decode()
@@ -102,8 +102,8 @@ final class SCServerStatusManager: ObservableObject {
         let response = try await http.fetch(
             url: self.server.url,
             path: "/info",
-            params: ["mode": "processes"],
             headers: CryptoManager.signature(sign: self.server.sign, server: server.key),
+            params: ["mode": "processes"],
             timeout: 3
         )
         let result: [SCProcessResponse] = try response.decode()

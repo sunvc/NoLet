@@ -20,77 +20,51 @@ final class ArchiveProcessor: NotificationContentProcessor {
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
+        
         let userInfo = bestAttemptContent.userInfo
 
-        var body: String = {
-            if let body: String = userInfo.raw(.body) {
-                return ensureMarkdownLineBreaks(body)
+        let body = userInfo.raw(.body, as: String.self) ?? ""
+        let title = userInfo.raw(.title, as: String.self)
+        let subtitle = userInfo.raw(.subtitle, as: String.self)
+        let url = userInfo.raw(.url, as: String.self)
+
+        let reply = userInfo.raw(.reply, as: String.self)
+        var style = userInfo.raw(.style, as: String.self)
+        let group = userInfo.raw(.group, as: String.self) ?? String(localized: "默认")
+        let messageID = bestAttemptContent.targetContentIdentifier ?? UUID().uuidString
+        let other = userInfo.toJSONString(excluding: Params.names)
+
+        var expiration: Int64 {
+            if let ttl = userInfo.raw(.ttl, as: Int64.self) {
+                return ttl < 0 ? -1 : Int64(Date.now.timeIntervalSince1970) + ttl
+            } else {
+                return Defaults[.messageExpiration].messageTTL()
             }
-            return ""
-        }()
+        }
 
-        // MARK: - markdownbody body 显示
-
-        let reply: String? = userInfo.raw(.reply)
         if reply != nil {
             bestAttemptContent.categoryIdentifier = Identifiers.reply.rawValue
         }
 
-        var style: String? = userInfo.raw(.style)
-
-        if let location: String = userInfo.raw(.location), let location = location.location() {
-            let location = normalizeToLatLngGlobal(location)
-            let address = await CLGeocoderManager.shared.getFormattedAddress(
-                latitude: location.0,
-                longitude: location.1
-            )
-            body += "\n[\(address)]"
-            bestAttemptContent.body = body
-        }
-
         switch Identifiers(rawValue: bestAttemptContent.categoryIdentifier) {
         case .markdown:
-            if style == nil { style = "markdown" }
+            style = Params.markdown.name
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
                 .filter { !$0.isEmpty }
                 .joined(separator: ",")
                 .replacingOccurrences(of: "\n", with: "")
 
-            bestAttemptContent.body = plainText.markdownPre()
+            bestAttemptContent.body = plainText.count > 15 ?
+                String(plainText.prefix(15)) + "..." : plainText
 
         case .reply:
-            let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
-                .filter { !$0.isEmpty }
-                .joined(separator: ",")
-                .replacingOccurrences(of: "\n", with: "")
-            bestAttemptContent.body = plainText.markdownPre()
+            style = Params.reply.name
 
         default:
             bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
         }
 
-        let group: String = userInfo.raw(.group) ?? String(localized: "默认")
         bestAttemptContent.threadIdentifier = group
-
-        let ttl: String? = userInfo.raw(.ttl)
-        let title: String? = userInfo.raw(.title)
-        let subtitle: String? = userInfo.raw(.subtitle)
-        let url: String? = userInfo.raw(.url)
-        let icon: String? = userInfo.raw(.icon)
-        let image: String? = userInfo.raw(.image)
-        let messageID = bestAttemptContent.targetContentIdentifier
-
-        let other = userInfo.toJSONString(excluding: Params.names)
-
-        var seconds: Int {
-            if let isArchive = ttl, let saveDaysTem = Int(isArchive) {
-                return saveDaysTem
-            } else {
-                return Int(Defaults[.messageExpiration].seconds)
-            }
-        }
-        
-        
 
         Defaults[.allMessagecount] += 1
 
@@ -99,68 +73,28 @@ final class ArchiveProcessor: NotificationContentProcessor {
             return bestAttemptContent
         }
 
-        guard seconds > 0 else { return bestAttemptContent }
+        guard expiration < 0 || expiration > Int64(Date.now.timeIntervalSince1970)
+        else { return bestAttemptContent }
 
-        let message = Message(
-            id: messageID ?? UUID().uuidString,
-            createDate: .now,
-            group: group,
-            title: title,
-            subtitle: subtitle,
-            body: body,
-            icon: icon,
-            url: url,
-            image: image,
-            reply: reply,
-            ttl: seconds,
-            read: false,
-            style: style,
-            other: other
-        )
+        var json: [AnyHashable: Any] = [:]
+        json[.id] = messageID
+        json[.createDate] = Int64(Date.now.timeIntervalSince1970)
+        json[.group] = group
+        json[.body] = body
+        json[.ttl] = expiration
+        json[.read] = false
 
-        await MessagesManager.shared.add(message)
-        await MessagesManager.shared.deleteExpired()
+        if let title { json[.title] = title }
+        if let subtitle { json[.subtitle] = subtitle }
+        if let url { json[.url] = url }
+        if let style { json[.style] = style }
+        if let other { json[.other] = other }
+
+        let isNew = PendingMessageStore().write(json)
+        if isNew {
+            Defaults[.sharedUnreadCount] += 1
+        }
 
         return bestAttemptContent
-    }
-
-    func ensureMarkdownLineBreaks(_ text: String) -> String {
-        let lines = text.components(separatedBy: .newlines)
-
-        let processedLines = lines.map { line in
-            if line.hasSuffix("  ") || line.isEmpty {
-                return line
-            } else {
-                return line + "  "
-            }
-        }
-
-        return processedLines.joined(separator: "\n")
-    }
-
-    func normalizeToLatLngGlobal(_ coordinates: (Double, Double)) -> (Double, Double) {
-        let a = coordinates.0
-        let b = coordinates.1
-
-        let aCanBeLat = abs(a) <= 90.0
-        let bCanBeLat = abs(b) <= 90.0
-        let aCanBeLng = abs(a) <= 180.0
-        let bCanBeLng = abs(b) <= 180.0
-
-        if !aCanBeLat, bCanBeLat, aCanBeLng {
-            return (b, a)
-        }
-
-        if !bCanBeLat, aCanBeLat, bCanBeLng {
-            return (a, b)
-        }
-
-        return coordinates
-    }
-}
-
-fileprivate extension String {
-    func markdownPre(_ max: Int = 15) -> Self {
-        count > max ? String(prefix(max)) + "..." : self
     }
 }

@@ -18,11 +18,9 @@ struct NoLetChatSettingsView: View {
     @ObservedObject private var chatManager = NoLetChatManager.shared
 
     @Default(.assistantAccouns) var assistantAccouns
-    @Default(.historyMessageCount) var historyMessageCount
     @Default(.temperatureChat) var temperatureChat
     @Default(.showAssistantAnimation) var showAssistantAnimation
 
-    @State private var showDeleteOk: Bool = false
     @State private var isSecured = true
     @State private var isTestingAPI = false
     @State private var selectAccount: AssistantAccount? = nil
@@ -179,19 +177,6 @@ struct NoLetChatSettingsView: View {
 
             Section("AI 助手") {
                 Stepper(
-                    value: $historyMessageCount,
-                    in: 0...50,
-                    step: 1
-                ) {
-                    HStack {
-                        Label("历史消息数量", systemImage: "clock.arrow.circlepath")
-                        Spacer()
-                        Text(verbatim: "\(historyMessageCount)")
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                Stepper(
                     value: $temperatureChat,
                     in: 0...20,
                     step: 1
@@ -203,10 +188,6 @@ struct NoLetChatSettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-
-                Text("设置每次对话时包含的历史消息数量，数量越多上下文越完整，但会增加 Token 消耗")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
             }
 
             Section("视觉与触感") {
@@ -214,30 +195,11 @@ struct NoLetChatSettingsView: View {
                     Label("动画与振动", systemImage: "figure.walk.motion")
                 }
             }
-
-            Section("数据管理") {
-                Button(role: .destructive) {
-                    self.showDeleteOk = true
-                } label: {
-                    Label("清除所有数据", systemImage: "trash")
-                    Spacer()
-                }
-            }
         }
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
         .navigationTitle("智能助手")
         .toolbar(.hidden, for: .tabBar)
-        .alert("确认删除", isPresented: $showDeleteOk) {
-            Button("取消", role: .cancel) {}
-            Button("删除", role: .destructive) {
-                Task.detached(priority: .userInitiated) {
-                    await ChatGroupDBManager.shared.deleteAll()
-                }
-            }
-        } message: {
-            Text("此操作将删除所有聊天记录和设置数据，且无法恢复。确定要继续吗？")
-        }
         .sheet(item: $selectAccount) { account in
             NoLetChatAccountDetail(account: account, isAdd: false) {
                 self.selectAccount = nil

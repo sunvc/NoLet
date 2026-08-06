@@ -11,12 +11,13 @@
 //  History:
 //    Created by Neo on 2026/6/17 12:35.
 
+import CoreData
 import SwiftUI
 
 // MARK: - 风格 2：极客极简 · HUD 动态终端卡片
 
 struct TerminalMessageCard: MessageCardProtocol {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration
 
     @ObservedObject var manager = AppManager.shared
@@ -26,7 +27,7 @@ struct TerminalMessageCard: MessageCardProtocol {
     @State private var showSnap: Bool = false
 
     var severityColor: Color {
-        switch message.value(for: "severity", "success").lowercased() {
+        switch (message.value(for: "severity") ?? "success").lowercased() {
         case "error", "alert", "system": return .red
         case "warning": return .orange
         default: return .green
@@ -89,7 +90,7 @@ struct TerminalMessageCard: MessageCardProtocol {
                     }
 
                     SCSelectableTextRepresentable(
-                        text: message.body.plainText,
+                        text: message.bodyText.plainText,
                         font: .systemFont(ofSize: 13, weight: .medium),
                         textColor: UIColor.secondaryLabel,
                         textAlignment: .left,
@@ -102,7 +103,7 @@ struct TerminalMessageCard: MessageCardProtocol {
                     .padding(.leading, 5)
                 }
 
-                if let image = message.image {
+                if let image = message.value(for: .image) {
                     AsyncPhotoView(url: image, zoom: false, height: 200)
                         .padding(5)
                         .contentShape(Rectangle())
@@ -113,11 +114,11 @@ struct TerminalMessageCard: MessageCardProtocol {
 
                 HStack(spacing: 12) {
 
-                    AvatarView(icon: message.icon)
+                    AvatarView(icon: message.value(for: .icon))
                         .frame(width: 30, height: 30, alignment: .center)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                    Text(message.group)
+                    Text(message.groupText)
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .padding(.horizontal, 5)
@@ -161,19 +162,17 @@ struct TerminalMessageCard: MessageCardProtocol {
 }
 
 #Preview {
-    TerminalMessageCard(message: Message(
-        id: "123",
-        createDate: .now.addingTimeInterval(-1),
-        group: "服务器",
-        title: "生产数据库磁盘过高报警",
-        subtitle: "警告：/dev/sda1 剩余空间仅 8.5%",
-        body: "收到 Prometheus 警报：宿主机 [Pro-db-04] 当前剩余空间 8.5G/100G，已连续 15 分钟呈递增趋势，请尽快处理日志堆积或挂载扩容。",
-        icon: nil,
-        url: "https://grafana.example.com/alerts",
-        image: "https://s3.wzs.app/nolet/logo.png",
-        reply: nil,
-        ttl: 2,
-        read: true,
-        other: "{ \"severity\" : \"success\" }"
-    ), config: .init())
+    TerminalMessageCard(message: MessageEntity.preview([
+        "id": "123",
+        "createDate": Int(Date().addingTimeInterval(-1).timeIntervalSince1970),
+        "group": "服务器",
+        "title": "生产数据库磁盘过高报警",
+        "subtitle": "警告：/dev/sda1 剩余空间仅 8.5%",
+        "body": "收到 Prometheus 警报：宿主机 [Pro-db-04] 当前剩余空间 8.5G/100G，已连续 15 分钟呈递增趋势，请尽快处理日志堆积或挂载扩容。",
+        "url": "https://grafana.example.com/alerts",
+        "image": "https://s3.wzs.app/nolet/logo.png",
+        "ttl": Int(Date.now.timeIntervalSince1970) + 2,
+        "read": true,
+        "other": "{ \"severity\" : \"success\" }",
+    ]), config: .init())
 }

@@ -9,7 +9,7 @@
 //  Description:
 
 //  History:
-//    Created by Neo on 2026/1/7 08:54.
+//    Created by Neo 2026/1/7 08:54.
 
 import SwiftUI
 
@@ -45,41 +45,17 @@ struct StreamingLoadingView: View {
 
         } else {
             Menu {
-                if chatManager.chatGroup != nil {
+                if !chatManager.chatMessages.isEmpty {
                     Section {
                         Button(action: {
                             chatManager.cancellableRequest?.cancel()
-                            chatManager.setGroup()
+                            chatManager.clear()
                             Haptic.impact()
                         }) {
                             Label("新对话", systemImage: "plus.message")
                                 .symbolRenderingMode(.palette)
                                 .customForegroundStyle(.accent, .primary)
                         }
-                    }
-                }
-
-                Section {
-                    Button {
-                        chatManager.showAllHistory = true
-                        Haptic.impact()
-
-                    } label: {
-                        Label("历史对话", systemImage: "clock.arrow.circlepath")
-                            .customForegroundStyle(.accent, .primary)
-                    }
-                }
-
-                if chatManager.chatGroup != nil {
-                    Section {
-                        Button {
-                            Task.detached(priority: .background) {
-                                await chatManager.delete()
-                            }
-
-                        } label: {
-                            Label("删除对话", systemImage: "trash")
-                        }.tint(.red)
                     }
                 }
 
@@ -91,7 +67,7 @@ struct StreamingLoadingView: View {
                             Label("取消扩展", systemImage: "xmark.circle")
                         }.tint(.orange)
                     }
-                }else{
+                } else {
                     Section {
                         Button {
                             chatManager.showPromptChooseView = true
@@ -102,14 +78,11 @@ struct StreamingLoadingView: View {
                     }
                 }
 
-                if chatManager.chatMessages.count != 0 {
+                if !chatManager.chatMessages.isEmpty {
                     Section {
                         Button {
-                            Task {
-                                let success = await chatManager.setPoint()
-                                Toast.success(title: success ? "清除成功" : "清除失败")
-                            }
-
+                            let success = chatManager.setPoint()
+                            Toast.success(title: success ? "清除成功" : "清除失败")
                         } label: {
                             Label("清除上下文", systemImage: "square.fill.text.grid.1x2")
                                 .customForegroundStyle(.red, .primary)
@@ -119,27 +92,16 @@ struct StreamingLoadingView: View {
 
             } label: {
                 HStack {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Text(chatManager.chatGroup?.name.removingAllWhitespace ?? "新对话")
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .padding(.trailing, 3)
-                                .font(.footnote)
-                        }
+                    Text(String(localized: "新对话"))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.trailing, 3)
+                        .font(.footnote)
 
-                        if let prompt = chatManager.chatPrompt {
-                            HStack {
-                                Circle()
-                                    .fill(.green)
-                                    .frame(width: 8, height: 8)
-                                Text(prompt.title)
-                                    .font(.footnote)
-                                    .foregroundStyle(.gray)
-                                Spacer()
-                            }
-                            .padding(.leading, 5)
-                        }
+                    if chatManager.chatPrompt != nil {
+                        Circle()
+                            .fill(.green)
+                            .frame(width: 8, height: 8)
                     }
 
                     Image(systemName: "chevron.down")
@@ -147,7 +109,6 @@ struct StreamingLoadingView: View {
                         .foregroundStyle(.gray.opacity(0.5))
                         .imageScale(.small)
                 }
-
                 .frame(maxWidth: 200)
             }
         }

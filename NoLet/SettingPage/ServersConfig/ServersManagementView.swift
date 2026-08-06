@@ -1,5 +1,5 @@
 //
-//  ServersConfigView.swift
+//  ServersManagementView.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -14,7 +14,7 @@
 import Defaults
 import SwiftUI
 
-struct ServersConfigView: View {
+struct ServersManagementView: View {
     @Default(.servers) var servers
 
     @ObservedObject private var manager = AppManager.shared
@@ -39,77 +39,84 @@ struct ServersConfigView: View {
 
     var body: some View {
         List {
-            Section {
-                ForEach(NormalServer, id: \.id) { item in
-                    ServerCardView(item: item) {
-                        Clipboard.set(item.url + "/" + item.key)
-                        Toast.copy(title: "复制成功")
-                    }
-                    .padding(.horizontal, 15)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .swipeActions(edge: .leading, allowsFullSwipe: false) {
-                        Button {
-                            Task {
-                                _ = await manager
-                                    .appendServer(server: item, reset: true)
-                            }
-
-                        } label: {
-                            Label("重置", systemImage: "arrow.clockwise")
-                                .fontWeight(.bold)
-                                .accessibilityLabel("重新生成 Key")
-
-                        }.tint(.accentColor)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button {
-                            guard servers.count > 1 else {
-                                self.showNoServerMode.toggle()
-                                return
-                            }
-
-                            if let index = servers.firstIndex(where: { $0.id == item.id }) {
-                                servers.remove(at: index)
+            
+            if NormalServer.count > 0 {
+                Section {
+                    ForEach(NormalServer, id: \.id) { item in
+                        ServerCardView(item: item) {
+                            NCONFIG.copy(item.url + "/" + item.key)
+                            Toast.copy(title: "复制成功")
+                        }
+                        .padding(.horizontal, 15)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                            Button {
                                 Task {
-                                    let server = await manager.register(server: item, reset: true)
-                                    if server.status > 0 {
-                                        Toast.success(title: "操作成功")
-                                    } else {
-                                        Toast.question(title: "操作失败")
+                                    _ = await manager
+                                        .appendServer(server: item, reset: true)
+                                }
+
+                            } label: {
+                                Label("重置", systemImage: "arrow.clockwise")
+                                    .fontWeight(.bold)
+                                    .accessibilityLabel("重新生成 Key")
+
+                            }.tint(.accentColor)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button {
+                                guard servers.count > 1 else {
+                                    self.showNoServerMode.toggle()
+                                    return
+                                }
+
+                                if let index = servers.firstIndex(where: { $0.id == item.id }) {
+                                    servers.remove(at: index)
+                                    Task {
+                                        let server = await manager.register(
+                                            server: item,
+                                            reset: true
+                                        )
+                                        if server.status > 0 {
+                                            Toast.success(title: "操作成功")
+                                        } else {
+                                            Toast.question(title: "操作失败")
+                                        }
                                     }
                                 }
-                            }
 
-                        } label: {
-                            if item.group != nil {
-                                Label("删除", systemImage: "arrow.up.bin")
-                                    .fontWeight(.bold)
-                            } else {
-                                Label("移除", systemImage: "arrow.up.bin")
-                                    .fontWeight(.bold)
-                            }
+                            } label: {
+                                if item.group != nil {
+                                    Label("删除", systemImage: "arrow.up.bin")
+                                        .fontWeight(.bold)
+                                } else {
+                                    Label("移除", systemImage: "arrow.up.bin")
+                                        .fontWeight(.bold)
+                                }
 
-                        }.tint(.red)
+                            }.tint(.red)
+                        }
+                    }
+                    .onMove(perform: { indices, newOffset in
+                        servers.move(fromOffsets: indices, toOffset: newOffset)
+                    })
+                } header: {
+                    HStack {
+                        Label("运行中", systemImage: "cup.and.heat.waves")
+                            .foregroundStyle(.primary, .green)
+                        Spacer()
+                        Text(verbatim: "\(NormalServer.count)")
                     }
                 }
-                .onMove(perform: { indices, newOffset in
-                    servers.move(fromOffsets: indices, toOffset: newOffset)
-                })
-            } header: {
-                HStack {
-                    Label("运行中", systemImage: "cup.and.heat.waves")
-                        .foregroundStyle(.primary, .green)
-                    Spacer()
-                    Text(verbatim: "\(NormalServer.count)")
-                }
             }
+            
             if ErrorServer.count > 0 {
                 Section {
                     ForEach(ErrorServer, id: \.id) { item in
                         ServerCardView(item: item) {
-                            Clipboard.set(item.url + "/" + item.key)
+                            NCONFIG.copy(item.url + "/" + item.key)
                             Toast.copy(title: "复制成功")
                         }
                         .padding(.horizontal, 15)
@@ -176,6 +183,7 @@ struct ServersConfigView: View {
                     }
                 }
             }
+            
         }
         .animation(.easeInOut, value: servers)
         .listRowSpacing(10)
@@ -187,7 +195,6 @@ struct ServersConfigView: View {
             }
             self.loading = true
             Task(priority: .userInitiated) {
-                
                 if servers.count > 0 {
                     await manager.registers()
                     let updateCount = servers.filter { $0.status > 0 }.count
@@ -196,9 +203,6 @@ struct ServersConfigView: View {
                     } else if updateCount > 0 && updateCount < servers.count {
                         Toast.question(title: "部分注册成功")
                     }
-
-                } else {
-                    await manager.appendServer(server: PushServerModel(url: NCONFIG.server))
                 }
                 await AppManager.syncServer()
                 await MainActor.run {
@@ -272,7 +276,7 @@ struct ServersConfigView: View {
 }
 
 #Preview {
-    ServersConfigView()
+    ServersManagementView()
 }
 
 struct CloudServersView: View {

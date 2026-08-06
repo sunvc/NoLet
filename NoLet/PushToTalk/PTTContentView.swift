@@ -553,15 +553,15 @@ struct PTTContentView: View {
         .environment(\.colorScheme, .dark)
         .sheet(isPresented: $showVoiceList) {
             PTTMessageView()
-                .presentationDetents([.medium, .large])
+                .customDetents([.medium, .large])
         }
         .sheet(isPresented: $showChannelList) {
             HistoryChannelListView()
-                .presentationDetents([.medium, .large])
+                .customDetents([.medium, .large])
         }
         .sheet(isPresented: $showSettings) {
             PTTSettingsView()
-                .presentationDetents([.medium, .large])
+                .customDetents([.medium, .large])
         }
     }
 

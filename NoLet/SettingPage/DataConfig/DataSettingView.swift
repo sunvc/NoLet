@@ -44,10 +44,37 @@ struct DataSettingView: View {
     @State private var addLoading: Bool = false
 
     @State private var exampleValue = 10000.0
+
+    @State private var showChangeDay = false
+    @State private var changeDayTem = ""
+
+    @State private var showChangeImageDay = false
+    @State private var changeImageDayTem = ""
+
     var pickerServers: [PushServerModel] {
         [PushServerModel.space] + servers
     }
 
+    var expirationTimes: [ExpirationTime] {
+        switch messageExpiration {
+        case .forever, .no:
+            return [.forever, .day(1), .no]
+        case .day(let day):
+            return [.forever, .day(day), .no]
+        }
+    }
+
+    var imageTimes: [ExpirationTime] {
+        switch imageSaveDays {
+        case .forever, .no:
+            return [.forever, .day(1), .no]
+        case .day(let day):
+            return [.forever, .day(day), .no]
+        }
+    }
+
+    private let pngCache = ImageManager.customCache.diskStorage.directoryURL
+    
     var body: some View {
         List {
             #if DEBUG
@@ -191,7 +218,7 @@ struct DataSettingView: View {
                 }
                 .fileImporter(
                     isPresented: $showImport,
-                    allowedContentTypes: [.trnExportType, .sqlite, .propertyList],
+                    allowedContentTypes: [.trnExportType, .sqlite, .propertyList, .javaScript],
                     allowsMultipleSelection: false,
                     onCompletion: { result in
                         Task.detached(priority: .userInitiated) {
@@ -217,7 +244,7 @@ struct DataSettingView: View {
 
             Section {
                 Picker(selection: $messageExpiration) {
-                    ForEach(ExpirationTime.allCases, id: \.self) { item in
+                    ForEach(expirationTimes, id: \.self) { item in
                         Text(item.title)
                             .tag(item)
                     }
@@ -225,19 +252,42 @@ struct DataSettingView: View {
                     Label {
                         Text("消息存档")
                     } icon: {
-                        Image(systemName: "externaldrive.badge.timemachine")
-                            .scaleEffect(0.9)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(
-                                messageExpiration == .no ? .red :
-                                    (messageExpiration == .forever ? .green : .yellow),
-                                Color.primary
-                            )
+                        if case .day = messageExpiration {
+                            Image(systemName: "square.and.pencil.circle")
+                                .scaleEffect(0.9)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    messageExpiration == .no ? .red : Color.primary
+                                )
+
+                        } else {
+                            Image(systemName: "externaldrive.badge.timemachine")
+                                .scaleEffect(0.9)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    messageExpiration == .no ? .red : Color.primary
+                                )
+                        }
+                    }
+                    .onTapGesture {
+                        if case .day = messageExpiration {
+                            self.showChangeDay = true
+                        }
+                    }
+                    .onAppear {
+                        if case .day(let day) = messageExpiration {
+                            self.changeDayTem = "\(day)"
+                        }
+                    }
+                    .onChange(of: messageExpiration) { value in
+                        if case .day(let day) = value {
+                            self.changeDayTem = "\(day)"
+                        }
                     }
                 }
 
                 Picker(selection: $imageSaveDays) {
-                    ForEach(ExpirationTime.allCases, id: \.self) { item in
+                    ForEach(imageTimes, id: \.self) { item in
                         Text(item.title)
                             .tag(item)
                     }
@@ -245,14 +295,37 @@ struct DataSettingView: View {
                     Label {
                         Text("图片存档")
                     } icon: {
-                        Image(systemName: "externaldrive.badge.timemachine")
-                            .scaleEffect(0.9)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(
-                                imageSaveDays == .no ? .red :
-                                    (imageSaveDays == .forever ? .green : .yellow),
-                                Color.primary
-                            )
+                        if case .day = imageSaveDays {
+                            Image(systemName: "square.and.pencil.circle")
+                                .scaleEffect(0.9)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    imageSaveDays == .no ? .red : Color.primary
+                                )
+
+                        } else {
+                            Image(systemName: "externaldrive.badge.timemachine")
+                                .scaleEffect(0.9)
+                                .symbolRenderingMode(.palette)
+                                .foregroundStyle(
+                                    imageSaveDays == .no ? .red : Color.primary
+                                )
+                        }
+                    }
+                    .onTapGesture {
+                        if case .day = imageSaveDays {
+                            self.showChangeImageDay = true
+                        }
+                    }
+                    .onAppear {
+                        if case .day(let day) = imageSaveDays {
+                            self.changeImageDayTem = "\(day)"
+                        }
+                    }
+                    .onChange(of: imageSaveDays) { value in
+                        if case .day(let day) = value {
+                            self.changeImageDayTem = "\(day)"
+                        }
                     }
                 }
 
@@ -261,7 +334,30 @@ struct DataSettingView: View {
                     .foregroundStyle(.gray)
             }
 
-            Section(header: Text(verbatim: "")) {
+            Section {
+                ListButton {
+                    Label {
+                        Text("云图标")
+                            .foregroundStyle(.textBlack)
+                    } icon: {
+                        ZStack {
+                            Image(systemName: "icloud")
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(Color.primary)
+                            Image(systemName: "photo")
+                                .scaleEffect(0.4)
+                                .symbolRenderingMode(.palette)
+                                .customForegroundStyle(.accent)
+                                .offset(y: 2)
+                        }
+                    }
+                } action: {
+                    Task { @MainActor in
+                        manager.open(sheet: .cloudIcon)
+                    }
+                    return true
+                }
+
                 NavigationLink {
                     NoletFileList(rootURL: NCONFIG.localContainer)
                 } label: {
@@ -281,86 +377,30 @@ struct DataSettingView: View {
                                 .foregroundStyle(.gray)
                             Text(verbatim: totalSize.fileSize())
                         }
-                    }
-                    .contentShape(Rectangle())
-                }
-
-                HStack {
-                    Button {
-                        guard !showDeleteAlert else { return }
-                        self.showDeleteAlert.toggle()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Label("清空缓存数据", systemImage: "trash.circle")
-                                .foregroundStyle(.white, Color.primary)
-                                .fontWeight(.bold)
-                                .padding(.vertical, 5)
-                                .if(showDriveCheckLoading) {
-                                    Label("正在处理数据", systemImage: "slowmo")
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.white, Color.primary)
-                                }
-
-                            Spacer()
-                        }
-                    }
-                    .diff { view in
-                        Group {
-                            if #available(iOS 26.0, *) {
-                                view
-                                    .buttonStyle(.glassProminent)
-                            } else {
-                                view
-                                    .buttonStyle(BorderedProminentButtonStyle())
+                        .if(showDriveCheckLoading) {
+                            HStack {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                Text("清理中...")
                             }
                         }
                     }
-                }
-
-                HStack {
-                    Button {
-                        try? DatabaseManager.shared.vacuum()
-                        calculateSize()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Label("整理数据库", systemImage: "arrow.down.doc.fill")
-                                .foregroundStyle(.white, Color.primary)
-                                .padding(.vertical, 5)
-                                .fontWeight(.bold)
-
-                            Spacer()
-                        }
-                    }
-                    .tint(.green)
-                    .buttonStyle(.borderedProminent)
-                }
-
-                HStack {
-                    Button {
-                        self.resetAppShow.toggle()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Label("初始化App", systemImage: "arrow.3.trianglepath")
-                                .foregroundStyle(.white, Color.primary)
-                                .padding(.vertical, 5)
-                                .fontWeight(.bold)
-
-                            Spacer()
-                        }
-                    }
-                    .tint(.red)
-                    .buttonStyle(.borderedProminent)
+                    .contentShape(Rectangle())
                 }
             }
         }
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
         .navigationTitle("数据管理")
-        .if(showDeleteView) { view in
-            view.deleteTips($showDeleteView)
+        .if(showChangeImageDay) { view in
+            view.modifier(
+                ChangeView(show: $showChangeImageDay, data: $imageSaveDays)
+            )
+        }
+        .if(showChangeDay) { view in
+            view.modifier(
+                ChangeView(show: $showChangeDay, data: $messageExpiration)
+            )
         }
         .if(restartAppShow) { view in
             view
@@ -394,44 +434,64 @@ struct DataSettingView: View {
                             Text("清空"),
                             action: {
                                 self.showDriveCheckLoading = true
-                                if
-                                    let fileURL = NCONFIG.getDir(.sounds),
-                                    let cacheURL = NCONFIG.getDir(.tem)
+                                if let fileURL = NCONFIG.Path(.sounds),
+                                   let cacheURL = NCONFIG.Path(.tem)
                                 {
                                     ImageManager.customCache.clearDiskCache()
-                                    manager
-                                        .clearContentsOfDirectory(
-                                            at: fileURL
-                                        )
-                                    manager
-                                        .clearContentsOfDirectory(
-                                            at: cacheURL
-                                        )
-                                    Defaults[.imageSaves] = []
+                                    manager.clearContentsOfDirectory(at: fileURL)
+                                    manager.clearContentsOfDirectory(at: cacheURL)
                                 }
-
-                                try? DatabaseManager.shared.vacuum()
 
                                 Toast.success(title: "清理成功")
-
-                                DispatchQueue.main.async {
-                                    self.showDriveCheckLoading = false
-                                    calculateSize()
-                                }
+                                self.showDriveCheckLoading = false
+                                calculateSize()
                             }
                         ),
                         secondaryButton: .cancel()
                     )
                 }
         }
+        .deleteTips($showDeleteView)
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .secondaryAction) {
                 Button {
                     self.showDeleteView = true
                 } label: {
                     Label("按条件删除消息", systemImage: "trash")
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.green, Color.primary)
+                }
+            }
+
+            ToolbarItem(placement: .secondaryAction) {
+                Section {
+                    Button {
+                        self.resetAppShow.toggle()
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Label("初始化App", systemImage: "arrow.3.trianglepath")
+                                .foregroundStyle(.white, Color.primary)
+                                .padding(.vertical, 5)
+                                .fontWeight(.bold)
+
+                            Spacer()
+                        }
+                    }
+                    .tint(.red)
+                }
+            }
+            ToolbarItem(placement: .secondaryAction) {
+                Section {
+                    Button {
+                        guard !showDeleteAlert else { return }
+                        self.showDeleteAlert.toggle()
+                    } label: {
+                        Label("清空缓存数据", systemImage: "trash.circle")
+                            .foregroundStyle(.white, Color.primary)
+                            .fontWeight(.bold)
+                            .padding(.vertical, 5)
+                    }
                 }
             }
         }
@@ -448,15 +508,17 @@ struct DataSettingView: View {
 
     func calculateSize() {
         if
-            let soundsURL = NCONFIG.getDir(.sounds),
-            let imageURL = NCONFIG.getDir(.image),
-            let cacheFileURL = NCONFIG.getDir(.tem)
+            let soundsURL = NCONFIG.Path(.sounds),
+            let caches = NCONFIG.Path(.caches),
+            let cacheFileURL = NCONFIG.Path(.tem)
         {
+            
             totalSize = manager.calculateDirectorySize(at: NCONFIG.localContainer)
 
             cacheSize = manager.calculateDirectorySize(at: soundsURL) + manager
-                .calculateDirectorySize(at: imageURL) +
-                manager.calculateDirectorySize(at: cacheFileURL)
+                .calculateDirectorySize(at: caches) +
+                manager.calculateDirectorySize(at: cacheFileURL) + 
+                manager.calculateDirectorySize(at: pngCache)
         }
     }
 
@@ -471,7 +533,7 @@ struct DataSettingView: View {
                     if let data = CryptoManager(.data).decrypt(data: raw) {
                         try data.write(to: NCONFIG.configPath)
                     } else {
-                        throw NoletError(message: "解密失败")
+                        throw NoletError( "解密失败")
                     }
                     await MainActor.run {
                         self.restartAppShow.toggle()
@@ -484,8 +546,26 @@ struct DataSettingView: View {
                         self.restartAppShow.toggle()
                     }
 
+                case "js":
+                    let script = try String(contentsOf: url, encoding: .utf8)
+                    let result = await JSRuntime.validate(script, args: ScriptData.Mode.tts.args)
+                    if result.ok {
+                        let data = try ScriptData(
+                            name: url.lastPathComponent,
+                            content: script,
+                            mode: .tts
+                        )
+
+                        Defaults[.scripts].insert(data)
+                    } else {
+                        if let message = result.message {
+                            Toast.shared.present(title: message, symbol: .error)
+                        }
+                        throw NoletError( "script error")
+                    }
+
                 default:
-                    try messageManager.importJSONFile(fileURL: url)
+                    try await messageManager.importJSONFile(fileURL: url)
                 }
             }
 
@@ -532,6 +612,42 @@ struct DataSettingView: View {
             return false
         }
     }
+
+    struct ChangeView: ViewModifier {
+        @Binding var show: Bool
+        @Binding var data: ExpirationTime
+
+        @State private var dataTem: String
+
+        init(show: Binding<Bool>, data: Binding<ExpirationTime>) {
+            self._show = show
+            self._data = data
+            if case .day(let day) = data.wrappedValue {
+                self._dataTem = State(wrappedValue: "\(day)")
+            } else {
+                self._dataTem = State(wrappedValue: "1")
+            }
+        }
+
+        func body(content: Content) -> some View {
+            content
+                .alert("修改存档时间", isPresented: $show) {
+                    TextField(text: $dataTem) {}
+                        .customField(icon: "clock.arrow.circlepath")
+                        .keyboardType(.numberPad)
+
+                    Button("取消", role: .cancel) { self.dataTem = "" }
+
+                    Button("保存", role: .destructive) {
+                        if let days = Int64(dataTem) {
+                            self.data = .day(days)
+                        }
+                    }
+                } message: {
+                    Text("修改数据的保存时间. 单位: 天")
+                }
+        }
+    }
 }
 
 extension UInt64 {
@@ -552,9 +668,7 @@ extension ExpirationTime {
     var title: String {
         switch self {
         case .no: String(localized: "不保存")
-        case .oneDay: String(localized: "1天")
-        case .weekDay: String(localized: "1周")
-        case .month: String(localized: "1月")
+        case .day(let day): String(localized: "\(day)天")
         case .forever: String(localized: "长期")
         }
     }

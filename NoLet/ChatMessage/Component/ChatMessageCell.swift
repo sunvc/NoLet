@@ -6,104 +6,107 @@
 //  Document:      https://wiki.wzs.app
 //  E-mail:        to@wzs.app
 
-//  Description:
+//  Description: 单条消息卡片，内容完整展示，不内部滚动。
 
 //  History:
 //    Created by Neo 2026/7/15 09:13.
 
 import SwiftUI
-import MessagingUI
 
 
-struct ChatMessageCell {
-    typealias StateValue = Void
-
+struct ChatMessageCell: View {
     let item: ChatMessage
 
-    private let maxRevealOffset: CGFloat = 60
+    @ObservedObject private var chatManager = NoLetChatManager.shared
+    @ObservedObject private var appManager = AppManager.shared
 
-    private static var timeFormatter: DateFormatter {
+    private static var timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return formatter
+    }()
+
+    /// 正在流式输出的助手消息直接读取 manager 的实时状态，
+    /// 避免逐 token 触发整列表 diff；流结束后切到最终内容并渲染 Markdown。
+    private var isStreaming: Bool {
+        appManager.isLoading && chatManager.currentMessageID == item.id
+    }
+
+    private var display: ChatMessage {
+        guard isStreaming else { return item }
+        return ChatMessage(
+            id: item.id,
+            timestamp: item.timestamp,
+            role: item.role,
+            content: chatManager.currentContent,
+            message: item.message,
+            reason: chatManager.currentReason.isEmpty ? nil : chatManager.currentReason,
+            result: chatManager.currentResult.isEmpty ? nil : chatManager.currentResult
+        )
     }
 
     @MainActor
-    private var quote: Message? {
-        guard let messageID = AppManager.shared.askMessageID else { return nil }
+    private var quote: MessageEntity? {
+        guard let messageID = display.message ?? appManager.askMessageID else { return nil }
         return MessagesManager.shared.query(id: messageID)
     }
 
-    @MainActor
-    @ViewBuilder
-    func body(context: CellContext<Void>) -> some View {
-        let revealOffset = context.cellReveal?.rubberbandedOffset(max: maxRevealOffset) ?? 0
-        let isUserMessage = item.role == ChatMessage.Role.user.rawValue
+    private var isUserMessage: Bool { display.role == "user" }
 
-        VStack{
-            if quote != nil {
-                VStack {
-                    if let quote = quote {
-                        HStack {
-                            Spacer()
-                            QuoteView(message: quote.search)
-                            Spacer()
-                        }
-                        .padding(.bottom, 5)
-                    }
+    var body: some View {
+        let message = display
+        VStack(alignment: .leading, spacing: 4) {
+            if let quote {
+                HStack {
+                    Spacer()
+                    QuoteView(message: quote.search)
+                    Spacer()
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
+                .padding(.bottom, 5)
             }
 
             if !isUserMessage {
-                ReasonButton(message: item)
+                ReasonButton(message: message)
             }
 
-            if !item.content.removingAllWhitespace.isEmpty {
-                HStack {
-                    if isUserMessage {
-                        Spacer()
-                    }
+            if !message.content.removingAllWhitespace.isEmpty {
+                HStack(alignment: .top) {
+                    if isUserMessage { Spacer(minLength: 40) }
 
-                    ScrollView {
-                        MarkdownCustomView(content: item.content)
-                            .padding()
-                            .foregroundColor(.primary)
-                    }
-                    .frame(maxHeight: 400)
-                    .if(isUserMessage) {
-                        $0.background(Color.blue.opacity(0.2))
-                    }
-                    .if(!isUserMessage) {
-                        $0.background26(.ultraThinMaterial)
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .onTapGesture(count: 2) {
-                        Clipboard.set(item.content)
-                        Toast.success(title: "复制成功")
-                    }
+                    content(message.content)
+                        .padding(12)
+                        .foregroundColor(.primary)
+                        .frame(alignment: isUserMessage ? .trailing : .leading)
+                        .background26(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .onTapGesture(count: 2) {
+                            NCONFIG.copy(message.content)
+                            Toast.success(title: "复制成功")
+                        }
+                        .textSelection(.enabled)
 
-                    if !isUserMessage {
-                        Spacer()
-                    }
+                    if !isUserMessage { Spacer(minLength: 40) }
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 4)
+            }
+
+            HStack {
+                if isUserMessage { Spacer() }
+                Text(Self.timeFormatter.string(from: message.timestamp))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                if !isUserMessage { Spacer() }
             }
         }
-        .offset(x: -revealOffset)
-        .overlay(alignment: .trailing) {
-            Text(Self.timeFormatter.string(from: item.timestamp))
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .frame(width: maxRevealOffset)
-                .offset(x: maxRevealOffset - revealOffset)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+    }
+
+    @ViewBuilder
+    private func content(_ text: String) -> some View {
+        if isStreaming {
+            Text(verbatim: text)
+        } else {
+            MarkdownCustomView(content: text)
         }
-        .clipped()
-        .padding(.horizontal, 3)
-        .padding(.vertical, 8)
     }
 }
-
-extension ChatMessageCell: @MainActor TiledCellContent {}

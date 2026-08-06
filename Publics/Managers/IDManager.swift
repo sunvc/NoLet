@@ -33,9 +33,6 @@ final class IDManager: Sendable {
 
     private static let account = "NOLETACCOUNTDEVICEID"
 
-    private static let service =
-        Bundle.main.bundleIdentifier ?? "me.uuneo.Meoworld"
-
     private init() {}
 
     static var id: String {
@@ -51,14 +48,14 @@ final class IDManager: Sendable {
         guard let data = id.data(using: .utf8) else { return }
         let queryDelete: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: Self.service,
+            kSecAttrService as String: NCONFIG.bundleIdentifier,
             kSecAttrAccount as String: Self.account,
         ]
         SecItemDelete(queryDelete as CFDictionary)
 
         let queryAdd: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: Self.service,
+            kSecAttrService as String: NCONFIG.bundleIdentifier,
             kSecAttrAccount as String: Self.account,
             kSecValueData as String: data,
         ]
@@ -68,7 +65,7 @@ final class IDManager: Sendable {
     private func read() -> String? {
         let queryRead: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: Self.service,
+            kSecAttrService as String: NCONFIG.bundleIdentifier,
             kSecAttrAccount as String: Self.account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne,

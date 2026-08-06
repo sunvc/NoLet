@@ -17,7 +17,7 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var overlayWindow: UIWindow?
-    
+
     private var syncTask: Task<Void, Never>?
 
     func scene(
@@ -63,13 +63,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return AppManager.runQuick(shortcutItem.type)
     }
 
-    func sceneDidBecomeActive(_: UIScene) {
-        if let currentLang = Locale.preferredLanguages.first,
-           Defaults[.lang] != currentLang
-        {
-            Defaults[.lang] = currentLang
-        }
-    }
+    func sceneDidBecomeActive(_: UIScene) {}
 
     func sceneWillResignActive(_: UIScene) {}
 
@@ -89,13 +83,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-   
     func _syncAppInfo() {
         syncTask?.cancel()
         syncTask = Task.detached(name: "sceneWillEnterForeground", priority: .background) {
             await MessagesManager.shared.deleteExpired()
+            await MessagesManager.shared.drainPendingMessages()
             await AppManager.syncServer()
-            await NoLetChatManager.shared.clearunuse()
+            if let currentLang = Locale.preferredLanguages.first,
+               Defaults[.lang] != currentLang
+            {
+                Defaults[.lang] = currentLang
+            }
         }
     }
 

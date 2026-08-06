@@ -11,82 +11,61 @@
 //    Created by Neo on 2025/2/13.
 //
 
+import CoreData
 import Defaults
 import SwiftUI
 
 struct MessageFlatListView: View {
     @Default(.assistantAccouns) var assistantAccouns
 
-    @State private var isLoading: Bool = false
-
-    @State private var showAllTTL: Bool = false
-
     @ObservedObject private var manager = AppManager.shared
     @ObservedObject private var messageManager = MessagesManager.shared
 
-    @State private var showLoading: Bool = false
-    @State private var scrollItem: String = ""
+    @FetchRequest(fetchRequest: MessageEntity.messageFetchRequest())
+    private var messages: FetchedResults<MessageEntity>
 
-    @State private var selectMessage: Message? = nil
-
-    private var messagesCount: Int {
-        messageManager.messages.count
-    }
-
-    private var messagePage: Int {
-        messageManager.messagePage
-    }
-
-    var lastMessage: Message? {
-        messageManager.messages.elementFromEnd(5)
-    }
+    @State private var showAllTTL: Bool = false
 
     var body: some View {
         ScrollViewReader { proxy in
             WaterfallMessageView(
-                messages: messageManager.messages,
-                allCount: messageManager.allCount,
+                messages: messages,
+                allCount: messages.count,
                 columnCount: manager.waterfallColumnCount,
-                isLoading: showLoading,
+                isLoading: false,
                 searchText: "",
                 assistantAccounsCount: assistantAccouns.count,
                 showAllTTL: showAllTTL,
                 selectID: manager.selectID,
                 onDelete: { message in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        withAnimation(.default) {
-                            messageManager.messages
-                                .removeAll(where: { $0.id == message.id })
-                        }
-                    }
+                    let id = message.idText
+                    let group = message.groupText
                     Task.detached(priority: .background) {
-                        _ = await messageManager.delete(message)
+                        _ = await messageManager.delete(id: id, group: group)
                     }
                     Toast.success(title: "删除成功")
                 },
-                onLoadMore: { [self] in
-                    loadData(proxy: proxy, limit: messagePage, item: messageManager.messages.last)
-                }
+                onLoadMore: {}
             )
-            .scrollDismissesKeyboard(.interactively)
-            .scrollContentBackground(.hidden)
-            .background(ContentBackgroundView())
-            .navigationTitle("消息")
-            .refreshable {
-                self.loadData(proxy: proxy, limit: messagePage)
+            .onChange(of: manager.selectID) { selectID in
+                scrollTo(selectID, proxy: proxy)
             }
-            .onChange(of: messageManager.updateSign) { _ in
-                loadData(proxy: proxy, limit: max(messagesCount, messagePage))
+            .onAppear {
+                scrollTo(manager.selectID, proxy: proxy)
             }
         }
+        .scrollDismissesKeyboard(.interactively)
+        .scrollContentBackground(.hidden)
+        .background(ContentBackgroundView())
+        .navigationTitle("消息列表")
         .diff { view in
             Group {
                 if #available(iOS 26.0, *) {
                     view
                         .toolbar {
-                            if !(messagesCount == 0 || messagesCount == messageManager.allCount) {
+                            if !messages.isEmpty {
                                 ToolbarItem(placement: .subtitle) {
-                                    allMessageCount
+                                    allMessageCount(messages.count)
                                 }
                             }
                         }
@@ -95,68 +74,33 @@ struct MessageFlatListView: View {
                         .safeAreaInset(edge: .bottom) {
                             HStack {
                                 Spacer()
-                                allMessageCount
+                                allMessageCount(messages.count)
                                     .padding(.horizontal, 10)
                                     .background26(.ultraThinMaterial, radius: 5)
                             }
-                            .opacity((messagesCount == 0 || messagesCount == messageManager
-                                    .allCount) ? 0 : 1)
+                            .opacity(messages.isEmpty ? 0 : 1)
                         }
                 }
             }
         }
         .task {
-            self.loadData(limit: messagePage)
+            await messageManager.updateRead()
         }
     }
 
-    private var allMessageCount: some View {
-        Text(verbatim: "\(messagesCount) / \(max(messageManager.allCount, messagesCount))")
+    private func scrollTo(_ selectID: String?, proxy: ScrollViewProxy) {
+        guard let selectID else { return }
+        withAnimation { proxy.scrollTo(selectID, anchor: .center) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            manager.selectID = nil
+            manager.selectGroup = nil
+        }
+    }
+
+    private func allMessageCount(_ count: Int) -> some View {
+        Text(verbatim: "\(count)")
             .font(.caption)
             .foregroundStyle(.gray)
-    }
-
-    private func proxyTo(proxy: ScrollViewProxy, selectID: String?) {
-        if let selectID = selectID {
-            withAnimation {
-                proxy.scrollTo(selectID, anchor: .center)
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                manager.selectID = nil
-                manager.selectGroup = nil
-            }
-        }
-    }
-
-    private func loadData(
-        proxy: ScrollViewProxy? = nil,
-        limit: Int,
-        item: Message? = nil
-    ) {
-        guard !showLoading else { return }
-        showLoading = true
-
-        Task {
-            let count = await messageManager.updateRead()
-            logger.info("更新未读条数: \(count)")
-
-            let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
-
-            await MainActor.run {
-                if item == nil {
-                    messageManager.messages = results
-                } else {
-                    let existingIDs = Set(messageManager.messages.map(\.id))
-                    messageManager.messages += results.filter { !existingIDs.contains($0.id) }
-                }
-                if let selectID = manager.selectID {
-                    proxy?.scrollTo(selectID, anchor: .center)
-                    manager.selectID = nil
-                    manager.selectGroup = nil
-                }
-                self.showLoading = false
-            }
-        }
     }
 }
 

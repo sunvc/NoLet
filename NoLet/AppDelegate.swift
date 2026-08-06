@@ -17,6 +17,7 @@ import UIKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotificationCenterDelegate {
+    
     func application(
         _: UIApplication,
         didFinishLaunchingWithOptions options: [UIApplication.LaunchOptionsKey: Any]?
@@ -27,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         Multilingual.resetTransLang()
 
         // FIXME: - 修复MAC不能使用PushToTalk崩溃
-        if ProcessInfo.processInfo.isiOSAppOnMac {
+        if .isiOSAppOnMac {
             Defaults[.usePtt] = false
         }
 
@@ -35,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
             Defaults[.member].location = token
         }
 
-        if !ProcessInfo.processInfo.isiOSAppOnMac {
+        if !.isiOSAppOnMac {
             Task {
                 try await PTTChannelManager.shared.start()
             }
@@ -77,12 +78,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
             }
 
             try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
+
+            try? await PushServerModel.registerChangesSubscription()
         }
 
         logger.info("获取到设备Token: \(token)")
     }
-
-    // MARK: UISceneSession Lifecycle
 
     func application(
         _: UIApplication,
@@ -119,7 +120,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         completionHandler()
     }
 
-    // 处理应用程序在前台是否显示通知
     func userNotificationCenter(
         _: UNUserNotificationCenter,
         willPresent notification: UNNotification,
@@ -128,12 +128,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
     ) {
         Haptic.impact(.light)
         notificatonHandler(userInfo: notification.request.content.userInfo)
-        MessagesManager.shared.updateSign += 1
         completionHandler([.banner])
     }
 
     func notificatonHandler(userInfo: [AnyHashable: Any]) {
-        if let urlStr = userInfo[Params.url.name] as? String, let url = URL(string: urlStr) {
+        if let urlStr = userInfo.raw(.url, as: String.self),
+           let url = URL(string: urlStr)
+        {
             AppManager.openURL(url: url, .safari)
         }
     }
@@ -151,15 +152,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult)
             -> Void
     ) {
-        if let id: String = userInfo.raw(.id), let group = MessagesManager.shared.delete(id) {
-            UNUserNotificationCenter.current()
-                .removeDeliveredNotifications(withIdentifiers: [group])
-        }
-
         Task {
+            PushServerModel.subHandler(userInfo) {
+                await AppManager.syncServer()
+            }
+            await MessagesManager.shared.delete(userInfo)
             await AppManager.shared.registerForRemoteNotifications()
+            completionHandler(.newData)
         }
-
-        completionHandler(.newData)
     }
 }

@@ -20,19 +20,21 @@ import SwiftUI
 // MARK: - 铃声界面播放铃声 Actor
 
 @MainActor
-final class AudioManager: ObservableObject {
+final class AudioManager: NSObject, ObservableObject, AVAudioPlayerDelegate {
     static let shared = AudioManager()
 
     @Published var defaultSounds: [URL] = []
     @Published var customSounds: [URL] = []
 
     @Published var loading: Bool = false
-    @Published var ShareURL: URL? = nil
 
     @Published private(set) var isPlaying: Bool = false
     @Published private(set) var currentTime: Double = 0
     @Published private(set) var duration: Double = 0
     @Published private(set) var currentURL: URL? = nil
+
+    @Published var speakPlayer: AVAudioPlayer? = nil
+    @Published var speaking: Bool = false
 
     private var manager = FileManager.default
 
@@ -41,10 +43,11 @@ final class AudioManager: ObservableObject {
     private var playerItemStatusObserver: NSKeyValueObservation?
 
     private var endObserver: NSObjectProtocol?
-    
+
     let network = NetworkManager()
 
-    private init() {
+    private override init() {
+        super.init()
         updateFileList()
     }
 
@@ -149,6 +152,15 @@ final class AudioManager: ObservableObject {
         formatter.maximumFractionDigits = 2
         return formatter.string(from: NSNumber(value: duration)) ?? ""
     }
+
+    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        DispatchQueue.main.async {
+            withAnimation(.default) {
+                self.speaking = false
+                self.speakPlayer = nil
+            }
+        }
+    }
 }
 
 extension AudioManager {
@@ -174,7 +186,7 @@ extension AudioManager {
         }()
 
         let customSounds: [URL] = {
-            guard let soundsDirectoryURL = NCONFIG.getDir(.sounds) else { return [] }
+            guard let soundsDirectoryURL = NCONFIG.Path(.sounds) else { return [] }
 
             var urlemp = self.getFilesInDirectory(
                 directory: soundsDirectoryURL.path(), suffix: "caf"
@@ -209,7 +221,8 @@ extension AudioManager {
 
             return files.compactMap { file -> URL? in
                 if file.lowercased().hasSuffix(suffix.lowercased()),
-                   !file.hasPrefix(NCONFIG.longSoundPrefix)
+                   !file.hasPrefix(NCONFIG.SoundName.long.rawValue),
+                   !file.hasPrefix(NCONFIG.SoundName.speak.rawValue)
                 {
                     return URL(fileURLWithPath: directory).appendingPathComponent(file)
                 }
@@ -219,10 +232,34 @@ extension AudioManager {
             return []
         }
     }
+
+    static func deleteFiles(in folderURL: URL, prefix: String) throws {
+        let fileManager = FileManager.default
+
+        let files = try fileManager.contentsOfDirectory(
+            at: folderURL,
+            includingPropertiesForKeys: [.isRegularFileKey],
+            options: [.skipsHiddenFiles]
+        )
+
+        for fileURL in files {
+            guard fileURL.lastPathComponent.hasPrefix(prefix) else {
+                continue
+            }
+
+            let values = try fileURL.resourceValues(forKeys: [.isRegularFileKey])
+
+            // 只删除文件，不删除同名文件夹
+            guard values.isRegularFile == true else {
+                continue
+            }
+
+            try fileManager.removeItem(at: fileURL)
+        }
+    }
 }
 
 enum Tone {
-    
     static func play(_ sound: TipsSound, fileExtension: String = "aac") async {
         await play(sound.rawValue, fileExtension: fileExtension)
     }
@@ -231,7 +268,7 @@ enum Tone {
         _ sound: String,
         fileExtension: String = "aac"
     ) async {
-        guard  Defaults[.feedbackSound] else { return }
+        guard Defaults[.feedbackSound] else { return }
         var localSoundID: SystemSoundID = 0
 
         AudioServicesDisposeSystemSoundID(localSoundID)

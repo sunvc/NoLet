@@ -6,128 +6,76 @@
 //  Document:      https://wiki.wzs.app
 //  E-mail:        to@wzs.app
 
-//  Description:
+//  Description: 纯 SwiftUI 消息列表，最新消息在底部。
 
 //  History:
-//    Created by Neo on 2026/7/15 08:45.
+//    Created by Neo 2026/7/15 08:45.
+//
 
-import MessagingUI
 import SwiftUI
 
 struct ChatMessageArrayView: View {
     @ObservedObject private var chatManager = NoLetChatManager.shared
-    @ObservedObject private var manager = AppManager.shared
-    @State private var scrollPosition = TiledScrollPosition(
-        autoScrollsToBottomOnAppend: true,
-        scrollsToBottomOnReplace: true
-    )
-    @State private var isPrependLoading = false
-    @State private var isAppendLoading = false
-    @State private var isTyping = false
-    @State private var isNearBottom = true
-
-    @Environment(\.isSearching) private var isSearching
+    @State private var nearBottom = true
 
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            TiledView(
-                items: chatManager.chatMessages,
-                scrollPosition: $scrollPosition
-            ) { message in
-                ChatMessageCell(item: message)
-            }
-            .prependLoader(.loader(
-                perform: {
-                    if chatManager.messagesCount > 0,
-                       chatManager.chatMessages.count < chatManager.messagesCount
-                    {
-                        self.isPrependLoading = true
-                        chatManager.page += 1
-                        Task {
-                            await chatManager.updateMessage()
-                            self.isPrependLoading = false
-                        }
-                    }
-                },
-                isProcessing: isPrependLoading
-            ) { loadText })
-            .appendLoader(.loader(
-                perform: {
-                    if chatManager.page != 1 {
-                        self.isAppendLoading = true
-                        chatManager.page = 1
-                        Task {
-                            await chatManager.updateMessage()
-                            self.isAppendLoading = false
-                        }
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(chatManager.chatMessages) { message in
+                        ChatMessageCell(item: message)
+                            .id(message.id)
                     }
 
-                },
-                isProcessing: isAppendLoading
-            ) { loadText })
-            .typingIndicator(.indicator(isVisible: chatManager.isFocusedInput) {
-                HStack(spacing: 8) {
-                    Text("正在输入...")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-            })
-            .revealConfiguration(.default)
-            .onDragIntoBottomSafeArea {
-                chatManager.isFocusedInput = false
-                AppManager.hideKeyboard()
-            }
-            .onTapBackground {
-                chatManager.isFocusedInput = false
-                AppManager.hideKeyboard()
-            }
-            .onTiledScrollGeometryChange { geometry in
-                let nextIsNearBottom = geometry.pointsFromBottom < 100
-                if isNearBottom != nextIsNearBottom {
-                    isNearBottom = nextIsNearBottom
-                }
-            }
+                    HStack(spacing: 8) {
+                        Text("正在输入...")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                    }
+                    .opacity(chatManager.isFocusedInput ? 1 : 0.0001)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .id("typingIndicator")
 
-            if !isNearBottom && !isSearching {
-                Button {
-                    scrollPosition.scrollTo(edge: .bottom, animated: true)
-                } label: {
-                    Image(systemName: "arrow.down.circle.fill")
-                        .font(.title)
-                        .foregroundStyle(.blue)
-                        .background(Circle().fill(.white))
+                    Color.clear
+                        .frame(height: 1)
+                        .id("bottomMarker")
+                        .background(
+                            GeometryReader { geo in
+                                Color.clear.preference(
+                                    key: NearBottomKey.self,
+                                    value: geo.frame(in: .named("chat")).minY
+                                )
+                            }
+                        )
                 }
-                .padding()
-                .transition(.scale.combined(with: .opacity))
             }
-        }
-        .background(ContentBackgroundView())
-        .onChange(of: isSearching) { value in
-            if value {
-                scrollPosition.scrollTo(edge: .bottom, animated: true)
+            .coordinateSpace(name: "chat")
+            .scrollDismissesKeyboard(.interactively)
+            .onPreferenceChange(NearBottomKey.self) { minY in
+                nearBottom = minY < UIScreen.main.bounds.height + 120
             }
-        }
-        .onChange(of: chatManager.chatMessages) { _ in
-            if isNearBottom {
-                scrollPosition.scrollTo(edge: .bottom, animated: true)
+            .onChange(of: chatManager.chatMessages) { messages in
+                guard nearBottom, let last = messages.last else { return }
+                withAnimation(.smooth(duration: 0.2)) {
+                    proxy.scrollTo(last.id, anchor: .bottom)
+                }
             }
-        }
-        .onChange(of: chatManager.isFocusedInput) { _ in
-            scrollPosition.scrollTo(edge: .bottom, animated: true)
+            .onChange(of: chatManager.isFocusedInput) { focused in
+                if focused {
+                    withAnimation(.smooth) {
+                        proxy.scrollTo("typingIndicator", anchor: .bottom)
+                    }
+                }
+            }
         }
     }
+}
 
-    private var loadText: some View {
-        HStack(spacing: 8) {
-            ProgressView()
-            Text("加载消息中...")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
+private struct NearBottomKey: PreferenceKey {
+    static var defaultValue: CGFloat { .greatestFiniteMagnitude }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }

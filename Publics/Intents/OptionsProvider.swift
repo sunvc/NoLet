@@ -69,8 +69,10 @@ extension Identifiers {
         switch self {
         case .myNotificationCategory:
             return String(localized: "普通内容")
-        case .markdown, .reply:
+        case .markdown:
             return "Markdown"
+        case .reply:
+            return String(localized: "可回复")
         }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  SWIFT: 6.0 - MACOS: 15.7 
+//  SWIFT: 6.0 - MACOS: 15.7
 //  NoLet - NoLetChatAction.swift
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -36,7 +36,7 @@ enum NoLetChatAction: String, CaseIterable {
     case clearTheContext
     case startNewChat
 
-   static func runFunc(
+    static func runFunc(
         name: String,
         args: [String: Any]
     ) async -> (Date?, [String: String]) {
@@ -54,23 +54,23 @@ enum NoLetChatAction: String, CaseIterable {
             return (nil, results)
         case .message:
             guard let before = args["before"] as? String else {
-                   results = ["error": "Json Error"]
-                   return (nil, results)
-               }
+                results = ["error": "Json Error"]
+                return (nil, results)
+            }
 
-               let formatter = DateFormatter()
-               formatter.dateFormat = "yyyy/MM/dd HH:mm"
-               formatter.locale = Locale(identifier: "zh_CN")
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd HH:mm"
+            formatter.locale = Locale(identifier: "zh_CN")
 
-               guard let date = formatter.date(from: before) else {
-                   results = ["error": "Invalid date format"]
-                   return (nil, results)
-               }
+            guard let date = formatter.date(from: before) else {
+                results = ["error": "Invalid date format"]
+                return (nil, results)
+            }
 
-               results["before"] = before
-               results["run_result"] = "A confirmation dialog box pops up"
+            results["before"] = before
+            results["run_result"] = "A confirmation dialog box pops up"
 
-               return (date, results)
+            return (date, results)
         default:
             results = ["error": "Json Error"]
             return (nil, results)
@@ -136,29 +136,23 @@ enum NoLetChatAction: String, CaseIterable {
             // MARK: - Data
 
         case .clearAppCache:
-            guard let path = NCONFIG.getDir(.caches) else { return paramsError }
+            guard let path = NCONFIG.Path(.caches) else { return paramsError }
 
             manager.clearContentsOfDirectory(at: path)
 
         case .setDefaultMessageStorageDays:
-            guard
-                let val = value as? Int,
-                let time = ExpirationTime(rawValue: val)
-            else { return paramsError }
-            Defaults[.messageExpiration] = time
+            guard let val = value as? Int64 else { return paramsError }
+            Defaults[.messageExpiration] = ExpirationTime(rawValue: val)
 
         case .setDefaultImageStorageDays:
-            guard
-                let val = value as? Int,
-                let time = ExpirationTime(rawValue: val)
-            else { return paramsError }
-            Defaults[.imageSaveDays] = time
+            guard let val = value as? Int64 else { return paramsError }
+            Defaults[.imageSaveDays] = ExpirationTime(rawValue: val)
 
         case .deleteAllMuteGroups:
             Defaults[.muteSetting] = [:]
 
         case .clearTheContext:
-            let success = await NoLetChatManager.shared.setPoint()
+            let success = NoLetChatManager.shared.setPoint()
             if !success {
                 return "Execution failed"
             }
@@ -166,7 +160,7 @@ enum NoLetChatAction: String, CaseIterable {
         case .startNewChat:
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NoLetChatManager.shared.cancellableRequest?.cancel()
-                NoLetChatManager.shared.setGroup()
+                NoLetChatManager.shared.clear()
             }
         }
 
@@ -186,7 +180,7 @@ enum NoLetChatAction: String, CaseIterable {
                 .type(.boolean),
                 .description("Whether to auto-save images to album")
             )
-            
+
         case .defaultBrowser:
             return .init(fields: [
                 .type(.string),
@@ -334,15 +328,16 @@ enum NoLetChatAction: String, CaseIterable {
                     .properties([
                         "before": JSONSchema(
                             .type(.string),
-                            .description("Delete all messages before this date. Format: yyyy/MM/dd HH:mm")
-                        )
+                            .description(
+                                "Delete all messages before this date. Format: yyyy/MM/dd HH:mm"
+                            )
+                        ),
                     ]),
                     .required(["before"]),
-                    .additionalProperties(.boolean(false))
+                    .additionalProperties(.boolean(false)),
                 ]),
                 strict: true
             ),
         ]
     }
 }
-

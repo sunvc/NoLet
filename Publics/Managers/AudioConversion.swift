@@ -138,7 +138,8 @@ final class AudioConversion: Sendable {
         if FileManager.default.fileExists(atPath: outputURL.path) {
             try? FileManager.default.removeItem(at: outputURL)
         }
-        let asset = AVURLAsset(url: inputURL)
+        
+        let asset = AVURLAsset(url: inputURL) 
         let tracks = try await asset.loadTracks(withMediaType: .audio)
         guard let srcTrack = tracks.first else {
             throw NSError(

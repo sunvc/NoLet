@@ -9,8 +9,8 @@
 //  History:
 //    Created by Neo on 2025/5/18.
 //
-import SwiftUI
 import Defaults
+import SwiftUI
 
 @MainActor class Toast: ObservableObject {
     static let shared = Toast()
@@ -191,7 +191,6 @@ struct ToastGroup: View {
                 }
             }
             .statusBarHidden(manager.page == .ptt || manager.router.first == .ptt)
-            
         }
     }
 
@@ -222,7 +221,6 @@ private struct ToastView: View {
 
             Text(item.title)
                 .accessibilityLabel(item.title)
-               
         }
         .foregroundStyle(item.tint)
         .padding(.horizontal, 15)
@@ -252,8 +250,8 @@ private struct ToastView: View {
         .contentShape(.capsule)
         .gesture(
             DragGesture(minimumDistance: 0)
-                .onChanged{ _ in
-                    if let delayTask{
+                .onChanged { _ in
+                    if let delayTask {
                         delayTask.cancel()
                     }
                 }
@@ -264,7 +262,7 @@ private struct ToastView: View {
                     if abs(endX) > 10 {
                         removeToast()
                         Haptic.impact(.light)
-                    }else{
+                    } else {
                         startTiming()
                     }
                 }
@@ -275,8 +273,8 @@ private struct ToastView: View {
         .frame(maxWidth: size.width * 0.7)
         .transition(.offset(y: 150))
     }
-    
-    func startTiming(){
+
+    func startTiming() {
         guard delayTask == nil else { return }
         delayTask = .init(block: {
             removeToast()

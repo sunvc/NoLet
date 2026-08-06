@@ -16,9 +16,7 @@ import Foundation
 
 extension Defaults.Keys {
     static let servers = Key<[PushServerModel]>("serverArrayStroage", [])
-    static let messageExpiration = Key<ExpirationTime>("messageExpirtionTime", .forever)
     static let defaultBrowser = Key<DefaultBrowserModel>("defaultBrowserOpen", .auto)
-    static let imageSaveDays = Key<ExpirationTime>("imageSaveDays", .forever)
     static let proxyServer = Key<PushServerModel>("proxyDownloadServer", PushServerModel.space)
     static let customReasoningEffort = Key<String>("customReasoningEffort", "custom")
 }
@@ -27,7 +25,6 @@ extension Defaults.Keys {
     static let appIcon = Key<AppIconEnum>("setting_active_app_icon", .nolet)
 }
 
-extension ExpirationTime: Defaults.Serializable {}
 extension DefaultBrowserModel: Defaults.Serializable {}
 extension Identifiers: Defaults.Serializable {}
 extension AppIconEnum: Defaults.Serializable {}

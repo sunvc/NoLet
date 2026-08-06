@@ -44,7 +44,8 @@ struct PTTSettingsView: View {
                                     icon: Defaults[.member].id,
                                     defaultAvatar: "person.crop.circle.fill",
                                     refreshId: refreshId,
-                                    textImage: false
+                                    textImage: false,
+                                    maxPixel: 360
                                 )
                             }
 

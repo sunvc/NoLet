@@ -60,6 +60,8 @@ enum RouterPage: Hashable, Equatable {
     case files(url: URL)
     case web(url: URL)
     case ptt
+    case script
+    case notificationActions
 }
 enum TabPage: String, Sendable, CaseIterable {
     case message

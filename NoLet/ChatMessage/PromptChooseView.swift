@@ -137,10 +137,12 @@ struct PromptChooseView: View {
     private func handlePromptTap(_ prompt: ChatPrompt) {
         if chatManager.chatPrompt == prompt {
             chatManager.chatPrompt = nil
+            self.show = false
         } else {
             chatManager.chatPrompt = prompt
             AppManager.shared.open(sheet: nil)
         }
+        
     }
 }
 
@@ -200,6 +202,9 @@ private struct PromptRowView: View {
                             lineWidth: 1
                         )
                 )
+                .onAppear { 
+                    logger.info("\(prompt.id)--\(selectID as NSString?)")
+                }
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {

@@ -7,6 +7,7 @@
 //
 
 import Defaults
+import Intents
 import UIKit
 import UniformTypeIdentifiers
 
@@ -17,9 +18,7 @@ final class AttachmentProcessor: NotificationContentProcessor {
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
 
-        let seconds = await MainActor.run { Defaults[.imageSaveDays].seconds }
-
-        if let location: String = userInfo.raw(.location),
+        if let location = userInfo.raw(.location, as: String.self),
            let localPath = await ImageManager.generateMapSnapshot(
                from: location,
                mapSize: CGSize(width: 500, height: 500)
@@ -29,24 +28,18 @@ final class AttachmentProcessor: NotificationContentProcessor {
             bestAttemptContent.attachments = [attachment]
         }
 
-        if let imageURL: String = userInfo.raw(.image) {
+        if let imageURL = userInfo.raw(.image, as: String.self) {
+            let ex = Defaults[.imageSaveDays]
             guard let localPath = await ImageManager.downloadImage(
                 imageURL,
-                expiration: .seconds(seconds)
+                expiration: ex.isPermanent ? .never : .seconds(ex.seconds)
             ) else { return bestAttemptContent }
 
-            if let uiimage = UIImage(contentsOfFile: localPath),
-               let sha256 = uiimage.pngData()?.sha256()
-            {
-                if let saveAlbum: String = bestAttemptContent.userInfo.raw(.saveAlbum) {
-                    if saveAlbum == "1" {
-                        UIImageWriteToSavedPhotosAlbum(uiimage, self, nil, nil)
-                    }
+            if let uiimage = UIImage(contentsOfFile: localPath) {
+                if let saveAlbum = bestAttemptContent.userInfo.raw(.saveAlbum, as: Bool.self), saveAlbum {
+                    UIImageWriteToSavedPhotosAlbum(uiimage, self, nil, nil)
                 } else {
-                    if Defaults[.autoSaveToAlbum],
-                       Defaults[.imageSaves].first(where: { $0 == sha256 }) == nil
-                    {
-                        Defaults[.imageSaves].append(sha256)
+                    if Defaults[.autoSaveToAlbum] {
                         UIImageWriteToSavedPhotosAlbum(uiimage, self, nil, nil)
                     }
                 }
@@ -57,7 +50,68 @@ final class AttachmentProcessor: NotificationContentProcessor {
             bestAttemptContent.attachments = [attachment]
         }
 
-        return bestAttemptContent
+        // 图标处理------------------------------------------------------------
+
+        guard let imageURLSttr = userInfo.raw(.icon, as: String.self),
+              let imageData = await getPngData(pngURL: imageURLSttr)
+        else { return bestAttemptContent }
+
+        let avatar = INImage(imageData: imageData)
+        var personNameComponents = PersonNameComponents()
+        personNameComponents.nickname = bestAttemptContent.title
+
+        let senderPerson = INPerson(
+            personHandle: INPersonHandle(value: "", type: .unknown),
+            nameComponents: personNameComponents,
+            displayName: personNameComponents.nickname,
+            image: avatar,
+            contactIdentifier: nil,
+            customIdentifier: nil,
+            isMe: false,
+            suggestionType: .none
+        )
+        let mePerson = INPerson(
+            personHandle: INPersonHandle(value: "", type: .unknown),
+            nameComponents: nil,
+            displayName: nil,
+            image: nil,
+            contactIdentifier: nil,
+            customIdentifier: nil,
+            isMe: true,
+            suggestionType: .none
+        )
+
+        let placeholderPerson = INPerson(
+            personHandle: INPersonHandle(value: "", type: .unknown),
+            nameComponents: personNameComponents,
+            displayName: personNameComponents.nickname,
+            image: avatar,
+            contactIdentifier: nil,
+            customIdentifier: nil
+        )
+
+        let intent = INSendMessageIntent(
+            recipients: [mePerson, placeholderPerson],
+            outgoingMessageType: .outgoingMessageText,
+            content: bestAttemptContent.body,
+            speakableGroupName: INSpeakableString(spokenPhrase: bestAttemptContent.subtitle),
+            conversationIdentifier: bestAttemptContent.threadIdentifier,
+            serviceName: nil,
+            sender: senderPerson,
+            attachments: nil
+        )
+
+        intent.setImage(avatar, forParameterNamed: \.speakableGroupName)
+
+        let interaction = INInteraction(intent: intent, response: nil)
+        interaction.direction = .incoming
+
+        do {
+            try await interaction.donate()
+            return try bestAttemptContent.updating(from: intent) as! UNMutableNotificationContent
+        } catch {
+            return bestAttemptContent
+        }
     }
 
     func genAttachment(localPath: String) throws -> UNNotificationAttachment {
@@ -66,14 +120,38 @@ final class AttachmentProcessor: NotificationContentProcessor {
             at: URL(fileURLWithPath: localPath),
             to: copyDestURL
         )
-
-        // MARK: - 此处提示按照下面修改
-
-
         return try UNNotificationAttachment(
             identifier: Params.image.name,
             url: copyDestURL,
             options: [UNNotificationAttachmentOptionsTypeHintKey: UTType.png.identifier]
         )
+    }
+
+    func getPngData(pngURL: String) async -> Data? {
+        if URL(remote: pngURL) != nil {
+            if let localPath = await ImageManager.downloadImage(pngURL) {
+                return NSData(contentsOfFile: localPath) as? Data
+            }
+            return nil
+        }
+
+        if let icon = try? await PushIcon.query(
+            NSPredicate(format: "name == %@", pngURL),
+            from: NCONFIG.publicCloudDatabase
+        ).first,
+            let previewImage = icon.previewImage,
+            let data = previewImage.pngData()
+        {
+            let ex = Defaults[.imageSaveDays]
+            await ImageManager.storeImage(
+                data: data,
+                key: pngURL,
+                expiration: ex == .forever ? .never : .seconds(Defaults[.imageSaveDays].seconds)
+            )
+
+            return data
+        } else {
+            return pngURL.avatarImage()?.pngData()
+        }
     }
 }

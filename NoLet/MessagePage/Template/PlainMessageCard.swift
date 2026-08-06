@@ -11,10 +11,11 @@
 //  History:
 //    Created by Neo on 2026/6/17 13:20.
 
+import CoreData
 import SwiftUI
 
 struct PlainMessageCard: MessageCardProtocol {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration
 
     @ObservedObject var manager = AppManager.shared
@@ -25,7 +26,7 @@ struct PlainMessageCard: MessageCardProtocol {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let image = message.image {
+            if let image = message.value(for: .image) {
                 AsyncPhotoView(url: image, zoom: false, height: 200)
                     .padding(5)
                     .contentShape(Rectangle())
@@ -71,7 +72,7 @@ struct PlainMessageCard: MessageCardProtocol {
                 
 
                 SCSelectableTextRepresentable(
-                    text: message.body.plainText,
+                    text: message.bodyText.plainText,
                     font: .systemFont(ofSize: 15, weight: .medium),
                     textColor: .textBlack,
                     textAlignment: .left,
@@ -82,11 +83,11 @@ struct PlainMessageCard: MessageCardProtocol {
                     .padding(.top, 6)
 
                 HStack {
-                    AvatarView(icon: message.icon)
+                    AvatarView(icon: message.value(for: .icon))
                         .frame(width: 30, height: 30, alignment: .center)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                    Text(message.group)
+                    Text(message.groupText)
                         .font(.footnote)
                         .fontWeight(.semibold)
                         .padding(.horizontal, 5)
@@ -103,7 +104,7 @@ struct PlainMessageCard: MessageCardProtocol {
                         }
                     }
 
-                    if let location = message.value(for: "location", ""),
+                    if let location = message.value(for: "location"),
                        let location = location.location()
                     {
                         Button {
@@ -147,16 +148,15 @@ struct PlainMessageCard: MessageCardProtocol {
 }
 
 #Preview {
-    PlainMessageCard(message: Message(
-        id: UUID().uuidString,
-        createDate: .now.addingTimeInterval(-60000),
-        group: "工作",
-        title: "如何用正念重塑你与自然的关系",
-        subtitle: "探索自然",
-        body: "在这个快节奏的时代，沉浸于自然不仅是一种放松，更是一场心灵的治愈之旅。本文将带你探索那些被忽视的绿色角落。",
-        url: "https://wzs.app",
-
-        ttl: 1000,
-        read: false
-    ), config: .init())
+    PlainMessageCard(message: MessageEntity.preview([
+        "id": UUID().uuidString,
+        "createDate": Int(Date().addingTimeInterval(-60000).timeIntervalSince1970),
+        "group": "工作",
+        "title": "如何用正念重塑你与自然的关系",
+        "subtitle": "探索自然",
+        "body": "在这个快节奏的时代，沉浸于自然不仅是一种放松，更是一场心灵的治愈之旅。本文将带你探索那些被忽视的绿色角落。",
+        "url": "https://wzs.app",
+        "ttl": Int(Date.now.timeIntervalSince1970) + 1000,
+        "read": false,
+    ]), config: .init())
 }

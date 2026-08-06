@@ -12,9 +12,8 @@
 
 import Combine
 import Foundation
-import SwiftUI
 import PhotosUI
-
+import SwiftUI
 
 struct CustomForegroundStyleModifier: ViewModifier {
     @Environment(\.colorScheme) var colorScheme
@@ -57,8 +56,6 @@ struct CustomForegroundStyleModifier: ViewModifier {
         }
     }
 }
-
-
 
 // MARK: - BackgroundStyle 视图
 
@@ -197,9 +194,6 @@ struct ListButton<LEFT: View, Trailing: View>: View {
     }
 }
 
-
-
-
 extension View {
     /// Applies the given transform if the given condition evaluates to `true`.
     /// - Parameters:
@@ -233,7 +227,6 @@ extension View {
         transform(self)
     }
 
-
     func customField(
         icon: String,
         _ background: Bool = true,
@@ -241,7 +234,6 @@ extension View {
     ) -> some View {
         modifier(TextFieldModifier(icon: icon, background: background, complete: complete))
     }
-
 
     @available(iOS, deprecated: 26.0, message: "谨慎使用,这个代码影响手势识别")
     func VButton(
@@ -294,7 +286,6 @@ extension View {
         }
     }
 
-
     public func button26<S>(_ style: S) -> some View where S: PrimitiveButtonStyle {
         Group {
             if #available(iOS 26.0, *) {
@@ -335,10 +326,9 @@ extension View {
                                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                                     .stroke(.primary.opacity(0.6), lineWidth: 1)
                             )
-                    }else{
+                    } else {
                         view
                     }
-                    
                 }
             }
         }
@@ -356,9 +346,6 @@ extension View {
         .clipShape(RoundedRectangle(cornerRadius: radius))
     }
 }
-
-
-
 
 struct ImagePickerRepresentable: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
@@ -418,8 +405,6 @@ struct ImagePickerRepresentable: UIViewControllerRepresentable {
     }
 }
 
-
-
 extension View {
     /// 包装 UIKit 后的图片选择修饰符
     /// - Parameters:
@@ -433,6 +418,16 @@ extension View {
         self.sheet(isPresented: isPresented) {
             ImagePickerRepresentable(isPresented: isPresented, onResult: onResult)
                 .ignoresSafeArea()
+        }
+    }
+
+    /// presentationDetents
+    @ViewBuilder
+    func customDetents(_ detents: Set<PresentationDetent>) -> some View {
+        if Bool.isiOSAppOnMac {
+            self.presentationDetents([.large])
+        } else {
+            self.presentationDetents(detents)
         }
     }
 }

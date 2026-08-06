@@ -7,82 +7,12 @@
 
 import Defaults
 import Foundation
-import GRDB
 import SwiftUI
 import UIKit
 import CryptoKit
 
-struct AudioMessage: Codable, FetchableRecord, PersistableRecord, Identifiable, Hashable,
-    Equatable
-{
-    var id: String = UUID().uuidString
-    var timestamp: Date = .now
-    var channel: String
-    var from: String
-    var file: String
-    var url: String = ""
-    var read: Bool = false
-    var sign: Bool = false
-    var status: Status = .ready
-
-    enum Status: Int, Codable {
-        case ready
-        case send
-        case success
-        case failed
-
-        var name: String {
-            switch self {
-            case .ready: return String(localized: "就绪")
-            case .send: return String(localized: "发送中...")
-            case .success: return String(localized: "发送成功")
-            case .failed: return String(localized: "发送失败")
-            }
-        }
-
-        var color: Color {
-            switch self {
-            case .ready: .blue
-            case .send: .green
-            case .success:.mint
-            case .failed: .red
-            }
-        }
-    }
-
-    enum Columns {
-        static let id = Column(CodingKeys.id)
-        static let timestamp = Column(CodingKeys.timestamp)
-        static let channel = Column(CodingKeys.channel)
-        static let from = Column(CodingKeys.from)
-        static let file = Column(CodingKeys.file)
-        static let url = Column(CodingKeys.url)
-        static let read = Column(CodingKeys.read)
-        static let sign = Column(CodingKeys.sign)
-        static let status = Column(CodingKeys.status)
-    }
-
-    func filePath() -> URL? {
-        NCONFIG.getDir(.ptt)?.appendingPathComponent(file)
-    }
-}
-
-extension AudioMessage {
-    init?(remote address: URL) {
-        let fileName = address.deletingPathExtension().lastPathComponent
-        let params = fileName.split(separator: "-").compactMap { String($0) }
-        guard params.count == 4, let times = Int(params[3], radix: 32)
-        else { return nil }
-
-        self.timestamp = Date(timeIntervalSince1970: TimeInterval(times) / 1000)
-        self.sign = params.first == "1"
-        self.from = params[2]
-        self.channel = params[1]
-        self.url = address.absoluteString
-        self.file = params[1...].joined(separator: "-") + "." + address.pathExtension
-        self.status = .success
-    }
-}
+// AudioMessage is the Core Data entity AudioMessageEntity; see
+// AudioMessageDBManager for its Status enum, filePath(), and remote-URL parser.
 
 struct PttMessageRequest: Codable {
     var id: String
@@ -154,7 +84,7 @@ struct PTTChannel: Identifiable, Equatable, Codable {
     }
 
     func filePath(userID: String) -> URL? {
-        NCONFIG.getDir(.ptt)?.appendingPathComponent(fileName(userID: userID))
+        NCONFIG.Path(.ptt)?.appendingPathComponent(fileName(userID: userID))
     }
 
     func hex() -> String { String(channel, radix: 32) }

@@ -12,10 +12,13 @@
 
 import Defaults
 import MapKit
+import OSLog
 import UIKit
 import UserNotifications
 import UserNotificationsUI
 import WebKit
+
+private let logger = Logger(subsystem: "app.wzs.logger", category: "NotificationViewController")
 
 class NotificationViewController: UIViewController, @MainActor UNNotificationContentExtension,
     WKNavigationDelegate
@@ -83,8 +86,8 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
 
         web.frame.size.width = view.bounds.width
 
-        if let autoCopy: Bool = userInfo.raw(.autoCopy), autoCopy {
-            if let copy: String = userInfo.raw(.copy) {
+        if let autoCopy = userInfo.raw(.autoCopy, as: Bool.self), autoCopy {
+            if let copy = userInfo.raw(.copy, as: String.self) {
                 UIPasteboard.general.string = copy
             } else {
                 UIPasteboard.general.string = notification.request.content.body
@@ -105,7 +108,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         self.currentCategory = Identifiers(rawValue: category)
 
         if self.currentCategory != .myNotificationCategory,
-           let body: String = userInfo.raw(Params.body),
+           let body = userInfo.raw(Params.body, as: String.self),
            let html = convertMarkdownToHTML(body),
            let cssPath = Bundle.main.path(forResource: "css/markdown", ofType: "css")
         {
@@ -179,12 +182,12 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption)
             -> Void
     ) {
-        let userInfo = response.notification.request.content.userInfo
+        let content = response.notification.request.content
 
         if let action = Identifiers.Action(rawValue: response.actionIdentifier) {
             switch action {
             case .copyAction:
-                if let copy = userInfo[Params.copy.name] as? String {
+                if let copy = content.userInfo[Params.copy.name] as? String {
                     UIPasteboard.general.string = copy
                 } else {
                     UIPasteboard.general.string = response.notification.request.content.body
@@ -203,12 +206,11 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                 toggleResult(.abstract(Defaults[.lang]))
             }
         } else if response.actionIdentifier == Identifiers.reply.rawValue {
-            let userInfo = response.notification.request.content.userInfo
             guard let response = response as? UNTextInputNotificationResponse else { return }
             let text = response.userText
             guard self.replyText == nil else { return }
             self.replyText = text
-            if let reply: String = userInfo.raw(.reply) {
+            if let reply = content.userInfo.raw(.reply, as: String.self) {
                 Task { @MainActor in
                     do {
                         showTips(text: String(localized: "正在回复..."), color: .orange)
@@ -231,7 +233,27 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                     self.replyText = nil
                 }
             }
+        } else if let action = Defaults[.customNotificationCategories]
+            .queryAction(identifier: response.actionIdentifier),
+            let scriptName = action.scriptName
+        {
+            Task { @MainActor in
+                showTips(text: String(localized: "执行脚本中"), afterClose: false)
+                var params = content.userInfo
+                params["actionmode"] = response.actionIdentifier
+                let result = await ScriptManager.shared.actionHandler(
+                    scriptName,
+                    params: params
+                )
+                switch result {
+                case .success(_):
+                    showTips(text: String(localized: "执行成功"), afterClose: true)
+                case .failure(let error):
+                    showTips(text: error.localizedDescription, afterClose: true)
+                }
+            }
         }
+
         completion(.doNotDismiss)
     }
 
@@ -296,11 +318,10 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
         results[mode] = ""
         renderResult(String(localized: "正在处理中..."))
 
-       
-        var clientMode: ChatPrompt.ChatPromptMode{
-            if case .translate =  mode{
+        var clientMode: ChatPrompt.ChatPromptMode {
+            if case .translate = mode {
                 return .translate(lang)
-            }else{
+            } else {
                 return .abstract(lang)
             }
         }

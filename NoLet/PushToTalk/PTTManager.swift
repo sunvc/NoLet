@@ -26,11 +26,11 @@ final class PTTManager: NSObject, ObservableObject {
     @Published var state: State = .idle
     @Published var hasMicrophonePermission: Bool = false
 
-    @Published var lastFile: AudioMessage? = nil
-    @Published var waitPlayList: [AudioMessage] = []
-    @Published var messages: [AudioMessage] = []
+    @Published var lastFile: AudioMessageEntity? = nil
+    @Published var waitPlayList: [AudioMessageEntity] = []
+    @Published var messages: [AudioMessageEntity] = []
 
-    @Published var currentPlayFile: AudioMessage? = nil
+    @Published var currentPlayFile: AudioMessageEntity? = nil
 
     @Published var currentPlayTime: Double = 0
     @Published var totalPlayTime: Double = 0
@@ -73,14 +73,12 @@ final class PTTManager: NSObject, ObservableObject {
         startObservingUnreadCount()
         self.setupNotifications()
         self.presence.delegate = self
- 
     }
 
     deinit {
         observationTask?.cancel()
         NotificationCenter.default.removeObserver(self)
     }
-
 
     private func setupNotifications() {
         NotificationCenter.default.addObserver(
@@ -165,7 +163,7 @@ final class PTTManager: NSObject, ObservableObject {
             } catch {
                 logger.error("AudioMessage deleteAll 失败: \(error)")
             }
-            if let path = NCONFIG.getDir(.ptt) {
+            if let path = NCONFIG.Path(.ptt) {
                 try? FileManager.default.removeItem(at: path)
             }
         }
@@ -296,7 +294,7 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    private func enqueuePlay(_ message: AudioMessage) {
+    private func enqueuePlay(_ message: AudioMessageEntity) {
         if waitPlayList.contains(where: { $0.id == message.id }) { return }
         waitPlayList.insert(message, at: 0)
     }
@@ -407,7 +405,7 @@ final class PTTManager: NSObject, ObservableObject {
             }
 
             for user in self.onlineUsers where user.id != userId {
-               // TODO: - 
+                // TODO: -
             }
 
             applyActiveSpeaker()
@@ -435,14 +433,15 @@ final class PTTManager: NSObject, ObservableObject {
 
     @discardableResult
     func setStatus(
-        message: AudioMessage,
+        message: AudioMessageEntity,
         read: Bool? = nil,
-        status: AudioMessage.Status? = nil
+        status: AudioMessageEntity.Status? = nil
     ) -> Bool {
         guard read != nil || status != nil else { return false }
+        let id = message.id ?? ""
         Task.detached(priority: .userInitiated) {
             _ = await AudioMessageDBManager.shared.setStatus(
-                id: message.id,
+                id: id,
                 read: read,
                 status: status
             )
@@ -450,10 +449,10 @@ final class PTTManager: NSObject, ObservableObject {
         return true
     }
 
-    private func beginPlay(_ message: AudioMessage) {
+    private func beginPlay(_ message: AudioMessageEntity) {
         state = .preparingPlay(message)
 
-        logger.info("Start Play:\(message.file)")
+        logger.info("Start Play:\(message.file ?? "")")
 
         currentPlayFile = message
         self.setStatus(message: message, read: true)
@@ -472,7 +471,7 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    func setMapUserStatus(message: AudioMessage, stop: Bool = false) {
+    func setMapUserStatus(message: AudioMessageEntity, stop: Bool = false) {
         activeSpeakerId = stop ? nil : message.from
         applyActiveSpeaker()
     }
@@ -534,7 +533,7 @@ final class PTTManager: NSObject, ObservableObject {
 
         if let data = recorder.stopRecording(), !isCancel {
             if let file = self.saveVoice(data: data) {
-                Task.detached(priority: .userInitiated) {
+                Task { @MainActor in
                     await self.sendVoice(message: file)
                 }
                 if !isCancel {
@@ -544,20 +543,20 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    func saveVoice(data: Data) -> AudioMessage? {
+    func saveVoice(data: Data) -> AudioMessageEntity? {
         let id = Defaults[.member].id
         let channel = Defaults[.pttChannel]
         guard let filePath = channel.filePath(userID: id) else { return nil }
 
         do {
             try data.write(to: filePath)
-            let voice = AudioMessage(
+            let voice = AudioMessageDBManager.shared.makeTransient(
                 channel: channel.hex(),
                 from: id,
                 file: filePath.lastPathComponent,
                 read: true
             )
-            Task.detached(priority: .userInitiated) {
+            Task { @MainActor in
                 try? await AudioMessageDBManager.shared.save(voice)
             }
             return voice
@@ -577,17 +576,22 @@ final class PTTManager: NSObject, ObservableObject {
         }
     }
 
-    func saveVoice(remoteUrl: String?) async -> AudioMessage? {
+    func saveVoice(remoteUrl: String?) async -> AudioMessageEntity? {
+        guard let remoteUrl,
+              let remoteFileUrl = URL(string: remoteUrl)
+        else { return nil }
         do {
-            guard let remoteUrl,
-                  let remoteFileUrl = URL(string: remoteUrl),
-                  let voice = AudioMessage(remote: remoteFileUrl),
-                  let filePath = NCONFIG.getDir(.ptt)?.appendingPathComponent(voice.file),
-                  let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign)
-            else {
+            let context = AudioMessageDBManager.shared.viewContext
+            guard let voice = AudioMessageEntity.make(
+                fromRemote: remoteFileUrl,
+                context: context
+            ) else { return nil }
+            let file = voice.file ?? ""
+            guard let filePath = NCONFIG.Path(.ptt)?.appendingPathComponent(file)
+            else { return nil }
+            guard let data = await self.getVoice(remote: remoteFileUrl, decode: voice.sign) else {
                 return nil
             }
-
             try data.write(to: filePath)
             try await AudioMessageDBManager.shared.save(voice)
             return voice
@@ -667,7 +671,6 @@ final class PTTManager: NSObject, ObservableObject {
 }
 
 extension PTTManager: CLLocationManagerDelegate {
-   
     func zoomToFitAllUsers(force: Bool = true) {
         if !force, userMapInteracted { return }
         if force { userMapInteracted = false }
@@ -805,19 +808,16 @@ extension PTTManager {
                 host: channel.server.url
             )
 
-            guard let result: baseResponse<[JoinResponse]> =
-                try await self.network.fetch(
-                    url: channel.server.url,
-                    path: "/ptt/connect",
-                    method: .POST,
-                    params: params,
-                    headers: signHeaders,
-                    timeout: 5
-                )
-            else {
-                throw NoletError(message: "Bad Request!")
-            }
-            return result
+            let data = try await self.network.fetch(
+                url: channel.server.url,
+                path: "/ptt/connect",
+                method: .POST,
+                headers: signHeaders,
+                body: params,
+                timeout: 5
+            )
+
+            return try data.decode()
         } catch {
             logger.error("\(error)")
             Toast.info(title: "语音服务器错误")
@@ -846,12 +846,12 @@ extension PTTManager {
                 sign: channel.server.sign,
                 server: channel.server.key
             )
-            let _: baseResponse<[JoinResponse]>? = try await self.network.fetch(
+            let _ = try await self.network.fetch(
                 url: channel.server.url,
                 path: "/ptt/connect",
                 method: .POST,
-                params: params,
                 headers: headers,
+                body: params,
                 timeout: 5
             )
         } catch {
@@ -859,7 +859,7 @@ extension PTTManager {
         }
     }
 
-    func sendVoice(message: AudioMessage) async {
+    func sendVoice(message: AudioMessageEntity) async {
         self.setStatus(message: message, status: .send)
 
         let channel = Defaults[.pttChannel]
@@ -874,7 +874,7 @@ extension PTTManager {
             let pttSignature = Defaults[.pttSignature]
             if pttSignature {
                 guard let encryptedData = CryptoModelConfig.data.encrypt(inputData: data) else {
-                    throw NoletError(message: "encrypt error")
+                    throw NoletError( "encrypt error")
                 }
                 data = encryptedData
             }
@@ -883,8 +883,12 @@ extension PTTManager {
                 sign: channel.server.sign,
                 server: channel.server.key
             )
+
+            guard let file = message.file else {
+                throw NoletError( "no file")
+            }
             let fileHeaders = [
-                "X-PFA": "\(pttSignature ? "1" : "0")-\(message.file)",
+                "X-PFA": "\(pttSignature ? "1" : "0")-\(file)",
             ]
 
             let response = try await self.network.uploadFile(
@@ -921,7 +925,7 @@ extension PTTManager {
             var data = response.data
             if decode {
                 guard let decodeData = CryptoModelConfig.data.decrypt(inputData: data)
-                else { throw NoletError(message: "decrypt error") }
+                else { throw NoletError( "decrypt error") }
                 data = decodeData
             }
 
@@ -961,13 +965,13 @@ extension PTTManager {
     enum State: Equatable {
         case idle
 
-        case preparingPlay(AudioMessage)
-        case playing(AudioMessage)
+        case preparingPlay(AudioMessageEntity)
+        case playing(AudioMessageEntity)
 
         case recording
 
-        case interrupted(AudioMessage)
-        case interruptionEnded(Bool, AudioMessage)
+        case interrupted(AudioMessageEntity)
+        case interruptionEnded(Bool, AudioMessageEntity)
 
         var title: String {
             switch self {
@@ -991,15 +995,22 @@ extension PTTManager {
             case .idle:
                 return String(localized: "空闲")
             case .preparingPlay(let value):
-                return String(localized: "等待播放: \(value.file)")
+                let file = String(describing: value.file)
+                return String(localized: "等待播放: \(file)")
             case .playing(let value):
-                return String(localized: "正在播放: \(value.file)")
+                let file = String(describing: value.file)
+                return String(localized: "正在播放: \(file)")
             case .recording:
                 return String(localized: "正在录音")
             case .interrupted(let value):
-                return String(localized: "播放被打断挂起: \(value.file)")
+                let file = String(describing: value.file)
+                return String(localized: "播放被打断挂起: \(file)")
             case .interruptionEnded(let resume, let value):
-                return String(localized: "播放等待恢复\(String(describing: resume)): \(value.file)")
+                let file = String(describing: value.file)
+                let resume = String(describing: resume)
+                return String(
+                    localized: "播放等待恢复\(resume): \(file)"
+                )
             }
         }
     }
@@ -1007,7 +1018,7 @@ extension PTTManager {
     // MARK: - Event
 
     enum Event {
-        case startPlay(AudioMessage?)
+        case startPlay(AudioMessageEntity?)
         case stopPlay
 
         case startRecord(Bool)
@@ -1025,16 +1036,19 @@ extension PTTManager {
         var log: String {
             switch self {
             case .startPlay(let message):
-                return String(localized: "请求播放 - 消息ID: \(message?.file ?? "nil")")
+                let value = String(describing: message?.file)
+                return String(localized: "请求播放 - 消息ID: \(value)")
 
             case .stopPlay:
                 return String(localized: "请求停止播放")
 
             case .startRecord(let isActivity):
-                return String(localized: "请求开始录音: 内部-\(String(describing: isActivity))")
+                let value = String(describing: isActivity)
+                return String(localized: "请求开始录音: 内部-\(value)")
 
             case .stopRecord(let isSave):
-                return String(localized: "请求停止录音 (是否保存/发送: \(String(describing: isSave)))")
+                let value = String(describing: isSave)
+                return String(localized: "请求停止录音 (是否保存/发送: \(value))")
 
             case .playStarted:
                 return String(localized: "底层硬件: 播放已实际开始")
@@ -1049,8 +1063,9 @@ extension PTTManager {
                 return String(localized: "底层硬件: 收到音频打断开始信号")
 
             case .interruptionEnded(let shouldResume):
+                let value = String(describing: shouldResume)
                 return String(
-                    localized: "底层硬件: 收到音频打断结束信号 (建议恢复: \(String(describing: shouldResume)))"
+                    localized: "底层硬件: 收到音频打断结束信号 (建议恢复: \(value))"
                 )
 
             case .resume:
@@ -1157,7 +1172,7 @@ extension PTTManager: PTTPresenceStreamDelegate {
                 users.insert(selfUser, at: 0)
             }
             onlineUsers = users
-           
+
             var ch = currentChannel
             ch.users = users
             Defaults[.pttChannel] = ch

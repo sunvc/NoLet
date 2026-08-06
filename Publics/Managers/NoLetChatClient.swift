@@ -333,7 +333,7 @@ struct NoLetChatClient {
                     {
                         var detail = ""
                         for try await line in bytes.lines { detail += line }
-                        throw NoletError(message: "HTTP \(http.statusCode) \(detail)")
+                        throw NoletError("HTTP \(http.statusCode) \(detail)")
                     }
                     for try await line in bytes.lines {
                         if Task.isCancelled { break }
@@ -369,7 +369,7 @@ struct NoLetChatClient {
             var data = Data()
             for try await byte in asyncBytes { data.append(byte) }
             let detail = String(data: data, encoding: .utf8) ?? ""
-            throw NoletError(message: "HTTP \(http.statusCode) \(detail)")
+            throw NoletError( "HTTP \(http.statusCode) \(detail)")
         }
     }
 
@@ -379,7 +379,7 @@ struct NoLetChatClient {
         let basePath = account.basePath.isEmpty ? "/v1" : account.basePath
         let host = account.host.hasPrefix("http") ? account.host : "https://\(account.host)"
         guard let url = URL(string: "\(host)\(basePath)/chat/completions") else {
-            throw NoletError(message: "Invalid endpoint")
+            throw NoletError( "Invalid endpoint")
         }
 
         var request = URLRequest(url: url)

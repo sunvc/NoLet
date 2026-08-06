@@ -27,12 +27,16 @@ struct MoreOperationsView: View {
     @Default(.background) var background
     @Default(.customColor) private var customColor
     @Default(.locPer) private var locPer
+    
 
     var body: some View {
         List {
-            Section {
-                // FIXME: - 修复MAC不能使用PushToTalk崩溃
-                if !ProcessInfo.processInfo.isiOSAppOnMac {
+            // FIXME: - 修复MAC不能使用PushToTalk崩溃
+            if !.isiOSAppOnMac {
+                
+               
+                Section {
+                    
                     Toggle(isOn: $usePtt) {
                         Label {
                             Text("语音消息")
@@ -44,40 +48,35 @@ struct MoreOperationsView: View {
                                 )
                         }
                     }
-                }
-
-                ListButton {
-                    Label {
-                        Text("云图标")
-                            .foregroundStyle(.textBlack)
-                    } icon: {
-                        ZStack {
-                            Image(systemName: "icloud")
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(Color.primary)
-                            Image(systemName: "photo")
-                                .scaleEffect(0.4)
-                                .symbolRenderingMode(.palette)
-                                .customForegroundStyle(.accent)
-                                .offset(y: 2)
+                    
+                    
+                    ListButton {
+                        Label {
+                            Text("智能助手")
+                        } icon: {
+                            Image("agent")
+                                .resizable()
+                                .scaledToFit()
+                                .customForegroundStyle(.accent, .primary)
                         }
-                    }
-                } action: {
-                    Task { @MainActor in
-                        manager.open(sheet: .cloudIcon)
-                    }
-                    return true
-                }.id("icloudPng")
 
-            } header: {
-                Text("附加功能")
-                    .bold()
-                    .font(.footnote)
+                    } action: {
+                        manager.router = [.more, .noletChatSetting(nil)]
+                        return true
+                    }.id("noletchatsettings")
+                    
+                } header: {
+                    Text("附加功能")
+                        .bold()
+                        .font(.footnote)
+                }
             }
-
+            
             LocationStatusView()
 
             Section {
+
+                
                 Toggle(isOn: $feedbackSound) {
                     Label {
                         Text("声音反馈")

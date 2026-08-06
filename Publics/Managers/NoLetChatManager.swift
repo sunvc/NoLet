@@ -15,6 +15,16 @@ import Defaults
 import Foundation
 import UIKit
 
+struct ChatMessage: Identifiable, Hashable {
+    let id: String
+    var timestamp: Date
+    var role: String
+    var content: String
+    var message: String?
+    var reason: String?
+    var result: [String: String]?
+}
+
 @MainActor
 final class NoLetChatManager: ObservableObject {
     static let shared = NoLetChatManager()
@@ -27,23 +37,23 @@ final class NoLetChatManager: ObservableObject {
     @Published var currentMessageID: String = UUID().uuidString
     @Published var isFocusedInput: Bool = false
 
-    @Published var groupsCount: Int = 0
-    @Published var messagesCount: Int = 0
     @Published var promptCount: Int = 0
-
-    @Published var chatPrompt: ChatPrompt? = nil
+    @Published var chatPrompt: ChatPrompt? = ChatPrompt.ChatPromptMode.mcp(Defaults[.lang]).prompt
     @Published var chatMessages: [ChatMessage] = []
-    @Published private(set) var chatGroup: ChatGroup? = nil
 
     @Published var showPromptChooseView: Bool = false
-    @Published var showAllHistory: Bool = false
 
     @Published var reasoningEffort: ReasoningEffort = .low
 
     @Published var startReason: String? = nil
 
     @Published var showReason: ChatMessage? = nil
-    @Published var page: Int = 1
+
+    /// 此索引之前的消息不进入 API 上下文（"清除上下文"）。
+    private var contextOffset: Int = 0
+
+    /// ponytail: 消息只在内存中保存，固定保留最近若干条。
+    private static let maxMessages = 10
 
     lazy var contentActor = StreamTextAggregator { [weak self] chunk in
         Task { @MainActor in
@@ -59,12 +69,6 @@ final class NoLetChatManager: ObservableObject {
         }
     }
 
-    private let groupDB: ChatGroupDBManager = .shared
-    private let messageDB: ChatMessageDBManager = .shared
-
-    private var groupObservationTask: Task<Void, Never>?
-    private var messageCountObservationTask: Task<Void, Never>?
-
     private let webSearchConfig = WebSearchOptions(
         userLocation: .init(
             country: Locale.current.region?.identifier ?? "",
@@ -79,8 +83,7 @@ final class NoLetChatManager: ObservableObject {
         ChatMessage(
             id: currentMessageID,
             timestamp: .now,
-            chat: "",
-            role: ChatMessage.Role.assistant.rawValue,
+            role: "assistant",
             content: currentContent,
             message: AppManager.shared.askMessageID,
             reason: currentReason,
@@ -88,8 +91,24 @@ final class NoLetChatManager: ObservableObject {
         )
     }
 
-    private init() {
-        startObservingUnreadCount()
+    private init() {}
+
+    func appendUserMessage(
+        id: String,
+        content: String,
+        timestamp: Date = .now,
+        quoteMessageID: String? = nil
+    ) {
+        chatMessages.append(ChatMessage(
+            id: id,
+            timestamp: timestamp,
+            role: "user",
+            content: content,
+            message: quoteMessageID,
+            reason: nil,
+            result: nil
+        ))
+        trimToLast10()
     }
 
     func updateTemMessage() {
@@ -98,79 +117,32 @@ final class NoLetChatManager: ObservableObject {
             chatMessages[index] = currentChatMessage
         } else {
             chatMessages.append(currentChatMessage)
+            trimToLast10()
         }
     }
 
-    private func startObservingUnreadCount() {
-        groupObservationTask?.cancel()
-        groupObservationTask = Task { [weak self] in
-            guard let stream = self?.groupDB.observeSummary() else { return }
-            for await summary in stream {
-                guard let self = self else { break }
-                await MainActor.run {
-                    self.groupsCount = summary.groupsCount
-                    self.chatGroup = summary.current
-                }
-                self.restartMessageCountObservation(groupID: summary.current?.id)
-                await self.updateMessage()
-            }
+    private func trimToLast10() {
+        while chatMessages.count > Self.maxMessages {
+            chatMessages.removeFirst()
+            contextOffset = max(0, contextOffset - 1)
         }
     }
 
-    private func restartMessageCountObservation(groupID: String?) {
-        messageCountObservationTask?.cancel()
-        messageCountObservationTask = Task { [weak self] in
-            guard let stream = self?.messageDB.observeCount(inGroup: groupID) else { return }
-            for await count in stream {
-                await MainActor.run {
-                    self?.messagesCount = count
-                }
-            }
-        }
+    /// "清除上下文"：当前屏幕上的消息不再发送给 API。
+    @discardableResult
+    func setPoint() -> Bool {
+        contextOffset = chatMessages.count
+        return true
     }
 
-    func updateMessage() async {
-        let page = self.page
-        guard let current = await groupDB.fetchCurrent() else { return }
-        let messages = await messageDB.fetch(
-            inGroup: current.id,
-            ascending: true,
-            limit: page * 50
-        )
-        await MainActor.run {
-            self.chatMessages = messages
-        }
-    }
-
-
-    func setPoint() async -> Bool {
-        guard let chatGroup else { return false }
-        return await groupDB.setPointToNow(id: chatGroup.id)
-    }
-
-    func setGroup(group: ChatGroup? = nil) {
-        self.page = 1
-        self.chatMessages = []
-        self.chatGroup = group
-        Task.detached(priority: .userInitiated) { [groupDB] in
-            await groupDB.setCurrent(group)
-        }
-    }
-
-    func updateGroupName(groupID: String, newName: String) {
-        Task.detached(priority: .userInitiated) { [groupDB] in
-            await groupDB.rename(id: groupID, newName: newName, makeCurrent: true)
-        }
-    }
-
-    func delete(groupID: String? = nil) async {
-        self.page = 1
-        let targetID: String? = {
-            if let groupID { return groupID }
-            return self.chatGroup?.id
-        }()
-        guard let targetID = targetID else { return }
-        await groupDB.delete(id: targetID)
+    /// 清空屏幕，开始新对话。
+    func clear() {
+        contextOffset = 0
+        chatMessages = []
+        currentRequest = ""
+        currentContent = ""
+        currentReason = ""
+        currentResult = [:]
     }
 }
 
@@ -256,6 +228,7 @@ extension NoLetChatManager {
             }
         }
 
+
         var inputText: String {
             if let messageID = messageID,
                let message = MessagesManager.shared.query(id: messageID)
@@ -265,7 +238,7 @@ extension NoLetChatManager {
             return text
         }
 
-        params += getHistory(Defaults[.historyMessageCount])
+        params += getHistory()
 
         if rounds > 1 {
             params.append(.user(.init(content: .string(currentRequest))))
@@ -281,20 +254,17 @@ extension NoLetChatManager {
         )
     }
 
-    private func getHistory(
-        _ limit: Int
-    ) -> [ChatCompletionMessageParam] {
+    private func getHistory(_ limit: Int? = nil) -> [ChatCompletionMessageParam] {
+        var messages = Array(chatMessages.dropFirst(contextOffset))
+        if let limit, messages.count > limit {
+            messages = Array(messages.suffix(limit))
+        }
+
         var params: [ChatCompletionMessageParam] = []
-        let group = groupDB.fetchCurrentSync()
-        let messageRaw = messageDB.fetchHistorySync(
-            groupID: group?.id ?? "",
-            after: group?.point,
-            limit: limit
-        )
-        for message in messageRaw.reversed() {
-            if message.role == ChatMessage.Role.user.rawValue {
+        for message in messages {
+            if message.role == "user" {
                 params.append(.user(.init(content: .string(message.content))))
-            } else if message.role == ChatMessage.Role.assistant.rawValue {
+            } else if message.role == "assistant" {
                 if let result = message.result, !result.isEmpty, let json = result.text() {
                     params.append(.user(.init(
                         content: .string(String(localized: "任务执行结果") + json)
@@ -333,17 +303,11 @@ extension NoLetChatManager {
 
         guard let openchat = getReady(), let query = query else {
             return AsyncThrowingStream { continuation in
-                continuation.finish(throwing: NoletError(message: "No Account Or Query"))
+                continuation.finish(throwing: NoletError( "No Account Or Query"))
             }
         }
 
         return openchat.chatsStream(query: query)
-    }
-
-    func clearunuse() {
-        Task.detached(priority: .background) { [groupDB] in
-            await groupDB.deleteEmpty()
-        }
     }
 }
 

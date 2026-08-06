@@ -100,7 +100,7 @@ struct AboutNoLetView: View {
 
                 }, showRight: false) {
                     if !member.token.isEmpty {
-                        Clipboard.set(member.token)
+                        NCONFIG.copy(member.token)
                         Toast.copy(title: "复制成功")
 
                     } else {
@@ -129,7 +129,7 @@ struct AboutNoLetView: View {
                         .customForegroundStyle(.accent, Color.primary)
 
                 }, showRight: false) {
-                    Clipboard.set(member.id)
+                    NCONFIG.copy(member.id)
                     Toast.copy(title: "复制成功")
                     return true
                 }

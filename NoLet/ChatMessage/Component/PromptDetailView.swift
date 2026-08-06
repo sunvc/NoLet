@@ -51,7 +51,7 @@ struct PromptDetailView: View {
                 trailingToolbarItem
             }
         }
-        .presentationDetents([.large])
+        .customDetents([.large])
     }
 
     // MARK: - View Components

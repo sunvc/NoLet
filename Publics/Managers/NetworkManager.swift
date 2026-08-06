@@ -20,7 +20,7 @@ import UIKit
 import UniformTypeIdentifiers
 
 final class NetworkManager: NSObject, Sendable {
-    let logger = Logger(subsystem: "app.wzs.logger", category: "NetworkManager")
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "NetworkManager")
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.requestCachePolicy = .reloadIgnoringLocalCacheData
@@ -52,49 +52,20 @@ final class NetworkManager: NSObject, Sendable {
         }
     }
 
-    /// 通用网络请求方法
-    /// - Parameters:
-    ///   - url: 接口地址
-    ///   - method: 请求方法（默认为 GET）
-    ///   - params: 请求参数（支持 GET 查询参数或 POST body）
-    /// - Returns: 返回泛型解码后的模型数据
-    func fetch<T: Codable, P: Encodable & Sendable>(
+    func fetch(
         url: String,
-        path: String = "",
+        path: String? = nil,
         method: requestMethod = .GET,
-        params: P? = nil,
-        headers: [String: String] = [:],
-        timeout: Double = 30
-    ) async throws -> T {
-        let response = try await fetch(
-            url: url,
-            path: path,
-            method: method,
-            params: params,
-            headers: headers,
-            timeout: timeout
-        )
-
-        guard response.check() else {
-            throw APIError.invalidCode(response.header.statusCode)
-        }
-
-        return try response.decode() as T
-    }
-
-    func fetch<P: Encodable & Sendable>(
-        url: String,
-        path: String = "",
-        method: requestMethod = .GET,
-        params: P? = nil,
-        headers: [String: String] = [:],
+        headers: [String: String]? = nil,
+        params: [String: String]? = nil,
+        body: (Encodable & Sendable)? = nil,
         timeout: Double = 30
     ) async throws -> Response {
         guard var baseURL = URL(string: url.normalizedURLString()) else {
             throw APIError.invalidURL
         }
 
-        if !path.isEmpty {
+        if let path, !path.isEmpty {
             let cleanedPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
             baseURL.appendPathComponent(cleanedPath)
         }
@@ -106,7 +77,7 @@ final class NetworkManager: NSObject, Sendable {
             throw APIError.invalidURL
         }
 
-        if method == .GET, let params {
+        if let params, !params.isEmpty {
             components.queryItems = try params.queryItems()
         }
 
@@ -120,13 +91,16 @@ final class NetworkManager: NSObject, Sendable {
         request.setValue(await customUserAgent(), forHTTPHeaderField: "User-Agent")
         request.setValue(UTType.json.preferredMIMEType, forHTTPHeaderField: "Content-Type")
 
-        for (key, value) in headers {
-            request.setValue(value, forHTTPHeaderField: key)
+        if let headers {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
         }
 
-        if method == .POST, let params {
-            request.httpBody = try JSONEncoder().encode(params)
+        if let body {
+            request.httpBody = try JSONEncoder().encode(body)
         }
+        
         request.timeoutInterval = timeout
 
         request.assumesHTTP3Capable = true
@@ -137,54 +111,12 @@ final class NetworkManager: NSObject, Sendable {
         return Response(data: data, header: response)
     }
 
-    // 无 params
-    func fetch<T: Codable>(
-        url: String,
-        path: String = "",
-        method: requestMethod = .GET,
-        headers: [String: String] = [:],
-        timeout: Double = 30
-    ) async throws -> T {
-        let response = try await fetch(
-            url: url,
-            path: path,
-            method: method,
-            params: EmptyParams(),
-            headers: headers,
-            timeout: timeout
-        )
-
-        guard response.check() else {
-            throw APIError.invalidCode(response.header.statusCode)
-        }
-
-        return try response.decode() as T
-    }
-
-    // 无 params
-    func fetch(
-        url: String,
-        path: String = "",
-        method: requestMethod = .GET,
-        headers: [String: String] = [:],
-        timeout: Double = 30
-    ) async throws -> Response {
-        return try await self.fetch(
-            url: url,
-            path: path,
-            method: method,
-            params: EmptyParams(),
-            headers: headers,
-            timeout: timeout
-        )
-    }
-
     func test(url: String = "https://www.apple.com") async -> Bool {
         return (try? await fetch(url: url, method: .HEAD))?.check() ?? false
     }
 
     func health(url: String) async -> Bool {
-        return (try? await fetch(url: url + "/health"))?.check("OK") ?? false
+        return (try? await fetch(url: url, path: "/health"))?.check("OK") ?? false
     }
 
     enum APIError: Error {
@@ -192,8 +124,10 @@ final class NetworkManager: NSObject, Sendable {
         case invalidCode(Int)
     }
 
+    @discardableResult
     func download(
         from fileURL: URL,
+        to local: URL? = nil,
         headers: [String: String] = [:],
         timeout: Double = 15
     ) async throws -> URL {
@@ -216,7 +150,7 @@ final class NetworkManager: NSObject, Sendable {
 
         let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
             .first!
-        let destinationURL = cachesDirectory.appendingPathComponent(fileURL.lastPathComponent)
+        let destinationURL = local ?? cachesDirectory.appendingPathComponent(fileURL.lastPathComponent)
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             try FileManager.default.removeItem(at: destinationURL)
@@ -286,8 +220,6 @@ final class NetworkManager: NSObject, Sendable {
 
         return data
     }
-
-   
 }
 
 extension Encodable {
@@ -320,7 +252,6 @@ extension Encodable {
         }
     }
 }
-
 
 // MARK: -  URLSession+.swift
 

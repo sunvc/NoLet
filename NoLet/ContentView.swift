@@ -11,6 +11,7 @@
 //
 
 import Defaults
+import CoreData
 import StoreKit
 import SwiftUI
 import UniformTypeIdentifiers
@@ -21,6 +22,8 @@ struct ContentView: View {
 
     @ObservedObject private var manager = AppManager.shared
     @ObservedObject private var messageManager = MessagesManager.shared
+    @ObservedObject private var audioManager = AudioManager.shared
+    @ObservedObject private var database = DatabaseManager.shared
 
     @Default(.firstStart) private var firstStart
     @Default(.showGroup) private var showGroup
@@ -43,7 +46,26 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
-            if sizeClass == .regular {
+            if database.needsRestart {
+                DatabaseRestartView()
+            } else if let error = database.storeLoadError {
+                DatabaseRecoveryView(
+                    error: error,
+                    isResetting: database.isResetting,
+                    onReset: {
+                        Task {
+                            do {
+                                try await database.resetStore()
+                            } catch {
+                                Toast.shared.present(
+                                    title: String(localized: "重置失败，请删除应用后重装"),
+                                    symbol: "xmark.octagon"
+                                )
+                            }
+                        }
+                    }
+                )
+            } else if sizeClass == .regular {
                 NavigationSplitView(columnVisibility: $manager.homeViewMode) {
                     SettingsPage()
                 } detail: {
@@ -67,8 +89,8 @@ struct ContentView: View {
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
 
-                Task.detached(priority: .userInitiated) {
-                    for item in await MessagesManager.examples() {
+                Task { @MainActor in
+                    for item in MessagesManager.examples() {
                         await MessagesManager.shared.add(item)
                     }
                 }
@@ -78,7 +100,7 @@ struct ContentView: View {
                 }
             }
             .customPresentationCornerRadius(30)
-            .presentationDetents([.large])
+            .customDetents([.large])
             .interactiveDismissDisabled(true)
         }
         .sheet(item: Binding(get: { manager.sheetPage }, set: { manager.open(sheet: $0) })) {
@@ -106,6 +128,27 @@ struct ContentView: View {
                 }
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            if audioManager.speaking {
+                Rectangle()
+                    .fill(.clear)
+                    .glassCard()
+                    .overlay {
+                        MusicInfo()
+                    }
+
+                    .frame(height: 70)
+                    .overlay(alignment: .bottom, content: {
+                        Rectangle()
+                            .fill(.gray.opacity(0.3))
+                            .frame(height: 1)
+                    })
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .padding(.horizontal)
+                    .offset(y: manager.router.count == 0 ? -49 : 0)
+                    .transition(.move(edge: .trailing).animation(.easeInOut(duration: 0.2)))
+            }
+        }
         .background(
             GeometryReader { proxy in
                 Color.clear.preference(
@@ -124,6 +167,12 @@ struct ContentView: View {
                 }
             }
         )
+        .overlay {
+            if messageManager.isDeleting {
+                DeletingOverlay()
+            }
+        }
+        .environment(\.managedObjectContext, DatabaseManager.shared.viewContext)
     }
 
     @ViewBuilder
@@ -288,9 +337,9 @@ struct ContentView: View {
             switch value {
             case .appIcon:
                 AppIconView()
-                    .presentationDetents([.height(350), .height(500)])
+                    .customDetents([.height(350), .height(500)])
             case .cloudIcon:
-                CloudIcon().presentationDetents([.medium, .large])
+                CloudIcon().customDetents([.medium, .large])
             case .paywall:
                 if #available(iOS 18.0, *) { PayWallHighView() } else {
                     EmptyView()
@@ -303,24 +352,21 @@ struct ContentView: View {
                 }
             case .quickResponseCode(let text, let title, let preview):
                 QuickResponseCodeview(text: text, title: title, preview: preview)
-                    .presentationDetents([.medium])
+                    .customDetents([.medium])
             case .crypto(let item):
                 ChangeCryptoConfigView(item: item)
             case .share(let contents, let preview, let title):
                 ActivityViewController(activityItems: contents, preview: preview, title: title)
-                    .presentationDetents([.medium, .large])
+                    .customDetents([.medium, .large])
             case .cloudServer:
                 NavigationStack {
                     CloudServersView()
-                        .presentationDetents([.medium])
+                        .customDetents([.medium])
                         .presentationDragIndicator(.visible)
                 }
             case .authView:
                 AuthTestView()
-                    .presentationDetents([
-                        ProcessInfo.processInfo.isiOSAppOnMac ? .height(600) : .medium,
-                        .large,
-                    ])
+                    .customDetents([.medium, .large])
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -331,11 +377,20 @@ struct ContentView: View {
             }
         }
         .customPresentationCornerRadius(30)
+        .diff { view in
+            Group {
+                if #available(iOS 18.0, *) {
+                    view.presentationSizing(.page)
+                } else {
+                    view
+                }
+            }
+        }
     }
 }
 
-fileprivate extension View {
-    func router() -> some View {
+extension View {
+    fileprivate func router() -> some View {
         navigationDestination(for: RouterPage.self) { router in
             Group {
                 switch router {
@@ -359,7 +414,7 @@ fileprivate extension View {
                     CryptoConfigListView()
 
                 case .server:
-                    ServersConfigView()
+                    ServersManagementView()
 
                 case .more:
                     MoreOperationsView()
@@ -391,6 +446,12 @@ fileprivate extension View {
 
                 case .ptt:
                     PTTContentView()
+
+                case .script:
+                    ScriptsView()
+
+                case .notificationActions:
+                    NotificationActionsView()
                 }
             }
             .toolbar(.hidden, for: .tabBar)
@@ -407,12 +468,148 @@ struct ContentSizeKey: PreferenceKey {
     }
 }
 
-fileprivate extension UIApplication {
-    var interfaceOrientation: UIInterfaceOrientation? {
+extension UIApplication {
+    fileprivate var interfaceOrientation: UIInterfaceOrientation? {
         connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .first?
             .interfaceOrientation
+    }
+}
+
+private struct DeletingOverlay: View {
+    @State private var progress: Double = 0
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.35)
+                .ignoresSafeArea()
+            VStack(spacing: 14) {
+                Text("正在删除消息...")
+                    .font(.callout.weight(.medium))
+                    .foregroundStyle(.white)
+                ProgressView(value: progress, total: 100)
+                    .progressViewStyle(.linear)
+                    .tint(.white)
+                    .frame(width: 180)
+            }
+            .padding(24)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        }
+        .transition(.opacity)
+        .allowsHitTesting(true)
+        .onReceive(timer) { _ in
+            guard progress < 80 else { return }
+            progress = min(80, progress + Double.random(in: 0.8...2.4))
+        }
+    }
+}
+
+/// 数据库重置成功后提示用户退出重开。重置过程中旧的 NSManagedObject 全部失效，
+/// 继续运行可能触发 fault 异常，必须重启进程才能安全使用。
+private struct DatabaseRestartView: View {
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 56, weight: .medium))
+                .foregroundStyle(.green)
+
+            Text("数据库已重置")
+                .font(.title2.bold())
+
+            Text("数据库已重建完成。需要退出应用后重新打开才能继续使用。")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            Spacer()
+
+            Button {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    exit(0)
+                }
+            } label: {
+                Label("退出应用", systemImage: "arrow.right.circle")
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.horizontal, 40)
+            .padding(.bottom, 40)
+        }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+    }
+}
+
+/// 数据库存储加载失败（通常是文件损坏）时显示的恢复页，替代直接崩溃。
+private struct DatabaseRecoveryView: View {
+    let error: String
+    let isResetting: Bool
+    let onReset: () -> Void
+
+    @State private var showConfirm = false
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+
+            Image(systemName: "externaldrive.trianglebadge.exclamationmark")
+                .font(.system(size: 56, weight: .medium))
+                .foregroundStyle(.orange)
+
+            Text("数据库无法打开")
+                .font(.title2.bold())
+
+            Text("本地消息数据库已损坏，应用无法继续使用。重置前会自动备份当前数据库（保留最近 5 份），但备份无法在应用内恢复，仅供数据排查。")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+
+            if !error.isEmpty {
+                Text(error)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(4)
+                    .padding(.horizontal, 32)
+            }
+
+            Spacer()
+
+            Button(role: .destructive) {
+                showConfirm = true
+            } label: {
+                Group {
+                    if isResetting {
+                        ProgressView()
+                            .tint(.white)
+                    } else {
+                        Label("重置数据库", systemImage: "arrow.counterclockwise")
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(isResetting)
+            .padding(.horizontal, 40)
+            .padding(.bottom, 40)
+            .confirmationDialog(
+                "确定要重置数据库吗？所有本地消息将被永久删除，无法恢复。",
+                isPresented: $showConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("重置并清空所有数据", role: .destructive) {
+                    onReset()
+                }
+                Button("取消", role: .cancel) {}
+            }
+        }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
     }
 }
 

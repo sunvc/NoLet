@@ -15,8 +15,11 @@ import CommonCrypto
 import CryptoKit
 import Defaults
 import Foundation
+import OSLog
+
 
 final class CryptoManager {
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "CryptoManager")
     typealias BASE64 = String
 
     private let algorithm: CryptoAlgorithm

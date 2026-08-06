@@ -12,6 +12,7 @@
 //
 
 import Foundation
+import os
 @preconcurrency import UserNotifications
 
 actor NotificationServiceActor {
@@ -56,23 +57,21 @@ actor NotificationServiceActor {
 }
 
 enum ProcessorItem: CaseIterable {
-    case ciphertext
+    case decryption
+    case action
     case archive
-    case badge
-    case mute
-    case level
+    case call
     case attachment
-    case icon
+    case script
 
     var processor: NotificationContentProcessor {
         switch self {
-        case .ciphertext: CiphertextProcessor()
+        case .decryption: DecryptionProcessor()
         case .archive: ArchiveProcessor()
-        case .badge: BadgeProcessor()
-        case .mute: MuteProcessor()
-        case .icon: IconProcessor()
+        case .action: ActionProcessor()
         case .attachment: AttachmentProcessor()
-        case .level: LevelProcessor()
+        case .call: CallProcessor()
+        case .script: ScriptProcessor()
         }
     }
 }

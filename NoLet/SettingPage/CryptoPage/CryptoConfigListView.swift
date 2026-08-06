@@ -31,13 +31,13 @@ struct CryptoConfigListView: View {
                 }
             } header: {
                 HStack {
-                    Text("算法列表")
+                    Text("配置列表")
                     Spacer()
                 }
             }
         }
         .listStyle(.grouped)
-        .navigationTitle("算法配置")
+        .navigationTitle("加密配置")
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
         .toolbar {
@@ -126,7 +126,7 @@ struct CryptoConfigListView: View {
                 }
                 Section {
                     Button {
-                        Clipboard.set(item.key)
+                        NCONFIG.copy(item.key)
                         Toast.copy(title: "复制成功")
                     } label: {
                         Label("复制KEY", systemImage: "doc.on.doc")
@@ -136,7 +136,7 @@ struct CryptoConfigListView: View {
                 Section {
                     Button {
                         let data = cryptoExampleHandler(config: item, index: index)
-                        Clipboard.set(data)
+                        NCONFIG.copy(data)
                         Toast.copy(title: "复制成功")
                     } label: {
                         Label("复制Python示例", systemImage: "doc.on.doc")
@@ -187,7 +187,7 @@ struct CryptoConfigListView: View {
         }
         .accessibilityAction(named: "复制") {
             let data = cryptoExampleHandler(config: item, index: index)
-            Clipboard.set(data)
+            NCONFIG.copy(data)
             Toast.copy(title: "复制成功")
         }
     }

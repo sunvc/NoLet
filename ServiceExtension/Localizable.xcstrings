@@ -289,6 +289,38 @@
         }
       }
     },
+    "脚本最后一个表达式必须是一个函数": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The last expression in the script must be a function"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "脚本最后一个表达式必须是一个函数"
+          }
+        }
+      }
+    },
+    "脚本执行超时": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Script Execution Timeout"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "脚本执行超时"
+          }
+        }
+      }
+    },
     "解密失败!": {
       "localizations": {
         "en": {
@@ -301,6 +333,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "解密失败！"
+          }
+        }
+      }
+    },
+    "语法错误": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syntax Error"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "语法错误"
           }
         }
       }

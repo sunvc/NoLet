@@ -15,8 +15,12 @@ import Social
 import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
+import OSLog
+
+
 
 class ShareViewController: UIViewController {
+    
     override func viewDidLoad() {
         if let itemProviders = (extensionContext!.inputItems.first as? NSExtensionItem)?
             .attachments
@@ -57,6 +61,8 @@ private struct ShareView: View {
     var openHostApp: (URL) -> Bool
 
     @State private var pushIcon: PushIcon?
+    
+    private let logger = Logger(subsystem: "app.wzs.logger", category: "ShareView")
 
     var body: some View {
         VStack {

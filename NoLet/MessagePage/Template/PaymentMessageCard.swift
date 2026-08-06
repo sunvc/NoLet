@@ -12,10 +12,11 @@
 //    Created by Neo on 2026/6/17 13:49.
 
 import Combine
+import CoreData
 import SwiftUI
 
 struct PaymentMessageCard: View {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration = .init()
     @State private var isActionDispatched = false
 
@@ -24,17 +25,14 @@ struct PaymentMessageCard: View {
     @State private var replyText: String = ""
     @FocusState private var showReply
     @State private var showSnap: Bool = false
-
-    @State private var timeTicker = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
     @State private var currentLifePercent: Double = 1.0
-    @State private var isExpired: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
            
             HStack(spacing: 8) {
                 
-                AvatarView(icon: message.icon)
+                AvatarView(icon: message.value(for: .icon))
                     .frame(width: 30, height: 30, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
 
@@ -66,7 +64,7 @@ struct PaymentMessageCard: View {
                     }
                     
                     SCSelectableTextRepresentable(
-                        text: message.body.plainText,
+                        text: message.bodyText.plainText,
                         font: .systemFont(ofSize: 11, weight: .medium),
                         textColor: .textBlack,
                         textAlignment: .left,
@@ -80,13 +78,13 @@ struct PaymentMessageCard: View {
                     Text(money)
                         .font(.title3)
                         .fontWeight(.black)
-                        .foregroundColor(isExpired ? .secondary : brandColor(for: message.group))
+                        .foregroundColor(brandColor(for: message.groupText))
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 12)
             .padding(.bottom, message.ttl > 0 ? 12 : 16)
-            if let number = message.value(for: "ticket", ""), !number.isEmpty{
+            if let number = message.value(for: "ticket"), !number.isEmpty{
                 HStack {
                     Text(number)
                         .font(.system(.body, design: .monospaced))
@@ -107,15 +105,14 @@ struct PaymentMessageCard: View {
 
                         Capsule()
                             .fill(currentLifePercent < 0.3 ? Color
-                                .red : brandColor(for: message.group))
+                                .red : brandColor(for: message.groupText))
                             .frame(width: geo.size.width * CGFloat(currentLifePercent), height: 4)
-                            .animation(.linear(duration: 0.5), value: currentLifePercent)
+                            .animation(.linear(duration: 1), value: currentLifePercent)
                     }
                 }
                 .frame(height: 4)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 12)
-                .opacity(isExpired ? 0.3 : 1.0)
             }
         }
         .glassCard(20)
@@ -130,9 +127,6 @@ struct PaymentMessageCard: View {
             showSnap: $showSnap,
             onShowFull: showFull
         )
-        .onReceive(timeTicker) { _ in
-            updateLifeCycle()
-        }
         .onAppear {
             updateLifeCycle()
         }
@@ -148,7 +142,6 @@ struct PaymentMessageCard: View {
 
     private func updateLifeCycle() {
         self.currentLifePercent = message.lifePercent
-        self.isExpired = message.isExpired
     }
 
     // 3. 你的原函数调用变得极度极其简单
@@ -166,34 +159,36 @@ struct PaymentMessageCard: View {
 struct PaymentMessageCard_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            PaymentMessageCard(message: Message(
-                id: "1",
-                createDate: Date(),
-                group: "alipay",
-                title: "支付确认",
-                subtitle: "-¥6,799.00",
-                body: "您正在【Apple Store】消费，请确认扣款。",
-                icon: "https://favicon.wzs.app/alipay.com",
-                ttl: 10,
-                read: false
-            ))
+            PaymentMessageCard(message: MessageEntity.preview([
+                "id": "1",
+                "createDate": Int(Date().timeIntervalSince1970),
+                "group": "alipay",
+                "title": "支付确认",
+                "subtitle": "-¥6,799.00",
+                "body": "您正在【Apple Store】消费，请确认扣款。",
+                "ttl": Int(Date.now.timeIntervalSince1970) + 10,
+                "read": false,
+                "other" : """
+                  {"icon": "https://favicon.wzs.app/alipay.com"}
+                """
+            ]))
             .padding()
-            PaymentMessageCard(message: Message(
-                id: "2",
-                createDate: Date(), 
-                group: "wechat",
-                title: "收款通知",
-                subtitle: "+¥18.50",
-                body: "二维码收款已到账",
-                icon: "https://favicon.wzs.app/wechat.com",
-                ttl: 20, 
-                read: false,
-                other: """
-                    {
-                        "ticket":"订单号: 999999999999"
+            PaymentMessageCard(message: MessageEntity.preview([
+                "id": "2",
+                "createDate": Int(Date().timeIntervalSince1970),
+                "group": "wechat",
+                "title": "收款通知",
+                "subtitle": "+¥18.50",
+                "body": "二维码收款已到账",
+                "ttl": Int(Date.now.timeIntervalSince1970) + 20,
+                "read": false,
+                "other": """
+                    { 
+                    "ticket":"订单号: 999999999999",
+                    "icon": "https://favicon.wzs.app/wechat.com"
                     }
-                    """
-            ))
+                    """,
+            ]))
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

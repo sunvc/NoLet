@@ -209,38 +209,6 @@
         }
       }
     },
-    "复制": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Copy"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "复制"
-          }
-        }
-      }
-    },
-    "总结": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Summary"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "总结"
-          }
-        }
-      }
-    },
     "提示": {
       "localizations": {
         "en": {
@@ -353,22 +321,6 @@
         }
       }
     },
-    "翻译": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Translate"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "翻译"
-          }
-        }
-      }
-    },
     "输入图片名称": {
       "localizations": {
         "en": {
@@ -381,22 +333,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "输入图片名称"
-          }
-        }
-      }
-    },
-    "静音分组1小时": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mute 1h"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "静音分组1小时"
           }
         }
       }

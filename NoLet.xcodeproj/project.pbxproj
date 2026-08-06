@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B58358922DEDD4E10066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B58358912DEDD4E10066B32E /* Defaults */; };
-		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
 		B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A32DEDD6090066B32E /* cmark-gfm */; };
 		B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A52DEDD6090066B32E /* cmark-gfm-extensions */; };
@@ -21,7 +20,6 @@
 		B5835D2E2DEDF3370066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D2D2DEDF3370066B32E /* Defaults */; };
 		B5835D302DEDF3370066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D2F2DEDF3370066B32E /* Kingfisher */; };
 		B5835D362DEDF9090066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D352DEDF9090066B32E /* Defaults */; };
-		B5835D382DEDF9090066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D372DEDF9090066B32E /* GRDB */; };
 		B5835D3A2DEDF9090066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D392DEDF9090066B32E /* Kingfisher */; };
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
@@ -52,7 +50,6 @@
 		BAAA19462F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6342F31FCC600866562 /* Splash */; };
 		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
 		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
-		BAB264353004C5380082E8D9 /* MessagingUI in Frameworks */ = {isa = PBXBuildFile; productRef = BAB264343004C5380082E8D9 /* MessagingUI */; };
 		BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = BAC9B9EF2FD6B35200E9ABDE /* Opus */; };
 		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
 		BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAED8C502FE21F56008FF77C /* PushToTalk.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -180,12 +177,10 @@
 		B5835C4F2DEDE29A0066B32E /* Exceptions for "Publics" folder in "ShareExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				BaseConfig.swift,
 				Database/CloudKitConvertible.swift,
 				DefaultsBaseKeys.swift,
 				Domap.swift,
 				Enums/AppIconEnum.swift,
-				Enums/IdentifiersEnum.swift,
 				Enums/PBSchemeEnum.swift,
 				Enums/SettingsEnum.swift,
 				"Extensions/Date+.swift",
@@ -196,6 +191,7 @@
 				Managers/IDManager.swift,
 				Models/MemberModel.swift,
 				Models/PushIconModel.swift,
+				NCONFIG.swift,
 				ToolsBox.swift,
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
@@ -203,17 +199,19 @@
 		B5835D272DEDF0830066B32E /* Exceptions for "Publics" folder in "ContentExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				BaseConfig.swift,
 				DefaultsBaseKeys.swift,
 				Enums/IdentifiersEnum.swift,
 				Enums/PushParams.swift,
 				"Extensions/other+.swift",
 				"Extensions/String+.swift",
+				Managers/JSRuntime.swift,
 				Managers/NetworkManager.swift,
 				Managers/NoLetChatClient.swift,
 				Markdown.swift,
 				Models/AssistantAccountModel.swift,
 				Models/ChatPromptModel.swift,
+				Models/NotificationActionModel.swift,
+				NCONFIG.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B202DEDE0930066B32E /* ContentExtension */;
@@ -221,10 +219,8 @@
 		B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				BaseConfig.swift,
 				Database/CloudKitConvertible.swift,
-				Database/DatabaseManager.swift,
-				Database/MessageDBManager.swift,
+				Database/PendingMessageStore.swift,
 				DefaultsBaseKeys.swift,
 				DefaultsModelKeys.swift,
 				Domap.swift,
@@ -241,13 +237,14 @@
 				Managers/cryptoManager.swift,
 				Managers/IDManager.swift,
 				Managers/ImageManager.swift,
-				Managers/MessagesManager.swift,
+				Managers/JSRuntime.swift,
 				Managers/NetworkManager.swift,
 				Markdown.swift,
 				Models/MemberModel.swift,
-				Models/MessageModel.swift,
+				Models/NotificationActionModel.swift,
 				Models/PushIconModel.swift,
 				Models/PushServerModel.swift,
+				NCONFIG.swift,
 				ToolsBox.swift,
 			);
 			target = B5835B102DEDE07C0066B32E /* ServiceExtension */;
@@ -316,11 +313,11 @@
 		BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				BaseConfig.swift,
 				DefaultsBaseKeys.swift,
 				"Extensions/other+.swift",
 				"Extensions/String+.swift",
 				Managers/NetworkManager.swift,
+				NCONFIG.swift,
 			);
 			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
 		};
@@ -468,7 +465,6 @@
 				BAAA19452F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BAAA19442F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19432F391CB200E0D66F /* MarkdownUI in Frameworks */,
-				BAB264353004C5380082E8D9 /* MessagingUI in Frameworks */,
 				BAAA19422F391CB200E0D66F /* Splash in Frameworks */,
 				BAAA19412F391CB200E0D66F /* MarkdownUI in Frameworks */,
 				BA9E962F2F3991C200B6DF1B /* WechatOpenSDK.xcframework in Frameworks */,
@@ -488,7 +484,6 @@
 				BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */,
 				BAAA19242F390F5600E0D66F /* QRScanner in Frameworks */,
 				BAAA19212F390F3300E0D66F /* Splash in Frameworks */,
-				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
@@ -509,7 +504,6 @@
 			files = (
 				B5835D3A2DEDF9090066B32E /* Kingfisher in Frameworks */,
 				B5835D362DEDF9090066B32E /* Defaults in Frameworks */,
-				B5835D382DEDF9090066B32E /* GRDB in Frameworks */,
 				B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */,
 				B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */,
 			);
@@ -625,7 +619,6 @@
 			name = NoLet;
 			packageProductDependencies = (
 				B58358912DEDD4E10066B32E /* Defaults */,
-				B58358942DEDD55B0066B32E /* GRDB */,
 				B58358972DEDD5790066B32E /* Kingfisher */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
@@ -648,7 +641,6 @@
 				BAAA19202F390F3300E0D66F /* Splash */,
 				BAAA19232F390F5600E0D66F /* QRScanner */,
 				BAC9B9EF2FD6B35200E9ABDE /* Opus */,
-				BAB264343004C5380082E8D9 /* MessagingUI */,
 			);
 			productName = pushme;
 			productReference = B58357F72DEDD3B10066B32E /* NoLet.app */;
@@ -695,7 +687,6 @@
 			name = ServiceExtension;
 			packageProductDependencies = (
 				B5835D352DEDF9090066B32E /* Defaults */,
-				B5835D372DEDF9090066B32E /* GRDB */,
 				B5835D392DEDF9090066B32E /* Kingfisher */,
 				B5835D3D2DEDF92A0066B32E /* cmark-gfm */,
 				B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */,
@@ -793,13 +784,11 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */,
-				B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */,
 				BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */,
-				BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B58357F82DEDD3B10066B32E /* Products */;
@@ -934,7 +923,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BeBee;
+				INFOPLIST_KEY_CFBundleDisplayName = "伞兵";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
@@ -994,7 +983,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = BeBee;
+				INFOPLIST_KEY_CFBundleDisplayName = "伞兵";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
@@ -1471,14 +1460,6 @@
 				minimumVersion = 9.0.6;
 			};
 		};
-		B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.8.0;
-			};
-		};
 		B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1511,14 +1492,6 @@
 				minimumVersion = 1.2.3;
 			};
 		};
-		BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sunvc/swiftui-messaging-ui";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		BAC9B9EE2FD6B35100E9ABDE /* XCRemoteSwiftPackageReference "Opus" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sunvc/Opus.git";
@@ -1534,11 +1507,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
-		};
-		B58358942DEDD55B0066B32E /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		B58358972DEDD5790066B32E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1569,11 +1537,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
-		};
-		B5835D372DEDF9090066B32E /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		B5835D392DEDF9090066B32E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1684,11 +1647,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BAAA19222F390F5600E0D66F /* XCRemoteSwiftPackageReference "QRScanner" */;
 			productName = QRScanner;
-		};
-		BAB264343004C5380082E8D9 /* MessagingUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BAB264333004C5380082E8D9 /* XCRemoteSwiftPackageReference "swiftui-messaging-ui" */;
-			productName = MessagingUI;
 		};
 		BAC9B9EF2FD6B35200E9ABDE /* Opus */ = {
 			isa = XCSwiftPackageProductDependency;
