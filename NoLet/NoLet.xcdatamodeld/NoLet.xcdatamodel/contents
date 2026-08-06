@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="24G231" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="AudioMessageEntity" representedClassName="AudioMessageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="channel" attributeType="String"/>
+        <attribute name="file" attributeType="String"/>
+        <attribute name="from" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="read" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="sign" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="status" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="url" attributeType="String"/>
+    </entity>
+    <entity name="ChatGroupEntity" representedClassName="ChatGroupEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="current" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="host" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="point" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="ChatMessageEntity" representedClassName="ChatMessageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="chat" attributeType="String"/>
+        <attribute name="content" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="message" optional="YES" attributeType="String"/>
+        <attribute name="reason" optional="YES" attributeType="String"/>
+        <attribute name="result" optional="YES" attributeType="String"/>
+        <attribute name="role" attributeType="String"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
+    <entity name="MessageEntity" representedClassName="MessageEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="body" attributeType="String"/>
+        <attribute name="createDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="group" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="String"/>
+        <attribute name="other" optional="YES" attributeType="String"/>
+        <attribute name="read" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="reply" optional="YES" attributeType="String"/>
+        <attribute name="style" optional="YES" attributeType="String"/>
+        <attribute name="subtitle" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <attribute name="ttl" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+        <fetchIndex name="byID">
+            <fetchIndexElement property="id" order="ascending" type="binary"/>
+        </fetchIndex>
+        <fetchIndex name="byCreateDateAndID">
+            <fetchIndexElement property="createDate" type="Binary" order="ascending"/>
+            <fetchIndexElement property="id" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byGroupCreateDateAndID">
+            <fetchIndexElement property="group" type="Binary" order="ascending"/>
+            <fetchIndexElement property="createDate" type="Binary" order="ascending"/>
+            <fetchIndexElement property="id" type="Binary" order="ascending"/>
+        </fetchIndex>
+        <fetchIndex name="byReadGroup">
+            <fetchIndexElement property="read" type="binary" order="ascending"/>
+            <fetchIndexElement property="group" type="binary" order="ascending"/>
+        </fetchIndex>
+    </entity>
+</model>

@@ -64,8 +64,8 @@ struct PushServerModel: Codable, Identifiable, Equatable {
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.url == rhs.url && lhs.key == rhs.key
     }
-    
-    static var noServer: Self{
+
+    static var noServer: Self {
         PushServerModel(id: "000000", url: String(localized: "无服务器"), status: -1)
     }
 }
@@ -102,5 +102,46 @@ extension PushServerModel: Hashable, CloudKitConvertible {
         self.createDate = record.creationDate ?? .now
         self.updateDate = record.modificationDate ?? .now
         self.status = 0
+    }
+}
+
+// MARK: - CloudKit 订阅
+
+extension PushServerModel {
+    /// 私有数据库服务器记录变更订阅 ID（同账号其它设备增删改时唤醒本端）。
+    static let changesSubscriptionID = "push-server-changes"
+
+    /// 在私有数据库注册静默推送订阅，幂等：已存在则跳过。
+    static func registerChangesSubscription(
+        on database: CKDatabase = NCONFIG.privateCloudDatabase
+    ) async throws {
+        let existing = try await database.allSubscriptions()
+        guard !existing.contains(where: { $0.subscriptionID == changesSubscriptionID }) else {
+            return
+        }
+
+        let subscription = CKQuerySubscription(
+            recordType: recordType,
+            predicate: NSPredicate(value: true),
+            subscriptionID: changesSubscriptionID,
+            options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion]
+        )
+        let info = CKSubscription.NotificationInfo()
+        info.shouldSendContentAvailable = true
+        subscription.notificationInfo = info
+
+        try await database.save(subscription)
+    }
+
+    static func subHandler(
+        _ userInfo: [AnyHashable: Any],
+        complete: @escaping @Sendable () async -> Void
+    ) {
+        let ckNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
+        let isServerChange = ckNotification?.subscriptionID == Self.changesSubscriptionID
+
+        if isServerChange {
+            Task { await complete() }
+        }
     }
 }

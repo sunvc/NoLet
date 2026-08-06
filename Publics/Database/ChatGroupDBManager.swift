@@ -2,123 +2,93 @@
 //  ChatGroupDBManager.swift
 //  NoLet
 //
-//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
-//  Document:      https://wiki.wzs.app
-//  E-mail:        to@wzs.app
-//
-//  ChatGroup 表的所有数据库操作,统一在此层收敛。
-//  delete 会级联清除该 group 名下的 ChatMessage。
+//  ChatGroup 表的所有数据库操作。Core Data 实现，直接返回 ChatGroupEntity。
 //
 
+import CoreData
 import Foundation
-import GRDB
 
-final class ChatGroupDBManager: @unchecked Sendable {
+@MainActor
+final class ChatGroupDBManager {
     static let shared = ChatGroupDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
 
+    private var viewContext: NSManagedObjectContext { DB.viewContext }
+
     // MARK: - 读
 
-    func fetchCurrent() async -> ChatGroup? {
-        (try? await DB.dbQueue.read { db in
-            try ChatGroup.filter { $0.current }.fetchOne(db)
-        }) ?? nil
+    func fetchCurrent() -> ChatGroupEntity? {
+        try? Self.fetchCurrent(in: viewContext)
     }
 
-    func fetchCurrentSync() -> ChatGroup? {
-        (try? DB.dbQueue.read { db in
-            try ChatGroup.filter { $0.current }.fetchOne(db)
-        }) ?? nil
+    func fetchCurrentSync() -> ChatGroupEntity? {
+        try? Self.fetchCurrent(in: viewContext)
     }
 
-    func fetchAll() async -> [ChatGroup] {
-        do {
-            return try await DB.dbQueue.read { db in
-                try ChatGroup.order(ChatGroup.Columns.timestamp.desc).fetchAll(db)
-            }
-        } catch {
-            logger.error("fetchAll 失败: \(error)")
-            return []
-        }
+    func fetchAll() -> [ChatGroupEntity] {
+        (try? viewContext.fetch(Self.request())) ?? []
     }
 
-    func fetchOne(id: String) async -> ChatGroup? {
-        do {
-            return try await DB.dbQueue.read { db in
-                try ChatGroup.fetchOne(db, key: id)
-            }
-        } catch {
-            logger.error("fetchOne(id:) 失败: \(error)")
-            return nil
-        }
+    func fetchOne(id: String) -> ChatGroupEntity? {
+        try? Self.fetch(id: id, in: viewContext)
     }
 
     // MARK: - 写
 
-    func insert(_ group: ChatGroup) async throws {
-        try await DB.dbQueue.write { db in
-            try group.insert(db)
+    /// Inserts a new ChatGroupEntity from plain fields (used by the quote/reply flow).
+    @discardableResult
+    func insert(id: String, timestamp: Date = .now, name: String, host: String = "", current: Bool) async throws -> ChatGroupEntity {
+        let payload = SendableGroup(id: id, timestamp: timestamp, name: name, host: host, current: current)
+        return try await DB.write { ctx in
+            if let existing = try Self.fetch(id: id, in: ctx) { return existing }
+            try Self.setAllCurrent(false, except: id, in: ctx)
+            let entity = ChatGroupEntity(context: ctx)
+            entity.id = payload.id
+            entity.timestamp = payload.timestamp
+            entity.name = payload.name
+            entity.host = payload.host
+            entity.current = payload.current
+            return entity
         }
     }
 
-    /// 引用消息生成 group: 若已有则返回,否则插入并设为当前。
-    func upsertQuoteGroup(id: String, name: String) async -> ChatGroup? {
+    func upsertQuoteGroup(id: String, name: String) async {
         do {
-            return try await DB.dbQueue.write { db in
-                if let existing = try ChatGroup.fetchOne(db, key: id) {
-                    return existing
-                }
-                let group = ChatGroup(
-                    id: id,
-                    timestamp: .now,
-                    name: name,
-                    host: "",
-                    current: true
-                )
-                try ChatGroup
-                    .filter { $0.id != id }
-                    .updateAll(db, ChatGroup.Columns.current.set(to: false))
-                try group.insert(db)
-                return group
+            try await DB.write { ctx in
+                if (try Self.fetch(id: id, in: ctx)) != nil { return }
+                try Self.setAllCurrent(false, except: id, in: ctx)
+                let entity = ChatGroupEntity(context: ctx)
+                entity.id = id
+                entity.timestamp = .now
+                entity.name = name
+                entity.host = ""
+                entity.current = true
             }
         } catch {
             logger.error("upsertQuoteGroup 失败: \(error)")
-            return nil
         }
     }
 
-    /// 传入 nil 时把所有 group 的 current 置 false。
-    func setCurrent(_ group: ChatGroup?) async {
-        do {
-            try await DB.dbQueue.write { db in
-                if let group = group {
-                    try ChatGroup
-                        .filter { $0.id != group.id }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: false))
-                    try ChatGroup
-                        .filter { $0.id == group.id }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: true))
-                } else {
-                    try ChatGroup
-                        .filter { $0.current }
-                        .updateAll(db, ChatGroup.Columns.current.set(to: false))
-                }
+    func setCurrent(id targetID: String?) async {
+        try? await DB.write { ctx in
+            let request = NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)
+            if let targetID {
+                request.predicate = NSPredicate(format: "id != %@", targetID)
             }
-        } catch {
-            logger.error("setCurrent 失败: \(error)")
+            for entity in try ctx.fetch(request) { entity.current = false }
+            if let targetID, let entity = try Self.fetch(id: targetID, in: ctx) {
+                entity.current = true
+            }
         }
     }
 
     func setPointToNow(id: String) async -> Bool {
         do {
-            return try await DB.dbQueue.write { db in
-                if var group = try ChatGroup.filter(id: id).fetchOne(db) {
-                    group.point = .now
-                    try group.upsert(db)
-                    return true
-                }
-                return false
+            return try await DB.write { ctx in
+                guard let entity = try Self.fetch(id: id, in: ctx) else { return false }
+                entity.point = Date()
+                return true
             }
         } catch {
             return false
@@ -126,92 +96,116 @@ final class ChatGroupDBManager: @unchecked Sendable {
     }
 
     func rename(id: String, newName: String, makeCurrent: Bool = false) async {
-        do {
-            try await DB.dbQueue.write { db in
-                if var group = try ChatGroup.filter(ChatGroup.Columns.id == id).fetchOne(db) {
-                    group.name = newName
-                    if makeCurrent {
-                        group.current = true
-                    }
-                    try group.update(db)
-                }
+        try? await DB.write { ctx in
+            if let entity = try Self.fetch(id: id, in: ctx) {
+                entity.name = newName
+                if makeCurrent { entity.current = true }
             }
-        } catch {
-            logger.error("rename 失败: \(error)")
         }
     }
 
-    /// 级联: 先删同 group 的 ChatMessage,再删该 ChatGroup。
+    /// 级联：先删同 group 的 ChatMessage，再删 ChatGroup。
     func delete(id: String) async {
-        do {
-            try await DB.dbQueue.write { db in
-                try ChatMessage
-                    .filter(ChatMessage.Columns.chat == id)
-                    .deleteAll(db)
-                _ = try ChatGroup.filter { $0.id == id }.deleteAll(db)
-            }
-        } catch {
-            logger.error("delete(id:) 失败: \(error)")
+        try? await DB.write { ctx in
+            let messages = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+            messages.predicate = NSPredicate(format: "chat == %@", id)
+            for message in try ctx.fetch(messages) { ctx.delete(message) }
+            if let group = try Self.fetch(id: id, in: ctx) { ctx.delete(group) }
         }
     }
 
-    /// 一次性清空所有 ChatGroup + ChatMessage。
     func deleteAll() async {
-        do {
-            try await DB.dbQueue.write { db in
-                try ChatMessage.deleteAll(db)
-                try ChatGroup.deleteAll(db)
+        try? await DB.write { ctx in
+            for message in try ctx.fetch(NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)) {
+                ctx.delete(message)
             }
-        } catch {
-            logger.error("ChatGroup deleteAll 失败: \(error)")
+            for group in try ctx.fetch(NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)) {
+                ctx.delete(group)
+            }
         }
     }
 
-    /// 清理无消息的 group (原 clearunuse)
     func deleteEmpty() async {
-        do {
-            try await DB.dbQueue.write { db in
-                let allGroups = try ChatGroup.fetchAll(db)
-                for group in allGroups {
-                    let messageCount = try ChatMessage
-                        .filter(ChatMessage.Columns.chat == group.id)
-                        .fetchCount(db)
-                    if messageCount == 0 {
-                        try group.delete(db)
-                    }
-                }
+        try? await DB.write { ctx in
+            for group in try ctx.fetch(Self.request()) {
+                let count = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+                count.predicate = NSPredicate(format: "chat == %@", group.id ?? "")
+                if (try? ctx.count(for: count)) == 0 { ctx.delete(group) }
             }
-        } catch {
-            logger.error("deleteEmpty 失败: \(error)")
         }
     }
 
     // MARK: - Observation
 
-    /// 观察 group 总数 + 当前 group。
-    func observeSummary() -> AsyncStream<(groupsCount: Int, current: ChatGroup?)> {
-        AsyncStream { continuation in
-            let observation = ValueObservation.tracking { db -> (Int, ChatGroup?) in
-                let count = try ChatGroup.fetchCount(db)
-                let current = try? ChatGroup.filter { $0.current }.fetchOne(db)
-                return (count, current)
-            }
-
-            let cancellable = observation.start(
-                in: DB.dbQueue,
-                scheduling: .async(onQueue: .global()),
-                onError: { error in
-                    logger.error("observeSummary 失败: \(error)")
-                    continuation.finish()
-                },
-                onChange: { value in
-                    continuation.yield((groupsCount: value.0, current: value.1))
+    func observeSummary() -> AsyncStream<(groupsCount: Int, current: ChatGroupEntity?)> {
+        let center = NotificationCenter.default
+        return AsyncStream { continuation in
+            let emit: @Sendable () -> Void = {
+                let ctx = DatabaseManager.shared.viewContext
+                ctx.perform {
+                    let all = (try? ctx.fetch(Self.request())) ?? []
+                    continuation.yield((groupsCount: all.count, current: all.first { $0.current }))
                 }
-            )
-
-            continuation.onTermination = { _ in
-                cancellable.cancel()
             }
+            let token = Observer(center.addObserver(
+                forName: .NSManagedObjectContextDidSave,
+                object: nil,
+                queue: nil
+            ) { note in
+                guard let userInfo = note.userInfo else { return }
+                let touches =
+                    ((userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatGroupEntity.entityName } == true)
+                    || ((userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatGroupEntity.entityName } == true)
+                    || ((userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatGroupEntity.entityName } == true)
+                guard touches else { return }
+                emit()
+            })
+            emit()
+            continuation.onTermination = { _ in center.removeObserver(token.wrapped) }
         }
     }
+
+    // MARK: - Helpers
+
+    nonisolated private static func request() -> NSFetchRequest<ChatGroupEntity> {
+        let request = NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        return request
+    }
+
+    nonisolated private static func fetchCurrent(in ctx: NSManagedObjectContext) throws -> ChatGroupEntity? {
+        let request = NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)
+        request.predicate = NSPredicate(format: "current == YES")
+        request.fetchLimit = 1
+        return try ctx.fetch(request).first
+    }
+
+    nonisolated private static func fetch(id: String, in ctx: NSManagedObjectContext) throws -> ChatGroupEntity? {
+        let request = NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)
+        request.predicate = NSPredicate(format: "id == %@", id)
+        request.fetchLimit = 1
+        return try ctx.fetch(request).first
+    }
+
+    nonisolated private static func setAllCurrent(_ value: Bool, except id: String?, in ctx: NSManagedObjectContext) throws {
+        let request = NSFetchRequest<ChatGroupEntity>(entityName: ChatGroupEntity.entityName)
+        if let id {
+            request.predicate = NSPredicate(format: "id != %@", id)
+        }
+        for entity in try ctx.fetch(request) { entity.current = value }
+    }
+}
+
+private final class Observer: @unchecked Sendable {
+    let wrapped: any NSObjectProtocol
+    init(_ wrapped: any NSObjectProtocol) { self.wrapped = wrapped }
+}
+
+/// Sendable payload for cross-actor group creation.
+private struct SendableGroup: @unchecked Sendable {
+    let id: String
+    let timestamp: Date
+    let name: String
+    let host: String
+    let current: Bool
 }

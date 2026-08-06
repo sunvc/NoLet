@@ -39,8 +39,6 @@ struct ChangeKeyCenterView: View {
 
     var dismiss: () -> Void = {}
 
-    @State private var buttonState: AnimatedButton.buttonState = .normal
-
     @State private var selectCrypto: CryptoModelConfig? = nil
 
     var offServer: Bool {
@@ -161,7 +159,7 @@ struct ChangeKeyCenterView: View {
                         (self.keyHost, self.keyName) = (url, key)
                         self.showScan = false
                     default:
-                        if code.hasHttp, let url = URL(string: code) {
+                        if let url = URL(remote: code) {
                             (self.keyHost, self.keyName) = url.findNameAndKey()
                             self.showScan = false
                         }
@@ -169,7 +167,7 @@ struct ChangeKeyCenterView: View {
                 } track: { codes in
                     for code in codes {
                         let result = AppManager.shared.outParamsHandler(address: code)
-                        
+
                         switch result {
                         case .text:
                             break
@@ -178,7 +176,6 @@ struct ChangeKeyCenterView: View {
                         default:
                             return code
                         }
-                        
                     }
                     return nil
                 } close: {
@@ -233,30 +230,13 @@ struct ChangeKeyCenterView: View {
     private func recoverButton() -> some View {
         VStack {
             AnimatedButton(
-                state: $buttonState,
                 normal:
                 .init(
                     title: String(localized: "恢复KEY"),
                     background: .blue,
                     symbolImage: "pencil.circle"
-                ),
-                success:
-                .init(
-                    title: String(localized: "恢复成功"),
-                    background: .green,
-                    symbolImage: "checkmark.circle"
-                ),
-                fail:
-                .init(
-                    title: String(localized: "恢复失败"),
-                    background: .red,
-                    symbolImage: "xmark.circle"
-                ),
-                loadings: [
-                    .init(title: String(localized: "检查参数..."), background: .cyan),
-                    .init(title: String(localized: "恢复中..."), background: .cyan),
-                ]
-            ) { view in
+                )
+            ) { handle in
                 await MainActor.run {
                     if keyHost.isEmpty {
                         keyHost = NCONFIG.server
@@ -267,7 +247,7 @@ struct ChangeKeyCenterView: View {
                     self.disabledPage = true
                 }
 
-                await view.next(.loading(0))
+                handle.loading(.init(title: String(localized: "检查参数..."), background: .cyan))
 
                 await MainActor.run {
                     self.keyName = self.keyName
@@ -278,16 +258,19 @@ struct ChangeKeyCenterView: View {
 
                 try? await Task.sleep(for: .seconds(0.5))
 
-                guard keyHost.hasHttp, !keyName.isEmpty else {
-                    await view.next(.fail)
-                    Toast.info(title: "参数错误")
+                guard URL(remote: keyHost) != nil, !keyName.isEmpty else {
+                    await handle.fail(config: .init(
+                        title: String(localized: "参数错误"),
+                        background: .red,
+                        symbolImage: "xmark.circle"
+                    ))
                     DispatchQueue.main.async {
                         self.disabledPage = false
                     }
                     return
                 }
 
-                await view.next(.loading(1))
+                handle.loading(.init(title: String(localized: "恢复中..."), background: .cyan))
 
                 let success = await manager.restore(
                     address: keyHost,
@@ -298,14 +281,22 @@ struct ChangeKeyCenterView: View {
 
                 if success {
                     try? await Task.sleep(for: .seconds(1))
-                    await view.next(.success) {
+                    await handle.succeed(config: .init(
+                        title: String(localized: "恢复成功"),
+                        background: .green,
+                        symbolImage: "checkmark.circle"
+                    )) {
                         DispatchQueue.main.async {
                             self.dismiss()
                             self.disabledPage = false
                         }
                     }
                 } else {
-                    await view.next(.fail)
+                    await handle.fail(config: .init(
+                        title: String(localized: "恢复失败"),
+                        background: .red,
+                        symbolImage: "xmark.circle"
+                    ))
                     self.disabledPage = false
                 }
             }
@@ -317,30 +308,14 @@ struct ChangeKeyCenterView: View {
     private func registerButton() -> some View {
         VStack {
             AnimatedButton(
-                state: $buttonState,
                 normal:
                 .init(
                     title: pageTitle,
                     background: .blue,
                     symbolImage: "person.crop.square.filled.and.at.rectangle"
-                ),
-                success:
-                .init(
-                    title: String(localized: "注册成功"),
-                    background: .green,
-                    symbolImage: "checkmark.circle"
-                ),
-                fail:
-                .init(
-                    title: String(localized: "注册失败"),
-                    background: .red,
-                    symbolImage: "xmark.circle"
-                ),
-                loadings: [
-                    .init(title: String(localized: "检查参数..."), background: .cyan),
-                    .init(title: String(localized: "注册中..."), background: .cyan),
-                ]
-            ) { view in
+                )
+
+            ) { handle in
                 await MainActor.run {
                     if keyHost.isEmpty {
                         keyHost = NCONFIG.server
@@ -351,12 +326,13 @@ struct ChangeKeyCenterView: View {
                     self.keyHost = keyHost.normalizedURLString()
                 }
                 self.disabledPage = true
-                self.buttonState = .loading(0)
+    
+                handle.loading(.init(title: String(localized: "检查参数..."), background: .cyan))
                 try? await Task.sleep(for: .seconds(0.5))
 
                 guard keyHost.count > 10 else {
                     Toast.error(title: "格式错误")
-                    await view.next(.fail)
+                    await handle.fail()
                     DispatchQueue.main.async {
                         self.disabledPage = false
                     }
@@ -367,13 +343,17 @@ struct ChangeKeyCenterView: View {
                     self.selectCrypto = nil
                 }
 
-                await view.next(.loading(1))
+                handle.loading(.init(title: String(localized: "注册中..."), background: .cyan))
 
                 let item = PushServerModel(url: keyHost, sign: selectCrypto?.obfuscator())
                 let success = await manager.appendServer(server: item)
                 if success {
                     try? await Task.sleep(for: .seconds(1))
-                    await view.next(.success) {
+                    await handle.succeed(config: .init(
+                        title: String(localized: "注册成功"),
+                        background: .green,
+                        symbolImage: "checkmark.circle"
+                    )) {
                         DispatchQueue.main.async {
                             self.dismiss()
                             self.disabledPage = false
@@ -381,7 +361,11 @@ struct ChangeKeyCenterView: View {
                     }
 
                 } else {
-                    await view.next(.fail)
+                    await handle.fail(config: .init(
+                        title: String(localized: "注册失败"),
+                        background: .red,
+                        symbolImage: "xmark.circle"
+                    ))
                     DispatchQueue.main.async {
                         self.disabledPage = false
                     }
@@ -522,7 +506,8 @@ struct CirclePreferenceKey: PreferenceKey {
 }
 
 // MARK: - SlideFadeIn 视图
-fileprivate struct SlideFadeIn: ViewModifier {
+
+private struct SlideFadeIn: ViewModifier {
     var show: Bool
     var offset: Double
 
@@ -533,15 +518,15 @@ fileprivate struct SlideFadeIn: ViewModifier {
     }
 }
 
-fileprivate extension View{
-    func slideFadeIn(show: Bool, offset: Double = 10) -> some View {
+extension View {
+    fileprivate func slideFadeIn(show: Bool, offset: Double = 10) -> some View {
         modifier(SlideFadeIn(show: show, offset: offset))
     }
 }
 
 // MARK: - Line 视图
 
-fileprivate struct OutlineModifier: ViewModifier {
+private struct OutlineModifier: ViewModifier {
     @Environment(\.colorScheme) var colorScheme
     var cornerRadius: CGFloat = 20
 
@@ -562,12 +547,11 @@ fileprivate struct OutlineModifier: ViewModifier {
     }
 }
 
-fileprivate extension String {
-    
+extension String {
     /// 仅保留字母和数字字符
     /// - Parameter allowUnicode: 是否保留所有语言的字母（默认仅保留英文和数字）
     /// - Returns: 清理后的字符串
-    func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
+    fileprivate func onlyLettersAndNumbers(allowUnicode: Bool = false) -> String {
         if allowUnicode {
             return replacing(/[^\p{L}\p{N}]/, with: "")
         } else {
@@ -578,7 +562,6 @@ fileprivate extension String {
             )
         }
     }
-    
 }
 
 extension URL {
@@ -594,11 +577,7 @@ extension URL {
 
         return (base.trimmingCharacters(in: .whitespaces), key.trimmingCharacters(in: .whitespaces))
     }
-
-    var hasHttp: Bool { scheme?.hasHttp ?? false }
 }
-
-
 
 #Preview {
     ChangeKeyCenterView()

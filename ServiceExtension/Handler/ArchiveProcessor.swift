@@ -72,7 +72,7 @@ final class ArchiveProcessor: NotificationContentProcessor {
         let group: String = userInfo.raw(.group) ?? String(localized: "默认")
         bestAttemptContent.threadIdentifier = group
 
-        let ttl: String? = userInfo.raw(.ttl)
+        let ttl: Int64? = userInfo.raw(.ttl)
         let title: String? = userInfo.raw(.title)
         let subtitle: String? = userInfo.raw(.subtitle)
         let url: String? = userInfo.raw(.url)
@@ -82,11 +82,11 @@ final class ArchiveProcessor: NotificationContentProcessor {
 
         let other = userInfo.toJSONString(excluding: Params.names)
 
-        var seconds: Int {
-            if let isArchive = ttl, let saveDaysTem = Int(isArchive) {
-                return saveDaysTem
+        var seconds: Int64 {
+            if let ttl{
+                return ttl
             } else {
-                return Int(Defaults[.messageExpiration].seconds)
+                return Int64(Defaults[.messageExpiration].seconds)
             }
         }
         
@@ -101,25 +101,27 @@ final class ArchiveProcessor: NotificationContentProcessor {
 
         guard seconds > 0 else { return bestAttemptContent }
 
-        let message = Message(
-            id: messageID ?? UUID().uuidString,
-            createDate: .now,
-            group: group,
-            title: title,
-            subtitle: subtitle,
-            body: body,
-            icon: icon,
-            url: url,
-            image: image,
-            reply: reply,
-            ttl: seconds,
-            read: false,
-            style: style,
-            other: other
-        )
+        var json: [AnyHashable: Any] = [
+            "id": messageID ?? UUID().uuidString,
+            "createDate": Int(Date.now.timeIntervalSince1970),
+            "group": group,
+            "body": body,
+            "ttl": seconds,
+            "read": false,
+        ]
+        if let title { json["title"] = title }
+        if let subtitle { json["subtitle"] = subtitle }
+        if let icon { json["icon"] = icon }
+        if let url { json["url"] = url }
+        if let image { json["image"] = image }
+        if let reply { json["reply"] = reply }
+        if let style { json["style"] = style }
+        if let other { json["other"] = other }
 
-        await MessagesManager.shared.add(message)
-        await MessagesManager.shared.deleteExpired()
+        let isNew = PendingMessageStore().write(json)
+        if isNew {
+            Defaults[.sharedUnreadCount] += 1
+        }
 
         return bestAttemptContent
     }

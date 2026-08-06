@@ -20,7 +20,6 @@ struct NoLetChatAccountDetail: View {
     @State private var isTestingAPI = false
     @State private var isAdd: Bool = false
 
-    @State private var buttonState: AnimatedButton.buttonState = .normal
     let close: () -> Void
     init(account: AssistantAccount, isAdd: Bool = false, close: @escaping () -> Void) {
         self.isAdd = isAdd
@@ -73,41 +72,38 @@ struct NoLetChatAccountDetail: View {
                 Section {
                     HStack {
                         Spacer()
-                        AnimatedButton(
-                            state: $buttonState,
-                            normal:
-                            .init(
-                                title: String(localized: "测试后保存"),
-                                background: .blue,
-                                symbolImage: "person.crop.square.filled.and.at.rectangle"
-                            ),
-                            success:
-                            .init(
-                                title: String(localized: "测试/保存成功"),
-                                background: .green,
-                                symbolImage: "checkmark.circle"
-                            ),
-                            fail:
-                            .init(
-                                title: String(localized: "连接失败"),
-                                background: .red,
-                                symbolImage: "xmark.circle"
-                            ),
-                            loadings: [
-                                .init(title: String(localized: "测试中..."), background: .cyan),
-                            ]
-                        ) { view in
-                            await view.next(.loading(1))
+                        AnimatedButton(normal: .init(
+                            title: String(localized: "测试后保存"),
+                            background: .blue,
+                            symbolImage: "person.crop.square.filled.and.at.rectangle"
+                        )
+                        ) { handle in
+                            handle.loading(.init(
+                                title: String(localized: "测试中..."),
+                                background: .cyan
+                            ))
                             data.trimAssistantAccountParameters()
                             if data.key.isEmpty || data.host.isEmpty || isTestingAPI {
                                 try? await Task.sleep(for: .seconds(1))
-                                await view.next(.fail)
+                                await handle.fail()
                                 return
                             }
 
                             self.isTestingAPI = true
                             let success = await chatManager.test(account: data)
-                            await view.next(success ? .success : .fail)
+                            if success {
+                                await handle.succeed(config: .init(
+                                    title: String(localized: "测试/保存成功"),
+                                    background: .green,
+                                    symbolImage: "checkmark.circle"
+                                ))
+                            } else {
+                                await handle.fail(config: .init(
+                                    title: String(localized: "连接失败"),
+                                    background: .red,
+                                    symbolImage: "xmark.circle"
+                                ))
+                            }
                             await MainActor.run {
                                 self.isTestingAPI = false
                             }

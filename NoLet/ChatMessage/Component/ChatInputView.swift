@@ -26,7 +26,7 @@ struct ChatInputView: View {
     @State private var selectedPromptIndex: Int?
     @State private var focused: Bool = false
 
-    private var quote: Message? {
+    private var quote: MessageEntity? {
         guard let messageID = manager.askMessageID else { return nil }
         return MessagesManager.shared.query(id: messageID)
     }
@@ -142,14 +142,15 @@ struct ChatInputView: View {
                 } label: {
                     QuoteView(message: quote.search)
                         .onAppear {
+                            let quoteID = quote.idText
+                            let quoteName = quote.search.removingAllWhitespace
                             Task.detached(priority: .background) {
-                                if let group = await ChatGroupDBManager.shared.upsertQuoteGroup(
-                                    id: quote.id,
-                                    name: quote.search.removingAllWhitespace
-                                ) {
-                                    await MainActor.run {
-                                        chatManager.setGroup(group: group)
-                                    }
+                                await ChatGroupDBManager.shared.upsertQuoteGroup(
+                                    id: quoteID,
+                                    name: quoteName
+                                )
+                                await MainActor.run {
+                                    chatManager.reloadCurrentGroup()
                                 }
                             }
                         }

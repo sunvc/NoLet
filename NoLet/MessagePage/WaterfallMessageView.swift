@@ -22,7 +22,7 @@ private let waterfallSpacing: CGFloat = 5
 // MARK: - WaterfallMessageView
 
 struct WaterfallMessageView: View {
-    let messages: [Message]
+    let messages: [MessageEntity]
     let allCount: Int
     let columnCount: Int
     let isLoading: Bool
@@ -30,7 +30,7 @@ struct WaterfallMessageView: View {
     let assistantAccounsCount: Int
     let showAllTTL: Bool
     let selectID: String?
-    let onDelete: (Message) -> Void
+    let onDelete: (MessageEntity) -> Void
     let onLoadMore: () -> Void
 
     @State private var paginationTriggered = false
@@ -59,7 +59,7 @@ struct WaterfallMessageView: View {
     private var singleColumnContent: some View {
         ScrollView {
             LazyVStack(spacing: waterfallSpacing) {
-                ForEach(messages, id: \.id) { message in
+                ForEach(messages, id: \.idText) { message in
                     MessageCardView(
                         message: message,
                         searchText: searchText,
@@ -68,27 +68,28 @@ struct WaterfallMessageView: View {
                         selectID: selectID,
                         delete: { onDelete(message) }
                     )
-                    .id(message.id)
-                    .onAppear { handlePagination(for: message) }
+                    .id(message.idText)
                 }
+                loadMoreSentinel
             }
             .padding(.horizontal, waterfallSpacing)
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
+        .coordinateSpace(name: "waterfallScroll")
     }
 
     // MARK: - 多列（WaterfallLayout + 哨兵分页）
 
     private var multiColumnContent: some View {
         ScrollView {
-            ZStack(alignment: .bottom) {
+            VStack(spacing: 0) {
                 WaterfallLayout(
                     columns: columnCount,
                     horizontalSpacing: waterfallSpacing,
                     verticalSpacing: waterfallSpacing
                 ) {
-                    ForEach(messages, id: \.id) { message in
+                    ForEach(messages, id: \.idText) { message in
                         MessageCardView(
                             message: message,
                             searchText: searchText,
@@ -97,14 +98,12 @@ struct WaterfallMessageView: View {
                             selectID: selectID,
                             delete: { onDelete(message) }
                         )
-                        .id(message.id)
+                        .id(message.idText)
                     }
                 }
                 .padding(.horizontal, waterfallSpacing)
 
-                if messages.count < allCount, !isLoading {
-                    loadMoreSentinel
-                }
+                loadMoreSentinel
             }
         }
         .scrollDismissesKeyboard(.interactively)
@@ -115,21 +114,23 @@ struct WaterfallMessageView: View {
     // MARK: - 哨兵
 
     private var loadMoreSentinel: some View {
-        GeometryReader { geo in
-            Color.clear
-                .preference(
-                    key: ScrollOffsetPreferenceKey.self,
-                    value: geo.frame(in: .named("waterfallScroll")).maxY
-                )
-        }
-        .frame(height: 1)
-        .onPreferenceChange(ScrollOffsetPreferenceKey.self) { maxY in
-            guard !paginationTriggered else { return }
-            if maxY < UIScreen.main.bounds.height + 200 {
-                paginationTriggered = true
-                onLoadMore()
+        Color.clear
+            .frame(height: 1)
+            .background(
+                GeometryReader { geo in
+                    Color.clear.preference(
+                        key: ScrollOffsetPreferenceKey.self,
+                        value: geo.frame(in: .named("waterfallScroll")).maxY
+                    )
+                }
+            )
+            .onPreferenceChange(ScrollOffsetPreferenceKey.self) { maxY in
+                guard !paginationTriggered, !isLoading, messages.count < allCount else { return }
+                if maxY > 0, maxY < UIScreen.main.bounds.height + 200 {
+                    paginationTriggered = true
+                    onLoadMore()
+                }
             }
-        }
     }
 
     // MARK: - 空态
@@ -143,17 +144,5 @@ struct WaterfallMessageView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    // MARK: - 分页
-
-    private func handlePagination(for message: Message) {
-        guard !paginationTriggered,
-              messages.count < allCount,
-              let last = messages.elementFromEnd(5),
-              last.id == message.id
-        else { return }
-        paginationTriggered = true
-        onLoadMore()
     }
 }

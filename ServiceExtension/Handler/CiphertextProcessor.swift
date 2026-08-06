@@ -26,9 +26,9 @@ final class CiphertextProcessor: NotificationContentProcessor {
         }
 
         do {
-            let ciphertNumber: Int = userInfo.raw(.cipherNumber) ?? 0
+            let ciphertNumber: Int64 = userInfo.raw(.cipherNumber) ?? 0
 
-            let map = try decrypt(ciphertext: ciphertext, number: ciphertNumber)
+            let map = try decrypt(ciphertext: ciphertext, number: Int(ciphertNumber))
 
             var alert = [String: Any]()
             var soundName: String? = nil

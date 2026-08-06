@@ -93,7 +93,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func _syncAppInfo() {
         syncTask?.cancel()
         syncTask = Task.detached(name: "sceneWillEnterForeground", priority: .background) {
-            await MessagesManager.shared.deleteExpired()
+            await MessagesManager.shared.drainPendingMessages()
             await AppManager.syncServer()
             await NoLetChatManager.shared.clearunuse()
         }

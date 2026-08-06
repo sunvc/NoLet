@@ -66,8 +66,8 @@ struct NoLetChatHomeView: View {
             showChangeGroupName = false
         } content: {
             if let chatgroup = chatManager.chatGroup {
-                CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name) { text in
-                    chatManager.updateGroupName(groupID: chatgroup.id, newName: text)
+                CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name ?? "") { text in
+                    chatManager.updateGroupName(groupID: chatgroup.id ?? "", newName: text)
                 }
             } else {
                 Spacer()
@@ -175,17 +175,17 @@ struct NoLetChatHomeView: View {
 
             guard let newGroup = await getGroup(text: text) else { return }
             
-            let userMessage = ChatMessage(
+            let userMessage = ChatMessageDBManager.shared.makeTransient(
                 id: userMessageID,
                 timestamp: .now,
-                chat: newGroup.id,
-                role: ChatMessage.Role.user.rawValue,
+                chat: newGroup.id ?? "",
+                role: "user",
                 content: text,
                 message: manager.askMessageID,
                 reason: nil,
                 result: nil
             )
-            
+
             do {
                 try await ChatMessageDBManager.shared.insert(userMessage)
             } catch {
@@ -233,16 +233,11 @@ struct NoLetChatHomeView: View {
                     }
                 }
 
-                let responseMessage: ChatMessage? = {
-                    var message = chatManager.currentChatMessage
-                    message.id = assistantMessageID
-                    message.chat = newGroup.id
-                    return message
-                }()
+                let responseMessage = chatManager.currentChatMessage
+                responseMessage.id = assistantMessageID
+                responseMessage.chat = newGroup.id
 
-                if let responseMessage = responseMessage {
-                    try await ChatMessageDBManager.shared.insert(responseMessage)
-                }
+                try await ChatMessageDBManager.shared.insert(responseMessage)
 
                 Task { @MainActor in
                     self.clearCurrent()
@@ -320,22 +315,16 @@ struct NoLetChatHomeView: View {
         manager.isLoading = false
     }
 
-    func getGroup(text: String) async -> ChatGroup? {
+    func getGroup(text: String) async -> ChatGroupEntity? {
         if let group = chatManager.chatGroup {
             return group
         } else {
             let id = manager.askMessageID ?? UUID().uuidString
             let name = String(text.removingAllWhitespace.prefix(10))
-            let group = ChatGroup(
-                id: id,
-                timestamp: .now,
-                name: name,
-                host: "",
-                current: true
-            )
             do {
-                try await ChatGroupDBManager.shared.insert(group)
-                return group
+                return try await ChatGroupDBManager.shared.insert(
+                    id: id, timestamp: .now, name: name, host: "", current: true
+                )
             } catch {
                 return nil
             }

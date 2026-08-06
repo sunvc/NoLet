@@ -18,7 +18,7 @@ import MessagingUI
 struct ChatMessageCell {
     typealias StateValue = Void
 
-    let item: ChatMessage
+    let item: ChatMessageEntity
 
     private let maxRevealOffset: CGFloat = 60
 
@@ -29,7 +29,7 @@ struct ChatMessageCell {
     }
 
     @MainActor
-    private var quote: Message? {
+    private var quote: MessageEntity? {
         guard let messageID = AppManager.shared.askMessageID else { return nil }
         return MessagesManager.shared.query(id: messageID)
     }
@@ -38,7 +38,7 @@ struct ChatMessageCell {
     @ViewBuilder
     func body(context: CellContext<Void>) -> some View {
         let revealOffset = context.cellReveal?.rubberbandedOffset(max: maxRevealOffset) ?? 0
-        let isUserMessage = item.role == ChatMessage.Role.user.rawValue
+        let isUserMessage = item.role == "user"
 
         VStack{
             if quote != nil {
@@ -60,14 +60,14 @@ struct ChatMessageCell {
                 ReasonButton(message: item)
             }
 
-            if !item.content.removingAllWhitespace.isEmpty {
+            if !(item.content ?? "").removingAllWhitespace.isEmpty {
                 HStack {
                     if isUserMessage {
                         Spacer()
                     }
 
                     ScrollView {
-                        MarkdownCustomView(content: item.content)
+                        MarkdownCustomView(content: item.content ?? "")
                             .padding()
                             .foregroundColor(.primary)
                     }
@@ -80,7 +80,7 @@ struct ChatMessageCell {
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .onTapGesture(count: 2) {
-                        Clipboard.set(item.content)
+                        Clipboard.set(item.content ?? "")
                         Toast.success(title: "复制成功")
                     }
 
@@ -94,7 +94,7 @@ struct ChatMessageCell {
         }
         .offset(x: -revealOffset)
         .overlay(alignment: .trailing) {
-            Text(Self.timeFormatter.string(from: item.timestamp))
+            Text(Self.timeFormatter.string(from: item.timestamp ?? .now))
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .frame(width: maxRevealOffset)

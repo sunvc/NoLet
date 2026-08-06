@@ -16,11 +16,11 @@ import SwiftUI
 struct ChatMessageSection {
     var id: String = UUID().uuidString
     var title: String
-    var messages: [ChatGroup]
+    var messages: [ChatGroupEntity]
 }
 
 struct ChatGroupHistoryView: View {
-    @State private var chatGroups: [ChatGroup] = []
+    @State private var chatGroups: [ChatGroupEntity] = []
 
     var chatGroupSection: [ChatMessageSection] {
         getGroupedMessages(allMessages: chatGroups)
@@ -30,7 +30,7 @@ struct ChatGroupHistoryView: View {
     @State private var text: String = ""
     @State private var showChangeGroupName: Bool = false
 
-    @State private var selectdChatGroup: ChatGroup? = nil
+    @State private var selectdChatGroup: ChatGroupEntity? = nil
 
     @ObservedObject private var chatManager = NoLetChatManager.shared
     var body: some View {
@@ -58,10 +58,11 @@ struct ChatGroupHistoryView: View {
                 }
             } content: {
                 if let chatgroup = selectdChatGroup {
-                    CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name) { text in
+                    let groupID = chatgroup.id ?? ""
+                    CustomAlertWithTextField($showChangeGroupName, text: chatgroup.name ?? "") { text in
                         Task.detached(priority: .background) {
                             await ChatGroupDBManager.shared.rename(
-                                id: chatgroup.id,
+                                id: groupID,
                                 newName: text,
                                 makeCurrent: false
                             )
@@ -106,10 +107,12 @@ struct ChatGroupHistoryView: View {
     private func chatView(section: ChatMessageSection) -> some View {
         Section {
             ForEach(section.messages, id: \.id) { chatgroup in
+                let groupID = chatgroup.id ?? ""
+                let groupName = (chatgroup.name ?? "").removingAllWhitespace
                 HStack {
                     Label(
-                        chatgroup.name.removingAllWhitespace,
-                        systemImage: getleftIconName(group: chatgroup.id)
+                        groupName,
+                        systemImage: getleftIconName(group: groupID)
                     )
                     .fontWeight(.medium)
                     .lineLimit(1)
@@ -143,7 +146,7 @@ struct ChatGroupHistoryView: View {
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button {
                         Task.detached(priority: .background) {
-                            await chatManager.delete(groupID: chatgroup.id)
+                            await chatManager.delete(groupID: groupID)
                             await loadGroups()
                         }
                     } label: {
@@ -217,11 +220,8 @@ struct ChatGroupHistoryView: View {
     }
 
     private func loadGroups() {
-        Task.detached(priority: .background) {
-            let groups = await ChatGroupDBManager.shared.fetchAll()
-            await MainActor.run {
-                self.chatGroups = groups
-            }
+        Task { @MainActor in
+            self.chatGroups = ChatGroupDBManager.shared.fetchAll()
         }
     }
 
@@ -285,14 +285,14 @@ struct ChatGroupHistoryView: View {
         }
     }
 
-    private func getGroupedMessages(allMessages: [ChatGroup]) -> [ChatMessageSection] {
+    private func getGroupedMessages(allMessages: [ChatGroupEntity]) -> [ChatMessageSection] {
         let calendar = Calendar.current
         let todayStart = calendar.startOfDay(for: Date())
         
-        var bucket: [ChatTimeSection: [ChatGroup]] = [:]
+        var bucket: [ChatTimeSection: [ChatGroupEntity]] = [:]
         
         allMessages.forEach { msg in
-            let sectionType = ChatTimeSection.match(date: msg.timestamp, calendar: calendar, todayStart: todayStart)
+            let sectionType = ChatTimeSection.match(date: msg.timestamp ?? .now, calendar: calendar, todayStart: todayStart)
             bucket[sectionType, default: []].append(msg)
         }
         

@@ -45,6 +45,7 @@ struct AppleStatusView: View {
             }
         }
         .scrollContentBackground(.hidden)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(ContentBackgroundView())
         .navigationTitle(String("Apple Status"))
         .task {

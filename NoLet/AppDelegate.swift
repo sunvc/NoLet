@@ -77,6 +77,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
             }
 
             try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
+
+            try? await PushServerModel.registerChangesSubscription()
         }
 
         logger.info("获取到设备Token: \(token)")
@@ -133,7 +135,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
     }
 
     func notificatonHandler(userInfo: [AnyHashable: Any]) {
-        if let urlStr = userInfo[Params.url.name] as? String, let url = URL(string: urlStr) {
+        if let urlStr: String = userInfo.raw(.url),
+           let url = URL(remote: urlStr)
+        {
             AppManager.openURL(url: url, .safari)
         }
     }
@@ -151,15 +155,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult)
             -> Void
     ) {
-        if let id: String = userInfo.raw(.id), let group = MessagesManager.shared.delete(id) {
-            UNUserNotificationCenter.current()
-                .removeDeliveredNotifications(withIdentifiers: [group])
-        }
-
         Task {
+            PushServerModel.subHandler(userInfo) {
+                await AppManager.syncServer()
+            }
+            await MessagesManager.shared.delete(userInfo)
             await AppManager.shared.registerForRemoteNotifications()
+            completionHandler(.newData)
         }
-
-        completionHandler(.newData)
     }
 }

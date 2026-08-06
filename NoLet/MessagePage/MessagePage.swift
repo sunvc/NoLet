@@ -13,7 +13,6 @@
 
 import Defaults
 import SwiftUI
-import GRDB
 
 struct MessagePage: View {
     @ObservedObject private var manager = AppManager.shared
@@ -145,10 +144,12 @@ struct DeleteAlertViewModifier: ViewModifier{
                 }
                 Button("删除", role: .destructive) {
                     Task.detached(priority: .userInitiated) {
-                        await MessagesManager.shared.delete(date: date)
                         await MainActor.run {
                             self.onClose?()
                             self.show = false
+                        }
+                        await MessagesManager.shared.delete(date: date)
+                        await MainActor.run {
                             Toast.success(title: "删除成功")
                         }
                     }
@@ -160,13 +161,7 @@ struct DeleteAlertViewModifier: ViewModifier{
                 }
             }
             .task(id: show) {
-                if let count = try? DatabaseManager.shared.dbQueue.read({ db in
-                    return try Message
-                        .filter(Message.Columns.createDate < date)
-                        .fetchCount(db)
-                }){
-                    self.count = count
-                }
+                self.count = await MessagesManager.shared.count(before: date)
             }
     }
 }

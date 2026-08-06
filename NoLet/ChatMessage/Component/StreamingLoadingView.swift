@@ -121,7 +121,7 @@ struct StreamingLoadingView: View {
                 HStack {
                     VStack(spacing: 0) {
                         HStack {
-                            Text(chatManager.chatGroup?.name.removingAllWhitespace ?? "新对话")
+                            Text((chatManager.chatGroup?.name ?? String(localized: "新对话")).removingAllWhitespace )
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                                 .padding(.trailing, 3)

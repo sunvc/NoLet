@@ -22,7 +22,7 @@ struct MessageDetailView: View {
 
     @Default(.assistantAccouns) var assistantAccouns
 
-    @State private var messages: [Message] = []
+    @State private var messages: [MessageEntity] = []
     @State private var allCount: Int = 9_999_999
 
     @State private var isLoading: Bool = false
@@ -33,7 +33,7 @@ struct MessageDetailView: View {
         messageManager.messagePage
     }
 
-    var lastMessage: Message? {
+    var lastMessage: MessageEntity? {
         messages.elementFromEnd(5)
     }
 
@@ -57,13 +57,15 @@ struct MessageDetailView: View {
                             showAllTTL: showAllTTL,
                             selectID: manager.selectID,
                             onDelete: { message in
+                                let id = message.idText
+                                let group = message.groupText
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                     withAnimation(.default) {
-                                        messages.removeAll(where: { $0.id == message.id })
+                                        messages.removeAll(where: { $0.id == id })
                                     }
                                 }
                                 Task.detached(priority: .background) {
-                                    _ = await MessagesManager.shared.delete(message)
+                                    _ = await MessagesManager.shared.delete(id: id, group: group)
                                 }
                             },
                             onLoadMore: {
@@ -146,7 +148,7 @@ struct MessageDetailView: View {
     private func loadData(
         proxy: ScrollViewProxy? = nil,
         limit: Int = 50,
-        item: Message? = nil
+        item: MessageEntity? = nil
     ) {
         Task {
             guard !self.loadData else { return }
@@ -154,7 +156,8 @@ struct MessageDetailView: View {
             let results = await MessagesManager.shared.query(
                 group: self.group,
                 limit: limit,
-                item?.createDate
+                before: item?.createDate,
+                beforeID: item?.idText
             )
 
             let count = await MessagesManager.shared.count(group: self.group)

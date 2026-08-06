@@ -2,192 +2,82 @@
 //  DatabaseManager.swift
 //  NoLet
 //
-//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
-//  Document:      https://wiki.wzs.app
-//  E-mail:        to@wzs.app
-//
-//  History:
-//    Created by Neo on 2025/5/26.
+//  Core Data stack. Store lives in the App Group container so the app and
+//  extensions share the file URL — but only the main app opens it.
+//  Extensions persist incoming messages as plists in `pending_messages/`
+//  (see PendingMessageStore); the app drains them into Core Data.
 //
 
+import CoreData
 import Foundation
-import GRDB
 
 final class DatabaseManager: @unchecked Sendable {
     static let shared: DatabaseManager = {
-        do {
-            return try DatabaseManager()
-        } catch {
-            fatalError("Database init failed: \(error)")
-        }
+        DatabaseManager()
     }()
 
-    let dbQueue: DatabaseQueue
-    let localPath: URL = NCONFIG.databasePath
-    let messageTabelName = "message"
-    let chatGroupTabelName = "chatGroup"
-    let chatMessageTabelName = "chatMessage"
-    let chatPromptTabelName = "chatPrompt"
-    let audioMessageTableName = "AudioMessage"
+    /// Incoming writes (extension-drained messages, upserts) win on conflict.
+    nonisolated(unsafe) static let mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
 
-    private init() throws {
-        dbQueue = try DatabaseQueue(path: localPath.path)
-        var migrator = DatabaseMigrator()
-        registerMessageMigrations(&migrator)
-        registerChatGroupMigrations(&migrator)
-        registerChatMessageMigrations(&migrator)
-        registerChatPromptMigrations(&migrator)
-        registerAudioMessageMigrations(&migrator)
-        try migrator.migrate(dbQueue)
-    }
+    let container: NSPersistentContainer
 
-    /// 压缩数据库文件,回收空间
-    func vacuum() throws {
-        try dbQueue.vacuum()
-    }
+    var viewContext: NSManagedObjectContext { container.viewContext }
 
-    func registerMessageMigrations(_ migrator: inout DatabaseMigrator) {
-        migrator.registerMigration("create_Message") { db in
-            try db.create(table: self.messageTabelName, ifNotExists: true) { t in
-                t.primaryKey("id", .text)
-                t.column("group", .text).notNull()
-                t.column("createDate", .datetime).notNull()
-                t.column("title", .text)
-                t.column("subtitle", .text)
-                t.column("body", .text).notNull()
-                t.column("icon", .text)
-                t.column("url", .text)
-                t.column("image", .text)
-                t.column("reply", .text)
-                t.column("ttl", .integer).notNull()
-                t.column("read", .boolean).notNull()
-                t.column("style", .text)
-                t.column("other", .text)
+    private init() {
+        // One-time cleanup of the legacy GRDB store (no migration, fresh Core Data start).
+        if !Defaults[.didMigrateFromGRDB] {
+            let fm = FileManager.default
+            let name = NCONFIG.databaseName
+            if let files = try? fm.contentsOfDirectory(at: NCONFIG.localContainer, includingPropertiesForKeys: nil) {
+                for url in files where url.lastPathComponent.hasPrefix(name) {
+                    try? fm.removeItem(at: url)
+                }
             }
-
-            try db.execute(sql: """
-                    CREATE INDEX IF NOT EXISTS idx_message_createdate
-                    ON message(createDate DESC)
-                """)
-
-            try db.execute(sql: """
-                    CREATE INDEX IF NOT EXISTS idx_message_group_createdate
-                    ON message("group", createDate DESC)
-                """)
-        }
-    }
-
-    func registerChatGroupMigrations(_ migrator: inout DatabaseMigrator) {
-        migrator.registerMigration("create_chatGroup") { db in
-            try db.create(table: self.chatGroupTabelName, ifNotExists: true) { t in
-                t.primaryKey("id", .text)
-                t.column("timestamp", .datetime).notNull()
-                t.column("name", .text).notNull()
-                t.column("host", .text).notNull()
-                t.column("current", .boolean)
-            }
+            Defaults[.didMigrateFromGRDB] = true
         }
 
-        migrator.registerMigration("add point") { db in
-            try db.alter(table: self.chatGroupTabelName) { t in
-                t.add(column: "point", .datetime)
+        let modelURL = Bundle.main.url(forResource: "NoLet", withExtension: "momd")!
+        let model = NSManagedObjectModel(contentsOf: modelURL)!
+        container = NSPersistentContainer(name: "NoLet", managedObjectModel: model)
+
+        let storeURL = NCONFIG.localContainer.appendingPathComponent("NoLet.sqlite")
+        let description = NSPersistentStoreDescription(url: storeURL)
+        description.setOption(
+            FileProtectionType.completeUntilFirstUserAuthentication as NSObject,
+            forKey: NSPersistentStoreFileProtectionKey
+        )
+        container.persistentStoreDescriptions = [description]
+
+        container.loadPersistentStores { _, error in
+            if let error {
+                fatalError("Core Data store failed: \(error)")
             }
+            // FTS5 lives on the same SQLite file; set it up once the store is open.
+            MessageFTS.shared.setup(storeURL: storeURL)
+        }
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = Self.mergePolicy
+    }
+
+    // MARK: - Context helpers
+   
+    func write<T>(_ block: @escaping @Sendable (NSManagedObjectContext) throws -> T) async throws -> T {
+        let context = container.newBackgroundContext()
+        context.mergePolicy = Self.mergePolicy
+        return try await context.perform {
+            let result = try block(context)
+            if context.hasChanges {
+                try context.save()
+            }
+            return result
         }
     }
 
-    func registerChatMessageMigrations(_ migrator: inout DatabaseMigrator) {
-        migrator.registerMigration("create_chatMessage") { db in
-            try db.create(table: self.chatMessageTabelName, ifNotExists: true) { t in
-                t.primaryKey("id", .text)
-                t.column("timestamp", .datetime).notNull()
-                t.column("chat", .text).notNull()
-                t.column("request", .text).notNull()
-                t.column("content", .text).notNull()
-                t.column("message", .text)
-            }
-        }
-
-        migrator.registerMigration("add result") { db in
-            try db.alter(table: self.chatMessageTabelName) { t in
-                t.add(column: "result", .jsonText)
-            }
-        }
-
-        migrator.registerMigration("add reason") { db in
-            try db.alter(table: self.chatMessageTabelName) { t in
-                t.add(column: "reason", .text)
-            }
-        }
-        
-        migrator.registerMigration("add role and make request optional") { db in
-            try db.create(table: "chatMessage_new") { t in
-                t.primaryKey("id", .text)
-                t.column("timestamp", .datetime).notNull()
-                t.column("chat", .text).notNull()
-                t.column("role", .text).notNull().defaults(to: "assistant")
-                t.column("content", .text).notNull()
-                t.column("message", .text)
-                t.column("reason", .text)
-                t.column("result", .jsonText)
-            }
-            
-            try db.execute(sql: """
-                INSERT INTO chatMessage_new (id, timestamp, chat, role, content, message, reason, result)
-                SELECT id, timestamp, chat, 'assistant' AS role, content, message, reason, result
-                FROM chatMessage
-            """)
-            
-            try db.execute(sql: """
-                INSERT INTO chatMessage_new (id, timestamp, chat, role, content, message, reason, result)
-                SELECT 
-                    id || '_user' AS id, 
-                    timestamp, 
-                    chat, 
-                    'user' AS role, 
-                    request AS content, 
-                    message, 
-                    reason, 
-                    result
-                FROM chatMessage
-                WHERE request IS NOT NULL AND request != ''
-            """)
-            
-            try db.drop(table: self.chatMessageTabelName)
-            try db.rename(table: "chatMessage_new", to: self.chatMessageTabelName)
-        }
-    }
-
-    func registerChatPromptMigrations(_ migrator: inout DatabaseMigrator) {
-        migrator.registerMigration("create_chatPrompt") { db in
-            try db.create(table: self.chatPromptTabelName, ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("timestamp", .datetime).notNull()
-                t.column("title", .text).notNull()
-                t.column("content", .text).notNull()
-                t.column("inside", .boolean).notNull()
-            }
-        }
-
-        migrator.registerMigration("add mode") { db in
-            try db.alter(table: self.chatPromptTabelName) { t in
-                t.add(column: "mode", .text)
-            }
-        }
-    }
-
-    func registerAudioMessageMigrations(_ migrator: inout DatabaseMigrator) {
-        migrator.registerMigration("create_AudioMessage") { db in
-            try db.create(table: self.audioMessageTableName, ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("timestamp", .datetime).notNull()
-                t.column("channel", .text).notNull()
-                t.column("from", .text).notNull()
-                t.column("file", .text).notNull()
-                t.column("url", .text).notNull()
-                t.column("read", .boolean).notNull()
-                t.column("sign", .boolean).notNull()
-                t.column("status", .integer).notNull()
-            }
+    
+    func read<T>(_ block: @escaping @Sendable (NSManagedObjectContext) throws -> T) async throws -> T {
+        let context = container.newBackgroundContext()
+        return try await context.perform {
+            try block(context)
         }
     }
 }

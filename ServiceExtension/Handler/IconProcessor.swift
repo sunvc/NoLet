@@ -82,7 +82,7 @@ final class IconProcessor: NotificationContentProcessor {
     }
 
     func getPngData(pngURL: String) async -> Data? {
-        if pngURL.hasHttp {
+        if URL(remote: pngURL) != nil {
             if let localPath = await ImageManager.downloadImage(pngURL) {
                 return NSData(contentsOfFile: localPath) as? Data
             }

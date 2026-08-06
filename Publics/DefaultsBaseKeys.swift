@@ -23,6 +23,8 @@ extension Defaults.Key {
 extension Defaults.Keys {
   
     static let firstStart = Key<Bool>("firstStartApp", true)
+    static let didMigrateFromGRDB = Key<Bool>("didMigrateFromGRDB", false)
+    static let sharedUnreadCount = Key<Int>("sharedUnreadCount", 0)
     static let autoSaveToAlbum = Key<Bool>("autoSaveImageToPhotoAlbum", false)
     static let sound = Key<String>("defaultSound", "nolet")
     static let showGroup = Key<Bool>("showGroupMessage", false)

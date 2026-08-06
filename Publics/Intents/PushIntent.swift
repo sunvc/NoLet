@@ -127,7 +127,7 @@ struct PushToDeviceIntent: AppIntent {
 
                 let jsonData = try JSONSerialization.data(withJSONObject: params)
 
-                guard let cipherResult =  CryptoManager(cryptoConfig).encrypt(jsonData)
+                guard let cipherResult = CryptoManager(cryptoConfig).encrypt(jsonData)
                 else {
                     return .result(value: "cipher fail")
                 }
@@ -143,13 +143,9 @@ struct PushToDeviceIntent: AppIntent {
         }
 
         do {
-            if let address = URL(string: address),  address.hasHttp {
+            if URL(remote: address) != nil {
                 let res: APIPushToDeviceResponse? = try await NetworkManager()
-                    .fetch(
-                        url: address.absoluteString,
-                        method: .POST,
-                        params: params
-                    )
+                    .fetch(url: address, method: .POST, params: params)
                 return .result(value: res?.code == 200 ? "ok" : "fail")
             } else {
                 guard let member = try await MemberModel.fetch(

@@ -2,166 +2,220 @@
 //  ChatMessageDBManager.swift
 //  NoLet
 //
-//  Author:        Copyright (c) 2024 QingHe. All rights reserved.
-//  Document:      https://wiki.wzs.app
-//  E-mail:        to@wzs.app
-//
-//  ChatMessage 表的所有数据库操作,统一在此层收敛。
+//  ChatMessage 表的所有数据库操作。Core Data 实现，直接返回 ChatMessageEntity。
 //
 
+import CoreData
 import Foundation
-import GRDB
 
-final class ChatMessageDBManager: @unchecked Sendable {
+@MainActor
+final class ChatMessageDBManager {
     static let shared = ChatMessageDBManager()
     private let DB: DatabaseManager = .shared
     private init() {}
 
+    private var viewContext: NSManagedObjectContext { DB.viewContext }
+
     // MARK: - 读
 
-    /// 修复 bug: 按 chat 列(而非 message 列)过滤
-    func count(inGroup groupID: String) async -> Int {
-        do {
-            return try await DB.dbQueue.read { db in
-                try ChatMessage
-                    .filter(ChatMessage.Columns.chat == groupID)
-                    .fetchCount(db)
-            }
-        } catch {
-            logger.error("count(inGroup:) 失败: \(error)")
-            return 0
-        }
+    func count(inGroup groupID: String) -> Int {
+        (try? viewContext.count(for: Self.request(group: groupID))) ?? 0
     }
 
-    /// SwiftUI 行内计算属性使用的同步版本
     func countSync(inGroup groupID: String) -> Int {
-        (try? DB.dbQueue.read { db in
-            try ChatMessage
-                .filter(ChatMessage.Columns.chat == groupID)
-                .fetchCount(db)
-        }) ?? 0
+        (try? viewContext.count(for: Self.request(group: groupID))) ?? 0
     }
 
     func fetch(
         inGroup groupID: String,
         ascending: Bool = true,
         limit: Int
-    ) async -> [ChatMessage] {
-        do {
-            return try await DB.dbQueue.read { db in
-                let base = ChatMessage.filter(ChatMessage.Columns.chat == groupID)
-                let ordered = ascending
-                    ? base.order(ChatMessage.Columns.timestamp)
-                    : base.order(ChatMessage.Columns.timestamp.desc)
-                return try ordered.limit(limit).fetchAll(db)
-            }
-        } catch {
-            logger.error("fetch(inGroup:) 失败: \(error)")
-            return []
-        }
+    ) -> [ChatMessageEntity] {
+        let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+        request.predicate = NSPredicate(format: "chat == %@", groupID)
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: ascending)]
+        request.fetchLimit = limit
+        return (try? viewContext.fetch(request)) ?? []
     }
 
     func fetchHistory(
         groupID: String,
         after point: Date?,
         limit: Int
-    ) async -> [ChatMessage] {
-        do {
-            return try await DB.dbQueue.read { db in
-                var request = ChatMessage
-                    .filter(ChatMessage.Columns.chat == groupID)
-                if let point = point {
-                    request = request.filter(ChatMessage.Columns.timestamp > point)
-                }
-                return try request
-                    .order(ChatMessage.Columns.timestamp.desc)
-                    .limit(limit)
-                    .fetchAll(db)
-            }
-        } catch {
-            logger.error("fetchHistory 失败: \(error)")
-            return []
-        }
+    ) -> [ChatMessageEntity] {
+        let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+        request.predicate = predicate(group: groupID, after: point)
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        request.fetchLimit = limit
+        return (try? viewContext.fetch(request)) ?? []
     }
 
     func fetchHistorySync(
         groupID: String,
         after point: Date?,
         limit: Int
-    ) -> [ChatMessage] {
-        (try? DB.dbQueue.read { db in
-            var request = ChatMessage
-                .filter(ChatMessage.Columns.chat == groupID)
-            if let point = point {
-                request = request.filter(ChatMessage.Columns.timestamp > point)
-            }
-            return try request
-                .order(ChatMessage.Columns.timestamp.desc)
-                .limit(limit)
-                .fetchAll(db)
-        }) ?? []
+    ) -> [ChatMessageEntity] {
+        let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+        request.predicate = predicate(group: groupID, after: point)
+        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+        request.fetchLimit = limit
+        return ((try? viewContext.fetch(request)) ?? [])
     }
 
     // MARK: - 写
 
-    func insert(_ message: ChatMessage) async throws {
-        try await DB.dbQueue.write { db in
-            try message.insert(db)
+    /// Persist a transient ChatMessageEntity (created in the view context by the
+    /// manager) into a background context, then refresh the view context.
+    func insert(_ message: ChatMessageEntity) async throws {
+        let payload = SendableChatMessage(
+            id: message.id ?? UUID().uuidString,
+            timestamp: message.timestamp ?? .now,
+            chat: message.chat ?? "",
+            role: message.role ?? "",
+            content: message.content ?? "",
+            message: message.message,
+            reason: message.reason,
+            result: message.resultJSON
+        )
+        try await DB.write { ctx in
+            let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+            request.predicate = NSPredicate(format: "id == %@", payload.id)
+            request.fetchLimit = 1
+            let entity = (try ctx.fetch(request).first) ?? ChatMessageEntity(context: ctx)
+            entity.id = payload.id
+            entity.timestamp = payload.timestamp
+            entity.chat = payload.chat
+            entity.role = payload.role
+            entity.content = payload.content
+            entity.message = payload.message
+            entity.reason = payload.reason
+            entity.resultJSON = payload.result
         }
     }
 
+    /// Creates a new transient ChatMessageEntity in the view context (not yet saved).
+    /// The manager mutates it during streaming, then calls `insert(_:)` to persist.
+    func makeTransient(
+        id: String,
+        timestamp: Date = .now,
+        chat: String,
+        role: String,
+        content: String,
+        message: String? = nil,
+        reason: String? = nil,
+        result: [String: String]? = nil
+    ) -> ChatMessageEntity {
+        let entity = ChatMessageEntity(context: viewContext)
+        entity.id = id
+        entity.timestamp = timestamp
+        entity.chat = chat
+        entity.role = role
+        entity.content = content
+        entity.message = message
+        entity.reason = reason
+        entity.resultJSON = result
+        return entity
+    }
+
     func deleteByGroup(_ groupID: String) async {
-        do {
-            _ = try await DB.dbQueue.write { db in
-                try ChatMessage
-                    .filter(ChatMessage.Columns.chat == groupID)
-                    .deleteAll(db)
-            }
-        } catch {
-            logger.error("deleteByGroup 失败: \(error)")
+        try? await DB.write { ctx in
+            let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+            request.predicate = NSPredicate(format: "chat == %@", groupID)
+            for entity in try ctx.fetch(request) { ctx.delete(entity) }
         }
     }
 
     func deleteAll() async {
-        do {
-            _ = try await DB.dbQueue.write { db in
-                try ChatMessage.deleteAll(db)
+        try? await DB.write { ctx in
+            for entity in try ctx.fetch(NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)) {
+                ctx.delete(entity)
             }
-        } catch {
-            logger.error("ChatMessage deleteAll 失败: \(error)")
         }
     }
 
     // MARK: - Observation
 
-    /// 观察指定 group 内 ChatMessage 数量。
-    /// 传 nil 时不追加 group 过滤。
     func observeCount(inGroup groupID: String?) -> AsyncStream<Int> {
-        AsyncStream { continuation in
-            let observation = ValueObservation.tracking { db -> Int in
-                if let groupID = groupID {
-                    return try ChatMessage
-                        .filter(ChatMessage.Columns.chat == groupID)
-                        .fetchCount(db)
+        let center = NotificationCenter.default
+        return AsyncStream { continuation in
+            let emit: @Sendable () -> Void = {
+                let ctx = DatabaseManager.shared.viewContext
+                ctx.perform {
+                    let count = (try? ctx.count(for: Self.request(group: groupID))) ?? 0
+                    continuation.yield(count)
                 }
-                return try ChatMessage.fetchCount(db)
             }
+            let token = Observer(center.addObserver(
+                forName: .NSManagedObjectContextDidSave,
+                object: nil,
+                queue: nil
+            ) { note in
+                guard let userInfo = note.userInfo else { return }
+                let touches =
+                    ((userInfo[NSInsertedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatMessageEntity.entityName } == true)
+                    || ((userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatMessageEntity.entityName } == true)
+                    || ((userInfo[NSDeletedObjectsKey] as? Set<NSManagedObject>)?.contains { $0.entity.name == ChatMessageEntity.entityName } == true)
+                guard touches else { return }
+                emit()
+            })
+            emit()
+            continuation.onTermination = { _ in center.removeObserver(token.wrapped) }
+        }
+    }
 
-            let cancellable = observation.start(
-                in: DB.dbQueue,
-                scheduling: .async(onQueue: .global()),
-                onError: { error in
-                    logger.error("observeCount(inGroup:) 失败: \(error)")
-                    continuation.finish()
-                },
-                onChange: { value in
-                    continuation.yield(value)
-                }
-            )
+    // MARK: - Helpers
 
-            continuation.onTermination = { _ in
-                cancellable.cancel()
+    nonisolated private static func request(group: String?) -> NSFetchRequest<ChatMessageEntity> {
+        let request = NSFetchRequest<ChatMessageEntity>(entityName: ChatMessageEntity.entityName)
+        if let group {
+            request.predicate = NSPredicate(format: "chat == %@", group)
+        }
+        return request
+    }
+
+    nonisolated private func predicate(group: String, after point: Date?) -> NSPredicate {
+        var subpredicates = [NSPredicate(format: "chat == %@", group)]
+        if let point {
+            subpredicates.append(NSPredicate(format: "timestamp > %@", point as NSDate))
+        }
+        return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)
+    }
+}
+
+// MARK: - result JSON accessors
+
+extension ChatMessageEntity {
+    /// `result` is stored as a JSON string; expose it as a dictionary.
+    var resultJSON: [String: String]? {
+        get {
+            guard let raw = result, let data = raw.data(using: .utf8) else { return nil }
+            return try? JSONDecoder().decode([String: String].self, from: data)
+        }
+        set {
+            if let newValue,
+               let data = try? JSONEncoder().encode(newValue),
+               let raw = String(data: data, encoding: .utf8)
+            {
+                result = raw
+            } else {
+                result = nil
             }
         }
     }
+}
+
+private final class Observer: @unchecked Sendable {
+    let wrapped: any NSObjectProtocol
+    init(_ wrapped: any NSObjectProtocol) { self.wrapped = wrapped }
+}
+
+private struct SendableChatMessage: @unchecked Sendable {
+    let id: String
+    let timestamp: Date
+    let chat: String
+    let role: String
+    let content: String
+    let message: String?
+    let reason: String?
+    let result: [String: String]?
 }

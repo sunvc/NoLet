@@ -21,56 +21,53 @@ struct MessageGroupView: View {
     var body: some View {
         ScrollViewReader { proxy in
             List {
-                ForEach(messageManager.groupMessages, id: \.id) { message in
-                    MessageRow(message: message)
-
-                        .if(true) { view in
-                            Group {
-                                if #available(iOS 26.0, *) {
-                                    view
-                                        .contentShape(Rectangle())
-                                        .onTapGesture {
-                                            manager.router = [.messageDetail(message.group)]
-                                            Haptic.impact()
-                                        }
-                                } else {
-                                    view
-                                        .VButton(onRelease: { _ in
-                                            manager.router = [.messageDetail(message.group)]
-                                            return true
-                                        })
-                                }
+                ForEach(messageManager.groupMessages, id: \.idText) { message in
+                    let id = message.idText
+                    let group = message.groupText
+                    MessageRow(
+                        message: message,
+                        unread: messageManager.groupUnread[group] ?? 0,
+                        onTap: {
+                            manager.router = [.messageDetail(group)]
+                            Haptic.impact()
+                        },
+                        onDelete: {
+                            withAnimation(.default) {
+                                messageManager.groupMessages
+                                    .removeAll(where: { $0.idText == id })
+                            }
+                            Task.detached(priority: .background) {
+                                _ = await MessagesManager.shared.delete(
+                                    id: id, group: group, in: true
+                                )
                             }
                         }
-
-                        .id(message.group)
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        .listSectionSeparator(.hidden)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityValue(String("\(message.group)"))
-                        .accessibilityLabel("分组消息")
-                        .accessibilityHint("点击进入分组列表")
+                    )
+                    .id(message.groupText)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .listSectionSeparator(.hidden)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityValue(String("\(message.groupText)"))
+                    .accessibilityLabel("分组消息")
+                    .accessibilityHint("点击进入分组列表")
                 }
-                
             }
-            .navigationTitle("消息")
+            .navigationTitle("分组消息")
             .scrollContentBackground(.hidden)
             .background(
                 ContentBackgroundView()
                     .overlay(
                         emptyStateView
-                            .opacity(messageManager.groupMessages.count == 0 ? 1 : 0)
+                            .opacity(messageManager.groupMessages.isEmpty ? 1 : 0)
                     )
             )
             .listStyle(.grouped)
-            .animation(.default, value: messageManager.groupMessages)
             .onChange(of: messageManager.allCount) { _ in
                 if let selectGroup = manager.selectGroup {
                     proxyTo(proxy: proxy, selectGroup: selectGroup)
                 }
             }
-            
         }
     }
     
@@ -98,12 +95,24 @@ struct MessageGroupView: View {
 }
 
 struct MessageRow: View {
-    var message: Message
-    @State private var unreadCount: Int = 0
-    @ObservedObject private var messageManager = MessagesManager.shared
+    var message: MessageEntity
+    var unread: Int
+    var onTap: () -> Void
+    var onDelete: () -> Void
+
+    @State private var bodyPreview: String = ""
+    @State private var timeText: String = ""
+
+    private static let relativeFormatter: RelativeDateTimeFormatter = {
+        let f = RelativeDateTimeFormatter()
+        f.unitsStyle = .full
+        f.locale = .current
+        return f
+    }()
+
     var body: some View {
         HStack {
-            if unreadCount > 0 {
+            if unread > 0 {
                 Circle()
                     .fill(Color.blue)
                     .frame(width: 10, height: 10)
@@ -116,18 +125,18 @@ struct MessageRow: View {
 
             VStack(alignment: .leading) {
                 HStack {
-                    Text(message.group)
+                    Text(message.groupText)
                         .font(.headline.bold())
                         .foregroundStyle(.textBlack)
 
                     Spacer()
 
-                    Text(message.createDate.agoFormatString())
+                    Text(timeText)
                         .foregroundStyle(.secondary)
                         .font(.caption2)
                 }
 
-                groupBody(message)
+                groupBody
                     .font(.footnote)
                     .lineLimit(2)
                     .foregroundStyle(.gray)
@@ -142,48 +151,47 @@ struct MessageRow: View {
         .padding(.vertical, 8)
         .padding(.bottom, 3)
         .padding(.horizontal, 15)
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
         .swipeActions(edge: .leading) {
             Button {
+                let group = message.groupText
                 Task.detached(priority: .userInitiated) {
-                    await MessagesManager.shared.markAllRead(group: message.group)
+                    await MessagesManager.shared.markAllRead(group: group)
                 }
             } label: {
-                Label("标记", systemImage: unreadCount == 0 ? "envelope.open" : "envelope")
+                Label("标记", systemImage: unread == 0 ? "envelope.open" : "envelope")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.primary)
 
             }.tint(.blue)
         }
         .swipeActions(edge: .trailing) {
-            Button {
-                withAnimation {
-                    messageManager.groupMessages.removeAll(where: { $0.id == message.id })
-                }
-
-                Task.detached(priority: .background) {
-                    _ = await MessagesManager.shared.delete(message, in: true)
-                }
-
-            } label: {
+            Button(role: .destructive, action: onDelete) {
                 Label("删除", systemImage: "trash")
                     .symbolRenderingMode(.palette)
                     .foregroundStyle(.white, Color.primary)
-
             }.tint(.red)
         }
-        .task { loadCount() }
+        .task(id: message.idText) { await prepare() }
     }
 
-    private func loadCount() {
-        Task.detached(priority: .background) {
-            let count = await MessageDBManager.shared.unreadCount(group: message.group)
-            await MainActor.run {
-                self.unreadCount = count
-            }
-        }
+    /// Parse the markdown preview once per row (off the main thread) and cache the
+    /// time string. The unread badge is passed in from a single GROUP BY query, so
+    /// no per-row DB query fires as cells appear during scrolling.
+    private func prepare() async {
+        timeText = Self.relativeFormatter.localizedString(
+            for: message.createDate ?? .now, relativeTo: Date()
+        )
+        let body = message.bodyText
+        guard !body.isEmpty else { return }
+        let preview = await Task.detached(priority: .userInitiated) {
+            PBMarkdown.plain(body).replacingOccurrences(of: " ", with: "")
+        }.value
+        if !Task.isCancelled { bodyPreview = preview }
     }
 
-    private func groupBody(_ message: Message) -> some View {
+    private var groupBody: some View {
         var text = Text(verbatim: "")
 
         if let title = message.title {
@@ -194,12 +202,8 @@ struct MessageRow: View {
             text = text + Text(verbatim: "\(subtitle);").foregroundColor(.gray)
         }
 
-        if !message.body.isEmpty {
-            text = text +
-                Text(
-                    verbatim: "\(PBMarkdown.plain(message.body).replacingOccurrences(of: " ", with: ""))"
-                )
-                .foregroundColor(.primary)
+        if !bodyPreview.isEmpty {
+            text = text + Text(verbatim: bodyPreview).foregroundColor(.primary)
         }
 
         return text

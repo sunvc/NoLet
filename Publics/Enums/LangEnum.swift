@@ -32,8 +32,13 @@ enum Multilingual {
         let flag: String
     }
 
-    static var firstChoice: Country {
-        commonLanguages.first!
+    static let firstChoice = Country(code: "en", name: "English", flag: "🌐")
+
+    static func country(for code: String) -> Country? {
+        guard let name = Locale.current.localizedString(forLanguageCode: code) else {
+            return nil
+        }
+        return Country(code: code, name: name, flag: "🌐")
     }
 
     static let commonLanguages: [Country] = {
@@ -62,8 +67,8 @@ enum Multilingual {
         let current = Defaults[.translateLang]
 
         guard let code = Locale.current.language.languageCode?.identifier,
-              current.id != code,
-              let language = commonLanguages.first(where: { $0.code == code })
+              current.code != code,
+              let language = country(for: code)
         else {
             return
         }

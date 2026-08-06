@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B58358922DEDD4E10066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B58358912DEDD4E10066B32E /* Defaults */; };
-		B58358952DEDD55B0066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B58358942DEDD55B0066B32E /* GRDB */; };
 		B58358982DEDD5790066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B58358972DEDD5790066B32E /* Kingfisher */; };
 		B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A32DEDD6090066B32E /* cmark-gfm */; };
 		B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B58358A52DEDD6090066B32E /* cmark-gfm-extensions */; };
@@ -21,7 +20,6 @@
 		B5835D2E2DEDF3370066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D2D2DEDF3370066B32E /* Defaults */; };
 		B5835D302DEDF3370066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D2F2DEDF3370066B32E /* Kingfisher */; };
 		B5835D362DEDF9090066B32E /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D352DEDF9090066B32E /* Defaults */; };
-		B5835D382DEDF9090066B32E /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D372DEDF9090066B32E /* GRDB */; };
 		B5835D3A2DEDF9090066B32E /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D392DEDF9090066B32E /* Kingfisher */; };
 		B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3D2DEDF92A0066B32E /* cmark-gfm */; };
 		B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */ = {isa = PBXBuildFile; productRef = B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */; };
@@ -223,8 +221,7 @@
 			membershipExceptions = (
 				BaseConfig.swift,
 				Database/CloudKitConvertible.swift,
-				Database/DatabaseManager.swift,
-				Database/MessageDBManager.swift,
+				Database/PendingMessageStore.swift,
 				DefaultsBaseKeys.swift,
 				DefaultsModelKeys.swift,
 				Domap.swift,
@@ -241,11 +238,9 @@
 				Managers/cryptoManager.swift,
 				Managers/IDManager.swift,
 				Managers/ImageManager.swift,
-				Managers/MessagesManager.swift,
 				Managers/NetworkManager.swift,
 				Markdown.swift,
 				Models/MemberModel.swift,
-				Models/MessageModel.swift,
 				Models/PushIconModel.swift,
 				Models/PushServerModel.swift,
 				ToolsBox.swift,
@@ -488,7 +483,6 @@
 				BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */,
 				BAAA19242F390F5600E0D66F /* QRScanner in Frameworks */,
 				BAAA19212F390F3300E0D66F /* Splash in Frameworks */,
-				B58358952DEDD55B0066B32E /* GRDB in Frameworks */,
 				B58358A42DEDD6090066B32E /* cmark-gfm in Frameworks */,
 				B58358A62DEDD6090066B32E /* cmark-gfm-extensions in Frameworks */,
 				B58359BA2DEDDB170066B32E /* StoreKit.framework in Frameworks */,
@@ -509,7 +503,6 @@
 			files = (
 				B5835D3A2DEDF9090066B32E /* Kingfisher in Frameworks */,
 				B5835D362DEDF9090066B32E /* Defaults in Frameworks */,
-				B5835D382DEDF9090066B32E /* GRDB in Frameworks */,
 				B5835D402DEDF92A0066B32E /* cmark-gfm-extensions in Frameworks */,
 				B5835D3E2DEDF92A0066B32E /* cmark-gfm in Frameworks */,
 			);
@@ -625,7 +618,6 @@
 			name = NoLet;
 			packageProductDependencies = (
 				B58358912DEDD4E10066B32E /* Defaults */,
-				B58358942DEDD55B0066B32E /* GRDB */,
 				B58358972DEDD5790066B32E /* Kingfisher */,
 				B58358A32DEDD6090066B32E /* cmark-gfm */,
 				B58358A52DEDD6090066B32E /* cmark-gfm-extensions */,
@@ -695,7 +687,6 @@
 			name = ServiceExtension;
 			packageProductDependencies = (
 				B5835D352DEDF9090066B32E /* Defaults */,
-				B5835D372DEDF9090066B32E /* GRDB */,
 				B5835D392DEDF9090066B32E /* Kingfisher */,
 				B5835D3D2DEDF92A0066B32E /* cmark-gfm */,
 				B5835D3F2DEDF92A0066B32E /* cmark-gfm-extensions */,
@@ -793,7 +784,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */,
-				B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B58358A22DEDD6090066B32E /* XCRemoteSwiftPackageReference "swift-cmark" */,
 				BAAA191D2F390F3300E0D66F /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
@@ -1471,14 +1461,6 @@
 				minimumVersion = 9.0.6;
 			};
 		};
-		B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/groue/GRDB.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.8.0;
-			};
-		};
 		B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
@@ -1535,11 +1517,6 @@
 			package = B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
 		};
-		B58358942DEDD55B0066B32E /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
-		};
 		B58358972DEDD5790066B32E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B58358962DEDD5790066B32E /* XCRemoteSwiftPackageReference "Kingfisher" */;
@@ -1569,11 +1546,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B58358902DEDD4E10066B32E /* XCRemoteSwiftPackageReference "Defaults" */;
 			productName = Defaults;
-		};
-		B5835D372DEDF9090066B32E /* GRDB */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B58358932DEDD55B0066B32E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
-			productName = GRDB;
 		};
 		B5835D392DEDF9090066B32E /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;

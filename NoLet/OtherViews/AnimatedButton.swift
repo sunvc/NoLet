@@ -13,52 +13,62 @@
 import SwiftUI
 
 struct AnimatedButton: View {
-    @Binding var state: buttonState
-    var config: Config
-    var loadings: [Config]
-    var success: Config
-    var fail: Config
-    var shape: AnyShape
-    var onTap: (Self) async -> Void
+    @StateObject private var handle = Handle()
 
-    var currentConfig: Config {
-        switch state {
-        case .normal: config
-        case .loading(let index): loadings[min(max(index, 0), loadings.count - 1)]
-        case .success: success
-        case .fail: fail
-        }
-    }
+    var config: Config
+    static let defaultLoading = Config(
+        title: String(localized: "请等待..."),
+        foregroundColor: .white,
+        background: .red
+    )
+    static let defaultSuccess = Config(
+        title: String(localized: "成功"),
+        foregroundColor: .black,
+        background: .green
+    )
+    static let defaultFail = Config(
+        title: String(localized: "失败"),
+        foregroundColor: .white,
+        background: .red
+    )
+    var shape: AnyShape
+    var onTap: (Handle) async -> Void
 
     init(
-        state: Binding<buttonState>,
         normal: Config? = nil,
-        success: Config? = nil,
-        fail: Config? = nil,
-        loadings: [Config]? = nil,
         shape: AnyShape = .init(.capsule),
-        onTap: @escaping (Self) async -> Void
+        onTap: @escaping (Handle) async -> Void
     ) {
-        _state = state
-        config = normal ?? .init(title: "普通按钮", foregroundColor: .red, background: .white)
-        self.success = success ?? .init(title: "成功", foregroundColor: .black, background: .green)
-        self.fail = fail ?? .init(title: "失败", foregroundColor: .white, background: .red)
-        self.loadings = loadings ?? [.init(
-            title: "请等待...",
-            foregroundColor: .white,
-            background: .red
-        )]
+        config = normal ?? Config(
+            title: String(localized: "确定"),
+            foregroundColor: .red,
+            background: .white
+        )
         self.shape = shape
         self.onTap = onTap
     }
 
-    var isLoading: Bool { state != .normal && state != .fail && state != .success }
+    var isLoading: Bool {
+        if case .loading = handle.state { return true }
+        return false
+    }
+
+    var currentConfig: Config {
+        switch handle.state {
+        case .normal:
+            return self.config
+        case .loading(let config),
+             .success(let config),
+             .fail(let config):
+            return config
+        }
+    }
 
     var body: some View {
         Button {
             Task {
-                if state == .normal {
-                    await onTap(self)
+                if case .normal = handle.state {
+                    await onTap(handle)
                 }
             }
         } label: {
@@ -73,21 +83,18 @@ struct AnimatedButton: View {
                         }
                     }
                     .frame(width: 20, height: 20)
-
-                } else {
-                    if let symbolImage = currentConfig.symbolImage {
-                        Group {
-                            if #available(iOS 17.0, *) {
-                                Image(systemName: symbolImage)
-                                    .contentTransition(.symbolEffect)
-                                    .transition(.blurReplace)
-                            } else {
-                                Image(systemName: symbolImage)
-                                    .contentTransition(.opacity)
-                            }
+                } else if let symbolImage = currentConfig.symbolImage {
+                    Group {
+                        if #available(iOS 17.0, *) {
+                            Image(systemName: symbolImage)
+                                .contentTransition(.symbolEffect)
+                                .transition(.blurReplace)
+                        } else {
+                            Image(systemName: symbolImage)
+                                .contentTransition(.opacity)
                         }
-                        .font(.title3)
                     }
+                    .font(.title3)
                 }
 
                 Text(currentConfig.title)
@@ -107,11 +114,11 @@ struct AnimatedButton: View {
         .animation(currentConfig.animation, value: isLoading)
     }
 
-    enum buttonState: Equatable {
+    enum State: Equatable {
         case normal
-        case loading(Int)
-        case success
-        case fail
+        case loading(Config)
+        case success(Config)
+        case fail(Config)
     }
 
     struct Config: Equatable {
@@ -123,42 +130,38 @@ struct AnimatedButton: View {
         var hPadding: CGFloat = 15
         var vPadding: CGFloat = 10
         var animation: Animation = .easeInOut(duration: 0.25)
-        var state: buttonState = .normal
     }
 
-    /// **切换到下一个配置**
-    func next(_ state: buttonState? = nil, delay: Double = 1, complete: (() -> Void)? = nil) async {
-        if let state = state {
-            self.state = state
-            if state == .success || state == .fail {
-                try? await Task.sleep(for: .seconds(delay))
-                self.state = .normal
-                try? await Task.sleep(for: .seconds(0.5))
-                complete?()
-            }
-        } else {
-            switch self.state {
-            case .normal:
-                self.state = .loading(0)
-            case .loading(let index):
-                if index == 1 {
-                    self.state = .loading(index - 1)
-                } else if index >= loadings.count - 1 {
-                    self.state = .success
+    @MainActor
+    final class Handle: ObservableObject {
+        @Published var state: State = .normal
 
-                    try? await Task.sleep(for: .seconds(delay))
-                    self.state = .normal
-                    try? await Task.sleep(for: .seconds(0.5))
-                    complete?()
-                } else {
-                    self.state = .loading(index - 1)
-                }
-            case .success, .fail:
-                try? await Task.sleep(for: .seconds(delay))
-                self.state = .normal
-                try? await Task.sleep(for: .seconds(0.5))
-                complete?()
-            }
+        func loading(_ config: Config = AnimatedButton.defaultLoading) {
+            state = .loading(config)
+        }
+
+        func succeed(
+            delay: Double = 1,
+            config: Config = AnimatedButton.defaultSuccess,
+            complete: (() -> Void)? = nil
+        ) async {
+            await finish(.success(config), delay: delay, complete: complete)
+        }
+
+        func fail(
+            delay: Double = 1,
+            config: Config = AnimatedButton.defaultFail,
+            complete: (() -> Void)? = nil
+        ) async {
+            await finish(.fail(config), delay: delay, complete: complete)
+        }
+
+        private func finish(_ state: State, delay: Double, complete: (() -> Void)?) async {
+            self.state = state
+            try? await Task.sleep(for: .seconds(delay))
+            self.state = .normal
+            try? await Task.sleep(for: .seconds(0.5))
+            complete?()
         }
     }
 }
@@ -214,8 +217,4 @@ struct Spinner: View {
             extraRotation += 360
         }
     }
-}
-
-#Preview {
-    ContentView()
 }

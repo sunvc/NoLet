@@ -32,8 +32,8 @@ final class NoLetChatManager: ObservableObject {
     @Published var promptCount: Int = 0
 
     @Published var chatPrompt: ChatPrompt? = nil
-    @Published var chatMessages: [ChatMessage] = []
-    @Published private(set) var chatGroup: ChatGroup? = nil
+    @Published var chatMessages: [ChatMessageEntity] = []
+    @Published private(set) var chatGroup: ChatGroupEntity? = nil
 
     @Published var showPromptChooseView: Bool = false
     @Published var showAllHistory: Bool = false
@@ -42,7 +42,7 @@ final class NoLetChatManager: ObservableObject {
 
     @Published var startReason: String? = nil
 
-    @Published var showReason: ChatMessage? = nil
+    @Published var showReason: ChatMessageEntity? = nil
     @Published var page: Int = 1
 
     lazy var contentActor = StreamTextAggregator { [weak self] chunk in
@@ -75,12 +75,12 @@ final class NoLetChatManager: ObservableObject {
 
     var cancellableRequest: Task<Void, Never>?
 
-    var currentChatMessage: ChatMessage {
-        ChatMessage(
+    var currentChatMessage: ChatMessageEntity {
+        messageDB.makeTransient(
             id: currentMessageID,
             timestamp: .now,
             chat: "",
-            role: ChatMessage.Role.assistant.rawValue,
+            role: "assistant",
             content: currentContent,
             message: AppManager.shared.askMessageID,
             reason: currentReason,
@@ -131,30 +131,36 @@ final class NoLetChatManager: ObservableObject {
 
     func updateMessage() async {
         let page = self.page
-        guard let current = await groupDB.fetchCurrent() else { return }
-        let messages = await messageDB.fetch(
-            inGroup: current.id,
+        guard let current = groupDB.fetchCurrent(), let groupID = current.id else { return }
+        let messages = messageDB.fetch(
+            inGroup: groupID,
             ascending: true,
             limit: page * 50
         )
-        await MainActor.run {
-            self.chatMessages = messages
-        }
+        self.chatMessages = messages
     }
 
 
     func setPoint() async -> Bool {
-        guard let chatGroup else { return false }
-        return await groupDB.setPointToNow(id: chatGroup.id)
+        guard let chatGroup, let id = chatGroup.id else { return false }
+        return await groupDB.setPointToNow(id: id)
     }
 
-    func setGroup(group: ChatGroup? = nil) {
+    func setGroup(group: ChatGroupEntity? = nil) {
         self.page = 1
         self.chatMessages = []
         self.chatGroup = group
+        let groupID = group?.id
         Task.detached(priority: .userInitiated) { [groupDB] in
-            await groupDB.setCurrent(group)
+            await groupDB.setCurrent(id: groupID)
         }
+    }
+
+    /// Reloads the active group from the database onto the main actor.
+    func reloadCurrentGroup() {
+        self.chatGroup = groupDB.fetchCurrent()
+        self.page = 1
+        self.chatMessages = []
     }
 
     func updateGroupName(groupID: String, newName: String) {
@@ -292,17 +298,17 @@ extension NoLetChatManager {
             limit: limit
         )
         for message in messageRaw.reversed() {
-            if message.role == ChatMessage.Role.user.rawValue {
-                params.append(.user(.init(content: .string(message.content))))
-            } else if message.role == ChatMessage.Role.assistant.rawValue {
-                if let result = message.result, !result.isEmpty, let json = result.text() {
+            if message.role == "user" {
+                params.append(.user(.init(content: .string(message.content ?? ""))))
+            } else if message.role == "assistant" {
+                if let result = message.resultJSON, !result.isEmpty, let json = result.text() {
                     params.append(.user(.init(
                         content: .string(String(localized: "任务执行结果") + json)
                     )))
                 }
 
-                if !message.content.isEmpty {
-                    params.append(.assistant(.init(content: .textContent(message.content))))
+                if !(message.content ?? "").isEmpty {
+                    params.append(.assistant(.init(content: .textContent(message.content ?? ""))))
                 }
             }
         }

@@ -14,7 +14,7 @@
 import SwiftUI
 
 struct ReasonMessageView: View {
-    @Binding var message: ChatMessage?
+    @Binding var message: ChatMessageEntity?
     var reasons: [String] {
         message?.reason?.split(separator: "\n").compactMap { String($0) } ?? []
     }
@@ -30,7 +30,7 @@ struct ReasonMessageView: View {
 
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
-                    if let result = message?.result, let text = result.text() {
+                    if let result = message?.resultJSON, let text = result.text() {
                         reasonView(
                             """
                             ```json
@@ -97,7 +97,7 @@ struct ReasonMessageView: View {
 }
 
 struct ReasonButton: View {
-    var message: ChatMessage?
+    var message: ChatMessageEntity?
     var openShow: Bool = true
     var close: (() -> Void)? = nil
     @ObservedObject private var chatManager = NoLetChatManager.shared

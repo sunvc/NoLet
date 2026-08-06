@@ -169,6 +169,7 @@ enum ToastSymbol: String {
 struct ToastGroup: View {
     @ObservedObject var model = Toast.shared
     @ObservedObject private var manager = AppManager.shared
+    @ObservedObject private var messageManager = MessagesManager.shared
     @Default(.showAssistantAnimation) var showAssistantAnimation
     var body: some View {
         GeometryReader {
@@ -182,6 +183,7 @@ struct ToastGroup: View {
                         .offset(y: offsetY(toast))
                         .zIndex(Double(model.toasts.firstIndex(where: { $0.id == toast.id }) ?? 0))
                 }
+
             }
             .padding(.bottom, safeArea.top == .zero ? 15 : 10)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
@@ -190,8 +192,13 @@ struct ToastGroup: View {
                     ColoredBorder()
                 }
             }
+            .overlay{
+                if messageManager.isDeleting {
+                    DeletingOverlay()
+                }
+            }
             .statusBarHidden(manager.page == .ptt || manager.router.first == .ptt)
-            
+
         }
     }
 
@@ -297,6 +304,35 @@ private struct ToastView: View {
 
         withAnimation(.snappy) {
             Toast.shared.toasts.removeAll(where: { $0.id == item.id })
+        }
+    }
+}
+
+private struct DeletingOverlay: View {
+    @State private var progress: Double = 0
+    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.35)
+                .ignoresSafeArea()
+            VStack(spacing: 14) {
+                Text("正在删除消息...")
+                    .font(.callout.weight(.medium))
+                    .foregroundStyle(.white)
+                ProgressView(value: progress, total: 100)
+                    .progressViewStyle(.linear)
+                    .tint(.white)
+                    .frame(width: 180)
+            }
+            .padding(24)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        }
+        .transition(.opacity)
+        .allowsHitTesting(true)
+        .onReceive(timer) { _ in
+            guard progress < 80 else { return }
+            progress = min(80, progress + Double.random(in: 0.8...2.4))
         }
     }
 }

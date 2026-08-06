@@ -14,7 +14,7 @@
 import SwiftUI
 
 struct MessageCardView: View {
-    var message: Message
+    var message: MessageEntity
     var searchText: String = ""
     var showGroup: Bool = true
     var showAllTTL: Bool = false
@@ -26,7 +26,7 @@ struct MessageCardView: View {
         guard let selectID = selectID else {
             return .clear
         }
-        return selectID.uppercased() == message.id.uppercased() ? .orange : .clear
+        return selectID.uppercased() == message.idText.uppercased() ? .orange : .clear
     }
 
     private var messageConfig: MessageCardConfiguration {
@@ -63,7 +63,7 @@ struct MessageCardView: View {
 }
 
 protocol MessageCardProtocol: View {
-    var message: Message { get }
+    var message: MessageEntity { get }
     var config: MessageCardConfiguration { get }
 }
 

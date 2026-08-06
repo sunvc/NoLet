@@ -85,7 +85,7 @@ struct MessageExampleView: View {
                                 .symbolRenderingMode(.palette)
                                 .foregroundStyle(.tint, Color.primary)
                                 .VButton(onRelease: { _ in
-                                    if resultURL.hasHttp, let url = URL(string: resultURL) {
+                                    if let url = URL(remote: resultURL) {
                                         UIApplication.shared.open(url)
                                     }
                                     return true

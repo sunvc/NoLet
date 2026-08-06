@@ -14,7 +14,7 @@
 import SwiftUI
 
 struct MessageInteractiveModifier: ViewModifier {
-    let message: Message
+    let message: MessageEntity
     let namespace: Namespace.ID
 
     @ObservedObject var manager: AppManager
@@ -100,7 +100,7 @@ struct MessageInteractiveModifier: ViewModifier {
 extension View {
     /// 一键注入消息的双击全屏、iOS 18 缩放动画、底部回复、卡片截图等交互矩阵
     func messageInteraction(
-        message: Message,
+        message: MessageEntity,
         in namespace: Namespace.ID,
         manager: AppManager,
         replyText: Binding<String>,
@@ -121,7 +121,7 @@ extension View {
 }
 
 struct MessageActionMenu: View {
-    let message: Message
+    let message: MessageEntity
     let assistantAccounsCount: Int
 
     @ObservedObject var manager: AppManager
@@ -134,7 +134,7 @@ struct MessageActionMenu: View {
         Menu {
             Section {
                 Button {
-                    Clipboard.set(message.body.plainText)
+                    Clipboard.set(message.bodyText.plainText)
                     Toast.copy()
                 } label: {
                     Label("复制内容", systemImage: "doc.on.doc")
@@ -159,7 +159,7 @@ struct MessageActionMenu: View {
                 }
             }
 
-            if !message.body.isEmpty {
+            if !message.bodyText.isEmpty {
                 Section {
                     Button {
                         manager.open(sheet: .share(
@@ -213,11 +213,11 @@ struct MessageActionMenu: View {
             }
 
         } label: {
-            Text(message.createDate, format: .relative(presentation: .named))
+            Text(message.createDate ?? .now, format: .relative(presentation: .named))
                 .font(.footnote)
                 .foregroundColor(.secondary)
                 .accessibilityLabel("时间:")
-                .accessibilityValue(message.createDate
+                .accessibilityValue((message.createDate ?? .now)
                     .formatted(date: .long, time: .standard))
                 .contentShape(Rectangle())
                 .lineLimit(1)
@@ -242,81 +242,75 @@ struct MessageActionMenu: View {
 }
 
 extension MessagesManager {
-    static func examples() -> [Message] {
+    static func examples() -> [[AnyHashable: Any]] {
         [
-            Message(
-                id: UUID().uuidString,
-                createDate: .now,
-                group: String(localized: "示例"),
-                title: String(localized: "默认样式"),
-                body: String(localized: "这是一段示例内容"),
-                ttl: 600,
-                read: false
-            ),
-            Message(
-                id: UUID().uuidString,
-                createDate: .now,
-                group: String(localized: "示例"),
-                title: String(localized: "MD样式"),
-                body: "# NoLet \n## NoLet \n### NoLet",
-                ttl: 600,
-                read: false,
-                style: "markdown"
-            ),
-
-            Message(
-                id: UUID().uuidString,
-                createDate: .now,
-                group: String(localized: "示例"),
-                title: String(localized: "终端样式"),
-                body: String(localized: "这是一段示例内容") + " style=terminal",
-                ttl: 600,
-                read: false,
-                style: "terminal"
-            ),
-
-            Message(
-                id: UUID().uuidString,
-                createDate: Date().addingTimeInterval(-1),
-                group: String(localized: "主机通知"),
-                title: "Merge pull request #157 from feature/jwt-auth",
-                subtitle: String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。"),
-                body: String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。支持自动令牌刷新与设备白名单校验。"),
-                icon: "",
-                url: "https://github.com/apple/swift",
-                image: nil,
-                reply: "https://wzs.app/reply",
-                ttl: 600,
-                read: false,
-                style: "github",
-                other: """
+            [
+                "id": UUID().uuidString,
+                "createDate": Int(Date.now.timeIntervalSince1970),
+                "group": String(localized: "示例"),
+                "title": String(localized: "默认样式"),
+                "body": String(localized: "这是一段示例内容"),
+                "ttl": 600,
+                "read": false,
+            ],
+            [
+                "id": UUID().uuidString,
+                "createDate": Int(Date.now.timeIntervalSince1970),
+                "group": String(localized: "示例"),
+                "title": String(localized: "MD样式"),
+                "body": "# NoLet \n## NoLet \n### NoLet",
+                "ttl": 600,
+                "read": false,
+                "style": "markdown",
+            ],
+            [
+                "id": UUID().uuidString,
+                "createDate": Int(Date.now.timeIntervalSince1970),
+                "group": String(localized: "示例"),
+                "title": String(localized: "终端样式"),
+                "body": String(localized: "这是一段示例内容") + " style=terminal",
+                "ttl": 600,
+                "read": false,
+                "style": "terminal",
+            ],
+            [
+                "id": UUID().uuidString,
+                "createDate": Int(Date().addingTimeInterval(-1).timeIntervalSince1970),
+                "group": String(localized: "主机通知"),
+                "title": "Merge pull request #157 from feature/jwt-auth",
+                "subtitle": String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。"),
+                "body": String(localized: "实现了符合 OAuth2 规范的 JWT 核心安全鉴权。支持自动令牌刷新与设备白名单校验。"),
+                "icon": "",
+                "url": "https://github.com/apple/swift",
+                "reply": "https://wzs.app/reply",
+                "ttl": 600,
+                "read": false,
+                "style": "github",
+                "other": """
                     {
-                        "footer" : "SHA:alksdjfklaj", 
-                        "header" : "GITHUB/REPO", 
+                        "footer" : "SHA:alksdjfklaj",
+                        "header" : "GITHUB/REPO",
                         "from" : "https://api.githun.com",
                         "branch" : "main <- jwt-auth",
-                        "severity" : "success",
+                        "severity" : "success"
                     }
-                    """
-            ),
-
-            Message(
-                id: UUID().uuidString,
-                createDate: Date(),
-                group: "wechat",
-                title: String(localized: "收款通知"),
-                subtitle: "+¥18.50",
-                body: String(localized: "二维码收款已到账"),
-                icon: "https://favicon.wzs.app/wechat.com",
-                ttl: 600,
-                read: false,
-                style: "pay",
-                other: """
-                    {
-                        "ticket":"NO: 999999999999"
-                    }
-                    """
-            ),
+                    """,
+            ],
+            [
+                "id": UUID().uuidString,
+                "createDate": Int(Date().timeIntervalSince1970),
+                "group": "wechat",
+                "title": String(localized: "收款通知"),
+                "subtitle": "+¥18.50",
+                "body": String(localized: "二维码收款已到账"),
+                "icon": "https://favicon.wzs.app/wechat.com",
+                "ttl": 600,
+                "read": false,
+                "style": "pay",
+                "other": """
+                    { "ticket":"NO: 999999999999" }
+                    """,
+            ],
         ]
     }
 }
@@ -352,13 +346,13 @@ extension View {
     }
 }
 
-extension Message {
+extension MessageEntity {
     func accessibilityValue() -> String {
         var text: [String] = []
 
         text
             .append(
-                String(localized: "时间:") + createDate
+                String(localized: "时间:") + (createDate ?? .now)
                     .formatted(date: .long, time: .standard)
             )
 
@@ -369,8 +363,8 @@ extension Message {
             text.append(String(localized: "副标题") + ":" + subtitle)
         }
 
-        if !body.isEmpty {
-            text.append(String(localized: "内容") + ":" + body)
+        if !bodyText.isEmpty {
+            text.append(String(localized: "内容") + ":" + bodyText)
         }
 
         if image != nil {
@@ -397,7 +391,7 @@ extension Message {
             return "∞ ∞ ∞"
         }
 
-        let expireDate = createDate.addingTimeInterval(TimeInterval(ttl))
+        let expireDate = (createDate ?? .now).addingTimeInterval(TimeInterval(ttl))
         let remainSeconds = Date.now.distance(to: expireDate)
 
         guard remainSeconds > 0 else {

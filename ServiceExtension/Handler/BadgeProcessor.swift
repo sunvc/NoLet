@@ -4,7 +4,6 @@
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
 //  Document:      https://wiki.wzs.app
-//  E-mail:        to@wzs.app
 
 //  Description:
 
@@ -21,17 +20,24 @@ final class BadgeProcessor: NotificationContentProcessor {
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         // MARK: - 处理 badge
+        //
+        // Extensions must not touch the database. The unread counter lives in the
+        // App Group UserDefaults (Default[.sharedUnreadCount]); the main app syncs
+        // it when it drains the pending-message inbox.
 
         if let badgeStr: String = bestAttemptContent.userInfo.raw(.badge),
            let badge = Int(badgeStr)
         {
+            bestAttemptContent.badge = NSNumber(value: badge)
             if badge <= 0 {
-                await MessagesManager.shared.markAllRead()
+                // Server says clear: reset the shared counter; the app marks all read on drain.
+                Defaults[.sharedUnreadCount] = 0
+            } else {
+                // Server authoritative badge.
+                Defaults[.sharedUnreadCount] = badge
             }
-            bestAttemptContent.badge = NSNumber(value: badge)
-        }else{
-            let badge = await MessagesManager.shared.unreadCount()
-            bestAttemptContent.badge = NSNumber(value: badge)
+        } else {
+            bestAttemptContent.badge = NSNumber(value: Defaults[.sharedUnreadCount])
         }
 
         return bestAttemptContent

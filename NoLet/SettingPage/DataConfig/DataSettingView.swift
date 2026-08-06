@@ -320,25 +320,6 @@ struct DataSettingView: View {
 
                 HStack {
                     Button {
-                        try? DatabaseManager.shared.vacuum()
-                        calculateSize()
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Label("整理数据库", systemImage: "arrow.down.doc.fill")
-                                .foregroundStyle(.white, Color.primary)
-                                .padding(.vertical, 5)
-                                .fontWeight(.bold)
-
-                            Spacer()
-                        }
-                    }
-                    .tint(.green)
-                    .buttonStyle(.borderedProminent)
-                }
-
-                HStack {
-                    Button {
                         self.resetAppShow.toggle()
                     } label: {
                         HStack {
@@ -359,9 +340,6 @@ struct DataSettingView: View {
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
         .navigationTitle("数据管理")
-        .if(showDeleteView) { view in
-            view.deleteTips($showDeleteView)
-        }
         .if(restartAppShow) { view in
             view
                 .alert(isPresented: $restartAppShow) {
@@ -394,9 +372,8 @@ struct DataSettingView: View {
                             Text("清空"),
                             action: {
                                 self.showDriveCheckLoading = true
-                                if
-                                    let fileURL = NCONFIG.getDir(.sounds),
-                                    let cacheURL = NCONFIG.getDir(.tem)
+                                if let fileURL = NCONFIG.getDir(.sounds),
+                                   let cacheURL = NCONFIG.getDir(.tem)
                                 {
                                     ImageManager.customCache.clearDiskCache()
                                     manager
@@ -410,20 +387,16 @@ struct DataSettingView: View {
                                     Defaults[.imageSaves] = []
                                 }
 
-                                try? DatabaseManager.shared.vacuum()
-
                                 Toast.success(title: "清理成功")
-
-                                DispatchQueue.main.async {
-                                    self.showDriveCheckLoading = false
-                                    calculateSize()
-                                }
+                                self.showDriveCheckLoading = false
+                                calculateSize()
                             }
                         ),
                         secondaryButton: .cancel()
                     )
                 }
         }
+        .deleteTips($showDeleteView)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

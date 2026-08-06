@@ -40,7 +40,7 @@ final class AppManager: ObservableObject {
 
     @Published var historyPage: TabPage = .message
 
-    @Published var selectMessage: Message? = nil
+    @Published var selectMessage: MessageEntity? = nil
     @Published var selectPoint: CGPoint = .zero
     @Published var isLoading: Bool = false
     @Published var inAssistant: Bool = false
@@ -52,8 +52,7 @@ final class AppManager: ObservableObject {
     @Published var sizeClass: UserInterfaceSizeClass?
     @Published var copyMessageId: String? = nil
     @Published var windowSize: CGSize = .zero
-    @Published var orientation:UIInterfaceOrientation = .portrait
-    
+    @Published var orientation: UIInterfaceOrientation = .portrait
 
     let network = NetworkManager()
 
@@ -150,7 +149,7 @@ final class AppManager: ObservableObject {
             return nil
         case .server(let url, let key, let group, let sign):
             Task.detached(priority: .userInitiated) {
-                let crypto =  CryptoModelConfig(inputText: sign ?? "", sign: true)?
+                let crypto = CryptoModelConfig(inputText: sign ?? "", sign: true)?
                     .obfuscator()
                 let server = PushServerModel(url: url, key: key, group: group, sign: crypto)
                 let success = await self.appendServer(server: server)
@@ -193,7 +192,7 @@ extension AppManager {
     ///   - url: The URL to open
     ///   - unOpen: A closure called when the URL cannot be opened, passing the URL as an argument
     class func openURL(url: URL, _ mode: DefaultBrowserModel) {
-        guard url.absoluteString.hasHttp else {
+        guard url.remote else {
             UIApplication.shared.open(url, options: [:])
             return
         }
@@ -329,7 +328,7 @@ extension AppManager {
 
             switch host {
             case .server:
-                if let url = params["text"], let urlResponse = URL(string: url), url.hasHttp {
+                if let url = params["text"], let urlResponse = URL(remote: url) {
                     let (result, key) = urlResponse.findNameAndKey()
                     return .server(
                         url: result,
@@ -435,7 +434,7 @@ extension AppManager {
                 )
 
             guard 200...299 ~= response.code else {
-                 Toast.shared.present(title: response.message, symbol: .error)
+                Toast.shared.present(title: response.message, symbol: .error)
                 return false
             }
 
@@ -472,9 +471,7 @@ extension AppManager {
             return tmp.sorted { $0.0 < $1.0 }.map { $0.1 }
         }
 
-        await MainActor.run {
-            Defaults[.servers] = results
-        }
+        Defaults[.servers] = results
     }
 
     func register(
@@ -520,10 +517,8 @@ extension AppManager {
 
     @discardableResult
     func appendServer(server: PushServerModel, reset: Bool = false) async -> Bool {
-        guard  !appending && !Defaults[.member].token.isEmpty else { return false }
-        await MainActor.run {
-            appending = true
-        }
+        guard !appending && !Defaults[.member].token.isEmpty else { return false }
+        self.appending = true
 
         var serverCopy = server
         if reset {
@@ -542,12 +537,10 @@ extension AppManager {
                 _ = await register(server: server, reset: true)
             }
 
-            await MainActor.run {
-                if reset {
-                    Defaults[.servers].removeAll(where: { $0 == server })
-                }
-                Defaults[.servers].insert(serverNew, at: 0)
+            if reset {
+                Defaults[.servers].removeAll(where: { $0 == server })
             }
+            Defaults[.servers].insert(serverNew, at: 0)
 
             if let index = Defaults[.servers].firstIndex(where: { $0.id == serverNew.id }) {
                 Defaults[.servers][index] = serverNew
@@ -556,9 +549,7 @@ extension AppManager {
         } else {
             Toast.success(title: "注册失败")
         }
-        await MainActor.run {
-            appending = false
-        }
+        self.appending = false
         return serverNew.status > 0
     }
 }
@@ -612,35 +603,31 @@ extension AppManager {
             }
         }
     }
-    
-    
 
     static func syncServer() async {
         let database = NCONFIG.privateCloudDatabase
         let localServers = Defaults[.servers]
         
-        guard localServers.count > 0 else { return }
-        
-        let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
+        if localServers.count > 0{ 
+            let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
 
-        let serversToSave = localServers.filter { !cloudServers.contains($0) }
+            let serversToSave = localServers.filter { !cloudServers.contains($0) }
 
-        await withTaskGroup(of: Void.self) { group in
-            for server in serversToSave {
-                group.addTask {
-                    _ = try? await server.save(to: database)
+            await withTaskGroup(of: Void.self) { group in
+                for server in serversToSave {
+                    group.addTask {
+                        _ = try? await server.save(to: database)
+                    }
                 }
             }
         }
-
+        
         if let datas = try? await PushServerModel.query(from: database) {
             await MainActor.run {
                 AppManager.shared.servers = datas
             }
         }
     }
-
-    
 }
 
 extension AppManager {

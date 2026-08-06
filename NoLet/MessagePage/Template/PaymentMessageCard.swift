@@ -12,10 +12,11 @@
 //    Created by Neo on 2026/6/17 13:49.
 
 import Combine
+import CoreData
 import SwiftUI
 
 struct PaymentMessageCard: View {
-    let message: Message
+    let message: MessageEntity
     var config: MessageCardConfiguration = .init()
     @State private var isActionDispatched = false
 
@@ -66,7 +67,7 @@ struct PaymentMessageCard: View {
                     }
                     
                     SCSelectableTextRepresentable(
-                        text: message.body.plainText,
+                        text: message.bodyText.plainText,
                         font: .systemFont(ofSize: 11, weight: .medium),
                         textColor: .textBlack,
                         textAlignment: .left,
@@ -80,7 +81,7 @@ struct PaymentMessageCard: View {
                     Text(money)
                         .font(.title3)
                         .fontWeight(.black)
-                        .foregroundColor(isExpired ? .secondary : brandColor(for: message.group))
+                        .foregroundColor(isExpired ? .secondary : brandColor(for: message.groupText))
                 }
             }
             .padding(.horizontal, 16)
@@ -107,7 +108,7 @@ struct PaymentMessageCard: View {
 
                         Capsule()
                             .fill(currentLifePercent < 0.3 ? Color
-                                .red : brandColor(for: message.group))
+                                .red : brandColor(for: message.groupText))
                             .frame(width: geo.size.width * CGFloat(currentLifePercent), height: 4)
                             .animation(.linear(duration: 0.5), value: currentLifePercent)
                     }
@@ -166,34 +167,32 @@ struct PaymentMessageCard: View {
 struct PaymentMessageCard_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            PaymentMessageCard(message: Message(
-                id: "1",
-                createDate: Date(),
-                group: "alipay",
-                title: "支付确认",
-                subtitle: "-¥6,799.00",
-                body: "您正在【Apple Store】消费，请确认扣款。",
-                icon: "https://favicon.wzs.app/alipay.com",
-                ttl: 10,
-                read: false
-            ))
+            PaymentMessageCard(message: MessageEntity.preview([
+                "id": "1",
+                "createDate": Int(Date().timeIntervalSince1970),
+                "group": "alipay",
+                "title": "支付确认",
+                "subtitle": "-¥6,799.00",
+                "body": "您正在【Apple Store】消费，请确认扣款。",
+                "icon": "https://favicon.wzs.app/alipay.com",
+                "ttl": 10,
+                "read": false,
+            ]))
             .padding()
-            PaymentMessageCard(message: Message(
-                id: "2",
-                createDate: Date(), 
-                group: "wechat",
-                title: "收款通知",
-                subtitle: "+¥18.50",
-                body: "二维码收款已到账",
-                icon: "https://favicon.wzs.app/wechat.com",
-                ttl: 20, 
-                read: false,
-                other: """
-                    {
-                        "ticket":"订单号: 999999999999"
-                    }
-                    """
-            ))
+            PaymentMessageCard(message: MessageEntity.preview([
+                "id": "2",
+                "createDate": Int(Date().timeIntervalSince1970),
+                "group": "wechat",
+                "title": "收款通知",
+                "subtitle": "+¥18.50",
+                "body": "二维码收款已到账",
+                "icon": "https://favicon.wzs.app/wechat.com",
+                "ttl": 20,
+                "read": false,
+                "other": """
+                    { "ticket":"订单号: 999999999999" }
+                    """,
+            ]))
             .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

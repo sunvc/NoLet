@@ -67,8 +67,8 @@ struct ContentView: View {
             PermissionsStartView {
                 withAnimation { self.firstStart.toggle() }
 
-                Task.detached(priority: .userInitiated) {
-                    for item in await MessagesManager.examples() {
+                Task { @MainActor in
+                    for item in MessagesManager.examples() {
                         await MessagesManager.shared.add(item)
                     }
                 }
@@ -359,7 +359,7 @@ fileprivate extension View {
                     CryptoConfigListView()
 
                 case .server:
-                    ServersConfigView()
+                    ServersManagementView()
 
                 case .more:
                     MoreOperationsView()

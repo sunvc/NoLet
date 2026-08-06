@@ -30,7 +30,7 @@ extension Dictionary where Key == AnyHashable, Value == Any {
         apsObj?[Params.alert.name] as? [AnyHashable: Any]
     }
 
-    func raw<T: ValueConvertible>(_ params: Params) -> T? {
+    func raw<T: ValueConvertible>(_ params: Params, default data: T? = nil) -> T? {
         var value: Any? {
             switch params {
             case .title, .subtitle, .body:
@@ -41,7 +41,10 @@ extension Dictionary where Key == AnyHashable, Value == Any {
                 return self[params.name]
             }
         }
-        return T.convert(from: value)
+        if let result = T.convert(from: value){
+            return result
+        }
+        return data
     }
 
     func other() -> Self {
@@ -61,7 +64,7 @@ extension String: ValueConvertible {
         switch value {
         case let s as String:
             return s
-        case let n as Int:
+        case let n as Int64:
             return String(n)
         case let b as Bool:
             return String(b)
@@ -71,13 +74,13 @@ extension String: ValueConvertible {
     }
 }
 
-extension Int: ValueConvertible {
-    static func convert(from value: Any?) -> Int? {
+extension Int64: ValueConvertible {
+    static func convert(from value: Any?) -> Int64? {
         switch value {
-        case let n as Int:
+        case let n as Int64:
             return n
         case let s as String:
-            return Int(s)
+            return Int64(s)
         case let b as Bool:
             return b ? 1 : 0
         default:

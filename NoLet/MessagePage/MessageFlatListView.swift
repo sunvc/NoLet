@@ -27,7 +27,7 @@ struct MessageFlatListView: View {
     @State private var showLoading: Bool = false
     @State private var scrollItem: String = ""
 
-    @State private var selectMessage: Message? = nil
+    @State private var selectMessage: MessageEntity? = nil
 
     private var messagesCount: Int {
         messageManager.messages.count
@@ -37,7 +37,7 @@ struct MessageFlatListView: View {
         messageManager.messagePage
     }
 
-    var lastMessage: Message? {
+    var lastMessage: MessageEntity? {
         messageManager.messages.elementFromEnd(5)
     }
 
@@ -53,14 +53,16 @@ struct MessageFlatListView: View {
                 showAllTTL: showAllTTL,
                 selectID: manager.selectID,
                 onDelete: { message in
+                    let id = message.idText
+                    let group = message.groupText
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         withAnimation(.default) {
                             messageManager.messages
-                                .removeAll(where: { $0.id == message.id })
+                                .removeAll(where: { $0.id == id })
                         }
                     }
                     Task.detached(priority: .background) {
-                        _ = await messageManager.delete(message)
+                        _ = await messageManager.delete(id: id, group: group)
                     }
                     Toast.success(title: "删除成功")
                 },
@@ -71,7 +73,7 @@ struct MessageFlatListView: View {
             .scrollDismissesKeyboard(.interactively)
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())
-            .navigationTitle("消息")
+            .navigationTitle("消息列表")
             .refreshable {
                 self.loadData(proxy: proxy, limit: messagePage)
             }
@@ -131,7 +133,7 @@ struct MessageFlatListView: View {
     private func loadData(
         proxy: ScrollViewProxy? = nil,
         limit: Int,
-        item: Message? = nil
+        item: MessageEntity? = nil
     ) {
         guard !showLoading else { return }
         showLoading = true
@@ -140,7 +142,11 @@ struct MessageFlatListView: View {
             let count = await messageManager.updateRead()
             logger.info("更新未读条数: \(count)")
 
-            let results = await MessagesManager.shared.query(limit: limit, item?.createDate)
+            let results = await MessagesManager.shared.query(
+                limit: limit,
+                before: item?.createDate,
+                beforeID: item?.idText
+            )
 
             await MainActor.run {
                 if item == nil {
