@@ -26,9 +26,11 @@ struct PaymentMessageCard: View {
     @FocusState private var showReply
     @State private var showSnap: Bool = false
 
-    @State private var timeTicker = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+    @State private var timeTicker = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var currentLifePercent: Double = 1.0
     @State private var isExpired: Bool = false
+
+    private var ticking: Bool { message.ttl > 0 && !isExpired }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -110,7 +112,7 @@ struct PaymentMessageCard: View {
                             .fill(currentLifePercent < 0.3 ? Color
                                 .red : brandColor(for: message.groupText))
                             .frame(width: geo.size.width * CGFloat(currentLifePercent), height: 4)
-                            .animation(.linear(duration: 0.5), value: currentLifePercent)
+                            .animation(.linear(duration: 1), value: currentLifePercent)
                     }
                 }
                 .frame(height: 4)
@@ -131,8 +133,8 @@ struct PaymentMessageCard: View {
             showSnap: $showSnap,
             onShowFull: showFull
         )
-        .onReceive(timeTicker) { _ in
-            updateLifeCycle()
+        .if(ticking) { view in
+            view.onReceive(timeTicker) { _ in updateLifeCycle() }
         }
         .onAppear {
             updateLifeCycle()
