@@ -153,3 +153,11 @@ extension URL {
         return false
     }
 }
+
+extension Bool{
+    
+    static var isiOSAppOnMac: Self{
+        ProcessInfo.processInfo.isiOSAppOnMac
+    }
+    
+}

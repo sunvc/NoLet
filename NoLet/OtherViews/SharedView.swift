@@ -109,7 +109,7 @@ class MyCustomActivity: UIActivity {
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         
-        return !ProcessInfo.processInfo.isiOSAppOnMac && WeChatManager.isWXAppInstalled()
+        return !.isiOSAppOnMac && WeChatManager.isWXAppInstalled()
     }
 
 

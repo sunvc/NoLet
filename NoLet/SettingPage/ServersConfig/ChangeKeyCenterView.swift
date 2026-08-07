@@ -134,7 +134,7 @@ struct ChangeKeyCenterView: View {
                     .font(.caption2)
                     .foregroundStyle(Color.accentColor)
                     .onTapGesture {
-                        if ProcessInfo.processInfo.isiOSAppOnMac {
+                        if .isiOSAppOnMac {
                             AppManager.openURL(url: NCONFIG.delpoydoc.url, .safari)
                         } else {
                             manager.router.append(.web(url: NCONFIG.delpoydoc.url))

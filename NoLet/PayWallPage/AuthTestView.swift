@@ -40,7 +40,7 @@ struct AuthTestView: View {
                         SignInWithApple()
                             .padding(.vertical)
                         Button {
-                            if ProcessInfo.processInfo.isiOSAppOnMac {
+                            if .isiOSAppOnMac {
                                 Task {
                                     await WeChatManager.shared.qrCode()
                                 }
@@ -59,7 +59,7 @@ struct AuthTestView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 26)
-                                    if ProcessInfo.processInfo.isiOSAppOnMac {
+                                    if .isiOSAppOnMac {
                                         Text("微信扫码登录")
                                     } else {
                                         Text("微信授权登陆")

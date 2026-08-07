@@ -291,6 +291,7 @@ struct ContentView: View {
                     .presentationDetents([.height(350), .height(500)])
             case .cloudIcon:
                 CloudIcon().presentationDetents([.medium, .large])
+                    
             case .paywall:
                 if #available(iOS 18.0, *) { PayWallHighView() } else {
                     EmptyView()
@@ -317,10 +318,7 @@ struct ContentView: View {
                 }
             case .authView:
                 AuthTestView()
-                    .presentationDetents([
-                        ProcessInfo.processInfo.isiOSAppOnMac ? .height(600) : .medium,
-                        .large,
-                    ])
+                    .presentationDetents([ .medium, .large ])
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -331,6 +329,15 @@ struct ContentView: View {
             }
         }
         .customPresentationCornerRadius(30)
+        .diff { view in
+            Group{
+                if #available(iOS 18.0, *) {
+                    view.presentationSizing(.page)
+                } else {
+                   view
+                }
+            }
+        }
     }
 }
 

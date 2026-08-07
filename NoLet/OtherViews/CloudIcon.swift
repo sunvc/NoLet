@@ -49,7 +49,7 @@ struct CloudIcon: View {
                     }
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
-                        if ProcessInfo.processInfo.isiOSAppOnMac {
+                        if .isiOSAppOnMac {
                             VStack {
                                 Text("拖动图片到此处")
                                     .font(.largeTitle)

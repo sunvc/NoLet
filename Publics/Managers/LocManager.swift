@@ -17,7 +17,7 @@ import Foundation
 import MapKit
 
 @MainActor
-final class LocManager: NSObject, ObservableObject {
+final class LocManager: NSObject, ObservableObject  {
     static let shared = LocManager()
 
     @Published var location: CLLocation = .init(latitude: 0, longitude: 0)
@@ -110,6 +110,10 @@ final class LocManager: NSObject, ObservableObject {
         }
     }
 
+    
+}
+
+extension LocManager: @MainActor CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         Task { @MainActor in
             if let lastLocation = locations.last {
@@ -127,13 +131,10 @@ final class LocManager: NSObject, ObservableObject {
     }
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        let newStatus = manager.authorizationStatus
-        self.authorizationStatus = newStatus
+        self.authorizationStatus = manager.authorizationStatus
         self.runMonitoringSignificantLocationChanges(true)
     }
 }
-
-extension LocManager: @MainActor CLLocationManagerDelegate {}
 
 extension Notification.Name {
     static let locationUpdated = Notification.Name("locationUpdated")

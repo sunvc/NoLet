@@ -206,7 +206,7 @@ struct PermissionsStartView: View {
                                     self.basePer.isSelected = true
                                 }
                             }
-                        if !ProcessInfo.processInfo.isiOSAppOnMac {
+                        if !.isiOSAppOnMac {
                             PermissionOptionCard(option: $voicePer)
                         }
                     }

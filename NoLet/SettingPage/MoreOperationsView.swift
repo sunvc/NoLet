@@ -32,7 +32,7 @@ struct MoreOperationsView: View {
         List {
             Section {
                 // FIXME: - 修复MAC不能使用PushToTalk崩溃
-                if !ProcessInfo.processInfo.isiOSAppOnMac {
+                if !.isiOSAppOnMac {
                     Toggle(isOn: $usePtt) {
                         Label {
                             Text("语音消息")

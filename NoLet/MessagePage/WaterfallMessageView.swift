@@ -72,7 +72,7 @@ struct WaterfallMessageView: View {
                 }
                 loadMoreSentinel
             }
-            .padding(.horizontal, waterfallSpacing)
+          
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollContentBackground(.hidden)
@@ -101,7 +101,6 @@ struct WaterfallMessageView: View {
                         .id(message.idText)
                     }
                 }
-                .padding(.horizontal, waterfallSpacing)
 
                 loadMoreSentinel
             }

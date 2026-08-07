@@ -54,7 +54,7 @@ struct ChatInputView: View {
             .padding(.horizontal)
             .animation(.default, value: text)
         }
-        .padding(.bottom, isFocusedInput ? (ProcessInfo.processInfo.isiOSAppOnMac ? 30 : 10) : 30)
+        .padding(.bottom, isFocusedInput ? (.isiOSAppOnMac ? 30 : 10) : 30)
         .onAppear{
             withAnimation(.spring(
                 response: 0.3, 

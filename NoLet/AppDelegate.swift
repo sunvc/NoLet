@@ -27,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         Multilingual.resetTransLang()
 
         // FIXME: - 修复MAC不能使用PushToTalk崩溃
-        if ProcessInfo.processInfo.isiOSAppOnMac {
+        if .isiOSAppOnMac {
             Defaults[.usePtt] = false
         }
 
@@ -35,7 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
             Defaults[.member].location = token
         }
 
-        if !ProcessInfo.processInfo.isiOSAppOnMac {
+        if !.isiOSAppOnMac {
             Task {
                 try await PTTChannelManager.shared.start()
             }
