@@ -93,7 +93,7 @@ struct CloudIcon: View {
                                                         do {
                                                             try await icon
                                                                 .delete(from: NCONFIG.container
-                                                                    .privateCloudDatabase)
+                                                                    .publicCloudDatabase)
                                                             Toast.success(title: "图片删除成功")
                                                             icons.removeAll(where: {
                                                                 $0.id == icon.id
@@ -164,6 +164,7 @@ struct CloudIcon: View {
                                 .font(.headline)
                                 .foregroundColor(.gray)
                                 .frame(maxWidth: .infinity)
+                                .lineLimit(1)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(40)
