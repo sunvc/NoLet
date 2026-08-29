@@ -12,7 +12,6 @@
 //  History:
 //    Created by Neo on 2026/8/10 22:07.
 
-import AVFAudio
 import CryptoKit
 import Foundation
 @preconcurrency import JavaScriptCore
@@ -20,6 +19,10 @@ import os
 
 public final class JSRuntime: @unchecked Sendable {
     public typealias ArgsType = [Any]
+
+    private static let logger = Logger(subsystem: "app.wzs.logger", category: "JSRuntime")
+
+    public typealias NativeMethod = @convention(block) ([Any]) -> Any?
 
     let context = JSContext()!
     public let jsQueue = DispatchQueue(label: "js.runtime")
@@ -34,21 +37,36 @@ public final class JSRuntime: @unchecked Sendable {
     private let namespace: String
 
     public init(
-        scriptSource source: String,
+        scriptSource source: String = "",
         namespace: String = "default",
-        exceptionHandler: ((String) -> Void)? = nil
+        exceptionHandler: ((String) -> Void)? = nil,
+        methods: [String: Any] = [:]
     ) {
         self.namespace = namespace
+        if logHandler == nil {
+            logHandler = { level, message in
+                Self.logger.log("[\(level, privacy: .public)] \(message, privacy: .public)")
+            }
+        }
         jsQueue.setSpecific(key: Self.queueKey, value: ())
         context.exceptionHandler = { _, exc in
             if let exc {
                 let msg = exc.toString() ?? "?"
                 exceptionHandler?(msg)
-                NSLog("[JSRuntime] JS exception: %@", msg)
+                Self.logger.error("JS exception: \(msg, privacy: .public)")
             }
+            
         }
         injectNative()
         context.evaluateScript(Self.polyfill)
+
+        for (key, value) in methods {
+            if let asyncMethod = value as? AsyncNativeMethod {
+                registerAsyncMethod(key: key, method: asyncMethod)
+            } else {
+                context.setObject(value, forKeyedSubscript: key as NSString)
+            }
+        }
         entry = jsQueue.sync {
             context.evaluateScript(source) ?? JSValue(undefinedIn: context)
         }
@@ -83,7 +101,6 @@ public final class JSRuntime: @unchecked Sendable {
     }
 
     // MARK: Validation
-
     public struct ValidationResult: Sendable {
         public let ok: Bool
         public let message: String?
@@ -118,7 +135,7 @@ public final class JSRuntime: @unchecked Sendable {
         }
 
         do {
-            _ = try await runtime.call(arguments: args) as Any?
+            _ = try await runtime.call(arguments: args)
             return ValidationResult(ok: true, message: nil)
         } catch CallError.rejected(let message) {
             return ValidationResult(ok: true, message: message)
@@ -127,29 +144,20 @@ public final class JSRuntime: @unchecked Sendable {
                 ok: false,
                 message: String(localized: "脚本执行超时")
             )
-        } catch CallError.jsError(let message) {
-            return ValidationResult(ok: false, message: message)
         } catch {
             return ValidationResult(ok: false, message: "\(error)")
         }
     }
 
     public enum CallError: Error {
-        case functionNotFound(String)
         case notAPromise
         case rejected(message: String)
-        case expectedBytes
         case timedOut
-        case jsError(message: String)
-        case typeMismatch(expected: Any.Type, actual: Any.Type)
-        case unexpectedNull
     }
 
-    public var callTimeout: TimeInterval = 10
+    public var callTimeout: TimeInterval = 15
 
-    public var logHandler: ((_ level: String, _ message: String) -> Void)? = { level, message in
-        NSLog("[JS:%@] %@", level, message)
-    }
+    public var logHandler: ((_ level: String, _ message: String) -> Void)?
 
     static func isFunction(_ value: JSValue, ctx: JSGlobalContextRef) -> Bool {
         guard value.isObject else { return false }
@@ -157,8 +165,8 @@ public final class JSRuntime: @unchecked Sendable {
     }
 
     @discardableResult
-    public func call<T>(arguments: ArgsType = [], as type: T.Type = Any.self) async throws -> T {
-        let value: Any? = try await withCheckedThrowingContinuation { cont in
+    public func call(arguments: ArgsType = []) async throws -> Any? {
+        try await withCheckedThrowingContinuation { cont in
             runSync {
                 let result: JSValue?
                 if Self.isFunction(self.entry, ctx: self.context.jsGlobalContextRef) {
@@ -179,122 +187,27 @@ public final class JSRuntime: @unchecked Sendable {
                 }
             }
         }
-        return try Self.bridge(value, as: T.self)
-    }
-
-    public func call<T>(
-        _ function: String,
-        arguments: ArgsType = [],
-        as type: T.Type = Any.self
-    ) async throws -> T {
-        let value: Any? = try await withCheckedThrowingContinuation { cont in
-            runSync {
-                guard let fn = self.context.objectForKeyedSubscript(function) else {
-                    cont.resume(throwing: CallError.functionNotFound(function)); return
-                }
-                guard let result = fn.call(withArguments: arguments) else {
-                    cont.resume(throwing: CallError.notAPromise); return
-                }
-                Self.resolveAny(
-                    result,
-                    ctx: self.context.jsGlobalContextRef,
-                    timeout: self.callTimeout,
-                    on: self.jsQueue
-                ) {
-                    cont.resume(with: $0.map { $0.value })
-                }
-            }
-        }
-        return try Self.bridge(value, as: T.self)
-    }
-
-    static func bridge<T>(_ value: Any?, as type: T.Type = Any.self) throws -> T {
-        if let value, let typed = value as? T { return typed }
-        guard let value else {
-            if T.self is ExpressibleByNilLiteral.Type {
-                return Any?.none as! T
-            }
-            throw CallError.unexpectedNull
-        }
-
-        if T.self is Data.Type {
-            throw CallError.expectedBytes
-        }
-        if let decodableType = T.self as? any Decodable.Type {
-            let data = try Self.jsonData(sanitized: value)
-            func decodeConcrete<D: Decodable>(_ type: D.Type) throws -> D {
-                try JSONDecoder().decode(type, from: data)
-            }
-            if let decoded = try decodeConcrete(decodableType) as? T {
-                return decoded
-            }
-        }
-        throw CallError.typeMismatch(
-            expected: T.self,
-            actual: Swift.type(of: value)
-        )
-    }
-
-    static func jsonSanitized(_ value: Any) -> Any {
-        switch value {
-        case is NSNull:
-            return NSNull()
-        case let str as String:
-            return str
-        case let num as NSNumber:
-            if CFNumberIsFloatType(num), !num.doubleValue.isFinite {
-                return NSNull()
-            }
-            return num
-        case let arr as [Any]:
-            return arr.map(jsonSanitized)
-        case let dict as [String: Any]:
-            var out: [String: Any] = [:]
-            out.reserveCapacity(dict.count)
-            for (k, v) in dict {
-                out[k] = jsonSanitized(v)
-            }
-            return out
-        default:
-            return NSNull()
-        }
-    }
-
-    static func jsonData(sanitized value: Any) throws -> Data {
-        let safe = jsonSanitized(value)
-        if JSONSerialization.isValidJSONObject(safe) {
-            return try JSONSerialization.data(withJSONObject: safe, options: [])
-        }
-
-        if JSONSerialization.isValidJSONObject([safe]) {
-            return try JSONSerialization.data(withJSONObject: safe, options: [.fragmentsAllowed])
-        }
-        throw CallError.jsError(message: "result is not JSON serializable")
     }
 
     static func resolveAny(
         _ result: JSValue,
-        ctx: JSGlobalContextRef,
+        ctx _: JSGlobalContextRef,
         timeout: TimeInterval,
         on queue: DispatchQueue,
         resume: @escaping @Sendable (Result<AnyBox, Error>) -> Void
     ) {
         let once = OnceGuardAny(resume)
 
-        let bridge: (JSValue) -> AnyBox = { value in
-            if let data = copyBytes(value, ctx: ctx) { return AnyBox(data) }
-            if value.isUndefined || value.isNull { return AnyBox(nil) }
-            return AnyBox(value.toObject())
-        }
+        let bridge: (JSValue) -> AnyBox = { AnyBox($0.toSendable()) }
 
         if result.isObject,
            let then = result.objectForKeyedSubscript("then"),
-           isFunction(then, ctx: ctx)
+           isFunction(then, ctx: result.context.jsGlobalContextRef)
         {
             let onFulfilled: @convention(block) (JSValue)
                 -> Void = { once.fire(.success(bridge($0))) }
             let onRejected: @convention(block) (JSValue) -> Void = {
-                once.fire(.failure(CallError.rejected(message: message(of: $0))))
+                once.fire(.failure(CallError.rejected(message: $0.errorMessage)))
             }
             result.invokeMethod("then", withArguments: [onFulfilled, onRejected])
             queue.asyncAfter(deadline: .now() + timeout) {
@@ -324,23 +237,65 @@ public final class JSRuntime: @unchecked Sendable {
         }
     }
 
-    static func copyBytes(_ value: JSValue, ctx: JSGlobalContextRef) -> Data? {
+    static func copyBytes(_ value: JSValue) -> Data? {
         guard value.isObject else { return nil }
+        let ctx = value.context.jsGlobalContextRef
         let obj = value.jsValueRef
-        var exception: JSValueRef?
-
-        guard JSValueGetTypedArrayType(ctx, obj, &exception) != kJSTypedArrayTypeNone,
-              exception == nil else { return nil }
-        let len = JSObjectGetTypedArrayLength(ctx, obj, &exception)
-        guard exception == nil else { return nil }
+        var exc: JSValueRef?
+        guard let ptr = JSObjectGetTypedArrayBytesPtr(ctx, obj, &exc),
+              exc == nil
+        else { return nil }
+        let len = JSObjectGetTypedArrayLength(ctx, obj, &exc)
+        guard exc == nil else { return nil }
         if len == 0 { return Data() }
-        guard let ptr = JSObjectGetTypedArrayBytesPtr(ctx, obj, &exception),
-              exception == nil else { return nil }
         return Data(bytes: ptr, count: len)
     }
 
-    static func message(of err: JSValue) -> String {
-        err.objectForKeyedSubscript("message")?.toString() ?? err.toString() ?? "unknown"
+    private func registerAsyncMethod(key: String, method: @escaping AsyncNativeMethod) {
+        final class Work: @unchecked Sendable {
+            let method: AsyncNativeMethod
+            let cb: CallbackBox
+            let args: [Any?]
+            init(method: @escaping AsyncNativeMethod, cb: CallbackBox, args: [Any?]) {
+                self.method = method; self.cb = cb; self.args = args
+            }
+            func run() {
+                let m = method, cb = self.cb, args = self.args
+                Task.detached {
+                    do { cb.resolve(try await m(args)) }
+                    catch { cb.reject(error.localizedDescription) }
+                }
+            }
+        }
+        final class CallbackBox: @unchecked Sendable {
+            let resolve: JSValue
+            let reject: JSValue
+            let queue: DispatchQueue
+            init(resolve: JSValue, reject: JSValue, queue: DispatchQueue) {
+                self.resolve = resolve; self.reject = reject; self.queue = queue
+            }
+            func resolve(_ value: Any?) {
+                nonisolated(unsafe) let v = value
+                queue.async { self.resolve.call(withArguments: [v as Any]) }
+            }
+            func reject(_ message: String) {
+                queue.async { self.reject.call(withArguments: [message as NSString]) }
+            }
+        }
+        let native: @convention(block) (JSValue, JSValue, [JSValue]) -> Void = { resolve, reject, args in
+            let extracted: [Any?] = args.map { $0.toSendable() }
+            let cb = CallbackBox(resolve: resolve, reject: reject, queue: self.jsQueue)
+            Work(method: method, cb: cb, args: extracted).run()
+        }
+        let internalName = "_\(key)Async"
+        context.setObject(native, forKeyedSubscript: internalName as NSString)
+        context.evaluateScript("""
+        globalThis.\(key) = function () {
+          return new Promise(function (resolve, reject) {
+            \(internalName)(resolve, reject, Array.prototype.slice.call(arguments));
+          });
+        };
+        """)
     }
 
     private func injectNative() {
@@ -413,7 +368,7 @@ public final class JSRuntime: @unchecked Sendable {
                 defaults.removeObject(forKey: storeKey)
                 return nil
             }
-            if let data = Self.copyBytes(value, ctx: context.jsGlobalContextRef) {
+            if let data = value.bytes {
                 defaults.set(data, forKey: storeKey)
             } else if value.isString, let s = value.toString() {
                 defaults.set(s, forKey: storeKey)
@@ -421,39 +376,33 @@ public final class JSRuntime: @unchecked Sendable {
                 defaults.set(value.toBool(), forKey: storeKey)
             } else if value.isNumber, let n = value.toNumber() {
                 defaults.set(n, forKey: storeKey)
-            } else if value.isObject {
-                if let json = context.objectForKeyedSubscript("JSON")?
-                    .objectForKeyedSubscript("stringify")?
-                    .call(withArguments: [value]),
-                    json.isString, let str = json.toString()
-                {
-                    defaults.set(str, forKey: storeKey)
-                }
+            } else if value.isObject,
+                      let json = context.objectForKeyedSubscript("JSON")?
+                          .objectForKeyedSubscript("stringify")?
+                          .call(withArguments: [value]),
+                      json.isString, let str = json.toString()
+            {
+                defaults.set(str, forKey: storeKey)
             }
             return nil
         case "get":
-            guard let raw = defaults.object(forKey: storeKey)
-            else { return JSValue(nullIn: context) }
-            if let data = raw as? Data {
-                if let uint8 = context.evaluateScript("Uint8Array") {
-                    return uint8.construct(withArguments: [data as NSData])
-                }
-                return nil
+            guard let raw = defaults.object(forKey: storeKey) else {
+                return JSValue(nullIn: context)
             }
-            if let str = raw as? String {
-                if let json = context.objectForKeyedSubscript("JSON")?
-                    .objectForKeyedSubscript("parse")?
-                    .call(withArguments: [str]),
-                    !json.isUndefined
-                {
-                    return json
-                }
-                return JSValue(object: str, in: context)
+            if let data = raw as? Data,
+               let uint8 = context.evaluateScript("Uint8Array")
+            {
+                return uint8.construct(withArguments: [data as NSData])
             }
-            if let n = raw as? NSNumber {
-                return JSValue(object: n, in: context)
+            if let str = raw as? String,
+               let json = context.objectForKeyedSubscript("JSON")?
+                   .objectForKeyedSubscript("parse")?
+                   .call(withArguments: [str]),
+               !json.isUndefined
+            {
+                return json
             }
-            return JSValue(nullIn: context)
+            return JSValue(object: raw, in: context)
         default:
             return nil
         }
@@ -486,7 +435,8 @@ public final class JSRuntime: @unchecked Sendable {
         url urlStr: String,
         optsJSON: String,
         completion: @escaping @Sendable (NativeResult) -> Void
-    ) {
+    ) 
+    {
         guard let url = URL(string: urlStr) else {
             completion(NativeResult(err: "invalid url: \(urlStr)", value: nil)); return
         }
@@ -931,15 +881,15 @@ final class ScriptManager: @unchecked Sendable {
     private var speakRun: JSRuntime?
 
     @discardableResult
-    func messageHandler(_ name: String, args: [Any]) async -> Any? {
-        guard let path = self.defaultPath(name, mode: .message),
+    func processorHandler(_ name: String, args: [Any]) async -> Any? {
+        guard let path = self.defaultPath(name, mode: .processor),
               let source = try? String(contentsOf: path, encoding: .utf8)
         else {
             return nil
         }
         let msgRun = JSRuntime(scriptSource: source, namespace: "MsgManager")
 
-        return try? await msgRun.call(arguments: args, as: Any.self)
+        return try? await msgRun.call(arguments: args)
     }
 
     func speak(
@@ -957,7 +907,7 @@ final class ScriptManager: @unchecked Sendable {
         }
 
         do {
-            if let data = try await self.speakRun?.call(arguments: [params], as: Data?.self) {
+            if let data = try await self.speakRun?.call(arguments: [params]) as? Data {
                 return ("", data)
             }
             return ("run error!", nil)
@@ -979,7 +929,7 @@ final class ScriptManager: @unchecked Sendable {
 
         let manager = JSRuntime(scriptSource: source, namespace: "TTSManager")
         do {
-            return try .success(await manager.call(arguments: [params], as: Data?.self))
+            return try .success(await manager.call(arguments: [params]))
         } catch {
             return .failure(error)
         }
@@ -995,14 +945,38 @@ struct ScriptData: Identifiable, Codable, Hashable, Defaults.Serializable {
 
     enum Mode: String, Codable, CaseIterable {
         case tts
-        case message
+        case processor
         case action
+        case plugin
 
         var args: [Any] {
             switch self {
             case .tts: [["call": "Hello World!"]]
-            case .message: [["title": "Test", "subtitle": "Test", "body": "Test"]]
+            case .processor: [["title": "Test", "subtitle": "Test", "body": "Test"]]
             case .action: [["actionmode": "custom"]]
+            case .plugin: [[:]]
+            }
+        }
+        
+        var title: String{
+            switch self {
+            case .tts:
+                return String(localized: "语音")
+            case .processor:
+                return String(localized: "处理器")
+            case .action:
+                return String(localized: "动作")
+            case .plugin:
+                return String(localized: "插件")
+            }
+        }
+        
+        var symbol: String{
+            switch self {
+            case .tts: "message.and.waveform"
+            case .processor: "memorychip"
+            case .action: "pointer.arrow.click"
+            case .plugin: "rectangle.3.group"
             }
         }
     }
@@ -1043,6 +1017,34 @@ struct ScriptData: Identifiable, Codable, Hashable, Defaults.Serializable {
     }
 }
 
+
 extension Defaults.Keys {
     static let scripts = Key<Set<ScriptData>>("ScriptDatas", [])
 }
+
+// MARK: - JSValue helpers
+extension JSValue {
+    func toSendable() -> Any? {
+        if isUndefined || isNull { return nil }
+        if let data = bytes { return data }
+        if isString { return toString() }
+        if isBoolean { return toBool() }
+        if isNumber { return toNumber() }
+        if isArray { return toArray() }
+        if isObject { return toDictionary() }
+        return nil
+    }
+
+    /// TypedArray（Uint8Array 等）的字节；非 TypedArray 返回 nil。
+    var bytes: Data? { JSRuntime.copyBytes(self) }
+
+    /// JS Error → 可读消息（优先 .message，其次 toString）。
+    var errorMessage: String {
+        objectForKeyedSubscript("message")?.toString() ?? toString() ?? "unknown"
+    }
+}
+
+/// 异步原生方法：接收 JS 实参（已在 jsQueue 上提取成 Sendable Swift 值），
+/// 返回任意可桥接值（Data/String/Number/数组/字典）。JSRuntime 会把它包装成
+/// JS Promise，JS 端直接 `await`。抛错会 reject Promise。
+public typealias AsyncNativeMethod = @Sendable ([Any?]) async throws -> Any?

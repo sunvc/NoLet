@@ -15,10 +15,10 @@ import Defaults
 import Foundation
 import MapKit
 import MarkdownUI
+import OSLog
 import StoreKit
 import SwiftUI
 import UIKit
-import OSLog
 
 let logger = Logger(subsystem: "app.wzs.logger", category: "main")
 
@@ -33,7 +33,6 @@ final class AppManager: ObservableObject {
 
     @Published var selectID: String? = nil
     @Published var selectGroup: String? = nil
-    @Published var searchText: String = ""
 
     @Published var mrouter: [RouterPage] = []
     @Published var trouter: [RouterPage] = []
@@ -423,6 +422,33 @@ extension AppManager {
 }
 
 extension AppManager {
+    func register( deviceKey: String) async {
+        let address: String = NCONFIG.server
+        do {
+            let data =
+                try await self.network.fetch(
+                    url: address,
+                    path: "/register/\(deviceKey)",
+                    headers: CryptoManager.signature(sign: nil, server: deviceKey)
+                )
+
+            let response: baseResponse<String> = try data.decode()
+
+            guard 200...299 ~= response.code else {
+                Toast.error(title: "注册ID失败")
+                return
+            }
+
+            if response.message == "success" {
+                _ = await self.register(server: PushServerModel(url: address, key: deviceKey))
+            } else{
+                Toast.error(title: "注册ID失败")
+            }
+        } catch {
+            logger.error("\(error.localizedDescription)")
+        }
+    }
+
     func restore(
         address: String,
         deviceKey: String,
@@ -435,7 +461,7 @@ extension AppManager {
                     path: "/register/\(deviceKey)",
                     headers: CryptoManager.signature(sign: sign, server: deviceKey)
                 )
-            
+
             let response: baseResponse<String> = try data.decode()
 
             guard 200...299 ~= response.code else {
@@ -500,14 +526,14 @@ extension AppManager {
                 path: "/register",
                 method: .POST,
                 headers: CryptoManager.signature(sign: server.sign, server: server.key),
-                body: params,
+                body: params
             )
-            
+
             let response: baseResponse<DeviceInfo> = try data.decode()
 
             guard 200...299 ~= response.code else {
                 Toast.shared.present(title: response.message, symbol: .error)
-                throw NoletError( response.message)
+                throw NoletError(response.message)
             }
 
             if let data = response.data {
@@ -553,8 +579,6 @@ extension AppManager {
                 Defaults[.servers][index] = serverNew
             }
             Toast.success(title: "添加成功")
-        } else {
-            Toast.error(title: "注册失败")
         }
         self.appending = false
         return serverNew.status > 0
@@ -614,8 +638,8 @@ extension AppManager {
     static func syncServer() async {
         let database = NCONFIG.privateCloudDatabase
         let localServers = Defaults[.servers]
-        
-        if localServers.count > 0{ 
+
+        if localServers.count > 0 {
             let cloudServers = (try? await PushServerModel.query(from: database)) ?? []
 
             let serversToSave = localServers.filter { !cloudServers.contains($0) }
@@ -628,7 +652,7 @@ extension AppManager {
                 }
             }
         }
-        
+
         if let datas = try? await PushServerModel.query(from: database) {
             await MainActor.run {
                 AppManager.shared.servers = datas

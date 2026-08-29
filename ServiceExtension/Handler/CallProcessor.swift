@@ -23,7 +23,7 @@ final class CallProcessor: NotificationContentProcessor {
             if call {
                 let soundNameTem = bestAttemptContent.soundName ?? "call.caf"
 
-                if let url = await mergeCAFFilesToDuration(soundName: soundNameTem) {
+                if let url = await Self.mergeCAFFilesToDuration(soundName: soundNameTem) {
                     soundName = url.lastPathComponent
                 } else {
                     soundName = "call.caf"
@@ -65,7 +65,7 @@ final class CallProcessor: NotificationContentProcessor {
     ///   - inputFile: 原始铃声文件路径
     ///   - targetDuration: 重复的时长
     /// - Returns: 长铃声文件路径
-    func mergeCAFFilesToDuration(
+   static func mergeCAFFilesToDuration(
         soundName: String,
         targetDuration: TimeInterval = 30
     ) async -> URL? {

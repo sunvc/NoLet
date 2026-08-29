@@ -820,7 +820,7 @@ extension PTTManager {
             return try data.decode()
         } catch {
             logger.error("\(error)")
-            Toast.info(title: "语音服务器错误")
+            Toast.info(title: "对讲服务器错误")
             return nil
         }
     }

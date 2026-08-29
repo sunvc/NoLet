@@ -317,6 +317,8 @@ final class MessageDBManager: @unchecked Sendable {
 
     func deleteExpired() async {
         let now = Int64(Date().timeIntervalSince1970)
+        // 先清 FTS(external-content 'delete' 需要基表行还在,必须在批量删除之前)
+        await MessageFTS.shared.deleteExpired(now: now)
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: MessageEntity.entityName)
         request.predicate = NSPredicate(format: "ttl > 0 AND ttl <= %d", now)
         let delete = NSBatchDeleteRequest(fetchRequest: request)

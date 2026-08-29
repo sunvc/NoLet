@@ -36,12 +36,22 @@ final class IDManager: Sendable {
     private init() {}
 
     static var id: String {
-        if let id = IDManager.shared.read() {
+        if let id = IDManager.shared.read(),
+           !IDManager.shared.hasConfusableCharacter(id) {
             return id
         }
-        let id = IDManager.shared.encode(uuid: UUID())
-        IDManager.shared.save(id)
-        return id
+
+        let newID = IDManager.shared.encode(uuid: UUID())
+        IDManager.shared.save(newID)
+        return newID
+    }
+
+    private func hasConfusableCharacter(_ id: String) -> Bool {
+        let confusableCharacters: Set<Character> = [
+            "0", "1", "I", "O", "i", "l", "o"
+        ]
+
+        return id.contains { confusableCharacters.contains($0) }
     }
 
     private func save(_ id: String) {

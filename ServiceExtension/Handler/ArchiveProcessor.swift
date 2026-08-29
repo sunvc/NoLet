@@ -1,5 +1,5 @@
 //
-//  ArchiveMessageHandler.swift
+//  ArchiveMessageProcessor.swift
 //  NoLet
 //
 //  Author:        Copyright (c) 2024 QingHe. All rights reserved.
@@ -20,7 +20,6 @@ final class ArchiveProcessor: NotificationContentProcessor {
         identifier _: String,
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
-        
         let userInfo = bestAttemptContent.userInfo
 
         let body = userInfo.raw(.body, as: String.self) ?? ""
@@ -46,7 +45,18 @@ final class ArchiveProcessor: NotificationContentProcessor {
             bestAttemptContent.categoryIdentifier = Identifiers.reply.rawValue
         }
 
-        switch Identifiers(rawValue: bestAttemptContent.categoryIdentifier) {
+        if style == Params.markdown.name {
+            let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
+                .filter { !$0.isEmpty }
+                .joined(separator: ",")
+                .replacingOccurrences(of: "\n", with: "")
+            bestAttemptContent.body = plainText.count > 15 ?
+                String(plainText.prefix(15)) + "..." : plainText
+        }
+
+        let categoryIdentifier = bestAttemptContent.categoryIdentifier
+
+        switch Identifiers(rawValue: categoryIdentifier) {
         case .markdown:
             style = Params.markdown.name
             let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
@@ -61,6 +71,10 @@ final class ArchiveProcessor: NotificationContentProcessor {
             style = Params.reply.name
 
         default:
+            break
+        }
+
+        if NotificationCategoryIdentifier(rawValue: categoryIdentifier) == nil {
             bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
         }
 

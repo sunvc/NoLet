@@ -202,9 +202,6 @@ private struct PromptRowView: View {
                             lineWidth: 1
                         )
                 )
-                .onAppear { 
-                    logger.info("\(prompt.id)--\(selectID as NSString?)")
-                }
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack {

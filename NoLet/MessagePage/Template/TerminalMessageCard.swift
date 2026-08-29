@@ -57,15 +57,17 @@ struct TerminalMessageCard: MessageCardProtocol {
 
                     Spacer()
 
-                    ZStack {
-                        Circle()
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 2)
-                            .frame(width: 16, height: 16)
-                        Circle()
-                            .trim(from: 0.0, to: CGFloat(message.lifePercent))
-                            .stroke(severityColor, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                            .frame(width: 16, height: 16)
-                            .rotationEffect(.degrees(-90))
+                    if message.ttl > Int(Date.now.timeIntervalSince1970) {
+                        ZStack {
+                            Circle()
+                                .stroke(Color.gray.opacity(0.2), lineWidth: 2)
+                                .frame(width: 16, height: 16)
+                            Circle()
+                                .trim(from: 0.0, to: CGFloat(message.lifePercent))
+                                .stroke(severityColor, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                                .frame(width: 16, height: 16)
+                                .rotationEffect(.degrees(-90))
+                        }
                     }
                 }
 

@@ -196,7 +196,7 @@ struct ContentView: View {
                                     .toolbar(.hidden, for: .tabBar)
                             }
                         } label: {
-                            tabLabel(title: String(localized: "语音"), icon: "message.and.waveform")
+                            tabLabel(title: String(localized: "对讲"), icon: "message.and.waveform")
                         }
                     }
 
@@ -241,7 +241,7 @@ struct ContentView: View {
                                 .toolbar(.hidden, for: .tabBar)
                         }
                         .tabItem { tabLabel(
-                            title: String(localized: "语音"),
+                            title: String(localized: "对讲"),
                             icon: "message.and.waveform"
                         ) }
                         .tag(TabPage.ptt)

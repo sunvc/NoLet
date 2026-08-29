@@ -49,10 +49,11 @@ extension MessageEntity {
     func apply(jsonDictionary dict: [AnyHashable: Any]) -> MessageEntity {
         id = dict[.id] as? String ?? UUID().uuidString
 
-        if let v = dict[.createDate] as? Double {
-            createDate = Date(timeIntervalSince1970: v)
-        } else if let v = dict[.createDate] as? Int64 {
-            createDate = Date(timeIntervalSince1970: Double(v))
+        // 数字字段统一走 NSNumber 桥接:Swift 原生 Int、Int64、JSON 反序列化的 NSNumber
+        // 都能接住。纯 Swift 的 Int 用 `as? Int64`/`as? Double` 转换会得到 nil,
+        // 会导致 ttl 静默落默认值 0(显示成 1970 年)、createDate 落回当前时间。
+        if let v = dict[.createDate] as? NSNumber {
+            createDate = Date(timeIntervalSince1970: v.doubleValue)
         } else {
             createDate = Date()
         }
@@ -63,7 +64,7 @@ extension MessageEntity {
             group = String(localized: "默认")
         }
         if let v = dict[.body] as? String { body = v }
-        if let v = dict[.ttl] as? Int64 { ttl = v }
+        if let v = dict[.ttl] as? NSNumber { ttl = v.int64Value }
         if let v = dict[.read] as? Bool { read = v }
         title = dict[.title] as? String
         subtitle = dict[.subtitle] as? String
@@ -92,7 +93,8 @@ extension MessageEntity {
     private var nowSeconds: TimeInterval { Date().timeIntervalSince1970 }
 
     var lifePercent: Double {
-        guard ttl >= 0, let created = createDate else { return 1.0 } // -1 = permanent
+        // ttl <= 0 是永久哨兵(-1 永久 / 0 旧数据与导入缺省),>0 是绝对过期时间戳(epoch 秒)
+        guard ttl > 0, let created = createDate else { return 1.0 }
         let total = Double(ttl) - created.timeIntervalSince1970
         guard total > 0 else { return 0.0 }
         return max(0.0, min(1.0, (Double(ttl) - nowSeconds) / total))
@@ -111,8 +113,6 @@ extension MessageEntity {
         otherDictionary?[key] as? T
     }
 }
-
-#if DEBUG
 extension MessageEntity {
     /// Preview-only: builds a MessageEntity from a JSON dictionary in memory.
     static func preview(_ dict: [AnyHashable: Any]) -> MessageEntity {
@@ -120,4 +120,3 @@ extension MessageEntity {
         return MessageEntity(context: context).apply(jsonDictionary: dict)
     }
 }
-#endif

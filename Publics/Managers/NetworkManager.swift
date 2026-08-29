@@ -100,13 +100,18 @@ final class NetworkManager: NSObject, Sendable {
         if let body {
             request.httpBody = try JSONEncoder().encode(body)
         }
-        
+
         request.timeoutInterval = timeout
 
         request.assumesHTTP3Capable = true
 
         let (data, response) = try await session.data(for: request)
         guard let response = response as? HTTPURLResponse else { throw APIError.invalidURL }
+
+        #if DEBUG
+        let res = String(data: data, encoding: .utf8)
+        logger.info("\(res as NSObject?)")
+        #endif
 
         return Response(data: data, header: response)
     }
@@ -150,7 +155,8 @@ final class NetworkManager: NSObject, Sendable {
 
         let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
             .first!
-        let destinationURL = local ?? cachesDirectory.appendingPathComponent(fileURL.lastPathComponent)
+        let destinationURL = local ?? cachesDirectory
+            .appendingPathComponent(fileURL.lastPathComponent)
 
         if FileManager.default.fileExists(atPath: destinationURL.path) {
             try FileManager.default.removeItem(at: destinationURL)

@@ -386,8 +386,8 @@ extension MessageEntity {
     }
 
     func expiredTime() -> String {
-        // ttl = -1 is the permanent sentinel; ttl > 0 is an absolute timestamp.
-        if ttl < 0 {
+        // ttl <= 0 是永久哨兵(-1 永久 / 0 旧数据与导入缺省);>0 是绝对过期时间戳
+        if ttl <= 0 {
             return "∞ ∞ ∞"
         }
         let expireDate = Date(timeIntervalSince1970: TimeInterval(ttl))

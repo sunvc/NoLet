@@ -43,21 +43,23 @@ struct MessageCardView: View {
 
     var body: some View {
         
-        switch message.style?.lowercased() {
-        case "markdown":
-            MarkdownMessageCard(message: message, config: messageConfig)
+        Group{
+            switch message.style?.lowercased() {
+            case "markdown":
+                MarkdownMessageCard(message: message, config: messageConfig)
 
-        case "terminal":
-            TerminalMessageCard(message: message, config: messageConfig)
+            case "terminal":
+                TerminalMessageCard(message: message, config: messageConfig)
 
-        case "github":
-            GitHubMessageCard(message: message, config: messageConfig)
+            case "github":
+                GitHubMessageCard(message: message, config: messageConfig)
 
-        case "pay":
-            PaymentMessageCard(message: message, config: messageConfig)
+            case "pay":
+                PaymentMessageCard(message: message, config: messageConfig)
 
-        default:
-            PlainMessageCard(message: message, config: messageConfig)
+            default:
+                PlainMessageCard(message: message, config: messageConfig)
+            }
         }
     }
 }

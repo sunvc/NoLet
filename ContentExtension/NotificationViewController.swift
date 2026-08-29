@@ -176,7 +176,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
     }
 
     // MARK: - Actions
-
+    
     func didReceive(
         _ response: UNNotificationResponse,
         completionHandler completion: @escaping (UNNotificationContentExtensionResponseOption)
@@ -211,7 +211,7 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             guard self.replyText == nil else { return }
             self.replyText = text
             if let reply = content.userInfo.raw(.reply, as: String.self) {
-                Task { @MainActor in
+                Task {
                     do {
                         showTips(text: String(localized: "正在回复..."), color: .orange)
                         let result = try await NetworkManager().fetch(url: reply + text)
@@ -237,13 +237,15 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
             .queryAction(identifier: response.actionIdentifier),
             let scriptName = action.scriptName
         {
-            Task { @MainActor in
+            
+            let data = ScriptParams(values: content.userInfo, actionMode: response.actionIdentifier)
+            
+            Task { 
                 showTips(text: String(localized: "执行脚本中"), afterClose: false)
-                var params = content.userInfo
-                params["actionmode"] = response.actionIdentifier
+    
                 let result = await ScriptManager.shared.actionHandler(
                     scriptName,
-                    params: params
+                    params: data.values
                 )
                 switch result {
                 case .success(_):
@@ -536,6 +538,16 @@ extension NotificationViewController {
         DispatchQueue.main.async {
             self.present(alertController, animated: true, completion: nil)
         }
+    }
+}
+
+struct ScriptParams: @unchecked Sendable {
+    let values: [AnyHashable: Any]
+    
+    init(values: [AnyHashable : Any], actionMode: String) {
+        var values = values
+        values["actionmode"] = actionMode
+        self.values = values
     }
 }
 

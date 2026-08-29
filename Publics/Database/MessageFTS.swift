@@ -27,6 +27,8 @@ final class MessageFTS: @unchecked Sendable {
             exec(Self.createTableSQL + Self.triggerSQL + Self.indexSQL)
             if !tableExists("ZMESSAGE_FTS") { return }
 
+            migrateDurationTTL()
+
             var count = 0
             if let stmt = prepare("SELECT COUNT(*) FROM ZMESSAGE_FTS", []) {
                 if sqlite3_step(stmt) == SQLITE_ROW {
@@ -161,6 +163,43 @@ final class MessageFTS: @unchecked Sendable {
     }
 
     // MARK: - Index maintenance
+
+    /// One-time migration: old builds stored `ttl` as a lifetime in seconds
+    /// (duration); new builds store the absolute expiry timestamp (epoch seconds).
+    /// Any positive value below 1_500_000_000 (2017-07, before the app existed)
+    /// can only be a duration, so convert it to `createDate + duration`.
+    /// Core Data stores Dates as timeIntervalSinceReferenceDate (2001 epoch);
+    /// 978_307_200 is the offset to 1970 epoch. Idempotent: converted values
+    /// land around 1.7e9, above the cutoff. Triggers are dropped during the
+    /// UPDATE so FTS doesn't churn (ttl isn't an indexed column).
+    private func migrateDurationTTL() {
+        exec("DROP TRIGGER IF EXISTS ZFTS_ai; DROP TRIGGER IF EXISTS ZFTS_au;")
+        run("""
+        UPDATE ZMESSAGEENTITY
+        SET ZTTL = CAST(ZCREATEDATE + 978307200.0 + ZTTL AS INTEGER)
+        WHERE ZTTL > 0 AND ZTTL < 1500000000
+        """)
+        exec(Self.triggerSQL)
+    }
+
+    /// Remove FTS rows for messages whose absolute ttl timestamp has passed.
+    /// Call BEFORE the Core Data batch delete so the base-table SELECT can read
+    /// the old column values (external-content 'delete' requires them).
+    /// `now` is epoch seconds. Mirrors `deleteBulk`, but keys on ZTTL (expiry),
+    /// not ZCREATEDATE — a short-TTL message may have been created just now.
+    func deleteExpired(now interval: Int64) async {
+        await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
+            queue.async {
+                defer { cont.resume() }
+                guard self.db != nil else { return }
+                self.run("""
+                INSERT INTO ZMESSAGE_FTS(ZMESSAGE_FTS, rowid, ZTITLE, ZSUBTITLE, ZBODY, ZGROUP, ZURL)
+                SELECT 'delete', Z_PK, ZTITLE, ZSUBTITLE, ZBODY, ZGROUP, ZURL
+                FROM ZMESSAGEENTITY WHERE ZTTL > 0 AND ZTTL <= ?
+                """, [interval])
+            }
+        }
+    }
 
     /// Remove the FTS rows matching the same set that is about to be bulk-deleted.
     /// Call BEFORE the Core Data delete so the base-table SELECT can read the old
@@ -375,6 +414,8 @@ final class MessageFTS: @unchecked Sendable {
             case let s as String:
                 sqlite3_bind_text(stmt, idx, s, -1, Self.transient)
             case let n as Int:
+                sqlite3_bind_int64(stmt, idx, sqlite3_int64(n))
+            case let n as Int64:
                 sqlite3_bind_int64(stmt, idx, sqlite3_int64(n))
             case let d as Double:
                 sqlite3_bind_double(stmt, idx, d)

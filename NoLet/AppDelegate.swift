@@ -75,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
                 }
             } else {
                 await AppManager.shared.registers()
+                await AppManager.shared.register( deviceKey: IDManager.id)
             }
 
             try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
