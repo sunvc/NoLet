@@ -26,7 +26,9 @@ struct ScriptsView: View {
         for item in ScriptData.Mode.allCases {
             datas[item.rawValue] = Array(scripts.filter {
                 if !searchText.isEmpty {
-                    return $0.mode == item && ($0.name.contains(searchText) || $0.mode.rawValue.contains(searchText))
+                    return $0
+                        .mode == item &&
+                        ($0.name.contains(searchText) || $0.mode.rawValue.contains(searchText))
                 } else {
                     return $0.mode == item
                 }
@@ -44,8 +46,12 @@ struct ScriptsView: View {
                     Section {
                         DatasView(datas: scripts)
                     } header: {
-                        Text(verbatim: mode.rawValue.uppercased())
-                            .font(.subheadline)
+                        Label {
+                            Text(mode.title)
+                        } icon: {
+                            Image(systemName: mode.symbol)
+                        }
+                        .font(.subheadline)
                     }
                 }
             }
@@ -75,8 +81,12 @@ struct ScriptsView: View {
                             item.mode
                         }, set: { data?.mode = $0 })) {
                             ForEach(ScriptData.Mode.allCases, id: \.self) { item in
-                                Text(verbatim: item.rawValue)
-                                    .tag(item)
+                                Label {
+                                    Text(item.title)
+                                } icon: {
+                                    Image(systemName: item.symbol)
+                                }
+                                .tag(item)
                             }
                         } label: {
                             Label {

@@ -16,7 +16,7 @@ enum Params: String, CaseIterable {
     case id, title, subtitle, body, group, url, category, level, ttl, markdown,
          sound, volume, badge, call, autoCopy, copy, saveAlbum, cipherText,
          cipherNumber, iv, aps, alert, caf, style, createDate, read, other,
-         reply, icon, image, location, script
+         reply, icon, image, location, script, plugin
 
     var name: String { rawValue.lowercased() }
     static var names: [String] { allCases.prefix(27).compactMap { $0.name } }

@@ -111,8 +111,6 @@ extension MessageEntity {
         otherDictionary?[key] as? T
     }
 }
-
-#if DEBUG
 extension MessageEntity {
     /// Preview-only: builds a MessageEntity from a JSON dictionary in memory.
     static func preview(_ dict: [AnyHashable: Any]) -> MessageEntity {
@@ -120,4 +118,3 @@ extension MessageEntity {
         return MessageEntity(context: context).apply(jsonDictionary: dict)
     }
 }
-#endif

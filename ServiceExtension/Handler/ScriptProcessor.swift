@@ -26,7 +26,7 @@ final class ScriptProcessor: NotificationContentProcessor {
             return bestAttemptContent
         }
 
-        await ScriptManager.shared.messageHandler(name, args: [userInfo])
+        await ScriptManager.shared.processorHandler(name, args: [userInfo])
 
         return bestAttemptContent
     }

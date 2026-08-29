@@ -64,7 +64,7 @@ struct SettingsPage: View {
 
                     if usePtt {
                         ListButton {
-                            Label("语音", systemImage: "message.and.waveform")
+                            Label("对讲", systemImage: "message.and.waveform")
                         } action: {
                             manager.router = [.ptt]
                             return true

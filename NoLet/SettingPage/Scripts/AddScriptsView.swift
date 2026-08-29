@@ -75,8 +75,12 @@ struct AddScriptsView: View {
                 Section {
                     Picker(selection: $mode) {
                         ForEach(ScriptData.Mode.allCases, id: \.self) { item in
-                            Text(verbatim: item.rawValue)
-                                .tag(item)
+                            
+                            Label { 
+                                Text(item.title)
+                            } icon: { 
+                                Image(systemName: item.symbol)
+                            }.tag(item)
                         }
                     } label: {
                         Label {

@@ -39,6 +39,9 @@ actor NotificationServiceActor {
         } catch ProcessoError.error(let errorContent) {
             self.bestAttemptContent = errorContent
             self.completed()
+        } catch ProcessoError.stop(content: let content) {
+            self.bestAttemptContent = content
+            self.completed()
         } catch {
             completed()
         }
@@ -57,6 +60,7 @@ actor NotificationServiceActor {
 }
 
 enum ProcessorItem: CaseIterable {
+    case plugin
     case decryption
     case action
     case archive
@@ -66,6 +70,7 @@ enum ProcessorItem: CaseIterable {
 
     var processor: NotificationContentProcessor {
         switch self {
+        case .plugin: PluginProcessor()
         case .decryption: DecryptionProcessor()
         case .archive: ArchiveProcessor()
         case .action: ActionProcessor()
@@ -85,4 +90,5 @@ protocol NotificationContentProcessor: Sendable {
 
 enum ProcessoError: Swift.Error {
     case error(content: UNMutableNotificationContent)
+    case stop(content: UNMutableNotificationContent)
 }

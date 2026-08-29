@@ -72,13 +72,6 @@ struct PermissionsStartView: View {
         isSelected: true
     )
 
-    @State private var voicePer = PermissionOption(
-        mode: .server,
-        title: String(localized: "语音对讲"),
-        description: String(localized: "是否开启语音对讲服务"),
-        iconName: "message.and.waveform",
-        isSelected: false
-    )
 
     @State private var currentStep: PermissionStep = .networkPermission
     @State private var showNextScreen: Bool = false
@@ -206,9 +199,7 @@ struct PermissionsStartView: View {
                                     self.basePer.isSelected = true
                                 }
                             }
-                        if !.isiOSAppOnMac {
-                            PermissionOptionCard(option: $voicePer)
-                        }
+                        
                     }
                     .padding(.vertical, 8)
                 }
@@ -281,7 +272,7 @@ struct PermissionsStartView: View {
                                 )
                             showAlert = true
                         }
-                        Defaults[.usePtt] = voicePer.isSelected
+                       
                     } label: {
                         Text("完成设置")
                             .fontWeight(.semibold)

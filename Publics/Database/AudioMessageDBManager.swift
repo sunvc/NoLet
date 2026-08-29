@@ -235,7 +235,6 @@ private struct SendableAudio: @unchecked Sendable {
     let status: Int
 }
 
-#if DEBUG
 extension AudioMessageDBManager {
     static var previewMessage: AudioMessageEntity {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
@@ -249,4 +248,3 @@ extension AudioMessageDBManager {
         return entity
     }
 }
-#endif

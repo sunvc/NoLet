@@ -39,7 +39,7 @@ struct MoreOperationsView: View {
                     
                     Toggle(isOn: $usePtt) {
                         Label {
-                            Text("语音消息")
+                            Text(verbatim: "PTT")
                         } icon: {
                             Image(systemName: "message.badge.waveform")
                                 .foregroundStyle(

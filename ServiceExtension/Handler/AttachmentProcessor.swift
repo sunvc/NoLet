@@ -53,7 +53,7 @@ final class AttachmentProcessor: NotificationContentProcessor {
         // 图标处理------------------------------------------------------------
 
         guard let imageURLSttr = userInfo.raw(.icon, as: String.self),
-              let imageData = await getPngData(pngURL: imageURLSttr)
+              let imageData = await Self.getPngData(pngURL: imageURLSttr)
         else { return bestAttemptContent }
 
         let avatar = INImage(imageData: imageData)
@@ -127,7 +127,7 @@ final class AttachmentProcessor: NotificationContentProcessor {
         )
     }
 
-    func getPngData(pngURL: String) async -> Data? {
+    static func getPngData(pngURL: String) async -> Data? {
         if URL(remote: pngURL) != nil {
             if let localPath = await ImageManager.downloadImage(pngURL) {
                 return NSData(contentsOfFile: localPath) as? Data
