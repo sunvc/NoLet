@@ -70,9 +70,9 @@ struct NotificationActionsView: View {
         }
     }
 
-    private var availableIdentifiers: [NotificationCategoryIdentifier] {
+    private var availableIdentifiers: [Identifiers] {
         let used = Set(categories.map(\.identifier))
-        return NotificationCategoryIdentifier.allCases.filter { !used.contains($0) }
+        return Identifiers.custom.filter { !used.contains($0) }
     }
 
     private func deleteCategory(at offsets: IndexSet) {

@@ -73,6 +73,8 @@ extension Identifiers {
             return "Markdown"
         case .reply:
             return String(localized: "可回复")
+        default:
+            return String(localized: "自定义\(rawValue)")
         }
     }
 }

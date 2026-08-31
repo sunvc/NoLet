@@ -21,6 +21,12 @@ final class ArchiveProcessor: NotificationContentProcessor {
         content bestAttemptContent: UNMutableNotificationContent
     ) async throws -> UNMutableNotificationContent {
         let userInfo = bestAttemptContent.userInfo
+        var style = userInfo.raw(.style, as: String.self)
+
+        if let markdown = userInfo.raw(.markdown, as: String.self) {
+            bestAttemptContent.body = markdown
+            style = Identifiers.markdown.rawValue
+        }
 
         let body = userInfo.raw(.body, as: String.self) ?? ""
         let title = userInfo.raw(.title, as: String.self)
@@ -28,7 +34,7 @@ final class ArchiveProcessor: NotificationContentProcessor {
         let url = userInfo.raw(.url, as: String.self)
 
         let reply = userInfo.raw(.reply, as: String.self)
-        var style = userInfo.raw(.style, as: String.self)
+
         let group = userInfo.raw(.group, as: String.self) ?? String(localized: "默认")
         let messageID = bestAttemptContent.targetContentIdentifier ?? UUID().uuidString
         let other = userInfo.toJSONString(excluding: Params.names)
@@ -54,28 +60,13 @@ final class ArchiveProcessor: NotificationContentProcessor {
                 String(plainText.prefix(15)) + "..." : plainText
         }
 
-        let categoryIdentifier = bestAttemptContent.categoryIdentifier
-
-        switch Identifiers(rawValue: categoryIdentifier) {
-        case .markdown:
-            style = Params.markdown.name
-            let plainText = PBMarkdown.plain(body).components(separatedBy: .newlines)
-                .filter { !$0.isEmpty }
-                .joined(separator: ",")
-                .replacingOccurrences(of: "\n", with: "")
-
-            bestAttemptContent.body = plainText.count > 15 ?
-                String(plainText.prefix(15)) + "..." : plainText
-
-        case .reply:
-            style = Params.reply.name
-
-        default:
-            break
-        }
-
-        if NotificationCategoryIdentifier(rawValue: categoryIdentifier) == nil {
-            bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
+        if bestAttemptContent.categoryIdentifier == "" {
+            let markdown = Identifiers.markdown.rawValue
+            if style == markdown {
+                bestAttemptContent.categoryIdentifier = markdown
+            } else {
+                bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
+            }
         }
 
         bestAttemptContent.threadIdentifier = group

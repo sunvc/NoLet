@@ -29,7 +29,7 @@ struct NotificationActionModel: Codable, Hashable, Identifiable {
 
 struct NotificationCategoryModel: Codable, Hashable, Identifiable {
     var id: String { identifier.rawValue }
-    var identifier: NotificationCategoryIdentifier
+    var identifier: Identifiers
     var actions: [NotificationActionModel]
 }
 
@@ -46,7 +46,6 @@ extension [NotificationCategoryModel] {
 
 extension NotificationActionModel: Defaults.Serializable {}
 extension NotificationCategoryModel: Defaults.Serializable {}
-extension NotificationCategoryIdentifier: Defaults.Serializable {}
 
 extension Defaults.Keys {
     static let customNotificationCategories = Key<[NotificationCategoryModel]>(

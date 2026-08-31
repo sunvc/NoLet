@@ -33,14 +33,6 @@ final class DecryptionProcessor: NotificationContentProcessor {
             var alert = [String: Any]()
             var soundName: String? = nil
 
-            if let category = map.raw(.category, as: String.self),
-               category == Identifiers.markdown.rawValue
-            {
-                bestAttemptContent.categoryIdentifier = category
-            } else {
-                bestAttemptContent.categoryIdentifier = Identifiers.myNotificationCategory.rawValue
-            }
-
             if let id = map.raw(.id, as: String.self) {
                 bestAttemptContent.targetContentIdentifier = id
             }
@@ -62,7 +54,7 @@ final class DecryptionProcessor: NotificationContentProcessor {
             if let markdown = map.raw(.markdown, as: String.self) {
                 bestAttemptContent.body = markdown
                 alert[Params.body.name] = markdown
-                bestAttemptContent.categoryIdentifier = Params.markdown.name
+                alert[Params.style.name] = "markdown"
             }
 
             if let group = map.raw(.group, as: String.self) {

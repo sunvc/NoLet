@@ -14,10 +14,55 @@
 import Foundation
 import UserNotifications
 
-enum Identifiers: String, CaseIterable, Codable {
+enum Identifiers: String, CaseIterable, Codable, Identifiable, Hashable, Equatable {
     case myNotificationCategory
     case markdown
     case reply
+
+    case alfa
+    case bravo
+    case charlie
+    case delta
+    case echo
+    case foxtrot
+    case golf
+    case hotel
+    case india
+    case juliett
+    case kilo
+    case lima
+    case mike
+    case november
+    case oscar
+    case papa
+    case quebec
+    case romeo
+    case sierra
+    case tango
+    case uniform
+    case victor
+    case whiskey
+    case xray
+    case yankee
+    case zulu
+
+    static let system: Set<Self> = [
+        .myNotificationCategory,
+        .markdown,
+        .reply
+    ]
+
+    static var custom: [Self] {
+        allCases.filter { !system.contains($0) }
+    }
+
+    var isSystem: Bool {
+        Self.system.contains(self)
+    }
+
+    var isCustom: Bool {
+        !isSystem
+    }
 
     enum Action: String, CaseIterable, Codable {
         case copyAction = "copy"
@@ -93,7 +138,7 @@ enum Identifiers: String, CaseIterable, Codable {
             ),
         ]
 
-        let categories = Self.allCases.compactMap { item -> UNNotificationCategory? in
+        let categories = system.compactMap { item -> UNNotificationCategory? in
             switch item {
             case .reply:
                 return UNNotificationCategory(
@@ -115,37 +160,7 @@ enum Identifiers: String, CaseIterable, Codable {
         UNUserNotificationCenter.current()
             .setNotificationCategories(Set(categories + customCategories))
     }
-}
-
-/// NATO 字母表，作为自定义分类 identifier 的可选值
-enum NotificationCategoryIdentifier: String, CaseIterable, Identifiable, Codable, Equatable {
-    case alfa
-    case bravo
-    case charlie
-    case delta
-    case echo
-    case foxtrot
-    case golf
-    case hotel
-    case india
-    case juliett
-    case kilo
-    case lima
-    case mike
-    case november
-    case oscar
-    case papa
-    case quebec
-    case romeo
-    case sierra
-    case tango
-    case uniform
-    case victor
-    case whiskey
-    case xray
-    case yankee
-    case zulu
-
+    
     var id: String { rawValue }
 }
 

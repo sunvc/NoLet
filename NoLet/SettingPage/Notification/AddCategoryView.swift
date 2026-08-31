@@ -15,12 +15,12 @@ import SwiftUI
 import Defaults
 
 struct AddCategoryView: View {
-    let onSave: (NotificationCategoryIdentifier) -> Void
+    let onSave: (Identifiers) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @Default(.customNotificationCategories) private var categories
 
-    @State private var selection: NotificationCategoryIdentifier?
+    @State private var selection: Identifiers?
 
     var body: some View {
         NavigationStack {
@@ -60,8 +60,8 @@ struct AddCategoryView: View {
         }
     }
 
-    private var availableIdentifiers: [NotificationCategoryIdentifier] {
+    private var availableIdentifiers: [Identifiers] {
         let used = Set(categories.map(\.identifier))
-        return NotificationCategoryIdentifier.allCases.filter { !used.contains($0) }
+        return Identifiers.custom.filter { !used.contains($0) }
     }
 }
