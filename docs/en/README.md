@@ -1,5 +1,5 @@
 *Thanks to the open source project [BARK](https://github.com/Finb/Bark)*
-### AeroApp <!-- {docsify-ignore-all} -->
+### BravoPapaApp <!-- {docsify-ignore-all} -->
 - Free and lightweight! Simply call the API to send push notifications to your iPhone.
 - Relies on Apple APNs, timely, stable, and reliable.
 - Does not consume device battery, based on system push service and push extension, the APP itself does not need to run.
@@ -7,12 +7,12 @@
 
 
 ### Source Code
-- [Aero](https://github.com/sunvc/NoLet) is a fully open-source iOS APP for receiving custom push notifications.
-- [AeroServer](https://github.com/sunvc/NoLets) is a fully open-source Aero service backend for receiving user push requests and forwarding them to Apple APNS.
+- [BravoPapa](https://github.com/sunvc/NoLet) is a fully open-source iOS APP for receiving custom push notifications.
+- [BravoPapaServer](https://github.com/sunvc/NoLets) is a fully open-source BravoPapa service backend for receiving user push requests and forwarding them to Apple APNS.
 
 ### Feedback
-- [Aero Feedback Group](https://t.me/PushToMe)
-- [Aero GitHub Issues](https://github.com/sunvc/NoLet/issues)
+- [BravoPapa Feedback Group](https://t.me/PushToMe)
+- [BravoPapa GitHub Issues](https://github.com/sunvc/NoLet/issues)
 
 
 ### Documentation

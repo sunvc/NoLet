@@ -1,5 +1,5 @@
  *感谢[BARK](https://github.com/Finb/Bark) 的开源项目*
-### AeroApp <!-- {docsify-ignore-all} -->
+### BravoPapaApp <!-- {docsify-ignore-all} -->
 - 免费、轻量！简单调用接口即可给自己的iPhone发送推送。
 - 依赖苹果APNs，及时、稳定、可靠
 - 不会消耗设备的电量， 基于系统推送服务与推送扩展，APP本体并不需要运行。
@@ -7,12 +7,12 @@
 
 
 ### 源码
-- [Aero](https://github.com/sunvc/NoLet) 是完整开源的 iOS APP，用来接收自定义推送。
-- [AeroServer](https://github.com/sunvc/NoLets) 是完整开源的 伞兵(Aero) 服务后端，用来接收用户的推送请求并转发给苹果APNS。
+- [BravoPapa](https://github.com/sunvc/NoLet) 是完整开源的 iOS APP，用来接收自定义推送。
+- [BravoPapaServer](https://github.com/sunvc/NoLets) 是完整开源的 伞兵(BravoPapa) 服务后端，用来接收用户的推送请求并转发给苹果APNS。
 
 ### 反馈
-- [伞兵(Aero) 问题反馈群](https://t.me/PushToMe)
-- [伞兵(Aero) GitHub Issues](https://github.com/sunvc/NoLet/issues)
+- [伞兵(BravoPapa) 问题反馈群](https://t.me/PushToMe)
+- [伞兵(BravoPapa) GitHub Issues](https://github.com/sunvc/NoLet/issues)
 
 
 ### 文档

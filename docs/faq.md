@@ -5,7 +5,7 @@
 
 在 App 设置中检查 Device Token 是否正常。如果不正常，参考 [这里](#DeviceToken显示未知)<br/>
 如果正常，可以重启下设备，如果还不能接收到推送，检查推送请求返回状态码是否为 code 200。<br/>
-排查都正常后还有问题可在[伞兵(Aero) 问题反馈群](https://t.me/PushToMe)反馈。
+排查都正常后还有问题可在[伞兵(BravoPapa) 问题反馈群](https://t.me/PushToMe)反馈。
 
 #### DeviceToken显示未知
 
@@ -46,7 +46,7 @@
 
 #### 推送 API 是否支持 POST 请求？
 
-Aero支持 GET POST ,支持使用Json<br>
+BravoPapa支持 GET POST ,支持使用Json<br>
 无论哪种请求方式，参数名都一样, 参考[使用教程](/tutorial#请求方式)
 
 #### 推送特殊字符导致推送失败，比如 + 变成空格

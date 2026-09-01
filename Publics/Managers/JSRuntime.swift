@@ -31,6 +31,7 @@ public final class JSRuntime: @unchecked Sendable {
 
     private static let queueKey = DispatchSpecificKey<Void>()
 
+    private let timersLock = OSAllocatedUnfairLock()
     private var timers: [Int: DispatchSourceTimer] = [:]
     private var timerSeq = 0
 
@@ -73,8 +74,12 @@ public final class JSRuntime: @unchecked Sendable {
     }
 
     deinit {
-        timers.values.forEach { $0.cancel() }
-        timers.removeAll()
+        // deinit 可能跑在 URLSession 回调线程上（HTTP 完成闭包强持有 self），
+        // 而 timers 只在 jsQueue 上变更：加锁拷贝后，回到 jsQueue 上统一取消，
+        // 避免与正在触发的 timer handler 竞争字典。
+        let pending = timersLock.withLock { timers }
+        let queue = jsQueue
+        queue.async { pending.values.forEach { $0.cancel() } }
     }
 
     @discardableResult
@@ -370,18 +375,16 @@ public final class JSRuntime: @unchecked Sendable {
             }
             if let data = value.bytes {
                 defaults.set(data, forKey: storeKey)
-            } else if value.isString, let s = value.toString() {
-                defaults.set(s, forKey: storeKey)
             } else if value.isBoolean {
                 defaults.set(value.toBool(), forKey: storeKey)
             } else if value.isNumber, let n = value.toNumber() {
                 defaults.set(n, forKey: storeKey)
-            } else if value.isObject,
-                      let json = context.objectForKeyedSubscript("JSON")?
-                          .objectForKeyedSubscript("stringify")?
-                          .call(withArguments: [value]),
-                      json.isString, let str = json.toString()
+            } else if let json = context.objectForKeyedSubscript("JSON")?
+                .objectForKeyedSubscript("stringify")?
+                .call(withArguments: [value]),
+                json.isString, let str = json.toString()
             {
+                // 字符串和对象/数组都存成 JSON：字符串带引号，读取时才能无歧义还原。
                 defaults.set(str, forKey: storeKey)
             }
             return nil
@@ -394,13 +397,20 @@ public final class JSRuntime: @unchecked Sendable {
             {
                 return uint8.construct(withArguments: [data as NSData])
             }
-            if let str = raw as? String,
-               let json = context.objectForKeyedSubscript("JSON")?
-                   .objectForKeyedSubscript("parse")?
-                   .call(withArguments: [str]),
-               !json.isUndefined
-            {
-                return json
+            if let str = raw as? String {
+                // JSON 编码值（对象/数组/字符串）以 { [ " 开头；旧版明文字符串
+                // 直接桥接，避免 "123" 被解析成数字、"true" 被解析成布尔。
+                let lead = str.trimmingCharacters(in: .whitespaces).first
+                if lead == "{" || lead == "[" || lead == "\"" {
+                    if let json = context.objectForKeyedSubscript("JSON")?
+                        .objectForKeyedSubscript("parse")?
+                        .call(withArguments: [str]),
+                        !json.isUndefined
+                    {
+                        return json
+                    }
+                }
+                return JSValue(object: str as NSString, in: context)
             }
             return JSValue(object: raw, in: context)
         default:
@@ -418,13 +428,13 @@ public final class JSRuntime: @unchecked Sendable {
             cb.call(withArguments: [])
             if !repeats { self?.cancelTimer(id) }
         }
-        timers[id] = t
+        timersLock.withLock { timers[id] = t }
         t.resume()
         return id
     }
 
     private func cancelTimer(_ id: Int) {
-        timers.removeValue(forKey: id)?.cancel()
+        timersLock.withLock { timers.removeValue(forKey: id) }?.cancel()
     }
 
     // MARK: HTTP
@@ -817,7 +827,7 @@ public final class JSRuntime: @unchecked Sendable {
       });
 
       // ---------- persistent KV storage ----------
-      // Script-isolated (the native side namespaces by source hash); values
+      // Script-isolated (the native side namespaces by script file name); values
       // survive across app launches. Numbers, strings, booleans, plain
       // objects/arrays (JSON) and ArrayBuffer/Uint8Array are supported.
       global.storage = {
@@ -853,7 +863,7 @@ final class ScriptManager: @unchecked Sendable {
     }
 
     func filePath(_ name: String) -> URL? {
-        let fileName = name.hasPrefix(".js") ? name : name + ".js"
+        let fileName = name.hasSuffix(".js") ? name : name + ".js"
 
         if let name = NCONFIG.Path(.scripts, fileName),
            FileManager.default.fileExists(atPath: name.path())
@@ -887,7 +897,10 @@ final class ScriptManager: @unchecked Sendable {
         else {
             return nil
         }
-        let msgRun = JSRuntime(scriptSource: source, namespace: "MsgManager")
+        let msgRun = JSRuntime(
+            scriptSource: source,
+            namespace: path.deletingPathExtension().lastPathComponent
+        )
 
         return try? await msgRun.call(arguments: args)
     }
@@ -903,7 +916,10 @@ final class ScriptManager: @unchecked Sendable {
         }
 
         if self.speakRun == nil {
-            self.speakRun = JSRuntime(scriptSource: source, namespace: "TTSManager")
+            self.speakRun = JSRuntime(
+                scriptSource: source,
+                namespace: path.deletingPathExtension().lastPathComponent
+            )
         }
 
         do {
@@ -927,7 +943,10 @@ final class ScriptManager: @unchecked Sendable {
             return .failure(NoletError("no script"))
         }
 
-        let manager = JSRuntime(scriptSource: source, namespace: "TTSManager")
+        let manager = JSRuntime(
+            scriptSource: source,
+            namespace: path.deletingPathExtension().lastPathComponent
+        )
         do {
             return try .success(await manager.call(arguments: [params]))
         } catch {

@@ -4,7 +4,7 @@
 #### Unable to Receive Push Notifications
 Check if the Device Token is normal in the App settings. If not, refer to [here](#Device-Token-Shows-Unknown)<br/>
 If it's normal, try restarting your device. If you still can't receive push notifications, check if the push request returns status code 200.<br/>
-If all checks are normal but you still have issues, you can provide feedback in the [Aero Feedback Group](https://t.me/PushToMe).
+If all checks are normal but you still have issues, you can provide feedback in the [BravoPapa Feedback Group](https://t.me/PushToMe).
 
 #### Device Token Shows Unknown
 This is likely because your device is not properly connected to Apple servers, accompanied by issues such as iMessage unavailability and inability to receive push notifications from other apps.<br/>
@@ -37,7 +37,7 @@ When reopening the APP, it will navigate to the last opened page.<br />
 Simply stay on the message history page when exiting the APP, and the next time you open the APP, it will open to the message history page.
 
 #### Does the Push API Support POST Requests?
-Aero supports both GET and POST requests, and supports using JSON.<br>
+BravoPapa supports both GET and POST requests, and supports using JSON.<br>
 Regardless of the request method, the parameter names remain the same. Refer to the [Tutorial](/tutorial#request-methods) for more information.
 
 #### Push Failure Due to Special Characters, Such as Links in Push Content, or Abnormal Pushing (e.g., + Becoming a Space)

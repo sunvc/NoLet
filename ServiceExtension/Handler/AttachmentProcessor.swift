@@ -51,14 +51,22 @@ final class AttachmentProcessor: NotificationContentProcessor {
         }
 
         // 图标处理------------------------------------------------------------
+        guard let icon = userInfo.raw(.icon, as: String.self) else { return bestAttemptContent }
+        return await Self.applyAvatar(to: bestAttemptContent, pngURL: icon)
+    }
 
-        guard let imageURLSttr = userInfo.raw(.icon, as: String.self),
-              let imageData = await Self.getPngData(pngURL: imageURLSttr)
-        else { return bestAttemptContent }
+    /// 用 INSendMessageIntent 给通知设置发送者头像；donate 成功后返回
+    /// `updating(from:)` 产出的新 content，失败则原样返回。
+    /// 原生附件流程与插件脚本（setAvatar）共用。
+    static func applyAvatar(
+        to content: UNMutableNotificationContent,
+        pngURL: String
+    ) async -> UNMutableNotificationContent {
+        guard let imageData = await getPngData(pngURL: pngURL) else { return content }
 
         let avatar = INImage(imageData: imageData)
         var personNameComponents = PersonNameComponents()
-        personNameComponents.nickname = bestAttemptContent.title
+        personNameComponents.nickname = content.title
 
         let senderPerson = INPerson(
             personHandle: INPersonHandle(value: "", type: .unknown),
@@ -93,9 +101,9 @@ final class AttachmentProcessor: NotificationContentProcessor {
         let intent = INSendMessageIntent(
             recipients: [mePerson, placeholderPerson],
             outgoingMessageType: .outgoingMessageText,
-            content: bestAttemptContent.body,
-            speakableGroupName: INSpeakableString(spokenPhrase: bestAttemptContent.subtitle),
-            conversationIdentifier: bestAttemptContent.threadIdentifier,
+            content: content.body,
+            speakableGroupName: INSpeakableString(spokenPhrase: content.subtitle),
+            conversationIdentifier: content.threadIdentifier,
             serviceName: nil,
             sender: senderPerson,
             attachments: nil
@@ -108,9 +116,9 @@ final class AttachmentProcessor: NotificationContentProcessor {
 
         do {
             try await interaction.donate()
-            return try bestAttemptContent.updating(from: intent) as! UNMutableNotificationContent
+            return try content.updating(from: intent) as! UNMutableNotificationContent
         } catch {
-            return bestAttemptContent
+            return content
         }
     }
 
