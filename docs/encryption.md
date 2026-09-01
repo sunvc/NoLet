@@ -107,7 +107,7 @@ https.get(url, (res) => {
 ```
 **Golang 示例：**
 
-```golang
+```go
 
 package main
 
@@ -272,7 +272,7 @@ echo "本地解密验证明文: " . $decrypted . "\n";
 
 **Java 示例：**
 
-```Java
+```java
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;

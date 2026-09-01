@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4060", "--directory", "docs"],
+      "port": 4060,
+      "url": "http://localhost:4060/"
+    }
+  ]
+}

@@ -79,12 +79,14 @@ All parameters are compatible with various casing styles: SubTitle / subTitle / 
 | cipherText | String | Encrypted notification content |
 | cipherNumber | Integer | `cipherNumber=0` Key number, 0 is the system default key |
 | markdown | String | Markdown syntax (supports abbreviation md) |
+| category | String | Notification category, which determines the action buttons shown on the notification. **Required to use custom buttons** — the value must be one of the app's fixed identifiers: `myNotificationCategory` (default), `markdown`, or one of the 26 custom slots `alfa`…`zulu` (configure buttons for a slot in the app), e.g. `category=alfa`. Custom category names in the push payload are not supported. Markdown and reply notifications get their category automatically, no need to pass it. |
 | level | String or Integer  | Interruption level.<br>**active**: Default value, the system will immediately light up the screen to display the notification.<br>**timeSensitive**: Time-sensitive notification, can be displayed in Focus mode.<br>**passive**: Only adds the notification to the notification list, will not light up the screen.<br>**critical**: Critical alert, can alert in Focus mode or Silent mode. Can use numbers: `level=1`<br>0: passive<br>1: active<br>2: timeSensitive<br>3...10: critical, in this mode the number will be used for volume (`level=3...10`) |
 | volume | Integer/String | Volume in `level=critical&volume=5` mode, range 0...10 |
-| call | String | `call=1` Long alert, similar to WeChat call notification |
+| call | String | Long alert, similar to a WeChat call notification:<br>`call=1` loops the ringtone for ~30 seconds;<br>`call=https://example.com/audio.mp3` downloads the audio and plays it as a long ringtone;<br>`call=text-to-speak` runs the [voice script](/en/scripts) to synthesize speech from the text |
 | badge | String  | `badge=1` Notification badge, can be any number |
 | autoCopy | Boolean | `autoCopy=1` or `autoCopy=true` Requires manual long-press or pull-down of the notification |
 | copy | String | `copy=copy_content` When copying the notification, specify the content to copy. If this parameter is not passed, the entire notification content will be copied. |
+| reply | URL | Reply callback URL. When present, the notification shows a text input box; when the user replies, the reply text is appended directly to this URL and sent as a GET request, e.g. `reply=https://example.com/reply/` |
 | sound | String | `sound=minuet` You can set different ringtones for notifications. Default ringtone can be set in the app. |
 | icon | URL | `icon=https://example.com/icon.png` Set custom icon, automatically cached, supports uploading cloud icons |
 | icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="BravoPapa App" height="60">  |
@@ -95,6 +97,8 @@ All parameters are compatible with various casing styles: SubTitle / subTitle / 
 | ttl | Integer/String | `ttl=days` Notification expiration time, unit: days. Default is set in the app. |
 | url | URL  | URL to jump to when clicking the notification. Supports URL Scheme and Universal Link |
 | location | String | Two modes: ① Pass `"lat,lng"` coordinates to display a map button on the message card; ② Pass a callback URL to trigger a Location Push that retrieves the device's location and POSTs it back |
+| script | String | Background processor script name (without `.js`). Runs silently when the push arrives without changing the notification — used for side effects like forwarding to a webhook or logging. See the [scripts doc](/en/scripts). |
+| plugin | String | Notification plugin script name (without `.js`). Can modify the notification's content, sound, or attachments, or block it before display. See the [plugin doc](/en/plugin). |
 
 ## Batch Push
 

@@ -88,6 +88,7 @@ final class APNs: Sendable {
         subtitle: String? = nil,
         body: String? = nil,
         markdown: Bool = false,
+        category: String? = nil,
         group: String = String(localized: "默认"),
         custom: [String: Any] = [:]
     ) async throws -> APNsResponse {
@@ -128,8 +129,9 @@ final class APNs: Sendable {
                 body: body
             ),
             threadID: group,
-            category: markdown ? Identifiers.markdown.rawValue : Identifiers
-                .myNotificationCategory.rawValue,
+            category: category
+                ?? (markdown ? Identifiers.markdown.rawValue : Identifiers
+                    .myNotificationCategory.rawValue),
             contentAvailable: 0,
             mutableContent: 1,
             interruptionLevel: .active,

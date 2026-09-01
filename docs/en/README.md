@@ -3,7 +3,7 @@
 - Free and lightweight! Simply call the API to send push notifications to your iPhone.
 - Relies on Apple APNs, timely, stable, and reliable.
 - Does not consume device battery, based on system push service and push extension, the APP itself does not need to run.
-- Privacy and security, certain measures ensure that no one, including the author, can steal your privacy.<br>*Click to learn more about [Privacy Security](/privacy)*
+- Privacy and security, certain measures ensure that no one, including the author, can steal your privacy.<br>*Click to learn more about [Privacy Security](/en/privacy)*
 
 
 ### Source Code

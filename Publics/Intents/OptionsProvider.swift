@@ -64,6 +64,14 @@ struct CategoryParamsProvider: DynamicOptionsProvider {
     }
 }
 
+struct ScriptOptionsProvider: DynamicOptionsProvider {
+    func results() async throws -> [String] {
+        Defaults[.scripts]
+            .filter { $0.mode == .processor }
+            .map(\.name)
+    }
+}
+
 extension Identifiers {
     var name: String {
         switch self {
@@ -98,10 +106,5 @@ enum LevelTitle: String, CaseIterable, Codable, Defaults.Serializable {
         case .timeSensitive: return String(localized: "即时通知")
         case .critical: return String(localized: "重要通知")
         }
-    }
-
-    // 🔁 从 displayName 获取 rawValue（如："静默通知" -> "passive"）
-    static func rawValue(fromDisplayName name: String) -> String? {
-        return LevelTitle.allCases.first(where: { $0.name == name })?.rawValue
     }
 }

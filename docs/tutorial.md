@@ -79,12 +79,14 @@ curl -X "POST" "https://wzs.app/push" \
 | cipherText | 字符串 | 加密推送内容 |
 | cipherNumber | 整数 | `cipherNumber=0` 密钥编号, 0为系统默认密钥 |
 | markdown | 字符串 | Markdown语法(支持简写 md) |
+| category | 字符串 | 通知分类，决定通知上显示的操作按钮。**使用自定义按钮时必须传**，值只能是 App 内置的固定 identifier：`myNotificationCategory`（普通）、`markdown` 或 `alfa`…`zulu` 共 26 个自定义槽位（在 App 内为槽位配置按钮），例如 `category=alfa`。不支持推送自定义分类名。Markdown、可回复通知的分类由 App 自动设置，无需传 |
 | level | 字符串或整数  | 推送中断级别。<br>**active**：默认值，系统会立即亮屏显示通知<br>**timeSensitive**：时效性通知，可在专注状态下显示通知。<br>**passive**：仅将通知添加到通知列表，不会亮屏提醒。<br>**critical**：重要提醒，可在专注模式或者静音模式下提醒。参数可以使用数字替代：`level=1`<br>0：passive<br>1：active<br>2：timeSensitive<br>3...10：critical，此模式数字将用于音量（`level=3...10`） |
 | volume | 整数/字符串 | `level=critical&volume=5` 模式下音量，取值范围 0...10 |
-| call | 字符串 | `call=1` 长提醒，类似微信电话通知 |
+| call | 字符串 | 长提醒，类似微信电话通知：<br>`call=1` 循环铃声约 30 秒；<br>`call=https://example.com/audio.mp3` 下载音频作为长铃声播放；<br>`call=待朗读文本` 交给[语音脚本](/scripts)合成语音播报 |
 | badge | 字符串  | `badge=1` 推送角标，可以是任意数字 |
 | autoCopy | 布尔值 | `autoCopy=1` or `autoCopy=true`  需手动长按推送或下拉推送 |
 | copy | 字符串 | `copy=复制内容` 复制推送时，指定复制的内容，不传此参数将复制整个推送内容。 |
+| reply | URL | 回复回调地址，携带后通知出现文本输入框；用户回复时，回复文本会直接追加到该 URL 后发起 GET 请求，例如 `reply=https://example.com/reply/` |
 | sound | 字符串 | `sound=minuet` 可以为推送设置不同的铃声，应用内可设置默认铃声 |
 | icon | URL | `icon=https://example.com/icon.png` 设置自定义图标，图标自动缓存，支持上传云图标 |
 | icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="BravoPapa App" height="60">  |
@@ -95,6 +97,8 @@ curl -X "POST" "https://wzs.app/push" \
 | ttl | 整数/字符串 | `ttl=天数` 推送过期时间，单位天，默认 app 内设置。 |
 | url | URL  | 点击推送时，跳转的 URL，支持 URL Scheme 和 Universal Link |
 | location | 字符串 | 两种模式：① 传 `"纬度,经度"` 坐标，直接在消息卡片显示地图按钮；② 传回调 URL，触发 Location Push 获取设备位置后 POST 回传（详见消息模板文档） |
+| script | 字符串 | 后台处理器脚本名（不含 `.js`）。通知到达时在后台静默执行，不改变通知显示，用于转发 Webhook、写日志等副作用，详见[脚本文档](/scripts) |
+| plugin | 字符串 | 通知插件脚本名（不含 `.js`）。可在通知展示前修改内容、声音、附件或直接拦截通知，详见[插件文档](/plugin) |
 
 ## 批量推送
 

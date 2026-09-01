@@ -105,7 +105,7 @@ https.get(url, (res) => {
 
 **Golang Example:**
 
-```golang
+```go
 package main
 
 import (
@@ -265,7 +265,7 @@ echo "Local decrypt plaintext: " . $decrypted . "\n";
 
 **Java Example:**
 
-```Java
+```java
 import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;

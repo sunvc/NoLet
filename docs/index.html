@@ -1,40 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8" />
-  <title>BravoPapa 伞兵</title>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="description" content="Description" />
+  <title>BravoPapa 伞兵 - 自定义通知推送</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
+  <meta name="description" content="BravoPapa（NoLet）是一款注重隐私、安全可控的自定义通知推送工具，免费、简单、打开即用。" />
+  <meta name="theme-color" content="#f00020" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="BravoPapa 伞兵" />
+  <meta property="og:description" content="一款注重隐私、安全可控的自定义通知推送工具。" />
+  <meta property="og:image" content="/_media/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <link rel="voice" href="https://dev.microsofttranslator.com" />
   <link rel="icon" href="/_media/logo.png" />
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <link rel="apple-touch-icon" href="/_media/logo.png" />
+
+  <!-- Docsify v5: core 主题 + 暗色模式（跟随系统） -->
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/core.min.css" />
+  <link
+    rel="stylesheet"
+    href="//cdn.jsdelivr.net/npm/docsify@5/dist/themes/addons/core-dark.min.css"
+    media="(prefers-color-scheme: dark)"
+  />
+
+  <style>
+    :root {
+      /* 品牌色（伞兵红）：链接、按钮、引用条、侧边栏高亮等自动联动 */
+      --theme-color: #f00020;
+
+      /* 封面：品牌色淡彩渐变背景（参照 wzs.app 落地页） */
+      --cover-bg:
+        radial-gradient(
+          900px 480px at 85% -10%,
+          color-mix(in srgb, var(--theme-color) 12%, transparent),
+          transparent 60%
+        ),
+        radial-gradient(
+          700px 420px at 8% 110%,
+          color-mix(in srgb, var(--accent-teal, #2498ff) 10%, transparent),
+          transparent 60%
+        ),
+        linear-gradient(165deg, var(--color-mono-1), var(--color-bg) 65%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* 暗色背景下提亮，保证对比度 */
+        --theme-color: #ff5a6e;
+      }
+    }
+
+    /* 封面：logo 与商店徽章排布 */
+    .cover-main > img:first-child {
+      width: 96px;
+      height: auto;
+    }
+
+    .cover-main > p:nth-child(2) {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* 加载动画容器 */
+    .loading {
+      position: fixed;
+      inset: 0;
+      margin: auto;
+    }
+  </style>
 </head>
 
-<body>
-  <div id="app">加载中...</div>
+<body class="sidebar-chevron-right sidebar-link-clamp">
+  <div id="app"><div class="loading"></div></div>
+
   <script>
     window.$docsify = {
       name: "NoLet",
       nameLink: "/",
       repo: "https://github.com/sunvc/NoLet",
       logo: "/_media/logo.png height=60px",
-      coverpage: true,
+      coverpage: ['/', '/en/'],
       loadSidebar: true,
       subMaxLevel: 4,
       loadNavbar: true,
       auto2top: true,
       routerMode: 'history',
-      coverpage: ['/', '/en/'],
+      search: {
+        paths: 'auto',
+        depth: 3,
+        placeholder: {
+          '/en/': 'Search docs…',
+          '/': '搜索文档…',
+        },
+        noData: {
+          '/en/': 'No results found',
+          '/': '找不到结果',
+        },
+        pathNamespaces: ['/en'],
+      },
     };
   </script>
-  <!-- Docsify v4 -->
-  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+
+  <!-- Docsify v5 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@5/dist/docsify.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@5/dist/plugins/search.min.js"></script>
+
+  <!-- Prism 代码高亮（core 已内置 markup/css/js，补文档中用到的语言） -->
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-python.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-go.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-swift.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-yaml.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-markup-templating.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
 </body>
 
 </html>
