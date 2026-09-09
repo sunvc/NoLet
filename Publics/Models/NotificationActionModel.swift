@@ -23,6 +23,9 @@ struct NotificationActionModel: Codable, Hashable, Identifiable {
     var title: String
     var icon: String
     var scriptName: String?
+    /// 点击后是否打开主 App（对应 UNNotificationActionOptions.foreground）；
+    /// 关闭时绑定脚本的按钮只在通知界面执行脚本，不跳转 App
+    var opensApp: Bool = false
 
     var isBuiltIn: Bool { builtInId != nil }
 }

@@ -40,8 +40,6 @@ final class MessagesManager: ObservableObject {
                 queue: .main
             ) { [weak self] _ in
                 Task { @MainActor in
-                    // reset()/批量操作后旧对象可能失效，立即清空再异步重建快照，
-                    // 避免 SwiftUI 渲染无法兑现的 fault。
                     self?.groupMessages = []
                     self?.groupUnread = [:]
                     self?.scheduleSnapshot()
@@ -68,7 +66,6 @@ final class MessagesManager: ObservableObject {
     // MARK: - Pending drain
 
     func drainPendingMessages() async {
-        // 数据库未就绪时不要 drain（drain 会删除 plist），保留待处理消息，重置后再入。
         guard DB.hasStore else { return }
 
         if Defaults[.sharedUnreadCount] == 0 {

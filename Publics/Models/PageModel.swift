@@ -26,6 +26,7 @@ enum SubPage: Equatable, Identifiable {
     case share(contents: [AnyHashable], preview: UIImage?, title: String?)
     case cloudServer
     case authView
+    case document
 
     var id: String {
         switch self {
@@ -40,6 +41,7 @@ enum SubPage: Equatable, Identifiable {
         case .share: "share"
         case .cloudServer: "cloudServer"
         case .authView: "authView"
+        case .document: "document"
         }
     }
 }

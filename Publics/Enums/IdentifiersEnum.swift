@@ -117,7 +117,7 @@ enum Identifiers: String, CaseIterable, Codable, Identifiable, Hashable, Equatab
                         return UNNotificationAction(
                             identifier: item.identifier,
                             title: item.title,
-                            options: [.foreground],
+                            options: item.opensApp ? [.foreground] : [],
                             icon: item.icon.isEmpty ? nil : .init(systemImageName: item.icon)
                         )
                     }

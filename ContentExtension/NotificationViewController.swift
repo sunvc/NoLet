@@ -254,6 +254,13 @@ class NotificationViewController: UIViewController, @MainActor UNNotificationCon
                     showTips(text: error.localizedDescription, afterClose: true)
                 }
             }
+            
+            if action.opensApp{
+                completion(.dismissAndForwardAction)
+            }else{
+                completion(.doNotDismiss)
+            }
+            return 
         }
 
         completion(.doNotDismiss)

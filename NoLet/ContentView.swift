@@ -10,11 +10,13 @@
 //    Created by Neo on 2025/4/3.
 //
 
-import Defaults
 import CoreData
+import Defaults
+import Photos
 import StoreKit
 import SwiftUI
 import UniformTypeIdentifiers
+import VisionKit
 
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -173,6 +175,9 @@ struct ContentView: View {
             }
         }
         .environment(\.managedObjectContext, DatabaseManager.shared.viewContext)
+        .onChange(of: messageManager.unreadCount) { value in
+            UNUserNotificationCenter.current().setBadgeCount(value)
+        }
     }
 
     @ViewBuilder
@@ -321,10 +326,46 @@ struct ContentView: View {
             case .web(let url):
                 SFSafariView(url: url)
                     .ignoresSafeArea()
+            case .document:
+                ScanerDocument { err in
+                    Toast.error(title: "扫描失败")
+                    debugPrint(err.localizedDescription)
+                } didCancel: {
+                    manager.open(full: nil)
+                } didFinish: { scan in
+                    for index in 0..<scan.pageCount {
+                        let data = scan.imageOfPage(at: index)
+                        saveToPhotos(image: data)
+                    }
+                    print(scan.pageCount)
+                    manager.open(full: nil)
+                }
+                .ignoresSafeArea(.all)
             default:
                 EmptyView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         manager.open(full: nil)
+                    }
+                }
+            }
+        }
+    }
+
+    private func saveToPhotos(image: UIImage) {
+        PHPhotoLibrary.requestAuthorization(for: .addOnly) { status in
+            guard status == .authorized || status == .limited else {
+                return
+            }
+
+            PHPhotoLibrary.shared().performChanges {
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            } completionHandler: { success, error in
+                DispatchQueue.main.async {
+                    if success {
+                        Toast.info(title: "保存成功")
+                    } else {
+                        Toast.error(title: "保存失败")
+                        debugPrint("保存失败: \(error?.localizedDescription ?? "")")
                     }
                 }
             }

@@ -76,11 +76,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .allShortcutItems(showAssistant: Defaults[.assistantAccouns].count > 0)
 
         _syncAppInfo()
-
-        Task { @MainActor in
-            let unread = MessagesManager.shared.unreadCount
-            UNUserNotificationCenter.current().setBadgeCount(unread)
-        }
     }
 
     func _syncAppInfo() {

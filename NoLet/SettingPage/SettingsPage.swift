@@ -256,14 +256,47 @@ struct SettingsPage: View {
         .navigationTitle("设置")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    manager.open(full: .scan)
-                    Haptic.impact()
-                } label: {
+               
+                
+                Menu { 
+                    Section{
+                        Button {
+                            manager.open(full: .scan)
+                            Haptic.impact()
+                        } label: {
+                            Label { 
+                                Text("扫描二维码")
+                            } icon: { 
+                                Image(systemName: "qrcode.viewfinder")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(.accent, Color.primary)
+                            }
+
+                            
+                        }
+                    }
+                    
+                    Section{
+                        Button {
+                            manager.open(full: .document)
+                            Haptic.impact()
+                        } label: {
+                            Label { 
+                                Text("扫描文档")
+                            } icon: { 
+                                Image(systemName: "doc.viewfinder")
+                                    .symbolRenderingMode(.palette)
+                                    .customForegroundStyle(.accent, Color.primary)
+                            }
+                        }
+                    }
+                    
+                } label: { 
                     Image(systemName: "qrcode.viewfinder")
                         .symbolRenderingMode(.palette)
                         .customForegroundStyle(.accent, Color.primary)
                 }
+
             }
         }
     }

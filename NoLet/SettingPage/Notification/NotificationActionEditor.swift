@@ -32,6 +32,7 @@ struct NotificationActionEditor: View {
     @State private var icon = ""
     @State private var iconValid = true
     @State private var scriptName: String?
+    @State private var opensApp = false
 
     private var isEditing: Bool { action != nil }
     private var editingBuiltIn: Bool { action?.isBuiltIn == true }
@@ -107,6 +108,7 @@ struct NotificationActionEditor: View {
                     icon = action.icon
                     iconValid = icon.isEmpty || UIImage(systemName: icon) != nil
                     scriptName = action.scriptName
+                    opensApp = action.opensApp
                 }
             }
         }
@@ -162,7 +164,7 @@ struct NotificationActionEditor: View {
                     }
                 }
             }
-            Section(header: Text("绑定脚本"), footer: Text("为该操作关联一个 action 类型的脚本（由通知扩展处理）。不选则仅打开 App。")) {
+            Section(header: Text("绑定脚本"), footer: Text("为该操作关联一个 action 类型的脚本（由通知扩展处理）。")) {
                 Picker(selection: $scriptName) {
                     Text("无").tag(String?.none)
                     ForEach(scripts, id: \.id) { script in
@@ -180,6 +182,15 @@ struct NotificationActionEditor: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+            }
+            Section {
+                Toggle("打开主 App", isOn: $opensApp)
+            } header: {
+                Text("点击行为")
+            } footer: {
+                Text(opensApp
+                     ? "点击按钮后跳转到主 App。"
+                     : "点击后不打开主 App；绑定了脚本时脚本在通知界面内执行，未绑定脚本时点击无反应。")
             }
         }
     }
@@ -238,7 +249,8 @@ struct NotificationActionEditor: View {
                 builtInId: nil,
                 title: title.trimmingCharacters(in: .whitespaces),
                 icon: icon.trimmingCharacters(in: .whitespaces),
-                scriptName: scriptName
+                scriptName: scriptName,
+                opensApp: opensApp
             ))
         }
         dismiss()
