@@ -7,8 +7,8 @@
 
 </p>
 
-# BravoPapa 伞兵
-### 是一款为iOS平台设计可让您将自定义通知推送到您的苹果设备的应用程序。
+# BravoPapa 伞电
+### 一款跨平台通知工具，可让您将自定义通知推送到您的苹果与鸿蒙设备（iPhone / iPad / HarmonyOS）。
 
 <table>
   <tr>
@@ -16,6 +16,7 @@
     <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-稍后可用-orange" alt="HarmonyOS 即将支持"></td>
   </tr>
 </table>
 
@@ -26,7 +27,10 @@
 
 ## 应用介绍
 
-BravoPapa (伞兵)  是一款强大的iOS推送工具，让你能够从任何设备向iPhone/iPad发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 伞兵都能满足你的需求。
+BravoPapa (伞电)  是一款强大的跨平台推送工具，让你能够从任何设备向 iPhone / iPad 以及鸿蒙设备发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 伞电都能满足你的需求。
+
+> **🫡 鸿蒙 HarmonyOS 版稍后可用**
+> HarmonyOS 原生版本正在开发中，很快就会与大家见面：沿用同一套推送 API 与服务器配置，支持 Markdown 渲染、消息分组、端到端加密消息与自定义铃声——换到华为设备也能继续接收你的通知。
 
 ## ✨ 功能特性
 
@@ -85,7 +89,7 @@ BravoPapa (伞兵)  是一款强大的iOS推送工具，让你能够从任何设
 
 ### 自建推送服务器
 
-* BravoPapa 伞兵支持自建服务器，保证数据隐私和安全
+* BravoPapa 伞电支持自建服务器，保证数据隐私和安全
 * 服务器代码开源：[BravoPapaServer](https://github.com/sunvc/NoLets)
 * 自建服务器支持多平台部署（Windows、macOS、Linux等）
 * 支持Docker容器化部署，便于维护和升级

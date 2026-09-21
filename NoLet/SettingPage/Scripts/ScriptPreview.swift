@@ -16,12 +16,14 @@ import UIKit
 
 struct ScriptPreview: View {
     var file: URL
+    var readOnly: Bool = false
     @State private var editMode: EditMode = .inactive
     @State private var content: String = ""
     @State private var showSaveConfirm: Bool = false
 
-    init(file: URL) {
+    init(file: URL, readOnly: Bool = false) {
         self.file = file
+        self.readOnly = readOnly
         if let content = try? String(contentsOf: file, encoding: .utf8) {
             self._content = State(wrappedValue: content)
         }
@@ -29,22 +31,24 @@ struct ScriptPreview: View {
 
     var body: some View {
         // FIXME: 滚动条有问题,不知道啥问题 暂时禁用了
-        LineNumberedTextEditor(text: $content, isEditable: editMode.isEditing)
+        LineNumberedTextEditor(text: $content, isEditable: !readOnly && editMode.isEditing)
             .ignoresSafeArea()
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(file.lastPathComponent)
             .scrollContentBackground(.hidden)
             .background(ContentBackgroundView())
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(editMode == .active ? "保存" : "编辑") {
-                        if editMode == .active {
-                            showSaveConfirm = true
-                        } else {
-                            editMode = .active
+                if !readOnly {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(editMode == .active ? "保存" : "编辑") {
+                            if editMode == .active {
+                                showSaveConfirm = true
+                            } else {
+                                editMode = .active
+                            }
                         }
+                        .tint(editMode == .active ? .red : nil)
                     }
-                    .tint(editMode == .active ? .red : nil)
                 }
             }
             .alert("保存修改？", isPresented: $showSaveConfirm) {

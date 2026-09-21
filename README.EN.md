@@ -8,7 +8,7 @@
 </p>
 
 # BravoPapa
-### An application designed for the iOS platform that allows you to push custom notifications to your Apple devices.
+### A cross-platform notification app that lets you push custom notifications to your Apple and HarmonyOS devices (iPhone / iPad / HarmonyOS).
 
 <table>
   <tr>
@@ -16,6 +16,7 @@
     <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="BravoPapa App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="BravoPapa App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="BravoPapa App"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-Coming%20Soon-orange" alt="HarmonyOS coming soon"></td>
   </tr>
 </table>
 
@@ -26,7 +27,10 @@
 
 ## Application Introduction
 
-BravoPapa is a powerful iOS push tool that enables you to send custom notifications from any device to your iPhone/iPad. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet all your needs.
+BravoPapa is a powerful cross-platform push tool that enables you to send custom notifications from any device to your iPhone, iPad, and HarmonyOS devices. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet all your needs.
+
+> **🫡 HarmonyOS version coming soon**
+> A native HarmonyOS app is in development and will be available shortly. It uses the same push API and server configuration, with Markdown rendering, message grouping, end-to-end encrypted messages, and custom ringtones — so you can keep receiving your notifications when you switch to a Huawei device.
 
 ## ✨ Features
 

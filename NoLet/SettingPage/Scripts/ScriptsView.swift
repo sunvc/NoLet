@@ -58,7 +58,10 @@ struct ScriptsView: View {
         }
         .scrollContentBackground(.hidden)
         .background(ContentBackgroundView())
-        .searchable(text: $searchText)
+        .searchable(
+            text: $searchText,
+            placement: .navigationBarDrawer(displayMode: .always)
+        )
         .navigationTitle("脚本列表")
         .sheet(isPresented: $showAddView) {
             AddScriptsView { self.showAddView = false }
@@ -126,6 +129,17 @@ struct ScriptsView: View {
             }
         }
         .toolbar {
+            ToolbarItem {
+                NavigationLink {
+                    ScriptMarketView()
+                } label: {
+                    Label {
+                        Text("插件中心")
+                    } icon: {
+                        Image(systemName: "globe")
+                    }
+                }
+            }
             ToolbarItem {
                 Button {
                     self.showAddView.toggle()

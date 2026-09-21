@@ -994,7 +994,7 @@ struct ScriptData: Identifiable, Codable, Hashable, Defaults.Serializable {
             switch self {
             case .tts: "message.and.waveform"
             case .processor: "memorychip"
-            case .action: "pointer.arrow.click"
+            case .action: "hand.tap"
             case .plugin: "rectangle.3.group"
             }
         }
