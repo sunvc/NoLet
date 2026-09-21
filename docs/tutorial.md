@@ -42,7 +42,7 @@ curl -X POST https://wzs.app/your_key \
 curl -X "POST" "//https://wzs.app/your_key" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test NoLet Server",
   "title": "Test Title",
   "badge": 1,
   "category": "myNotificationCategory",
@@ -59,7 +59,7 @@ curl -X "POST" "//https://wzs.app/your_key" \
 curl -X "POST" "https://wzs.app/push" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test NoLet Server",
   "title": "Test Title",
   "device_key": "your_key"
 }'
@@ -89,8 +89,8 @@ curl -X "POST" "https://wzs.app/push" \
 | reply | URL | 回复回调地址，携带后通知出现文本输入框；用户回复时，回复文本会直接追加到该 URL 后发起 GET 请求，例如 `reply=https://example.com/reply/` |
 | sound | 字符串 | `sound=minuet` 可以为推送设置不同的铃声，应用内可设置默认铃声 |
 | icon | URL | `icon=https://example.com/icon.png` 设置自定义图标，图标自动缓存，支持上传云图标 |
-| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="BravoPapa App" height="60">  |
-| icon | 字符串数组 | `icon=组,ff0000` <img src="/_media/example-word.png" alt="BravoPapa App" height="60"> |
+| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="NoLet App" height="60">  |
+| icon | 字符串数组 | `icon=组,ff0000` <img src="/_media/example-word.png" alt="NoLet App" height="60"> |
 | image | URL | 传入图片地址，手机收到消息后自动下载缓存 |
 | savealbum | 布尔值 | 传"1"自动保存图片到相册 |
 | group | 字符串 | 对消息进行分组，推送将按 `group` 分组显示在通知中心中。<br>也可在历史消息列表中选择查看不同的群组。 |
@@ -147,7 +147,7 @@ axios.post(
     },
     params: {
       PushGroupName: "newgroup",
-      body: "Test BravoPapa Server",
+      body: "Test NoLet Server",
       // ...
     }
   }
@@ -174,5 +174,5 @@ axios.post(
 
 ## 快捷指令
 
-BravoPapa 支持使用快捷指令直接发送推送
+NoLet 支持使用快捷指令直接发送推送
 传服务器和KEY 或者 设备ID, 传设备ID 不经过服务器,直接推送到苹果服务器.

@@ -1,0 +1,133 @@
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryAbility",
+    "deviceTypes": ["phone"],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryAbility",
+        "srcEntry": "./ets/entryability/EntryAbility.ets",
+        "description": "$string:EntryAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          },
+          {
+            "entities": [
+              "entity.system.browsable"
+            ],
+            "actions": [
+              "ohos.want.action.viewData"
+            ],
+            "uris": [
+              {
+                "scheme": "https",
+                "host": "wzs.app",
+              }
+            ],
+            // domainVerify须设置为true
+            "domainVerify": true
+          },
+          {
+            "actions": [
+              "ohos.want.action.viewData"
+            ],
+            "uris": [
+              {
+                "scheme": "nolet"
+              }
+            ]
+          }
+        ],
+      },
+      {
+        // 推送接收 Ability：系统在推送到达时拉起，onCreate 中同步注册消息回调；纯后台无页面
+        "name": "PushMessageAbility",
+        "srcEntry": "./ets/entryability/PushMessageAbility.ets",
+        "description": "PushMessageAbility",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": false,
+        "skills": [
+          {
+            "actions": [
+              "action.ohos.push.listener"
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.INTERNET"
+      },
+      {
+        // 局域网快传：读取当前默认网络与传输类型（判断是否处于 Wi-Fi、计算子网广播地址）
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
+        "name": "ohos.permission.VIBRATE"
+      },
+      {
+        // 握姿感知：HdsTabs 悬浮页签按左/右手握持自动移位（system_grant，安装即授予）
+        "name": "ohos.permission.DETECT_GESTURE",
+        "reason": "$string:gesture_reason",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      },
+      {
+        // 读取剪贴板：进应用时检测内容以实现快捷发送/自动发送（user_grant，开启开关时申请，需 ACL）
+        "name": "ohos.permission.READ_PASTEBOARD",
+        "reason": "$string:read_pasteboard_reason",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
+          "when": "inuse"
+        }
+      }
+    ],
+    "dependencies": [],
+    "extensionAbilities": [
+      {
+        "name": "RemoteNotificationExtAbility",
+        "type": "remoteNotification",
+        "srcEntry": "./ets/entryability/RemoteNotificationExtAbility.ets",
+        "description": "RemoteNotificationExtAbility",
+        "exported": true,
+        "skills": [
+          {
+            "actions": [
+              "action.hms.push.extension.remotenotification"
+            ]
+          }
+        ]
+      }
+    ],
+    "metadata": [
+      {
+        "name": "ohos.arkui.UIMaterial.state",
+        "value": "enable"
+      }
+    ]
+  }
+}

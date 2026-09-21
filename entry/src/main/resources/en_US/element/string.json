@@ -1,0 +1,748 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Bravo push notifications"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Bravo push notifications"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Bravo"
+    },
+    {
+      "name": "tab_messages",
+      "value": "Messages"
+    },
+    {
+      "name": "tab_settings",
+      "value": "Settings"
+    },
+    {
+      "name": "tab_quick",
+      "value": "Quick"
+    },
+    {
+      "name": "title_quick",
+      "value": "Quick Send"
+    },
+    {
+      "name": "quick_notify_title",
+      "value": "Quick message"
+    },
+    {
+      "name": "quick_sent",
+      "value": "Sent"
+    },
+    {
+      "name": "quick_send_failed",
+      "value": "Send failed"
+    },
+    {
+      "name": "quick_send",
+      "value": "Send"
+    },
+    {
+      "name": "menu_more",
+      "value": "More Settings"
+    },
+    {
+      "name": "section_quick_settings",
+      "value": "Send Settings"
+    },
+    {
+      "name": "auto_send",
+      "value": "Auto Send"
+    },
+    {
+      "name": "auto_send_desc",
+      "value": "Automatically send clipboard content to the default server on launch"
+    },
+    {
+      "name": "quick_send_toggle",
+      "value": "Quick Send"
+    },
+    {
+      "name": "quick_send_desc",
+      "value": "Ask for confirmation when clipboard content is found on launch"
+    },
+    {
+      "name": "vibration",
+      "value": "Vibration"
+    },
+    {
+      "name": "vibration_desc",
+      "value": "Vibrate when an action completes successfully"
+    },
+    {
+      "name": "quick_options",
+      "value": "Send Options"
+    },
+    {
+      "name": "quick_option_title",
+      "value": "Title"
+    },
+    {
+      "name": "quick_option_title_ph",
+      "value": "Leave empty to use the default title"
+    },
+    {
+      "name": "quick_option_icon",
+      "value": "Icon"
+    },
+    {
+      "name": "quick_option_icon_ph",
+      "value": "Icon name or URL, optional"
+    },
+    {
+      "name": "quick_option_sound",
+      "value": "Sound"
+    },
+    {
+      "name": "quick_option_sound_ph",
+      "value": "Sound name, optional"
+    },
+    {
+      "name": "quick_option_group",
+      "value": "Group"
+    },
+    {
+      "name": "quick_option_group_ph",
+      "value": "Clear to omit the group parameter"
+    },
+    {
+      "name": "action_done",
+      "value": "Done"
+    },
+    {
+      "name": "default_set",
+      "value": "Default send target set"
+    },
+    {
+      "name": "set_default",
+      "value": "Set Default"
+    },
+    {
+      "name": "default_tag",
+      "value": "Default"
+    },
+    {
+      "name": "quick_send_dialog_title",
+      "value": "Quick Send"
+    },
+    {
+      "name": "quick_send_dialog_message",
+      "value": "Send clipboard content to \"%s\"?"
+    },
+    {
+      "name": "clipboard_permission_denied",
+      "value": "Clipboard permission is required to detect content on launch"
+    },
+    {
+      "name": "quick_empty",
+      "value": "No send targets yet\nTap + in the top right to add a server"
+    },
+    {
+      "name": "quick_target_placeholder",
+      "value": "Domain/KEY, e.g. https://wzs.app/AbCd1234"
+    },
+    {
+      "name": "quick_name_placeholder",
+      "value": "Label (optional)"
+    },
+    {
+      "name": "quick_need_target",
+      "value": "Enter the full domain/KEY address"
+    },
+    {
+      "name": "section_servers",
+      "value": "Servers"
+    },
+    {
+      "name": "section_general",
+      "value": "General"
+    },
+    {
+      "name": "section_about",
+      "value": "About"
+    },
+    {
+      "name": "menu_servers",
+      "value": "Servers"
+    },
+    {
+      "name": "menu_sound",
+      "value": "Sounds"
+    },
+    {
+      "name": "menu_data",
+      "value": "Data & Storage"
+    },
+    {
+      "name": "menu_crypto",
+      "value": "Encryption Keys"
+    },
+    {
+      "name": "menu_system_settings",
+      "value": "System Settings"
+    },
+    {
+      "name": "menu_about",
+      "value": "About Bravo"
+    },
+    {
+      "name": "title_messages",
+      "value": "Messages"
+    },
+    {
+      "name": "title_servers",
+      "value": "Servers"
+    },
+    {
+      "name": "title_sound",
+      "value": "Sound Settings"
+    },
+    {
+      "name": "title_crypto",
+      "value": "Encryption Keys"
+    },
+    {
+      "name": "title_edit_crypto",
+      "value": "Edit Key"
+    },
+    {
+      "name": "title_data",
+      "value": "Data & Storage"
+    },
+    {
+      "name": "title_about",
+      "value": "About Bravo"
+    },
+    {
+      "name": "action_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "action_delete",
+      "value": "Delete"
+    },
+    {
+      "name": "action_view_more",
+      "value": "Show more"
+    },
+    {
+      "name": "action_mark_read",
+      "value": "Mark Read"
+    },
+    {
+      "name": "action_read_state",
+      "value": "Read"
+    },
+    {
+      "name": "lan_share",
+      "value": "LAN Share"
+    },
+    {
+      "name": "section_lan",
+      "value": "Computer Transfer"
+    },
+    {
+      "name": "lan_share_desc",
+      "value": "Encrypt and broadcast the clipboard to a computer on the same Wi-Fi when you open the app"
+    },
+    {
+      "name": "lan_code",
+      "value": "Receive Code"
+    },
+    {
+      "name": "lan_code_copy",
+      "value": "Copy Code"
+    },
+    {
+      "name": "lan_code_regenerate",
+      "value": "Regenerate Code"
+    },
+    {
+      "name": "lan_code_copied",
+      "value": "Code copied"
+    },
+    {
+      "name": "lan_code_regenerated",
+      "value": "New code generated"
+    },
+    {
+      "name": "lan_sent",
+      "value": "Sent to computer"
+    },
+    {
+      "name": "lan_send_failed",
+      "value": "LAN send failed"
+    },
+    {
+      "name": "lan_no_wifi",
+      "value": "Connect to Wi-Fi and try again"
+    },
+    {
+      "name": "lan_too_large",
+      "value": "Content is too large for LAN sharing"
+    },
+    {
+      "name": "action_save",
+      "value": "Save"
+    },
+    {
+      "name": "action_ok",
+      "value": "OK"
+    },
+    {
+      "name": "action_reset",
+      "value": "Reset"
+    },
+    {
+      "name": "action_copy_string",
+      "value": "Copy"
+    },
+    {
+      "name": "search_placeholder",
+      "value": "Search messages"
+    },
+    {
+      "name": "empty_messages",
+      "value": "No messages"
+    },
+    {
+      "name": "no_results",
+      "value": "No results found"
+    },
+    {
+      "name": "search_hint",
+      "value": "Type a keyword to search messages"
+    },
+    {
+      "name": "delete_history_title",
+      "value": "Delete History"
+    },
+    {
+      "name": "delete_history_message",
+      "value": "Delete all messages before %s? This cannot be undone."
+    },
+    {
+      "name": "date_label",
+      "value": "%2$d/%3$d/%1$d"
+    },
+    {
+      "name": "title_body_separator",
+      "value": ": "
+    },
+    {
+      "name": "default_group",
+      "value": "Default"
+    },
+    {
+      "name": "quick_group",
+      "value": "Quick Message"
+    },
+    {
+      "name": "section_normal",
+      "value": "Online"
+    },
+    {
+      "name": "section_fault",
+      "value": "Offline"
+    },
+    {
+      "name": "server_no_key",
+      "value": "No KEY set"
+    },
+    {
+      "name": "add_server",
+      "value": "Add Server"
+    },
+    {
+      "name": "add_official_server",
+      "value": "Add Official Server"
+    },
+    {
+      "name": "add_custom_server",
+      "value": "Add Custom Server"
+    },
+    {
+      "name": "server_url_placeholder",
+      "value": "Server URL, e.g. https://api.example.com"
+    },
+    {
+      "name": "server_key_placeholder",
+      "value": "Server KEY (optional)"
+    },
+    {
+      "name": "registering",
+      "value": "Registering…"
+    },
+    {
+      "name": "empty_servers",
+      "value": "No servers yet\nTap + in the top right to add one"
+    },
+    {
+      "name": "err_url_required",
+      "value": "Please enter the server URL"
+    },
+    {
+      "name": "server_exists",
+      "value": "This server already exists"
+    },
+    {
+      "name": "err_claim",
+      "value": "Failed to claim ID"
+    },
+    {
+      "name": "err_register",
+      "value": "Registration failed"
+    },
+    {
+      "name": "server_added",
+      "value": "Added"
+    },
+    {
+      "name": "delete_server_title",
+      "value": "Delete Server"
+    },
+    {
+      "name": "delete_server_message",
+      "value": "Delete %s?"
+    },
+    {
+      "name": "reset_key_title",
+      "value": "Reset KEY"
+    },
+    {
+      "name": "reset_key_message",
+      "value": "Reset the KEY for %s?"
+    },
+    {
+      "name": "key_reset",
+      "value": "KEY reset"
+    },
+    {
+      "name": "reset_failed",
+      "value": "Reset failed"
+    },
+    {
+      "name": "server_no_key_toast",
+      "value": "This server has no KEY"
+    },
+    {
+      "name": "key_copied",
+      "value": "KEY copied"
+    },
+    {
+      "name": "copied",
+      "value": "Copied"
+    },
+    {
+      "name": "copy_body",
+      "value": "Copy Body"
+    },
+    {
+      "name": "select_copy",
+      "value": "Select Text"
+    },
+    {
+      "name": "copy_action",
+      "value": "Copy"
+    },
+    {
+      "name": "selection_done",
+      "value": "Done"
+    },
+    {
+      "name": "copy_title",
+      "value": "Copy Title"
+    },
+    {
+      "name": "server_copied",
+      "value": "Server address copied"
+    },
+    {
+      "name": "gesture_reason",
+      "value": "Used to detect which hand is holding the phone, so the bottom tab bar can shift for one-handed use"
+    },
+    {
+      "name": "read_pasteboard_reason",
+      "value": "Reads the clipboard on app launch for Quick Send and Auto Send"
+    },
+    {
+      "name": "tap_to_preview",
+      "value": "Tap to preview a sound"
+    },
+    {
+      "name": "builtin_tag",
+      "value": "Built-in"
+    },
+    {
+      "name": "err_builtin_delete",
+      "value": "The built-in key cannot be deleted"
+    },
+    {
+      "name": "err_builtin_copy",
+      "value": "The built-in key cannot be copied"
+    },
+    {
+      "name": "err_builtin_edit",
+      "value": "The built-in key cannot be edited"
+    },
+    {
+      "name": "config_copied",
+      "value": "Config copied"
+    },
+    {
+      "name": "empty_crypto",
+      "value": "No encryption keys yet\nTap + in the top right to add one"
+    },
+    {
+      "name": "section_import",
+      "value": "Import Config"
+    },
+    {
+      "name": "import_placeholder",
+      "value": "Paste a GCM,key,iv string to auto-detect"
+    },
+    {
+      "name": "import_button",
+      "value": "Import"
+    },
+    {
+      "name": "import_bad",
+      "value": "Invalid data"
+    },
+    {
+      "name": "import_ok",
+      "value": "Imported successfully"
+    },
+    {
+      "name": "config_exists",
+      "value": "This configuration already exists"
+    },
+    {
+      "name": "clipboard_link_title",
+      "value": "Link detected"
+    },
+    {
+      "name": "clipboard_server_message",
+      "value": "A server link was detected. Add it now?"
+    },
+    {
+      "name": "clipboard_crypto_message",
+      "value": "An encryption configuration was detected. Import it now?"
+    },
+    {
+      "name": "key_length_hint",
+      "value": "KEY must be %d characters"
+    },
+    {
+      "name": "section_algorithm",
+      "value": "Algorithm"
+    },
+    {
+      "name": "alg_aes128",
+      "value": "AES128 (16-character KEY)"
+    },
+    {
+      "name": "alg_aes192",
+      "value": "AES192 (24-character KEY)"
+    },
+    {
+      "name": "alg_aes256",
+      "value": "AES256 (32-character KEY)"
+    },
+    {
+      "name": "key_needed",
+      "value": "%d more characters"
+    },
+    {
+      "name": "random_generate",
+      "value": "Random"
+    },
+    {
+      "name": "section_device",
+      "value": "Device"
+    },
+    {
+      "name": "section_messages_mgmt",
+      "value": "Messages"
+    },
+    {
+      "name": "device_id",
+      "value": "Device ID"
+    },
+    {
+      "name": "total_messages",
+      "value": "Total messages on device"
+    },
+    {
+      "name": "unread_messages",
+      "value": "Unread messages"
+    },
+    {
+      "name": "clear_read",
+      "value": "Clear all read messages"
+    },
+    {
+      "name": "clear_read_message",
+      "value": "Clear all read messages?"
+    },
+    {
+      "name": "clear_all",
+      "value": "Delete all messages"
+    },
+    {
+      "name": "clear_all_message",
+      "value": "Delete all messages? This cannot be undone."
+    },
+    {
+      "name": "confirm_delete_title",
+      "value": "Confirm Deletion"
+    },
+    {
+      "name": "copy_success",
+      "value": "Copied"
+    },
+    {
+      "name": "version_info",
+      "value": "Version"
+    },
+    {
+      "name": "official_site",
+      "value": "Website"
+    },
+    {
+      "name": "app_source",
+      "value": "App Source"
+    },
+    {
+      "name": "server_source",
+      "value": "Server Source"
+    },
+    {
+      "name": "copyright",
+      "value": "© 2025 NoLet All Rights Reserved."
+    },
+    {
+      "name": "huawei_account",
+      "value": "HUAWEI ID"
+    },
+    {
+      "name": "huawei_linked",
+      "value": "Linked"
+    },
+    {
+      "name": "huawei_union_id",
+      "value": "UnionID"
+    },
+    {
+      "name": "huawei_open_id",
+      "value": "OpenID"
+    },
+    {
+      "name": "huawei_logout",
+      "value": "Sign Out"
+    },
+    {
+      "name": "huawei_logout_message",
+      "value": "Signing out will remove the HUAWEI ID information saved on this device. Continue?"
+    },
+    {
+      "name": "title_history",
+      "value": "History Servers"
+    },
+    {
+      "name": "history_loading",
+      "value": "Loading history servers…"
+    },
+    {
+      "name": "history_empty",
+      "value": "No history servers yet"
+    },
+    {
+      "name": "history_login_required",
+      "value": "Sign in with your HUAWEI ID on the About page first"
+    },
+    {
+      "name": "login_required_title",
+      "value": "Not signed in"
+    },
+    {
+      "name": "history_delete_title",
+      "value": "Delete History"
+    },
+    {
+      "name": "history_delete_message",
+      "value": "Delete the history of %s?"
+    },
+    {
+      "name": "history_delete_failed",
+      "value": "Delete failed. Please try again later."
+    },
+    {
+      "name": "official_site_line",
+      "value": "Website wzs.app"
+    },
+    {
+      "name": "invalid_server_qr",
+      "value": "Invalid server QR code"
+    },
+    {
+      "name": "copied_prefix",
+      "value": "Copied: %s"
+    },
+    {
+      "name": "scan_failed",
+      "value": "Scan failed: %s"
+    },
+    {
+      "name": "decrypt_failed",
+      "value": "Decryption failed!"
+    },
+    {
+      "name": "welcome_title",
+      "value": "Welcome to Bravo"
+    },
+    {
+      "name": "welcome_body",
+      "value": "Push messages are archived here automatically. Links and groups are supported; swipe left to delete."
+    },
+    {
+      "name": "seed_alert_title",
+      "value": "Server Alert"
+    },
+    {
+      "name": "seed_alert_body",
+      "value": "CPU usage 92%"
+    },
+    {
+      "name": "seed_group_ops",
+      "value": "Ops Alerts"
+    },
+    {
+      "name": "seed_group_system",
+      "value": "System"
+    },
+    {
+      "name": "seed_group_test",
+      "value": "Test Group"
+    },
+    {
+      "name": "seed_group_daily",
+      "value": "Daily Report"
+    },
+    {
+      "name": "seed_test_title",
+      "value": "Test message %d"
+    },
+    {
+      "name": "seed_test_body",
+      "value": "Sample message %d for testing list scrolling, groups, and read state."
+    }
+  ]
+}

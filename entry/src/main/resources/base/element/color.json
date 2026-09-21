@@ -1,0 +1,56 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "status_bar",
+      "value": "#E6E6E6"
+    },
+    {
+      "name": "bg_page",
+      "value": "#F1F1F1"
+    },
+    {
+      "name": "bg_card",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "bg_chip",
+      "value": "#F1F1F1"
+    },
+    {
+      "name": "text_primary",
+      "value": "#1A1A1A"
+    },
+    {
+      "name": "text_secondary",
+      "value": "#999999"
+    },
+    {
+      "name": "text_tertiary",
+      "value": "#BFBFBF"
+    },
+    {
+      "name": "separator",
+      "value": "#E5E5E5"
+    },
+    {
+      "name": "bar_bg",
+      "value": "#D9FFFFFF"
+    },
+    {
+      "name": "tab_selected",
+      "value": "#1698CE"
+    },
+    {
+      "name": "unread_bar",
+      "value": "#34C759"
+    },
+    {
+      "name": "read_bar",
+      "value": "#C7C7CC"
+    }
+  ]
+}

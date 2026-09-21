@@ -1,0 +1,18 @@
+{
+  "license": "ISC",
+  "devDependencies": {},
+  "author": {
+    "name": "huawei"
+  },
+  "name": "@hw-agconnect/cloud",
+  "description": "AppGalleryConnectSDK hmcloud for OpenHarmony.",
+  "main": "index.ets",
+  "version": "1.0.2",
+  "dependencies": {
+    "protobufjs": "7.2.4",
+    "@hw-agconnect/hmcore": "^1.0.2",
+    "bignumber.js": "9.0.1",
+    "long": "4.0.0",
+    "@protobufjs/base64": "1.1.2"
+  }
+}

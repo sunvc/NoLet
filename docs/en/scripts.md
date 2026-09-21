@@ -1,6 +1,6 @@
 # Scripting
 
-BravoPapa supports extending notification behavior with JavaScript scripts. Scripts run in the app's built-in sandboxed JavaScript runtime and can use standard APIs such as `fetch`, `crypto`, `storage`, `setTimeout`, and `console`. There are four script types by purpose.
+NoLet supports extending notification behavior with JavaScript scripts. Scripts run in the app's built-in sandboxed JavaScript runtime and can use standard APIs such as `fetch`, `crypto`, `storage`, `setTimeout`, and `console`. There are four script types by purpose.
 
 When creating a script on the app's **Scripts** screen, choose its type:
 

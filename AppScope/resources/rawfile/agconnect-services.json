@@ -1,0 +1,25 @@
+{
+  "agcgw": { },
+  "agcgw_all": {},
+  "websocketgw_all": {},
+  "client": {},
+  "oauth_client": {},
+  "app_info": {},
+  "code": {},
+  "service": {
+    "analytics": {},
+    "ml": {},
+    "cloudstorage": {},
+    "search": { },
+    "edukit": {}
+  },
+  "region": "CN",
+  "configuration_version": "3.0",
+  "appInfos": [
+    {
+      "package_name": "me.uuneo.Meoworld",
+      "client": { },
+      "code": {}
+    }
+  ]
+}

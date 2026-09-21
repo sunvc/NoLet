@@ -7,108 +7,58 @@
 
 </p>
 
-# BravoPapa 伞电
-### 一款跨平台通知工具，可让您将自定义通知推送到您的苹果与鸿蒙设备（iPhone / iPad / HarmonyOS）。
+# NoLet 伞电
+### 一款 HarmonyOS 原生推送通知客户端，让你从任意设备向鸿蒙设备发送自定义通知。
 
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-稍后可用-orange" alt="HarmonyOS 即将支持"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-NEXT-orange?logo=huawei&logoColor=white" alt="HarmonyOS NEXT"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/ArkTS-blue" alt="ArkTS"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/语言-中文%20%7C%20English-green" alt="语言"></td>
   </tr>
 </table>
 
-| TestFlight | App Store | 文档 | 反馈群 |
-|-------|--------|-------|--------|
-|[<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/78/a0/fc78a0ee-dc6b-00d9-85be-e74c24b2bcb5/AppIcon-85-220-0-4-2x.png/512x0w.webp" alt="NoLet App" height="45"> ](https://testflight.apple.com/join/PMPaM6BR) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="NoLet App" height="40">](https://apps.apple.com/cn/app/id6615073345)| [使用文档](https://wiki.wzs.app) | [NoLet](https://t.me/PushToMe) |
-
-
 ## 应用介绍
 
-BravoPapa (伞电)  是一款强大的跨平台推送工具，让你能够从任何设备向 iPhone / iPad 以及鸿蒙设备发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 伞电都能满足你的需求。
+NoLet（伞电）是一款 HarmonyOS 原生推送通知客户端，让你能从任何设备向鸿蒙设备发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 都能满足你的需求。
 
-> **🫡 鸿蒙 HarmonyOS 版稍后可用**
-> HarmonyOS 原生版本正在开发中，很快就会与大家见面：沿用同一套推送 API 与服务器配置，支持 Markdown 渲染、消息分组、端到端加密消息与自定义铃声——换到华为设备也能继续接收你的通知。
+本仓库是 **HarmonyOS 原生版本**，基于 ArkTS / ArkUI 开发，通过华为推送服务（HMS Push）在后台接收推送。
 
 ## ✨ 功能特性
 
 **推送接入**
-- 简单易用的 API，支持 GET / POST / JSON，参数优先级 POST > GET > URL
-- 批量推送（多设备 `device_keys`）、分组推送
-- 支持 Siri 快捷指令直接发送推送
-- 支持 MCP（Model Context Protocol）接入
-- 兼容 Bark 风格 URL
+- 基于华为推送服务（HMS Push）接收推送，无需常驻前台
+- 简单易用的 API，支持 GET / POST / JSON
+- 支持 `nolet://` 与 `https://wzs.app` 深链
 
 **消息展示**
-- 5 种消息卡片模板：默认、Markdown、终端 Terminal、GitHub、支付 Payment，按 `style` 切换
-- Markdown 富文本渲染
-- 标题 / 副标题 / 正文 / 分组，通知中心按分组聚合，历史消息可按群组查看
+- Markdown 富文本渲染（支持公式与代码高亮）
+- 标题 / 正文 / 分组，通知按分组聚合，历史消息可按群组查看
 - 消息 TTL 过期自动消失；相同 `id` 覆盖或删除消息
-- 点击通知跳转 URL（支持 URL Scheme 与 Universal Link）
+- 点击通知跳转 URL
 
-**通知能力**
-- 4 种中断级别：passive / active / 时效性通知 / 关键警告（critical 可在静音、专注模式提醒并调节音量）
-- 角标 badge 控制、分组静音
-- 自定义铃声、远程铃声下载、TTS 语音合成播报、来电式长提醒
-- 通知内文本回复（reply）
-- 自定义通知分类与操作按钮（alfa–zulu）：内置复制 / 静音分组 / 翻译 / 总结，自定义按钮可绑定脚本
-- 自动复制、指定复制内容
+**安全与加密**
+- 消息端到端加密推送（AES-GCM，支持 128 / 192 / 256 位自定义密钥）
+- 加密配置可通过二维码或深链导出、导入
 
-**图片与媒体**
-- 远程图标 / 头像、Emoji 图标、文字图标（文字+颜色）、云端图标
-- 图片附件自动下载缓存，可自动保存到相册
-- 地图快照与定位：传坐标直接显示地图；传回调 URL 触发 Location Push 后台获取 GPS 并回传
-- 通知中显示发送者头像（Intents 联系人捐赠）
-
-**安全与隐私**
-- 消息端到端加密推送（多种算法、自定义密钥）
-- 项目完全开源，可自建服务器（支持 Docker、多平台部署），数据自主可控
-
-**AI 能力**
-- 可配置大模型，支持通知翻译、内容摘要 / 总结
-
-**JavaScript 脚本扩展**
-- 内置沙盒 JS 运行时（fetch / crypto / storage / 定时器 / console）
-- 四种脚本模式：语音合成（tts）、处理器（processor）、动作按钮（action）、通知插件（plugin）
-- 通知插件可完全接管通知处理链（解密、附件、声音、落库、角标等由脚本编排）
+**服务器与同步**
+- 服务器管理，支持注册、恢复与历史
+- 云端历史同步（AppGallery Connect 云数据库，按华为账号隔离）
 
 **其他**
-- Safari / Chrome / Firefox / Edge 浏览器扩展，一键分享网页、选中文本或图片
-- 系统分享扩展，从其他 App 直接推送
-- 低功耗设计，对电池影响极小
+- 快捷发送：进入应用自动检测剪贴板，弹窗确认或自动发送
+- 局域网快传（UDP 广播，无需配对）
+- 中文 / English 双语
 
+## 自建推送服务器
 
-
-|Markdown|Avatar And Image|
-|-------|--------|
-|<img src="/docs/_media/markdown.gif" width="350">|<img src="/docs/_media/avatarAndImage.gif" width="350">|
-  
-
-
-### 自建推送服务器
-
-* BravoPapa 伞电支持自建服务器，保证数据隐私和安全
-* 服务器代码开源：[BravoPapaServer](https://github.com/sunvc/NoLets)
-* 自建服务器支持多平台部署（Windows、macOS、Linux等）
-* 支持Docker容器化部署，便于维护和升级
-
-## 浏览器扩展
-
-| Safari | Chrome | Firefox | Edge |
-|-------|--------|-------|--------|
-| [MacOS](https://apps.apple.com/app/id6740040672) | [安装扩展](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [安装扩展](https://addons.mozilla.org/firefox/addon/nolet/) | [安装扩展](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
-
-* 安装后点击扩展图标，输入你的推送密钥进行配置
-* 支持一键发送当前页面、选中文本或图片到你的设备
-
+* NoLet 支持自建服务器，保证数据隐私与安全
+* 服务器代码开源：[NoLetServer](https://github.com/sunvc/NoLets)
+* 支持多平台部署与 Docker 容器化，便于维护和升级
 
 ## 项目中使用的第三方库
 
-* [Defaults](https://github.com/sindresorhus/Defaults)
-* [QRScanner](https://github.com/mercari/QRScanner)
-* [Kingfisher](https://github.com/onevcat/Kingfisher)
-* [Splash](https://github.com/AugustDev/Splash)
-* [swift-markdown-ui](https://github.com/gonzalezreal/swift-markdown-ui)
-* [swiftui-messaging-ui](https://github.com/FluidGroup/swiftui-messaging-ui)
+* [lv-markdown-in](https://gitee.com/luvi/lv-markdown-in) —— Markdown 渲染引擎
+* [state_store](https://gitcode.com/openharmony-sig/state_store) —— 状态管理框架
+* [AppGallery Connect](https://developer.huawei.com/consumer/cn/) —— 推送、云数据库与登录服务

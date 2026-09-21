@@ -1,0 +1,21 @@
+{
+	"app": {
+		"bundleName": "com.huawei.agc.check.harmony",
+		"debug": true,
+		"versionCode": 1000000,
+		"versionName": "1.0.0",
+		"minAPIVersion": 9,
+		"targetAPIVersion": 10,
+		"apiReleaseType": "Release",
+		"compileSdkVersion": "4.0.10.11",
+		"compileSdkType": "OpenHarmony"
+	},
+	"module": {
+		"name": "cloud",
+		"type": "har",
+		"deviceTypes": [
+			"default",
+			"tablet"
+		]
+	}
+}

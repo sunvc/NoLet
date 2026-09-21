@@ -1,0 +1,62 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "/Users/lynn/.ohos/config/default_Nolet_Z5RcvX9BcPFgABLli4-dqq8lplz448vq7o7SbW6JJsg=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001AC781F7290592A437453D58E0987361E6DA4F47B4C02C4808799ED6AB70710D37B174AD0D3DEA",
+          "profile": "/Users/lynn/.ohos/config/default_Nolet_Z5RcvX9BcPFgABLli4-dqq8lplz448vq7o7SbW6JJsg=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "/Users/lynn/.ohos/config/default_Nolet_Z5RcvX9BcPFgABLli4-dqq8lplz448vq7o7SbW6JJsg=.p12",
+          "storePassword": "0000001AB7EBF6F3DCB85A2CF565CD3029AE0D28B93CB0FA47664BC20DCAB3F024FE4C96613DB25D9EEC"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "targetSdkVersion": "26.0.0",
+        "compatibleSdkVersion": "26.0.0",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug"
+      },
+      {
+        "name": "release"
+      }
+    ],
+    "capabilities": [
+      {
+        "bundleName": "me.uuneo.Meoworld",
+        "config": []
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

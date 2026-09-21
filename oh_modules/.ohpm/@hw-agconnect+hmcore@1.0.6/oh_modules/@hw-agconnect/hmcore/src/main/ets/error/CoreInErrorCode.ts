@@ -1,0 +1,5 @@
+export enum CoreInErrorCode {
+  PARAM_ERROR = 1105001,
+  CREATE_MD_ERROR = 1105002,
+  DIGEST_MD_ERROR = 1105003
+}

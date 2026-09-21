@@ -1,6 +1,6 @@
 # 脚本扩展
 
-伞兵(BravoPapa) 支持用 JavaScript 脚本扩展通知行为。脚本在 App 内置的沙盒 JavaScript 运行时中执行，可使用 `fetch`、`crypto`、`storage`、`setTimeout`、`console` 等标准 API，按用途分为四种模式。
+伞兵(NoLet) 支持用 JavaScript 脚本扩展通知行为。脚本在 App 内置的沙盒 JavaScript 运行时中执行，可使用 `fetch`、`crypto`、`storage`、`setTimeout`、`console` 等标准 API，按用途分为四种模式。
 
 在 App「脚本」页面新建脚本时选择模式：
 

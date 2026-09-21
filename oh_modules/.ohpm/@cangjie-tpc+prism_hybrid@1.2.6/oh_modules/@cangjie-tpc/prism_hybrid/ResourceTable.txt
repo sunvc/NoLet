@@ -1,0 +1,2 @@
+string page_show 0x02000000
+float page_text_font_size 0x02000001

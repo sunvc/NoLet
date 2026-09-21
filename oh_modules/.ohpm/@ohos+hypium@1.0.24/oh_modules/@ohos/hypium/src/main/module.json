@@ -1,0 +1,30 @@
+{
+	"app": {
+		"bundleName": "com.hypium.myapplication",
+		"debug": true,
+		"versionCode": 1000000,
+		"versionName": "1.0.0",
+		"minAPIVersion": 50005017,
+		"targetAPIVersion": 50005017,
+		"apiReleaseType": "Release",
+		"compileSdkVersion": "5.0.5.165",
+		"compileSdkType": "HarmonyOS",
+		"appEnvironments": [],
+		"bundleType": "app",
+		"buildMode": "debug"
+	},
+	"module": {
+		"name": "hypium",
+		"type": "har",
+		"deviceTypes": [
+			"default",
+			"tablet",
+			"2in1"
+		],
+		"packageName": "@ohos/hypium",
+		"installationFree": false,
+		"virtualMachine": "ark12.0.6.0",
+		"compileMode": "esmodule",
+		"dependencies": []
+	}
+}

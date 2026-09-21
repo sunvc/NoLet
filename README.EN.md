@@ -1,5 +1,5 @@
   
-中文 ｜ **[English](README.EN.md)**
+[中文](README.md) ｜ **English**
 
 <p align="center">
 
@@ -7,108 +7,58 @@
 
 </p>
 
-# BravoPapa
-### A cross-platform notification app that lets you push custom notifications to your Apple and HarmonyOS devices (iPhone / iPad / HarmonyOS).
+# NoLet
+### A native HarmonyOS push notification client that lets you send custom notifications to your HarmonyOS devices from any device.
 
 <table>
   <tr>
     <th style="border: none;"><strong>NoLet</strong></th>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="BravoPapa App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="BravoPapa App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="BravoPapa App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-Coming%20Soon-orange" alt="HarmonyOS coming soon"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-NEXT-orange?logo=huawei&logoColor=white" alt="HarmonyOS NEXT"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/ArkTS-blue" alt="ArkTS"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/Language-中文%20%7C%20English-green" alt="Language"></td>
   </tr>
 </table>
 
-| TestFlight | App Store | Documentation | Feedback Group |
-|-------|--------|-------|--------|
-|[<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/78/a0/fc78a0ee-dc6b-00d9-85be-e74c24b2bcb5/AppIcon-85-220-0-4-2x.png/512x0w.webp" alt="BravoPapa App" height="45"> ](https://testflight.apple.com/join/PMPaM6BR) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="BravoPapa App" height="40">](https://apps.apple.com/app/id6615073345)| [User Documentation](https://wiki.wzs.app) | [NoLet](https://t.me/PushToMe) |
+## Introduction
 
+NoLet is a native HarmonyOS push notification client that lets you send custom notifications to your HarmonyOS devices from any device. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet your needs.
 
-## Application Introduction
-
-BravoPapa is a powerful cross-platform push tool that enables you to send custom notifications from any device to your iPhone, iPad, and HarmonyOS devices. Whether it's server monitoring, script automation, or daily reminders, NoLet can meet all your needs.
-
-> **🫡 HarmonyOS version coming soon**
-> A native HarmonyOS app is in development and will be available shortly. It uses the same push API and server configuration, with Markdown rendering, message grouping, end-to-end encrypted messages, and custom ringtones — so you can keep receiving your notifications when you switch to a Huawei device.
+This repository is the **native HarmonyOS version**, built with ArkTS / ArkUI and receiving push notifications in the background via Huawei Push Service (HMS Push).
 
 ## ✨ Features
 
 **Push & API**
-- Simple, easy-to-use API supporting GET / POST / JSON, with parameter priority POST > GET > URL
-- Bulk push (multiple devices via `device_keys`) and group push
-- Send pushes directly via Siri Shortcuts
-- MCP (Model Context Protocol) support
-- Bark-style URL compatible
+- Receives push notifications via Huawei Push Service (HMS Push), no foreground process required
+- Simple, easy-to-use API supporting GET / POST / JSON
+- Supports `nolet://` and `https://wzs.app` deep links
 
 **Message Display**
-- 5 message card templates: Default, Markdown, Terminal, GitHub, Payment — switched by `style`
-- Rich Markdown rendering
-- Title / subtitle / body / group; notifications are grouped by thread in Notification Center, and history can be browsed per group
-- Message TTL with auto-expiry; same `id` overwrites or deletes a message
-- Tap a notification to open a URL (URL Scheme and Universal Link supported)
+- Rich Markdown rendering (formulas and code highlighting supported)
+- Title / body / group; notifications are aggregated by group, and history can be browsed per group
+- Message TTL with auto-expiry; the same `id` overwrites or deletes a message
+- Tap a notification to open a URL
 
-**Notifications**
-- 4 interruption levels: passive / active / time-sensitive / critical (critical can alert through Focus/mute with adjustable volume)
-- Badge control and group muting
-- Custom ringtones, remote ringtone download, TTS speech synthesis, call-style long ringtone
-- In-notification text reply
-- Custom notification categories and action buttons (alfa–zulu): built-in Copy / Mute group / Translate / Summarize, and custom buttons that can bind scripts
-- Auto-copy and custom copy content
+**Security & Encryption**
+- End-to-end encrypted push (AES-GCM, with custom 128 / 192 / 256-bit keys)
+- Encryption configs can be exported and imported via QR code or deep link
 
-**Images & Media**
-- Remote icons/avatars, emoji icons, text icons (text + color), cloud icons
-- Image attachments downloaded and cached automatically, with optional auto-save to the photo album
-- Map snapshots and location: pass coordinates to show a map directly; pass a callback URL to trigger a Location Push that fetches GPS in the background and posts it back
-- Sender avatar shown in the notification (Intents contact donation)
-
-**Security & Privacy**
-- End-to-end encrypted push (multiple algorithms, custom keys)
-- Fully open-source project with self-hosted server support (Docker, multi-platform) — your data stays under your control
-
-**AI**
-- Configurable large models for notification translation and summarization
-
-**JavaScript Scripting**
-- Built-in sandboxed JS runtime (fetch / crypto / storage / timers / console)
-- Four script types: voice synthesis (tts), processor, action buttons, and notification plugin
-- A notification plugin can fully take over the processing pipeline (decryption, attachments, sound, archiving, badge, etc. orchestrated by the script)
+**Servers & Sync**
+- Server management with registration, restore, and history
+- Cloud history sync (AppGallery Connect cloud database, isolated per Huawei account)
 
 **More**
-- Safari / Chrome / Firefox / Edge browser extensions for one-click sharing of pages, selected text, or images
-- System share extension to push directly from other apps
-- Low-power design with minimal battery impact
+- Quick send: auto-detects clipboard content on launch, with confirmation or auto-send
+- LAN share (UDP broadcast, no pairing required)
+- Chinese / English bilingual
 
+## Self-Hosted Push Server
 
-
-|Markdown|Avatar And Image|
-|-------|--------|
-|<img src="/docs/_media/markdown.gif" width="350">|<img src="/docs/_media/avatarAndImage.gif" width="350">|
-  
-
-### Self-Hosted Push Server
-
-* BravoPapa supports self-hosted servers to ensure data privacy and security
-* Open-source server code: [BravoPapaServer](https://github.com/sunvc/NoLets)
-* Self-hosted servers support multi-platform deployment (Windows, macOS, Linux, etc.)
-* Docker containerized deployment support for easy maintenance and upgrades
-
-
-## Browser Extensions
-
-| Safari | Chrome | Firefox | Edge |
-|-------|--------|---------|--------|
-|  [MacOS](https://apps.apple.com/app/id6740040672)  | [Install Extension](https://chromewebstore.google.com/detail/bbhjjpgkahbphfmllckjjpkgpcaghgjk) | [Install Extension](https://addons.mozilla.org/firefox/addon/nolet/) | [Install Extension](https://microsoftedge.microsoft.com/addons/detail/cpeddmngdbglghhmfomfpeckcllgpcii) |
-
-* After installation, click the extension icon and enter your push key to configure
-* Supports one-click sending of the current page, selected text, or images to your device
-
+* NoLet supports self-hosted servers to ensure data privacy and security
+* Open-source server code: [NoLetServer](https://github.com/sunvc/NoLets)
+* Multi-platform deployment and Docker containerization for easy maintenance and upgrades
 
 ## Third-Party Libraries Used in the Project
 
-* [Defaults](https://github.com/sindresorhus/Defaults)
-* [QRScanner](https://github.com/mercari/QRScanner)
-* [Kingfisher](https://github.com/onevcat/Kingfisher)
-* [Splash](https://github.com/AugustDev/Splash)
-* [swift-markdown-ui](https://github.com/gonzalezreal/swift-markdown-ui)
-* [swiftui-messaging-ui](https://github.com/FluidGroup/swiftui-messaging-ui)
+* [lv-markdown-in](https://gitee.com/luvi/lv-markdown-in) — Markdown rendering engine
+* [state_store](https://gitcode.com/openharmony-sig/state_store) — state management framework
+* [AppGallery Connect](https://developer.huawei.com/consumer/cn/) — push, cloud database, and sign-in services

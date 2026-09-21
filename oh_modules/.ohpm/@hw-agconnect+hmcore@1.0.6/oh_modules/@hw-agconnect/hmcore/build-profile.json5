@@ -1,0 +1,15 @@
+{
+  "apiType": "stageMode",
+  "buildOption": {
+    "externalNativeOptions": {
+      "path": "./src/main/cpp/CMakeLists.txt",
+      "arguments": "-v -DOHOS_STL=none",
+      "cppFlags": "",
+    }
+  },
+  "targets": [
+    {
+      "name": "default",
+    }
+  ]
+}

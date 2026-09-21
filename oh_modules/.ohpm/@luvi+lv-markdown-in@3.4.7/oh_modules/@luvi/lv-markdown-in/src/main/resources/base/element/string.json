@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "page_show",
+      "value": "page from package"
+    },
+    {
+      "name": "agcit_luvi_markdown",
+      "value": "3.4.7"
+    },
+    {
+      "name": "use_network",
+      "value": "允许使用Internet网络"
+    }
+  ]
+}

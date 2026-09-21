@@ -1,0 +1,20 @@
+[
+    {
+        "Name": "MicroTeX",
+        "License": "MIT License",
+        "License File": "LICENSE",
+        "Owner": "NanoMichael"
+        "Upstream URL": "https://github.com/NanoMichael/MicroTeX",
+        "Version Number": "v0.0.1",
+        "Description": " A dynamic, cross-platform, and embeddable LaTeX rendering library."
+    },
+    {
+        "Name": "MathJax-mhchem",
+        "License": "Apache License Version 2.0",
+        "License File": "LICENSE",
+        "Owner": "mhchem"
+        "Upstream URL": "https://github.com/mhchem/MathJax-mhchem",
+        "Version Number": "v3.3.2",
+        "Description": " mhchem for MathJax is a 3rd-party extension for MathJax, for typesetting chemical equations."
+    }
+]

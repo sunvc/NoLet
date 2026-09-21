@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "Prism4j",
+        "License": " Apache-2.0 License ",
+        "License File": " LICENSE ",
+        "Version Number": " v2.0.0 ",
+        "Owner": "noties",
+        "Upstream URL": "https://github.com/noties/Prism4j",
+        "Description": "Primary aim of this library is to provide a tokenization strategy of arbitrary syntaxes for later processing"
+    }
+]

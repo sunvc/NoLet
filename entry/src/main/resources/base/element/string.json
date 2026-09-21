@@ -1,0 +1,747 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "NoLet 推送通知"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "NoLet 推送通知"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "哔.哔"
+    },
+    {
+      "name": "tab_messages",
+      "value": "消息"
+    },
+    {
+      "name": "tab_settings",
+      "value": "设置"
+    },
+    {
+      "name": "tab_quick",
+      "value": "快捷"
+    },
+    {
+      "name": "title_quick",
+      "value": "快捷发送"
+    },
+    {
+      "name": "quick_notify_title",
+      "value": "快速消息"
+    },
+    {
+      "name": "quick_sent",
+      "value": "已发送"
+    },
+    {
+      "name": "quick_send_failed",
+      "value": "发送失败"
+    },
+    {
+      "name": "quick_send",
+      "value": "发送"
+    },
+    {
+      "name": "menu_more",
+      "value": "更多设置"
+    },
+    {
+      "name": "section_quick_settings",
+      "value": "发送设置"
+    },
+    {
+      "name": "auto_send",
+      "value": "自动发送"
+    },
+    {
+      "name": "auto_send_desc",
+      "value": "进入应用时，将剪贴板内容自动发送给默认服务器"
+    },
+    {
+      "name": "quick_send_toggle",
+      "value": "快捷发送"
+    },
+    {
+      "name": "quick_send_desc",
+      "value": "进入应用时检测到剪贴板内容，弹窗确认后发送"
+    },
+    {
+      "name": "vibration",
+      "value": "震动"
+    },
+    {
+      "name": "vibration_desc",
+      "value": "操作成功时设备震动反馈"
+    },
+    {
+      "name": "quick_options",
+      "value": "发送选项"
+    },
+    {
+      "name": "quick_option_title",
+      "value": "标题"
+    },
+    {
+      "name": "quick_option_title_ph",
+      "value": "留空使用默认标题"
+    },
+    {
+      "name": "quick_option_icon",
+      "value": "图标"
+    },
+    {
+      "name": "quick_option_icon_ph",
+      "value": "图标名称或链接，留空不带"
+    },
+    {
+      "name": "quick_option_sound",
+      "value": "提示音"
+    },
+    {
+      "name": "quick_option_sound_ph",
+      "value": "提示音名称，留空不带"
+    },
+    {
+      "name": "quick_option_group",
+      "value": "分组"
+    },
+    {
+      "name": "quick_option_group_ph",
+      "value": "清空则不带分组参数"
+    },
+    {
+      "name": "action_done",
+      "value": "完成"
+    },
+    {
+      "name": "default_set",
+      "value": "已设为默认发送目标"
+    },
+    {
+      "name": "set_default",
+      "value": "设为默认"
+    },
+    {
+      "name": "default_tag",
+      "value": "默认"
+    },
+    {
+      "name": "quick_send_dialog_title",
+      "value": "快捷发送"
+    },
+    {
+      "name": "quick_send_dialog_message",
+      "value": "将剪贴板内容发送给「%s」？"
+    },
+    {
+      "name": "clipboard_permission_denied",
+      "value": "需要剪贴板权限才能在进入应用时检测内容"
+    },
+    {
+      "name": "quick_empty",
+      "value": "暂无发送目标\n点击右上角 + 添加服务器"
+    },
+    {
+      "name": "quick_target_placeholder",
+      "value": "域名/KEY，如 https://wzs.app/AbCd1234"
+    },
+    {
+      "name": "quick_name_placeholder",
+      "value": "备注名（可选）"
+    },
+    {
+      "name": "quick_need_target",
+      "value": "请填写 域名/KEY 完整地址"
+    },
+    {
+      "name": "section_servers",
+      "value": "服务器"
+    },
+    {
+      "name": "section_general",
+      "value": "通用"
+    },
+    {
+      "name": "section_about",
+      "value": "关于"
+    },
+    {
+      "name": "menu_servers",
+      "value": "服务器配置"
+    },
+    {
+      "name": "menu_sound",
+      "value": "铃声列表"
+    },
+    {
+      "name": "menu_data",
+      "value": "数据管理"
+    },
+    {
+      "name": "menu_crypto",
+      "value": "加密配置"
+    },
+    {
+      "name": "menu_system_settings",
+      "value": "系统设置"
+    },
+    {
+      "name": "menu_about",
+      "value": "关于 哔.哔"
+    },
+    {
+      "name": "title_messages",
+      "value": "历史消息"
+    },
+    {
+      "name": "title_servers",
+      "value": "服务器配置"
+    },
+    {
+      "name": "title_sound",
+      "value": "铃声设置"
+    },
+    {
+      "name": "title_crypto",
+      "value": "加密配置"
+    },
+    {
+      "name": "title_edit_crypto",
+      "value": "修改配置"
+    },
+    {
+      "name": "title_data",
+      "value": "数据管理"
+    },
+    {
+      "name": "title_about",
+      "value": "关于 哔.哔"
+    },
+    {
+      "name": "action_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "action_delete",
+      "value": "删除"
+    },
+    {
+      "name": "action_view_more",
+      "value": "查看更多"
+    },
+    {
+      "name": "action_mark_read",
+      "value": "设为已读"
+    },
+    {
+      "name": "action_read_state",
+      "value": "已读"
+    },
+    {
+      "name": "lan_share",
+      "value": "局域网共享"
+    },
+    {
+      "name": "section_lan",
+      "value": "电脑快传"
+    },
+    {
+      "name": "lan_share_desc",
+      "value": "进入应用时，将剪贴板内容加密广播给同一 Wi-Fi 下的电脑"
+    },
+    {
+      "name": "lan_code",
+      "value": "接收码"
+    },
+    {
+      "name": "lan_code_copy",
+      "value": "复制接收码"
+    },
+    {
+      "name": "lan_code_regenerate",
+      "value": "重新生成接收码"
+    },
+    {
+      "name": "lan_code_copied",
+      "value": "接收码已复制"
+    },
+    {
+      "name": "lan_code_regenerated",
+      "value": "已重新生成接收码"
+    },
+    {
+      "name": "lan_sent",
+      "value": "已发送到电脑"
+    },
+    {
+      "name": "lan_send_failed",
+      "value": "局域网发送失败"
+    },
+    {
+      "name": "lan_no_wifi",
+      "value": "请连接 Wi-Fi 后再试"
+    },
+    {
+      "name": "lan_too_large",
+      "value": "内容过长，无法局域网发送"
+    },
+    {
+      "name": "action_save",
+      "value": "保存"
+    },
+    {
+      "name": "action_ok",
+      "value": "确定"
+    },
+    {
+      "name": "action_reset",
+      "value": "重置"
+    },
+    {
+      "name": "action_copy_string",
+      "value": "复制串"
+    },
+    {
+      "name": "search_placeholder",
+      "value": "搜索消息"
+    },
+    {
+      "name": "empty_messages",
+      "value": "暂无消息"
+    },
+    {
+      "name": "no_results",
+      "value": "没有找到数据"
+    },
+    {
+      "name": "search_hint",
+      "value": "输入关键词搜索消息"
+    },
+    {
+      "name": "delete_history_title",
+      "value": "删除历史消息"
+    },
+    {
+      "name": "delete_history_message",
+      "value": "确定删除 %s 之前的所有消息？此操作无法恢复。"
+    },
+    {
+      "name": "date_label",
+      "value": "%1$d年%2$d月%3$d日"
+    },
+    {
+      "name": "title_body_separator",
+      "value": "："
+    },
+    {
+      "name": "default_group",
+      "value": "默认"
+    },
+    {
+      "name": "quick_group",
+      "value": "快捷消息"
+    },
+    {
+      "name": "section_normal",
+      "value": "正常"
+    },
+    {
+      "name": "section_fault",
+      "value": "故障"
+    },
+    {
+      "name": "server_no_key",
+      "value": "未设置 KEY"
+    },
+    {
+      "name": "add_server",
+      "value": "添加服务器"
+    },
+    {
+      "name": "add_official_server",
+      "value": "添加官方服务器"
+    },
+    {
+      "name": "add_custom_server",
+      "value": "添加自定义服务器"
+    },    {
+      "name": "server_url_placeholder",
+      "value": "服务器地址，如 https://api.example.com"
+    },
+    {
+      "name": "server_key_placeholder",
+      "value": "服务器 KEY（可选）"
+    },
+    {
+      "name": "registering",
+      "value": "注册中…"
+    },
+    {
+      "name": "empty_servers",
+      "value": "暂无服务器\n点击右上角 + 添加"
+    },
+    {
+      "name": "err_url_required",
+      "value": "请输入服务器地址"
+    },
+    {
+      "name": "server_exists",
+      "value": "服务器已存在"
+    },
+    {
+      "name": "err_claim",
+      "value": "注册 ID 失败"
+    },
+    {
+      "name": "err_register",
+      "value": "注册失败"
+    },
+    {
+      "name": "server_added",
+      "value": "已添加"
+    },
+    {
+      "name": "delete_server_title",
+      "value": "删除服务器"
+    },
+    {
+      "name": "delete_server_message",
+      "value": "确定删除 %s？"
+    },
+    {
+      "name": "reset_key_title",
+      "value": "重置 KEY"
+    },
+    {
+      "name": "reset_key_message",
+      "value": "确定重置 %s 的 KEY？"
+    },
+    {
+      "name": "key_reset",
+      "value": "KEY 已重置"
+    },
+    {
+      "name": "reset_failed",
+      "value": "重置失败"
+    },
+    {
+      "name": "server_no_key_toast",
+      "value": "该服务器未设置 KEY"
+    },
+    {
+      "name": "key_copied",
+      "value": "KEY 已复制"
+    },
+    {
+      "name": "copied",
+      "value": "已复制"
+    },
+    {
+      "name": "copy_body",
+      "value": "复制正文"
+    },
+    {
+      "name": "select_copy",
+      "value": "选择复制"
+    },
+    {
+      "name": "copy_action",
+      "value": "复制"
+    },
+    {
+      "name": "selection_done",
+      "value": "完成"
+    },
+    {
+      "name": "copy_title",
+      "value": "复制标题"
+    },
+    {
+      "name": "server_copied",
+      "value": "服务器地址已复制"
+    },
+    {
+      "name": "gesture_reason",
+      "value": "用于识别握持手机的手，自动调整底部标签位置以便单手操作"
+    },
+    {
+      "name": "read_pasteboard_reason",
+      "value": "用于进入应用时读取剪贴板内容，以实现快捷发送和自动发送"
+    },
+    {
+      "name": "tap_to_preview",
+      "value": "点击试听铃声"
+    },
+    {
+      "name": "builtin_tag",
+      "value": "内置"
+    },
+    {
+      "name": "err_builtin_delete",
+      "value": "系统内置加密项不可删除"
+    },
+    {
+      "name": "err_builtin_copy",
+      "value": "系统内置加密项不可复制"
+    },
+    {
+      "name": "err_builtin_edit",
+      "value": "系统内置加密项不可编辑"
+    },
+    {
+      "name": "config_copied",
+      "value": "配置串已复制"
+    },
+    {
+      "name": "empty_crypto",
+      "value": "暂无加密配置\n点击右上角 + 添加"
+    },
+    {
+      "name": "section_import",
+      "value": "导入配置"
+    },
+    {
+      "name": "import_placeholder",
+      "value": "粘贴 GCM,key,iv 配置串，自动识别"
+    },
+    {
+      "name": "import_button",
+      "value": "识别导入"
+    },
+    {
+      "name": "import_bad",
+      "value": "数据不正确"
+    },
+    {
+      "name": "import_ok",
+      "value": "导入成功"
+    },
+    {
+      "name": "config_exists",
+      "value": "该配置已存在"
+    },
+    {
+      "name": "clipboard_link_title",
+      "value": "检测到口令"
+    },
+    {
+      "name": "clipboard_server_message",
+      "value": "检测到服务器链接，是否前往添加？"
+    },
+    {
+      "name": "clipboard_crypto_message",
+      "value": "检测到加密配置，是否前往导入？"
+    },
+    {
+      "name": "key_length_hint",
+      "value": "KEY 需为 %d 位"
+    },
+    {
+      "name": "section_algorithm",
+      "value": "选择加密算法"
+    },
+    {
+      "name": "alg_aes128",
+      "value": "AES128（16 位 KEY）"
+    },
+    {
+      "name": "alg_aes192",
+      "value": "AES192（24 位 KEY）"
+    },
+    {
+      "name": "alg_aes256",
+      "value": "AES256（32 位 KEY）"
+    },
+    {
+      "name": "key_needed",
+      "value": "还需 %d 位"
+    },
+    {
+      "name": "random_generate",
+      "value": "随机生成"
+    },
+    {
+      "name": "section_device",
+      "value": "设备信息"
+    },
+    {
+      "name": "section_messages_mgmt",
+      "value": "消息管理"
+    },
+    {
+      "name": "device_id",
+      "value": "设备 ID"
+    },
+    {
+      "name": "total_messages",
+      "value": "本地消息总数"
+    },
+    {
+      "name": "unread_messages",
+      "value": "未读消息"
+    },
+    {
+      "name": "clear_read",
+      "value": "清除所有已读消息"
+    },
+    {
+      "name": "clear_read_message",
+      "value": "清除所有已读消息？"
+    },
+    {
+      "name": "clear_all",
+      "value": "清空全部消息"
+    },
+    {
+      "name": "clear_all_message",
+      "value": "确定清空全部消息？此操作无法恢复。"
+    },
+    {
+      "name": "confirm_delete_title",
+      "value": "确认删除"
+    },
+    {
+      "name": "copy_success",
+      "value": "复制成功"
+    },
+    {
+      "name": "version_info",
+      "value": "版本信息"
+    },
+    {
+      "name": "official_site",
+      "value": "官方网站"
+    },
+    {
+      "name": "app_source",
+      "value": "App 源码"
+    },
+    {
+      "name": "server_source",
+      "value": "服务端源码"
+    },
+    {
+      "name": "copyright",
+      "value": "© 2025 NoLet All Rights Reserved."
+    },
+    {
+      "name": "huawei_account",
+      "value": "华为账号"
+    },
+    {
+      "name": "huawei_linked",
+      "value": "已关联"
+    },
+    {
+      "name": "huawei_union_id",
+      "value": "UnionID"
+    },
+    {
+      "name": "huawei_open_id",
+      "value": "OpenID"
+    },
+    {
+      "name": "huawei_logout",
+      "value": "退出登录"
+    },
+    {
+      "name": "huawei_logout_message",
+      "value": "退出后将清除本设备保存的华为账号信息，确定退出吗？"
+    },
+    {
+      "name": "title_history",
+      "value": "历史服务器"
+    },
+    {
+      "name": "history_loading",
+      "value": "正在加载历史服务器…"
+    },
+    {
+      "name": "history_empty",
+      "value": "暂无历史服务器"
+    },
+    {
+      "name": "history_login_required",
+      "value": "请先在「关于」页登录华为账号"
+    },
+    {
+      "name": "login_required_title",
+      "value": "未登录"
+    },
+    {
+      "name": "history_delete_title",
+      "value": "删除历史记录"
+    },
+    {
+      "name": "history_delete_message",
+      "value": "确定删除 %s 的历史记录吗？"
+    },
+    {
+      "name": "history_delete_failed",
+      "value": "删除失败，请稍后再试"
+    },
+    {
+      "name": "official_site_line",
+      "value": "官方网站 wzs.app"
+    },
+    {
+      "name": "invalid_server_qr",
+      "value": "无效的服务器二维码"
+    },
+    {
+      "name": "copied_prefix",
+      "value": "已复制：%s"
+    },
+    {
+      "name": "scan_failed",
+      "value": "扫码失败：%s"
+    },
+    {
+      "name": "decrypt_failed",
+      "value": "解密失败！"
+    },
+    {
+      "name": "welcome_title",
+      "value": "欢迎使用 NoLet"
+    },
+    {
+      "name": "welcome_body",
+      "value": "服务端推送到达后会自动归档到这里，支持链接与分组，左滑可删除消息。"
+    },
+    {
+      "name": "seed_alert_title",
+      "value": "服务器告警"
+    },
+    {
+      "name": "seed_alert_body",
+      "value": "CPU 使用率 92%"
+    },
+    {
+      "name": "seed_group_ops",
+      "value": "运维告警"
+    },
+    {
+      "name": "seed_group_system",
+      "value": "系统通知"
+    },
+    {
+      "name": "seed_group_test",
+      "value": "测试分组"
+    },
+    {
+      "name": "seed_group_daily",
+      "value": "日报"
+    },
+    {
+      "name": "seed_test_title",
+      "value": "测试消息 %d"
+    },
+    {
+      "name": "seed_test_body",
+      "value": "这是第 %d 条默认测试数据,用于验证长列表滚动、分组与已读状态。"
+    }
+  ]
+}

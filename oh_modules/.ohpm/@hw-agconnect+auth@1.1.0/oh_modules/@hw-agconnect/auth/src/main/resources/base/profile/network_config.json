@@ -1,0 +1,13 @@
+{
+  "network-security-config": {
+    "base-config": {
+      "trust-anchors": [
+        {
+          "certificates": "/etc/security/certificates"
+        }
+      ]
+    }
+  },
+  "trust-global-user-ca": false,
+  "trust-current-user-ca": false
+}

@@ -1,0 +1,6 @@
+{
+  "name": "libark_interop_api_prism.so",
+  "types": "./ark_interop_api_prism.d.ts",
+  "version": "1.0.0",
+  "description": ""
+}

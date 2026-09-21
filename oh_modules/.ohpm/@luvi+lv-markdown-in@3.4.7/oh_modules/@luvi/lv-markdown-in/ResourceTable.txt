@@ -1,0 +1,4 @@
+string agcit_luvi_markdown 0x02000000
+string page_show 0x02000001
+string use_network 0x02000002
+float page_text_font_size 0x02000003
