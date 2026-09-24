@@ -1,6 +1,8 @@
 # Scripting
 
-BravoPapa supports extending notification behavior with JavaScript scripts. Scripts run in the app's built-in sandboxed JavaScript runtime and can use standard APIs such as `fetch`, `crypto`, `storage`, `setTimeout`, and `console`. There are four script types by purpose.
+> ⚠️ **Platform: `apple`**. Scripting relies on the app's built-in JavaScript runtime and on Apple notification service/content extensions, and is **supported on Apple (iOS) only**. HarmonyOS does not provide scripts, custom buttons, or similar capabilities.
+
+Nolet supports extending notification behavior with JavaScript scripts. Scripts run in the app's built-in sandboxed JavaScript runtime and can use standard APIs such as `fetch`, `crypto`, `storage`, `setTimeout`, and `console`. There are four script types by purpose.
 
 When creating a script on the app's **Scripts** screen, choose its type:
 
@@ -61,6 +63,7 @@ When you tap **Test/Validate** in the script editor, the app runs the script onc
 When the push's `call` field is a piece of **text** (not an http link), the app calls the voice script to synthesize audio and plays it as the notification sound (up to about 30 seconds).
 
 - Trigger: `call` is non-URL text. (When `call` is an http link the audio is downloaded directly; when `call: true` the long ringtone is played — neither runs the script.)
+- Note: `call` itself is supported on both platforms — on HarmonyOS it is a numeric value `10`–`60` that sets the ringtone duration in seconds. HarmonyOS has no scripting, so this voice-script section applies to Apple only.
 - Entry argument: the full notification field object; the text to speak is in the `call` field.
 - **Return value**: the audio file bytes (`Uint8Array` / `ArrayBuffer`, e.g. MP3). The app writes them and converts to CAF for playback.
 
@@ -200,6 +203,7 @@ Set the button title and icon. Its tap behavior:
 
 - **Bound to an action script**: tapping runs that script in the notification UI (i.e. the [Action Script](#action-script) above); the script can tell which button was tapped via the `actionmode` argument.
 - **Not bound to a script**: tapping just opens the app.
+- **"Open main app" switch**: controls whether tapping navigates to the main app (on by default). When it is off, a script-bound button runs the script inside the notification UI without navigating, while an unbound button does nothing on tap.
 
 #### Setup Steps
 
@@ -220,6 +224,28 @@ async function (p) {
   }
 }
 ```
+
+---
+
+## Plugin Center
+
+Enter the Plugin Center through the cloud icon in the top-right corner of the "Script list" page: a marketplace of JS scripts shared by all users, with the data stored in the app's iCloud public database.
+
+#### Browsing and Installing
+
+- Search by name, description, or tag keywords, and filter by script type (voice/processor/action/plugin). The list is ordered by publish time, newest first, with scroll-based paging.
+- The detail page shows the author, type, size, SHA256, and the **full source code**. Scripts come from other users and run with capabilities such as making network requests and reading/writing `storage` — **always review the source code to confirm it is safe before installing**.
+- Tapping "Install to my scripts" runs syntax and entry-point validation once more, then saves it into the local script list:
+  - If the same content (identical SHA256) already exists locally, it reports "Already installed" and does not save a duplicate;
+  - On a filename clash it is renamed automatically (`xxx.js` -> `xxx-2.js`).
+
+#### Uploading Your Own Scripts
+
+- "Upload script" in the toolbar: choose one of your local scripts, fill in a name, description, and tags, then upload. Before uploading it is actually validated once with sample arguments; scripts that fail validation cannot be uploaded.
+- The device must be signed in to iCloud; each user can upload at most 50 scripts.
+- Manage the scripts you have published on the "My uploads" page, where you can delete the cloud record; after deletion they are no longer visible to others, while users who already installed them are unaffected.
+
+> The Plugin Center is completely open with no human review. Only share scripts you trust, and only install scripts whose source code you have read.
 
 ---
 

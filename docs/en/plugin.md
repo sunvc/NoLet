@@ -1,5 +1,7 @@
 # Notification Plugins
 
+> ⚠️ **Platform: `apple`**. Notification plugins rely on the app's built-in JavaScript runtime and on the Apple Notification Service Extension, are **supported on Apple (iOS) only**, and are triggered by the push's `plugin` parameter. HarmonyOS is not supported.
+
 A notification plugin is a JavaScript script that **fully takes over** how a single notification is processed inside the Notification Service Extension.
 
 Normal pushes are handled by the app's built-in pipeline (decrypt → archive → badge → sound → attachment/avatar). When a push carries a `plugin` parameter, the app runs your plugin script at the very start of the pipeline. The script decides how the notification is displayed, whether it is archived, what sound it uses, and what attachments it gets — it can call native capabilities equivalent to the built-in pipeline, then terminate the built-in flow.

@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [BravoPapa](/en/#BravoPapaApp)
+- [Nolet](/en/)
 - **App**
   - [Usage Tutorial](/en/tutorial)
   - [Message Templates](/en/templates)

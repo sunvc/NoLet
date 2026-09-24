@@ -1,16 +1,16 @@
-# Send Notification
+# Sending Push Notifications
 
 1. Open the APP and copy the test URL.
 
 <img src="../_media/example.png" width=365 />
 
 2. Modify the content and request this URL.<br>
-You can send GET or POST requests. You will receive the notification immediately upon a successful request.<br>
-Difference from Bark: Parameter Priority [POST > GET > URL params]. POST parameters will overwrite GET parameters, and so on.
+You can send GET or POST requests. You will receive the notification immediately once the request succeeds.<br>
+Difference from Bark: parameter priority is [POST > GET > URL params]. POST parameters override GET parameters, and so on.
 
 ## URL Format
 
-The URL is composed of the push key, title, subtitle, and body. The following combinations are available:
+The URL consists of the push key, title, subtitle, and body. The following combinations are possible:
 
 ```URL
 https://wzs.app/:key/:body
@@ -21,28 +21,28 @@ https://wzs.app/:key/:title/:subtitle/:body
 
 ## Request Methods
 
-#### GET Request: Parameters appended to the URL, for example:
+#### GET request: parameters are appended to the URL, for example:
 
 ```sh
 curl https://wzs.app/your_key/push_content?group=group_name&copy=copy_content
 ```
 
-*When manually appending parameters to the URL, please pay attention to URL encoding. You can refer to [FAQ: URL Encoding](/faq?id=%e6%8e%a8%e9%80%81%e7%89%b9%e6%ae%8a%e5%ad%97%e7%ac%a6%e5%af%bc%e8%87%b4%e6%8e%a8%e9%80%81%e5%a4%b1%e8%b4%a5%ef%bc%8c%e6%af%94%e5%a6%82-%e6%8e%a8%e9%80%81%e5%86%85%e5%ae%b9%e5%8c%85%e5%90%ab%e9%93%be%e6%8e%a5%ef%bc%8c%e6%88%96%e6%8e%a8%e9%80%81%e5%bc%82%e5%b8%b8-%e6%af%94%e5%a6%82-%e5%8f%98%e6%88%90%e7%a9%ba%e6%a0%bc)*
+*When manually appending parameters to a URL, watch out for URL encoding. See [FAQ: URL Encoding](/en/faq).
 
-##### POST Request: Parameters placed in the request body, for example:
+##### POST request: parameters go in the request body, for example:
 
 ```sh
 curl -X POST https://wzs.app/your_key \
      -d'body=push_content&group=group_name&copy=copy_content'
 ```
 
-##### POST Request supports JSON, for example:
+##### POST requests support JSON, for example:
 
 ```sh
 curl -X "POST" "//https://wzs.app/your_key" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test Nolet Server",
   "title": "Test Title",
   "badge": 1,
   "category": "myNotificationCategory",
@@ -53,78 +53,80 @@ curl -X "POST" "//https://wzs.app/your_key" \
 }'
 ```
 
-##### JSON Request: key can be placed in the request body, URL path must be `/push`, for example:
+##### In a JSON request the key can be placed in the request body; the URL path must be /push, for example:
 
 ```sh
 curl -X "POST" "https://wzs.app/push" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test Nolet Server",
   "title": "Test Title",
   "device_key": "your_key"
 }'
 ```
 
-## Parameter List
+## Full Parameter List
 
-Supported parameter list. Specific effects can be previewed in the APP.
-All parameters are compatible with various casing styles: SubTitle / subTitle / subtitle / sub_title / sub-title /
+The list of supported parameters; their exact effects can be previewed inside the APP.
+All parameters accept various casing styles: SubTitle / subTitle / subtitle / sub_title / sub-title /
 
-| Parameter | Type | Description |
-| ----- | ----------- | ----------- |
-| id | String | UUID. Passing the same id overwrites the original message. Passing only the id deletes the message. |
-| title | String | Notification Title |
-| subtitle | String | Notification Subtitle |
-| body | String | Notification Content (Supports content/message/data/text equivalent to body) |
-| cipherText | String | Encrypted notification content |
-| cipherNumber | Integer | `cipherNumber=0` Key number, 0 is the system default key |
-| markdown | String | Markdown syntax (supports abbreviation md) |
-| category | String | Notification category, which determines the action buttons shown on the notification. **Required to use custom buttons** — the value must be one of the app's fixed identifiers: `myNotificationCategory` (default), `markdown`, or one of the 26 custom slots `alfa`…`zulu` (configure buttons for a slot in the app), e.g. `category=alfa`. Custom category names in the push payload are not supported. Markdown and reply notifications get their category automatically, no need to pass it. |
-| level | String or Integer  | Interruption level.<br>**active**: Default value, the system will immediately light up the screen to display the notification.<br>**timeSensitive**: Time-sensitive notification, can be displayed in Focus mode.<br>**passive**: Only adds the notification to the notification list, will not light up the screen.<br>**critical**: Critical alert, can alert in Focus mode or Silent mode. Can use numbers: `level=1`<br>0: passive<br>1: active<br>2: timeSensitive<br>3...10: critical, in this mode the number will be used for volume (`level=3...10`) |
-| volume | Integer/String | Volume in `level=critical&volume=5` mode, range 0...10 |
-| call | String | Long alert, similar to a WeChat call notification:<br>`call=1` loops the ringtone for ~30 seconds;<br>`call=https://example.com/audio.mp3` downloads the audio and plays it as a long ringtone;<br>`call=text-to-speak` runs the [voice script](/en/scripts) to synthesize speech from the text |
-| badge | String  | `badge=1` Notification badge, can be any number |
-| autoCopy | Boolean | `autoCopy=1` or `autoCopy=true` Requires manual long-press or pull-down of the notification |
-| copy | String | `copy=copy_content` When copying the notification, specify the content to copy. If this parameter is not passed, the entire notification content will be copied. |
-| reply | URL | Reply callback URL. When present, the notification shows a text input box; when the user replies, the reply text is appended directly to this URL and sent as a GET request, e.g. `reply=https://example.com/reply/` |
-| sound | String | `sound=minuet` You can set different ringtones for notifications. Default ringtone can be set in the app. |
-| icon | URL | `icon=https://example.com/icon.png` Set custom icon, automatically cached, supports uploading cloud icons |
-| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="BravoPapa App" height="60">  |
-| icon | String Array | `icon=Group,ff0000` <img src="/_media/example-word.png" alt="BravoPapa App" height="60"> |
-| image | URL | Pass image URL, automatically downloaded and cached after the phone receives the message |
-| savealbum | Boolean | Pass "1" to automatically save the image to the album |
-| group | String | Group messages. Notifications will be displayed in the Notification Center grouped by `group`.<br>You can also choose to view different groups in the history message list. |
-| ttl | Integer/String | `ttl=days` Notification expiration time, unit: days. Default is set in the app. |
-| url | URL  | URL to jump to when clicking the notification. Supports URL Scheme and Universal Link |
-| location | String | Two modes: ① Pass `"lat,lng"` coordinates to display a map button on the message card; ② Pass a callback URL to trigger a Location Push that retrieves the device's location and POSTs it back |
-| script | String | Background processor script name (without `.js`). Runs silently when the push arrives without changing the notification — used for side effects like forwarding to a webhook or logging. See the [scripts doc](/en/scripts). |
-| plugin | String | Notification plugin script name (without `.js`). Can modify the notification's content, sound, or attachments, or block it before display. See the [plugin doc](/en/plugin). |
+> **Platform tags:** `全平台` = supported on both Apple and HarmonyOS; `apple` = Apple only; `harmony` = HarmonyOS only.
+
+| Parameter | Type | Description | Platform |
+| ----- | ----------- | ----------- | ----------- |
+| id | String | UUID. Passing the same id overwrites the original message; passing only id deletes the message | 全平台 |
+| title | String | Notification title | 全平台 |
+| subtitle | String | Notification subtitle | apple |
+| body | String | Notification content (content/message/data/text are accepted as equivalents of body) | 全平台 |
+| cipherText | String | Encrypted notification content | 全平台 |
+| cipherNumber | Integer | `cipherNumber=0` key number; 0 is the system default key | 全平台 |
+| markdown | String | Markdown syntax (the shorthand md is supported) | 全平台 |
+| category | String | Notification category, which determines the action buttons shown on the notification. **Required when using custom buttons.** The value can only be one of the app's fixed built-in identifiers: `myNotificationCategory` (normal), `markdown`, or one of the 26 custom slots `alfa`…`zulu` (configure buttons for a slot inside the app), e.g. `category=alfa`. Pushing custom category names is not supported. Categories for Markdown and reply notifications are set automatically by the app; no need to pass them | apple |
+| level | String or Integer  | Interruption level.<br>**active**: Default; the system lights up the screen immediately to show the notification.<br>**timeSensitive**: Time-sensitive notification; can be shown while in Focus.<br>**passive**: Only adds the notification to the notification list without lighting up the screen.<br>**critical**: Critical alert; can notify in Focus mode or Silent mode. Numbers can be used instead: `level=1`<br>0: passive<br>1: active<br>2: timeSensitive<br>3...10: critical; in this mode the number sets the volume (`level=3...10`) | apple |
+| volume | Integer/String | Volume in `level=critical&volume=5` mode; range 0...10 | apple |
+| call | String/Number | Long alert, similar to a WeChat call notification.<br>**Apple**: `call=1` loops the ringtone for about 30 seconds; `call=https://example.com/audio.mp3` downloads audio to play as a long ringtone; `call=text-to-read` is handed to the [voice script](/en/scripts) for speech synthesis and announcement.<br>**HarmonyOS**: `call=10`…`60`, a numeric value meaning the ringtone playback duration in seconds, controlling how long the ringtone plays | 全平台 |
+| badge | String  | `badge=1` notification badge; can be any number; `<=0` clears it | 全平台 |
+| autoCopy | Boolean | `autoCopy=1` or `autoCopy=true`; requires manually long-pressing or pulling down the notification | apple |
+| copy | String | `copy=content-to-copy` specifies what the copy action copies. If this parameter is omitted, the entire notification content is copied | 全平台 |
+| reply | URL | Reply callback URL. When present, a text input box appears on the notification; when the user replies, the reply text is appended directly to this URL and sent as a GET request, e.g. `reply=https://example.com/reply/` | apple |
+| sound | String | `sound=minuet` sets a different ringtone for the push; the default ringtone can be configured in the app. Apple uses `.caf` (auto-completed server-side); HarmonyOS reads the same-named `.mp3` from the app's bundled rawfile directory | 全平台 |
+| icon | URL | `icon=https://example.com/icon.png` sets a custom icon. Icons are cached automatically; cloud icon uploads are supported | 全平台 |
+| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="Nolet App" height="60">  | apple |
+| icon | String Array | `icon=Group,ff0000` <img src="/_media/example-word.png" alt="Nolet App" height="60"> | apple |
+| image | URL | Pass an image URL; it is downloaded and cached automatically after the phone receives the message | 全平台 |
+| savealbum | Boolean | Pass "1" to automatically save the image to the photo album | apple |
+| group | String | Groups messages; pushes are displayed in Notification Center grouped by `group`.<br>You can also choose to view different groups in the history message list. | 全平台 |
+| ttl | Integer/String | `ttl=3600` push expiration time, **in seconds**; default set in the app; `-1` = forever | 全平台 |
+| url | URL  | URL to open when the notification is tapped. Supports URL Scheme and Universal Links | 全平台 |
+| location | String | Two modes: ① pass `"latitude,longitude"` coordinates to show a map button directly on the message card; ② pass a callback URL to trigger a Location Push that retrieves the device location and POSTs it back (see the message templates doc) | apple |
+| script | String | Background processor script name (without `.js`). Runs silently in the background when the notification arrives without changing what is displayed; used for side effects such as forwarding webhooks or writing logs. See the [scripts doc](/en/scripts) | apple |
+| plugin | String | Notification plugin script name (without `.js`). Can modify content, sound, or attachments before display, or block the notification outright. See the [plugin doc](/en/plugin) | apple |
 
 ## Batch Push
 
-Just pass the device ID list to the `device_keys` parameter. Or a comma-separated string to the `device_key` parameter.
+Just pass the device ID list in the `device_keys` parameter, or a comma-separated string in the `device_key` parameter.
 
-* GET Request:
+* GET request:
 
 ```sh
 https://wzs.app/key1,key2,key3,.../push_content
 https://wzs.app/push?deviceKey=key1,key2,key3,...&body=push_content
 ```
 
-* Or POST Request:
+* Or a POST request:
 
 ```json
 {
-     ...// Other parameters
+     ... // other parameters
      "deviceKeys": ["key1", "key2", "key3", ...],
 }
 ```
 
 ## Group Push
 
-* Server must use sqlite or mysql.
-* Server configuration must set user, password.
-* Replace the following link with your custom server to generate a QR code, must be added by scanning the code.
+* The server must use SQLite or MySQL.
+* The server configuration must set user and password.
+* Replace the link below with your custom server to generate a QR code; it must be added by scanning.
 
 ```sh
 pb://server?text=https://wzs.app&group=newgroup
@@ -147,7 +149,7 @@ axios.post(
     },
     params: {
       PushGroupName: "newgroup",
-      body: "Test BravoPapa Server",
+      body: "Test Nolet Server",
       // ...
     }
   }
@@ -174,5 +176,5 @@ axios.post(
 
 ## Shortcuts
 
-BravoPapa supports sending notifications directly using Shortcuts.
-Pass Server and KEY, or Device ID. If passing Device ID, it does not go through the server, but pushes directly to Apple servers.
+Nolet supports sending pushes directly via Shortcuts (platform: **apple**; Shortcuts is an Apple system feature).
+Pass the server and KEY, or a device ID. When passing a device ID, the push does not go through the server but is sent directly to Apple's servers.

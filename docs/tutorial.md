@@ -42,7 +42,7 @@ curl -X POST https://wzs.app/your_key \
 curl -X "POST" "//https://wzs.app/your_key" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test Nolet Server",
   "title": "Test Title",
   "badge": 1,
   "category": "myNotificationCategory",
@@ -59,7 +59,7 @@ curl -X "POST" "//https://wzs.app/your_key" \
 curl -X "POST" "https://wzs.app/push" \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
-  "body": "Test BravoPapa Server",
+  "body": "Test Nolet Server",
   "title": "Test Title",
   "device_key": "your_key"
 }'
@@ -70,35 +70,37 @@ curl -X "POST" "https://wzs.app/push" \
 支持的参数列表，具体效果可在APP内预览。
 所有参数兼容各种写法：SubTitle / subTitle / subtitle / sub_title / sub-title /
 
-| 参数 | 参数类型 | 使用说明 |
-| ----- | ----------- | ----------- |
-| id | 字符串 | UUID 传入相同id覆盖原有消息，只传id删除消息 |
-| title | 字符串 | 推送标题 |
-| subtitle | 字符串 | 推送副标题 |
-| body | 字符串 | 推送内容( 支持 content/message/data/text 等同body) |
-| cipherText | 字符串 | 加密推送内容 |
-| cipherNumber | 整数 | `cipherNumber=0` 密钥编号, 0为系统默认密钥 |
-| markdown | 字符串 | Markdown语法(支持简写 md) |
-| category | 字符串 | 通知分类，决定通知上显示的操作按钮。**使用自定义按钮时必须传**，值只能是 App 内置的固定 identifier：`myNotificationCategory`（普通）、`markdown` 或 `alfa`…`zulu` 共 26 个自定义槽位（在 App 内为槽位配置按钮），例如 `category=alfa`。不支持推送自定义分类名。Markdown、可回复通知的分类由 App 自动设置，无需传 |
-| level | 字符串或整数  | 推送中断级别。<br>**active**：默认值，系统会立即亮屏显示通知<br>**timeSensitive**：时效性通知，可在专注状态下显示通知。<br>**passive**：仅将通知添加到通知列表，不会亮屏提醒。<br>**critical**：重要提醒，可在专注模式或者静音模式下提醒。参数可以使用数字替代：`level=1`<br>0：passive<br>1：active<br>2：timeSensitive<br>3...10：critical，此模式数字将用于音量（`level=3...10`） |
-| volume | 整数/字符串 | `level=critical&volume=5` 模式下音量，取值范围 0...10 |
-| call | 字符串 | 长提醒，类似微信电话通知：<br>`call=1` 循环铃声约 30 秒；<br>`call=https://example.com/audio.mp3` 下载音频作为长铃声播放；<br>`call=待朗读文本` 交给[语音脚本](/scripts)合成语音播报 |
-| badge | 字符串  | `badge=1` 推送角标，可以是任意数字 |
-| autoCopy | 布尔值 | `autoCopy=1` or `autoCopy=true`  需手动长按推送或下拉推送 |
-| copy | 字符串 | `copy=复制内容` 复制推送时，指定复制的内容，不传此参数将复制整个推送内容。 |
-| reply | URL | 回复回调地址，携带后通知出现文本输入框；用户回复时，回复文本会直接追加到该 URL 后发起 GET 请求，例如 `reply=https://example.com/reply/` |
-| sound | 字符串 | `sound=minuet` 可以为推送设置不同的铃声，应用内可设置默认铃声 |
-| icon | URL | `icon=https://example.com/icon.png` 设置自定义图标，图标自动缓存，支持上传云图标 |
-| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="BravoPapa App" height="60">  |
-| icon | 字符串数组 | `icon=组,ff0000` <img src="/_media/example-word.png" alt="BravoPapa App" height="60"> |
-| image | URL | 传入图片地址，手机收到消息后自动下载缓存 |
-| savealbum | 布尔值 | 传"1"自动保存图片到相册 |
-| group | 字符串 | 对消息进行分组，推送将按 `group` 分组显示在通知中心中。<br>也可在历史消息列表中选择查看不同的群组。 |
-| ttl | 整数/字符串 | `ttl=天数` 推送过期时间，单位天，默认 app 内设置。 |
-| url | URL  | 点击推送时，跳转的 URL，支持 URL Scheme 和 Universal Link |
-| location | 字符串 | 两种模式：① 传 `"纬度,经度"` 坐标，直接在消息卡片显示地图按钮；② 传回调 URL，触发 Location Push 获取设备位置后 POST 回传（详见消息模板文档） |
-| script | 字符串 | 后台处理器脚本名（不含 `.js`）。通知到达时在后台静默执行，不改变通知显示，用于转发 Webhook、写日志等副作用，详见[脚本文档](/scripts) |
-| plugin | 字符串 | 通知插件脚本名（不含 `.js`）。可在通知展示前修改内容、声音、附件或直接拦截通知，详见[插件文档](/plugin) |
+> **平台差异标签**：`全平台` = Apple 与鸿蒙通用；`apple` = 仅苹果设备；`harmony` = 仅鸿蒙设备。
+
+| 参数 | 参数类型 | 使用说明 | 平台差异 |
+| ----- | ----------- | ----------- | ----------- |
+| id | 字符串 | UUID 传入相同id覆盖原有消息，只传id删除消息 | 全平台 |
+| title | 字符串 | 推送标题 | 全平台 |
+| subtitle | 字符串 | 推送副标题 | apple |
+| body | 字符串 | 推送内容( 支持 content/message/data/text 等同body) | 全平台 |
+| cipherText | 字符串 | 加密推送内容 | 全平台 |
+| cipherNumber | 整数 | `cipherNumber=0` 密钥编号, 0为系统默认密钥 | 全平台 |
+| markdown | 字符串 | Markdown语法(支持简写 md) | 全平台 |
+| category | 字符串 | 通知分类，决定通知上显示的操作按钮。**使用自定义按钮时必须传**，值只能是 App 内置的固定 identifier：`myNotificationCategory`（普通）、`markdown` 或 `alfa`…`zulu` 共 26 个自定义槽位（在 App 内为槽位配置按钮），例如 `category=alfa`。不支持推送自定义分类名。Markdown、可回复通知的分类由 App 自动设置，无需传 | apple |
+| level | 字符串或整数  | 推送中断级别。<br>**active**：默认值，系统会立即亮屏显示通知<br>**timeSensitive**：时效性通知，可在专注状态下显示通知。<br>**passive**：仅将通知添加到通知列表，不会亮屏提醒。<br>**critical**：重要提醒，可在专注模式或者静音模式下提醒。参数可以使用数字替代：`level=1`<br>0：passive<br>1：active<br>2：timeSensitive<br>3...10：critical，此模式数字将用于音量（`level=3...10`） | apple |
+| volume | 整数/字符串 | `level=critical&volume=5` 模式下音量，取值范围 0...10 | apple |
+| call | 字符串/数字 | 长提醒，类似微信电话通知。<br>**Apple**：`call=1` 循环铃声约 30 秒；`call=https://example.com/audio.mp3` 下载音频作为长铃声播放；`call=待朗读文本` 交给[语音脚本](/scripts)合成语音播报。<br>**鸿蒙**：`call=10`…`60` 取数字，表示铃声播放时长（秒），控制铃声长短 | 全平台 |
+| badge | 字符串  | `badge=1` 推送角标，可以是任意数字；`<=0` 清零 | 全平台 |
+| autoCopy | 布尔值 | `autoCopy=1` or `autoCopy=true`  需手动长按推送或下拉推送 | apple |
+| copy | 字符串 | `copy=复制内容` 复制推送时，指定复制的内容，不传此参数将复制整个推送内容。 | 全平台 |
+| reply | URL | 回复回调地址，携带后通知出现文本输入框；用户回复时，回复文本会直接追加到该 URL 后发起 GET 请求，例如 `reply=https://example.com/reply/` | apple |
+| sound | 字符串 | `sound=minuet` 可以为推送设置不同的铃声，应用内可设置默认铃声。Apple 使用 `.caf`（服务端自动补全），鸿蒙读取应用内置 rawfile 同名 `.mp3` | 全平台 |
+| icon | URL | `icon=https://example.com/icon.png` 设置自定义图标，图标自动缓存，支持上传云图标 | 全平台 |
+| icon | emoji | `icon=🐲` <img src="/_media/example-emoji.png" alt="Nolet App" height="60">  | apple |
+| icon | 字符串数组 | `icon=组,ff0000` <img src="/_media/example-word.png" alt="Nolet App" height="60"> | apple |
+| image | URL | 传入图片地址，手机收到消息后自动下载缓存 | 全平台 |
+| savealbum | 布尔值 | 传"1"自动保存图片到相册 | apple |
+| group | 字符串 | 对消息进行分组，推送将按 `group` 分组显示在通知中心中。<br>也可在历史消息列表中选择查看不同的群组。 | 全平台 |
+| ttl | 整数/字符串 | `ttl=3600` 推送过期时间，**单位秒**，默认 app 内设置；`-1` 永久 | 全平台 |
+| url | URL  | 点击推送时，跳转的 URL，支持 URL Scheme 和 Universal Link | 全平台 |
+| location | 字符串 | 两种模式：① 传 `"纬度,经度"` 坐标，直接在消息卡片显示地图按钮；② 传回调 URL，触发 Location Push 获取设备位置后 POST 回传（详见消息模板文档） | apple |
+| script | 字符串 | 后台处理器脚本名（不含 `.js`）。通知到达时在后台静默执行，不改变通知显示，用于转发 Webhook、写日志等副作用，详见[脚本文档](/scripts) | apple |
+| plugin | 字符串 | 通知插件脚本名（不含 `.js`）。可在通知展示前修改内容、声音、附件或直接拦截通知，详见[插件文档](/plugin) | apple |
 
 ## 批量推送
 
@@ -147,7 +149,7 @@ axios.post(
     },
     params: {
       PushGroupName: "newgroup",
-      body: "Test BravoPapa Server",
+      body: "Test Nolet Server",
       // ...
     }
   }
@@ -174,5 +176,5 @@ axios.post(
 
 ## 快捷指令
 
-BravoPapa 支持使用快捷指令直接发送推送
+Nolet 支持使用快捷指令直接发送推送（平台差异：**apple**，快捷指令为苹果系统功能）。
 传服务器和KEY 或者 设备ID, 传设备ID 不经过服务器,直接推送到苹果服务器.

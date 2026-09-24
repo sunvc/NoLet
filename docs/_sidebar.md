@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [伞兵 - NoLet](/#BravoPapaApp)
+- [伞电 - NoLet](/)
 - **App**
   - [使用教程](/tutorial)
   - [消息模板字段](/templates)
