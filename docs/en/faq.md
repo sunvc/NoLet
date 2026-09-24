@@ -2,11 +2,14 @@
 *Thanks to the open source project [BARK](https://github.com/Finb/Bark)*
 
 #### Unable to Receive Push Notifications
-Check if the Device Token is normal in the App settings. If not, refer to [here](#Device-Token-Shows-Unknown)<br/>
+Check if the Device Token is normal in the App settings. If not, refer to [here](#device-token-shows-unknown)<br/>
 If it's normal, try restarting your device. If you still can't receive push notifications, check if the push request returns status code 200.<br/>
-If all checks are normal but you still have issues, you can provide feedback in the [BravoPapa Feedback Group](https://t.me/PushToMe).
+If all checks are normal but you still have issues, you can provide feedback in the [Nolet Feedback Group](https://t.me/PushToMe).
 
 #### Device Token Shows Unknown
+
+*Platform: apple (a connection issue between the device and Apple APNs). On HarmonyOS, check instead whether the push token is normal.*
+
 This is likely because your device is not properly connected to Apple servers, accompanied by issues such as iMessage unavailability and inability to receive push notifications from other apps.<br/>
 You can try switching networks, restarting your phone, or disabling VPN tools if you're using them to access Apple services.<br/>
 This issue is related to the connection between your device and Apple servers. The developer cannot provide any assistance, and you need to try resolving it yourself.
@@ -37,10 +40,10 @@ When reopening the APP, it will navigate to the last opened page.<br />
 Simply stay on the message history page when exiting the APP, and the next time you open the APP, it will open to the message history page.
 
 #### Does the Push API Support POST Requests?
-BravoPapa supports both GET and POST requests, and supports using JSON.<br>
-Regardless of the request method, the parameter names remain the same. Refer to the [Tutorial](/tutorial#request-methods) for more information.
+Nolet supports both GET and POST requests, and supports using JSON.<br>
+Regardless of the request method, the parameter names remain the same. Refer to the [Tutorial](/en/tutorial#request-methods) for more information.
 
-#### Push Failure Due to Special Characters, Such as Links in Push Content, or Abnormal Pushing (e.g., + Becoming a Space)
+#### Push Failures Caused by Special Characters, e.g. `+` Becoming a Space
 This issue occurs due to improper URL formatting, commonly when manually concatenating URLs.<br>
 When concatenating URLs, make sure to URL-encode the parameters.
 
@@ -61,5 +64,9 @@ https://wzs.app/key/a%2Fb%2Fc%2F
 When using mature HTTP libraries, parameters are automatically processed, and you don't need to manually encode them.<br>
 However, if you're manually concatenating URLs, pay special attention to special characters in the parameters. **It's best to always apply URL encoding regardless of whether there are special characters or not**.
 
+#### Why Don't Subtitle, Timers, Card Styles, Location, etc. Work on HarmonyOS?
+
+Platform difference: these capabilities (`subtitle`, the five `style` cards, the `other` extension field, `reply`, `location`, `level`, scripts and plugins, etc.) are currently supported on Apple only. (`call` is supported on both platforms — on HarmonyOS a numeric value of 10–60 controls the ringtone duration.) HarmonyOS always uses the generic card and renders bodies as Markdown; fields common to both platforms are marked with the `全平台` tag throughout these documents.
+
 #### How to Ensure Privacy and Security
-Refer to [Privacy and Security](/privacy)
+Refer to [Privacy and Security](/en/privacy)

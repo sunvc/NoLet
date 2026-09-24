@@ -7,30 +7,30 @@
 
 </p>
 
-# BravoPapa 伞电
+# Bravo
 ### 一款跨平台通知工具，可让您将自定义通知推送到您的苹果与鸿蒙设备（iPhone / iPad / HarmonyOS）。
 
 <table>
   <tr>
-    <th style="border: none;"><strong>NoLet</strong></th>
+    <th style="border: none;"><strong>Bravo</strong></th>
     <td style="border: none;"><img src="https://img.shields.io/badge/Xcode-26.0-blue?logo=Xcode&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/Swift-5.10-red?logo=Swift&logoColor=white" alt="NoLet App"></td>
     <td style="border: none;"><img src="https://img.shields.io/badge/iOS-16.0+-green?logo=apple&logoColor=white" alt="NoLet App"></td>
-    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-稍后可用-orange" alt="HarmonyOS 即将支持"></td>
+    <td style="border: none;"><img src="https://img.shields.io/badge/HarmonyOS-NEXT%20%7C%20API%2026-16C0A4" alt="HarmonyOS"></td>
   </tr>
 </table>
 
-| TestFlight | App Store | 文档 | 反馈群 |
+| HarmonyOS | App Store | 文档 | 反馈群 |
 |-------|--------|-------|--------|
-|[<img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/78/a0/fc78a0ee-dc6b-00d9-85be-e74c24b2bcb5/AppIcon-85-220-0-4-2x.png/512x0w.webp" alt="NoLet App" height="45"> ](https://testflight.apple.com/join/PMPaM6BR) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="NoLet App" height="40">](https://apps.apple.com/cn/app/id6615073345)| [使用文档](https://wiki.wzs.app) | [NoLet](https://t.me/PushToMe) |
+|[<img src="https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/mobileservices/appgallery/images/hero/introduction-to-appgallrey.png" alt="Bravo App" height="40" />](https://appgallery.huawei.com/app/detail?id=me.uuneo.Meoworld) | [<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="NoLet App" height="40">](https://apps.apple.com/cn/app/id6615073345)| [使用文档](https://wiki.wzs.app) | [Bravo](https://t.me/PushToMe) |
 
 
 ## 应用介绍
 
-BravoPapa (伞电)  是一款强大的跨平台推送工具，让你能够从任何设备向 iPhone / iPad 以及鸿蒙设备发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，NoLet 伞电都能满足你的需求。
+Bravo  是一款强大的跨平台推送工具，让你能够从任何设备向 iPhone / iPad 以及鸿蒙设备发送自定义通知。无论是服务器监控、脚本自动化还是日常提醒，都能满足你的需求。
 
-> **🫡 鸿蒙 HarmonyOS 版稍后可用**
-> HarmonyOS 原生版本正在开发中，很快就会与大家见面：沿用同一套推送 API 与服务器配置，支持 Markdown 渲染、消息分组、端到端加密消息与自定义铃声——换到华为设备也能继续接收你的通知。
+> **🫡 鸿蒙 HarmonyOS NEXT 版已支持**
+> HarmonyOS 原生客户端（目标 API 26）沿用同一套推送 API 与服务器配置，支持 Markdown 渲染、消息分组、端到端加密消息与自定义铃声——换到华为设备也能继续接收你的通知。部分苹果专属能力（5 种卡片模板、回复、定位、level、脚本与插件）在鸿蒙端暂不支持（`call` 全平台支持，鸿蒙用 10–60 秒数字控制铃声时长），详见在线文档中的平台差异标注。
 
 ## ✨ 功能特性
 
@@ -89,8 +89,8 @@ BravoPapa (伞电)  是一款强大的跨平台推送工具，让你能够从任
 
 ### 自建推送服务器
 
-* BravoPapa 伞电支持自建服务器，保证数据隐私和安全
-* 服务器代码开源：[BravoPapaServer](https://github.com/sunvc/NoLets)
+* Bravo 支持自建服务器，保证数据隐私和安全
+* 服务器代码开源：[BravoServer](https://github.com/sunvc/NoLets)
 * 自建服务器支持多平台部署（Windows、macOS、Linux等）
 * 支持Docker容器化部署，便于维护和升级
 

@@ -80,7 +80,7 @@ struct ChatInputView: View {
 
     private var inputField: some View {
         HStack {
-            TextField("请伞兵开始发言", text: $text, axis: .vertical)
+            TextField("请开始发言", text: $text, axis: .vertical)
                 .lineLimit(5)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)

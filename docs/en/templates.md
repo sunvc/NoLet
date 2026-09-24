@@ -1,6 +1,10 @@
 # 📨 Message Template Field Reference
 
-BravoPapa messages use the `style` field to switch between different card templates. This document lists all available fields organized by template.
+Nolet messages use the `style` field to switch between different card templates. This document lists all available fields, organized by template.
+
+> **Platform tags:** `全平台` = supported on both Apple and HarmonyOS; `apple` = Apple only; `harmony` = HarmonyOS only. Every field below is tagged at the end with the platform it takes effect on.
+>
+> **Important difference:** the five card templates (`style`), the `other` extension field, `reply`, and `location` are all **Apple-side capabilities (platform tag `apple`)**. HarmonyOS does not distinguish templates; **all bodies are rendered uniformly as Markdown** in a generic card.
 
 ---
 
@@ -10,51 +14,53 @@ All templates use the `Message` struct as their data source. Fields fall into tw
 
 ### User-configurable Fields (passed via Push API / SDK)
 
-| Field | Type | Required | Description |
-|------|------|------|------|
-| `group` | `String` | ✅ | Group name / category label |
-| `body` | `String` | ✅ | Message body text (supports HTML tags such as `<br/>`, `<b>`) |
-| `title` | `String?` | - | Title |
-| `subtitle` | `String?` | - | Subtitle |
-| `icon` | `String?` | - | Avatar / icon URL |
-| `url` | `String?` | - | External link URL |
-| `image` | `String?` | - | Image attachment URL |
-| `reply` | `String?` | - | Reply API URL (reply field is shown when present) |
-| `ttl` | `Int` | - | Message Time To Live in seconds. `0` means permanent |
-| `style` | `String?` | - | **Template selector**. See each template's section below |
-| `other` | `String?` | - | JSON string for template-specific extension fields. See each template for supported keys |
-| `location` | `String?` | - | Coordinates `"lat,lng"` or callback URL. See [📍 Location](#-location) below |
+| Field | Type | Required | Description | Platform |
+|------|------|------|------|----------|
+| `group` | `String` | ✅ | Group name / category label | 全平台 |
+| `body` | `String` | ✅ | Message body text (supports HTML tags such as `<br/>`, `<b>`) | 全平台 |
+| `title` | `String?` | - | Title | 全平台 |
+| `subtitle` | `String?` | - | Subtitle | apple |
+| `icon` | `String?` | - | Avatar / icon URL | 全平台 |
+| `url` | `String?` | - | External link URL | 全平台 |
+| `image` | `String?` | - | Image attachment URL | 全平台 |
+| `reply` | `String?` | - | Reply API URL (reply box is shown when present) | apple |
+| `ttl` | `Int` | - | Message lifetime in seconds; `0` means do not archive / permanent, see each platform's conventions | 全平台 |
+| `style` | `String?` | - | **Template selector**. See each template's section below | apple |
+| `other` | `String?` | - | JSON string holding template-specific extension fields. See below for the keys supported by each template | apple |
+| `location` | `String?` | - | Coordinates `"lat,lng"` or a callback URL. See [📍 Location](#-location) below | apple |
 
 ### System-generated Fields (no user input needed)
 
-| Field | Type | Description |
-|------|------|------|
-| `id` | `String` | Unique message identifier. Auto-generated UUID |
-| `createDate` | `Date` | Message receive / creation time. Set by the system |
-| `read` | `Bool` | Read / unread status. Managed by the App |
+| Field | Type | Description | Platform |
+|------|------|------|----------|
+| `id` | `String` | Unique message identifier. Auto-generated UUID | 全平台 |
+| `createDate` | `Date` | Message receive / creation time. Written by the system | 全平台 |
+| `read` | `Bool` | Read / unread status. Managed by the App | 全平台 |
 
-> `body` is rendered as plain text in the App via the `.plainText` property. Templates use `body.plainText` for display.
+> `body` is converted to plain text in the App via the `.plainText` property, and templates display `body.plainText`. On HarmonyOS, Markdown markup and link URLs are likewise stripped from the notification body before display.
 
 ---
 
 ## 📍 Location
 
+> This entire location feature (both direct coordinates and callback retrieval) is **supported on Apple only (platform tag `apple`)**. HarmonyOS does not parse the `location` field.
+
 The `location` field supports two entirely different modes: **Direct Coordinates** and **Callback Retrieval**. The server automatically determines which mode to use based on the value of `location`.
 
 ### Mode Detection
 
-| `location` Value | Mode | Description |
-|---------------|------|------|
-| `"lat,lng"` coordinate string | **Direct Coordinates** | Coordinates are shown on the message card with a map snapshot |
-| Valid URL (has scheme + host) | **Callback Retrieval** | Triggers an Apple Location Push, fetches the device's actual location, then POSTs it to the callback URL |
+| `location` Value | Mode | Description | Platform |
+|---------------|------|------|----------|
+| `"latitude,longitude"` coordinate string | **Direct Coordinates mode** | Coordinates are shown directly on the message card and a map snapshot is generated | apple |
+| Valid URL (has scheme + host) | **Callback Retrieval mode** | Triggers an Apple Location Push; after obtaining the device's actual location, it POSTs to the callback URL | apple |
 
-> The server decides by parsing as a URL: if both `Scheme` and `Host` can be extracted, it's Callback mode; otherwise it's Direct Coordinates mode.
+> The server decides by parsing the value as a URL: if both `Scheme` and `Host` can be extracted, it is Callback Retrieval mode; otherwise it is Direct Coordinates mode.
 
 ---
 
 ### Mode 1: Direct Coordinates
 
-Pass comma-separated latitude and longitude. The coordinates are sent with the message, a 🗺️ map button appears on the message card, and a map snapshot with a reverse-geocoded address is attached to the notification.
+Pass comma-separated latitude and longitude. The coordinates are sent to the device along with the message, a 🗺️ map button appears on the message card, and a map snapshot together with a reverse-geocoded address is attached to the notification.
 
 #### Push Examples
 
@@ -75,40 +81,40 @@ curl "https://wzs.app/your_key/Meeting Point/Q3 Review/Please arrive on time?loc
 
 #### Device-side Behavior
 
-1. On push arrival, the notification service extension parses `"31.2304,121.4737"` → coordinates `(31.2304, 121.4737)`
-2. Automatically reverse-geocodes and **appends the formatted address** (e.g. "Nanjing East Road, Huangpu, Shanghai") to the notification body
+1. On push arrival, the notification service extension parses `"31.2304,121.4737"` -> coordinates `(31.2304, 121.4737)`
+2. Automatically reverse-geocodes and **appends the formatted address** (e.g. "Nanjing East Road, Huangpu, Shanghai") to the end of the notification body
 3. Generates a map snapshot image (with a pin marker) as a **notification attachment**
 4. When the message is saved, `location` is stored in the `other` JSON field
 5. The message card shows a 🗺️ map button at the bottom. Tapping it opens Apple Maps for navigation
 
-#### Coordinate Format
+#### Coordinate Format Requirements
 
-| Rule | Description |
-|------|------|
-| Format | `latitude,longitude`, separated by a comma |
-| Latitude range | `-90.0` ~ `90.0` |
-| Longitude range | `-180.0` ~ `180.0` |
-| Auto-correction | If lat/lng are swapped (longitude exceeds ±90), the App swaps them back automatically |
+| Rule | Description | Platform |
+|------|------|----------|
+| Format | `latitude,longitude`, separated by a comma | apple |
+| Latitude range | `-90.0` ~ `90.0` | apple |
+| Longitude range | `-180.0` ~ `180.0` | apple |
+| Auto-correction | If latitude/longitude are reversed (longitude exceeds ±90), the App swaps the order automatically | apple |
 
 #### Supported Templates
 
-| Template | Map Button |
-|------|----------|
-| `PlainMessageCard` | ✅ Shows 🗺️ map button at the bottom |
-| `MarkdownMessageCard` | ❌ Not read |
-| `TerminalMessageCard` | ❌ Not read |
-| `GitHubMessageCard` | ❌ Not read |
-| `PaymentMessageCard` | ❌ Not read |
+| Template | Map Button | Platform |
+|------|----------|----------|
+| `PlainMessageCard` | ✅ Shows a 🗺️ map button at the bottom | apple |
+| `MarkdownMessageCard` | ❌ Not read | apple |
+| `TerminalMessageCard` | ❌ Not read | apple |
+| `GitHubMessageCard` | ❌ Not read | apple |
+| `PaymentMessageCard` | ❌ Not read | apple |
 
 ---
 
 ### Mode 2: Callback Retrieval (Location Push)
 
-Pass a callback URL. The server sends an **Apple Location Push** (silent push) to the device. The device fetches its current GPS location in the background and POSTs the coordinates back to your callback URL. **This mode does not show any notification on the device.**
+Pass a callback URL. The server sends an **Apple Location Push** (a silent push) to the device. The device fetches its current GPS position in the background and POSTs the coordinates back to your callback URL. **This mode does not display any notification on the device.**
 
 #### Prerequisites
 
-The device must have registered a Location Push Token via the App. On launch, the App automatically calls `startMonitoringLocationPushes` to obtain the token and uploads it to the server during registration (as the `location` field).
+The device must first register a Location Push Token through the App. On launch, the App automatically calls `startMonitoringLocationPushes` to obtain the token and uploads it to the server during registration (the `location` field).
 
 #### Push Examples
 
@@ -139,62 +145,67 @@ Once the device obtains its location, it sends a **POST** request to the callbac
 }
 ```
 
-| Callback Field | Type | Description |
-|----------|------|------|
-| `title` | `String?` | The original `title` from the push request |
-| `subTitle` | `String?` | The original `subtitle` from the push request |
-| `body` | `String?` | The original `body` from the push request |
-| `location` | `String` | The device's current GPS coordinates in `"lat,lng"` format |
+| Callback Field | Type | Description | Platform |
+|----------|------|------|----------|
+| `title` | `String?` | The `title` from the original push request | apple |
+| `subTitle` | `String?` | The `subtitle` from the original push request | apple |
+| `body` | `String?` | The `body` from the original push request | apple |
+| `location` | `String` | The device's current GPS coordinates, in `"latitude,longitude"` format | apple |
 
 > **Note**: The callback field is named `subTitle` (camelCase), which differs from the push API's `subtitle`.
 
 #### Callback Retries
 
-The device retries up to **3 times**. On network errors it will automatically retry until it succeeds or the retry limit is reached.
+The device retries up to **3 times**. On network errors it retries automatically until it succeeds or reaches the limit.
 
-#### Apple Restrictions
+#### Apple Limitations
 
-Location Push is subject to Apple platform limitations:
+Location Push is subject to Apple platform restrictions:
 
-| Restriction | Description |
-|--------|------|
-| Rate limit | At most **3 times per hour**; excess pushes are silently dropped by the system |
-| Validity | Location Push is retained by APNs for **10 minutes** |
-| User authorization | The device must have granted "Always Allow" location permission |
-| Low Power Mode | May be delayed or denied in Low Power Mode |
-| Silent | No notification is displayed — fully silent location retrieval |
+| Limitation | Description | Platform |
+|--------|------|----------|
+| Rate limit | At most **3 times per hour**; requests beyond that are discarded by the system | apple |
+| Validity | The Location Push is retained at APNs for **10 minutes** | apple |
+| User authorization | The device must have granted "Always Allow" location permission | apple |
+| Low Power Mode | May be delayed or denied in Low Power Mode | apple |
+| Silent | No notification is shown at all — location is retrieved completely silently | apple |
 
 ---
 
 ### Mode Comparison
 
-| | Direct Coordinates | Callback Retrieval |
+| | Direct Coordinates mode | Callback Retrieval mode |
 |----|----------|----------|
 | `location` value | `"31.2304,121.4737"` | `"https://your-server.com/callback"` |
 | Server PushType | Standard push (`1`) | Location Push (`2`) |
-| Shows notification | ✅ Yes | ❌ Silent |
-| Device behavior | Shows map button + notification attachment | Background GPS → POST callback |
-| Map button | ✅ | ❌ (no message card produced) |
+| Shows a notification | ✅ Yes | ❌ Silent |
+| Device behavior | Shows map button + notification attachment | Background GPS fetch -> POST callback |
+| Map button | ✅ | ❌ (no message card is produced) |
 | Use case | Telling the user a known location | Querying the device's actual current location |
 | Requires Location Token | ❌ | ✅ (auto-registered by the App) |
+| Platform | apple | apple |
+
+---
 
 ---
 
 ## Template Overview
 
-| style Value | Template | Description |
-|----------|------|------|
-| Not set / other | `PlainMessageCard` | Default card, suitable for general notifications |
-| `markdown` | `MarkdownMessageCard` | Rich text card with Markdown rendering |
-| `terminal` | `TerminalMessageCard` | Terminal / CLI style, suitable for ops & monitoring |
-| `github` | `GitHubMessageCard` | GitHub event style, suitable for code / CI notifications |
-| `pay` | `PaymentMessageCard` | Payment / billing notification card |
+| style Value | Template | Description | Platform |
+|----------|------|------|----------|
+| Not set / other | `PlainMessageCard` | Default card, suitable for general notifications | apple |
+| `markdown` | `MarkdownMessageCard` | Rich text card with Markdown rendering | apple |
+| `terminal` | `TerminalMessageCard` | Terminal / command-line style, suitable for ops / monitoring | apple |
+| `github` | `GitHubMessageCard` | GitHub event style, suitable for code / CI notifications | apple |
+| `pay` | `PaymentMessageCard` | Payment / billing notification card | apple |
+
+> HarmonyOS has no concept of the templates above: regardless of the `style` value, it always uses the generic card and renders `body` as Markdown.
 
 ---
 
 ## 1. PlainMessageCard (Default)
 
-**Trigger:** `style` not set or doesn't match any other template
+**Trigger:** `style` not set or not matching any other template
 
 ![Default card layout]
 
@@ -212,27 +223,27 @@ Location Push is subject to Apple platform limitations:
 └────────────────────────────┘
 ```
 
-### Fields Used
+### Message Fields Used
 
-| Field | Usage | Required |
-|------|------|------|
-| `title` | Main title (**headline**, bold) | - |
-| `subtitle` | Subtitle (subheadline, with letter spacing) | - |
-| `body` | Body text, up to 5 lines | ✅ |
-| `image` | Top banner image | - |
-| `icon` | Bottom avatar | - |
-| `group` | Bottom group name | ✅ |
-| `url` | Shows 🔗 link button | - |
-| `location` | Coordinates `"lat,lng"` shows 🗺️ map button. See [📍 Location](#-location) | - |
+| Field | Usage | Required | Platform |
+|------|------|------|----------|
+| `title` | Main title (**headline**, bold) | - | 全平台 |
+| `subtitle` | Subtitle (subheadline, with letter spacing) | - | apple |
+| `body` | Body content, up to 5 lines displayed | ✅ | 全平台 |
+| `image` | Large image at the top | - | 全平台 |
+| `icon` | Avatar at the bottom | - | 全平台 |
+| `group` | Group name at the bottom | ✅ | 全平台 |
+| `url` | Shows the 🔗 link button | - | 全平台 |
+| `location` | Coordinates `"lat,lng"` show the 🗺️ map button. See [📍 Location](#-location) | - | apple |
 
 ### Extension Fields (`other` JSON)
 
-This template does not read the `other` JSON field.
+This template does not read the `other` JSON.
 
 ### Code Examples
 
 ```swift
-// id, createDate, read are auto-generated by the system
+// id, createDate, read are auto-generated by the system; no need to pass them
 Message(
     group: "Work",
     title: "Weekly Report Updated",
@@ -240,11 +251,11 @@ Message(
     body: "This week we completed the homepage redesign and search optimization. See the weekly report for details.",
     url: "https://wiki.example.com/weekly",
     ttl: 3600
-    // style not set → uses default template
+    // style not set -> uses the default template
 )
 ```
 
-**Via Push API:**
+**Sent via the Push API:**
 
 ```json
 {
@@ -260,7 +271,7 @@ Message(
 
 ---
 
-## 2. MarkdownMessageCard
+## 2. MarkdownMessageCard (Markdown Card)
 
 **Trigger:** `style: "markdown"`
 
@@ -281,21 +292,21 @@ Message(
 └────────────────────────────────┘
 ```
 
-### Fields Used
+### Message Fields Used
 
-| Field | Usage | Required |
-|------|------|------|
-| `title` | Title (supports search highlight) | - |
-| `subtitle` | Subtitle (supports search highlight) | - |
-| `body` | **Markdown** body content | ✅ |
-| `image` | Inline image | - |
-| `icon` | Bottom avatar | - |
-| `group` | Bottom group name (controlled by `showGroup` config) | ✅ |
-| `url` | Shows network icon button, opens in Safari on tap | - |
+| Field | Usage | Required | Platform |
+|------|------|------|----------|
+| `title` | Title (supports search highlight) | - | 全平台 |
+| `subtitle` | Subtitle (supports search highlight) | - | apple |
+| `body` | Body content in **Markdown format** | ✅ | 全平台 |
+| `image` | Inline image | - | 全平台 |
+| `icon` | Avatar at the bottom | - | 全平台 |
+| `group` | Group name at the bottom (controlled by the `showGroup` setting) | ✅ | 全平台 |
+| `url` | Shows the network icon button; opens in Safari on tap | - | 全平台 |
 
 ### No Extension Fields
 
-This template does not read the `other` JSON field.
+This template does not read the `other` JSON.
 
 ### Code Example
 
@@ -303,11 +314,11 @@ This template does not read the `other` JSON field.
 // id, createDate, read are auto-generated by the system
 Message(
     group: "Docs",
-    title: "BravoPapa User Guide",
+    title: "Nolet User Guide",
     body: """
     # Quick Start
     ## Installation
-    Search for **BravoPapa** in the App Store and download.
+    Search for **Nolet** in the App Store and download.
     ## Configuration
     1. Open the App
     2. Scan QR code to bind device
@@ -320,7 +331,7 @@ Message(
 
 ---
 
-## 3. TerminalMessageCard
+## 3. TerminalMessageCard (Terminal Card)
 
 **Trigger:** `style: "terminal"`
 
@@ -342,23 +353,23 @@ Message(
 └─ Border color varies with severity ────┘
 ```
 
-### Fields Used
+### Message Fields Used
 
-| Field | Usage | Required |
-|------|------|------|
-| `title` | Terminal command (shown as `$ title`) | - |
-| `subtitle` | Terminal output prefix (shown as `>> [subtitle]`) | - |
-| `body` | Terminal output body (gray code background) | ✅ |
-| `image` | Image | - |
-| `icon` | Bottom avatar | - |
-| `group` | Bottom group name | ✅ |
-| `url` | Shows LINK button | - |
+| Field | Usage | Required | Platform |
+|------|------|------|----------|
+| `title` | Terminal command (displayed in the `$ title` format) | - | 全平台 |
+| `subtitle` | Terminal output prefix (displayed as `>> [subtitle]`) | - | apple |
+| `body` | Terminal output body (gray code background) | ✅ | 全平台 |
+| `image` | Image | - | 全平台 |
+| `icon` | Avatar at the bottom | - | 全平台 |
+| `group` | Group name at the bottom | ✅ | 全平台 |
+| `url` | Shows the LINK button | - | 全平台 |
 
 ### Extension Fields (`other` JSON)
 
-| Key | Type | Options | Description |
-|-----|------|--------|------|
-| `severity` | `String` | `"success"` (default green), `"warning"` (orange), `"error"` / `"alert"` / `"system"` (red) | Controls the `$` symbol color, TTL ring color, and card border color |
+| Key | Type | Allowed Values | Description | Platform |
+|-----|------|--------|------|----------|
+| `severity` | `String` | `"success"` (default green), `"warning"` (orange), `"error"` / `"alert"` / `"system"` (red) | Controls the terminal `$` symbol color, the TTL ring color, and the card border stroke color | apple |
 
 ### Code Example
 
@@ -380,7 +391,7 @@ Message(
 
 ---
 
-## 4. GitHubMessageCard
+## 4. GitHubMessageCard (GitHub Event Card)
 
 **Trigger:** `style: "github"`
 
@@ -396,28 +407,28 @@ Message(
 │   │  └ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘    │
 │   │ Footer note            [LINK]    │
 └──────────────────────────────────────┘
-  ↑ Left bar color varies with severity
+  ↑ Left vertical bar color varies with severity
 ```
 
-### Fields Used
+### Message Fields Used
 
-| Field | Usage | Required |
-|------|------|------|
-| `title` | PR / Commit title | - |
-| `subtitle` | Description / summary | - |
-| `body` | Body content (code diff, logs etc.), shown on gray background | - |
-| `group` | Group name, shown on the right side of the header | ✅ |
-| `url` | Shows LINK button | - |
+| Field | Usage | Required | Platform |
+|------|------|------|----------|
+| `title` | PR / commit title | - | 全平台 |
+| `subtitle` | Description / summary | - | apple |
+| `body` | Body content (code diffs, logs, etc.), displayed on a gray background | - | 全平台 |
+| `group` | Group name, shown to the right of the header | ✅ | 全平台 |
+| `url` | Shows the LINK button | - | 全平台 |
 
 ### Extension Fields (`other` JSON)
 
-| Key | Type | Default | Description |
-|-----|------|--------|------|
-| `severity` | `String` | `"EVENT"` | Severity level, controls left bar and label color: `"INFO"` (blue), `"SUCCESS"` (green), `"WARN"` (orange), `"CRIT"` (red) |
-| `header` | `String` | `"GITHUB"` | Top-left header text (e.g. `"GITHUB/REPO"`) |
-| `branch` | `String` | `"main"` | Branch name, shown as a label (e.g. `"main <- jwt-auth"`) |
-| `from` | `String` | - | Source URL. The host is extracted and displayed automatically |
-| `footer` | `String` | - | Footer note (monospaced, e.g. `"SHA:abc123"`) |
+| Key | Type | Default | Description | Platform |
+|-----|------|--------|------|----------|
+| `severity` | `String` | `"EVENT"` | Severity level; controls the left vertical bar and label colors: `"INFO"` (blue), `"SUCCESS"` (green), `"WARN"` (orange), `"CRIT"` (red) | apple |
+| `header` | `String` | `"GITHUB"` | Top-left header text (e.g. `"GITHUB/REPO"`) | apple |
+| `branch` | `String` | `"main"` | Branch name, shown as a label (e.g. `"main <- jwt-auth"`) | apple |
+| `from` | `String` | - | Source URL; the host is extracted and displayed automatically | apple |
+| `footer` | `String` | - | Footer note text (monospaced, e.g. `"SHA:abc123"`) | apple |
 
 ### Code Example
 
@@ -445,7 +456,7 @@ Message(
 
 ---
 
-## 5. PaymentMessageCard
+## 5. PaymentMessageCard (Payment Card)
 
 **Trigger:** `style: "pay"`
 
@@ -462,53 +473,53 @@ Message(
 └────────────────────────────────┘
 ```
 
-### Fields Used
+### Message Fields Used
 
-| Field | Usage | Required |
-|------|------|------|
-| `title` | Notification title (e.g. "Payment Confirmed", "Payment Received") | - |
-| `subtitle` | **Amount**, shown in large text on the right (e.g. `"-$6,799.00"`). Color varies by platform | - |
-| `body` | Merchant / transaction description | ✅ |
-| `icon` | Platform icon URL (favicon recommended) | - |
-| `group` | **Payment platform identifier**, determines brand color (see supported list below) | ✅ |
-| `url` | "Open Link" button | - |
-| `ttl` | Time to live. TTL progress bar counts down at the bottom | ✅ |
+| Field | Usage | Required | Platform |
+|------|------|------|----------|
+| `title` | Notification title (e.g. "Payment Confirmed", "Payment Received") | - | 全平台 |
+| `subtitle` | **Amount**, shown in large text on the right (e.g. `"-$6,799.00"`). Color varies by platform | - | apple |
+| `body` | Merchant / transaction description | ✅ | 全平台 |
+| `icon` | Platform icon URL (favicon recommended) | - | 全平台 |
+| `group` | **Payment platform identifier**, determines the brand color (see supported list below) | ✅ | 全平台 |
+| `url` | "Open Link" button | - | 全平台 |
+| `ttl` | Lifetime; the TTL progress bar at the bottom counts down | ✅ | 全平台 |
 
 ### Extension Fields (`other` JSON)
 
-| Key | Type | Description |
-|-----|------|------|
-| `ticket` | `String` | Order number / ticket number, shown in the middle of the card |
+| Key | Type | Description | Platform |
+|-----|------|------|----------|
+| `ticket` | `String` | Order number / ticket number, shown in the middle of the card | apple |
 
-### `group` Supported Payment Platforms
+### Payment Platforms Supported by `group`
 
-| Value | Platform | Brand Color |
-|----|------|--------|
-| `alipay` / `支付宝` | Alipay | Blue `#128EFA` |
-| `wechat` / `wechat pay` / `微信支付` | WeChat Pay | Green `#07C160` |
-| `paypal` | PayPal | Dark Blue `#003087` |
-| `stripe` | Stripe | Purple-Blue `#635BFF` |
-| `applepay` / `apple pay` | Apple Pay | System primary |
-| `googlepay` / `google pay` | Google Pay | Blue `#4285F4` |
-| `visa` | Visa | Dark Blue `#1A1F71` |
-| `mastercard` / `master` | Mastercard | Orange `#FF5F00` |
-| `amex` / `american express` | American Express | Blue `#016FD0` |
-| `unionpay` / `银联` | China UnionPay | Teal `#00796B` |
-| `linepay` / `line pay` | LINE Pay | Green `#06C755` |
-| `klarna` | Klarna | Pink `#FFB3C7` |
-| `paytm` | Paytm | Light Blue `#00BAF2` |
-| `discover` | Discover | Orange `#E55C20` |
-| `jcb` | JCB | Dark Blue `#00377B` |
-| `samsungpay` / `samsung pay` | Samsung Pay | Blue `#1428A0` |
-| `ideal` | iDEAL | Magenta `#CC0066` |
-| `bancontact` | Bancontact | Black `#000000` |
-| `giropay` | Giropay | Blue `#005A9B` |
-| Other values | Custom | Purple fallback |
+| Value | Platform | Brand Color | Platform tag |
+|----|------|--------|----------|
+| `alipay` / `支付宝` | Alipay | Blue `#128EFA` | apple |
+| `wechat` / `wechat pay` / `微信支付` | WeChat Pay | Green `#07C160` | apple |
+| `paypal` | PayPal | Dark blue `#003087` | apple |
+| `stripe` | Stripe | Purple-blue `#635BFF` | apple |
+| `applepay` / `apple pay` | Apple Pay | System primary | apple |
+| `googlepay` / `google pay` | Google Pay | Blue `#4285F4` | apple |
+| `visa` | Visa | Dark blue `#1A1F71` | apple |
+| `mastercard` / `master` | Mastercard | Orange `#FF5F00` | apple |
+| `amex` / `american express` | American Express | Blue `#016FD0` | apple |
+| `unionpay` / `银联` | China UnionPay | Teal `#00796B` | apple |
+| `linepay` / `line pay` | LINE Pay | Green `#06C755` | apple |
+| `klarna` | Klarna | Pink `#FFB3C7` | apple |
+| `paytm` | Paytm | Light blue `#00BAF2` | apple |
+| `discover` | Discover | Orange `#E55C20` | apple |
+| `jcb` | JCB | Dark blue `#00377B` | apple |
+| `samsungpay` / `samsung pay` | Samsung Pay | Blue `#1428A0` | apple |
+| `ideal` | iDEAL | Magenta `#CC0066` | apple |
+| `bancontact` | Bancontact | Black `#000000` | apple |
+| `giropay` | Giropay | Blue `#005A9B` | apple |
+| Other values | Custom | Purple fallback | apple |
 
 ### Code Examples
 
 ```swift
-// Alipay deduction notification (id, createDate, read are auto-generated)
+// Alipay deduction notification (id, createDate, read are auto-generated by the system)
 Message(
     group: "alipay",
     title: "Payment Confirmed",
@@ -524,7 +535,7 @@ Message(
     group: "wechat",
     title: "Payment Received",
     subtitle: "+$18.50",
-    body: "QR code payment received",
+    body: "QR code payment has arrived",
     icon: "https://favicon.wzs.app/wechat.com",
     ttl: 600,
     style: "pay",
@@ -538,7 +549,7 @@ Message(
 
 ## Template Selection Mechanism
 
-In `TemplateHandler.swift`, `MessageCardView` automatically selects a template based on `message.style`:
+In `TemplateHandler.swift`, `MessageCardView` automatically selects a template based on the `message.style` field:
 
 ```swift
 switch message.style?.lowercased() {
@@ -550,7 +561,7 @@ default:          PlainMessageCard(...)
 }
 ```
 
-If `style` is not set or doesn't match any known template, `PlainMessageCard` is used as the default.
+If `style` is not set or its value does not match any known template, `PlainMessageCard` is used by default. Platform: apple (HarmonyOS has no such selection logic and renders Markdown uniformly).
 
 ---
 
@@ -558,10 +569,12 @@ If `style` is not set or doesn't match any known template, `PlainMessageCard` is
 
 All templates share the following interactions (injected uniformly by `MessageInteractiveModifier`):
 
-| Interaction | Action |
-|------|------|
-| **Double-tap** | Full-screen message detail view |
-| **Tap time** | Tap the relative timestamp on the card (e.g. "Just now", "5 min ago") to show an action menu: Copy Content, Share Screenshot, Share Image, Share Text, Reply, Smart Assistant, Delete |
-| **TTL** | Message auto-disappears on expiry. A ring or bar countdown is shown on the card |
-| **Reply** | If the `reply` field is set, a reply input field appears at the bottom |
-| **Screenshot Share** | Card screenshots can be generated for sharing |
+| Interaction | Action | Platform |
+|------|------|----------|
+| **Double-tap** | View message details full-screen | apple |
+| **Tap time** | Tap the relative time on the card (e.g. "Just now", "5 minutes ago") to bring up an action menu: Copy Content, Share Screenshot, Share Image, Share Text, Reply, Smart Assistant, Delete | apple |
+| **TTL** | The message disappears automatically when it expires; a ring or bar countdown is shown on the card | 全平台 (countdown widget differs in form) |
+| **Reply** | If the `reply` field has a value, a reply input box appears at the bottom | apple |
+| **Screenshot sharing** | A screenshot of the card can be generated for sharing | apple |
+
+> The HarmonyOS generic card supports: truncating bodies longer than 5 lines with a "Show more" affordance, a breathing unread bar, tapping the url row to open the link, and overwrite-refresh by the same id.

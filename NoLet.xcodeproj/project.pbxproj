@@ -923,7 +923,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "伞兵";
+				INFOPLIST_KEY_CFBundleDisplayName = Bravo;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
@@ -983,7 +983,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = NoLet/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "伞兵";
+				INFOPLIST_KEY_CFBundleDisplayName = Bravo;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "we need access to you Camera";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "We need the local network to send information";
