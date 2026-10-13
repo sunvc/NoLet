@@ -79,7 +79,7 @@ struct TiffanyBlueBackground: View {
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
                         )
-                        .blendMode(.sourceAtop)
+                        .blendMode(BlendMode.sourceAtop)
                     )
                     .drawingGroup()
 
