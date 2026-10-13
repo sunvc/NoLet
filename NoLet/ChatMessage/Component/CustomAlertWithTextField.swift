@@ -22,9 +22,10 @@ struct CustomAlertWithTextField: View {
     /// View Properties
     ///
     init(_ show: Binding<Bool>, text: String, confirm: @escaping (String) -> Void) {
-        self.text = text
-        self._show = Binding(projectedValue: show)
         self.confirm = confirm
+        self._show = Binding(projectedValue: show)
+        self._text = State(wrappedValue: text)
+       
     }
 
     var body: some View {
