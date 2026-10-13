@@ -24,7 +24,7 @@ struct NoLetChatAccountDetail: View {
     init(account: AssistantAccount, isAdd: Bool = false, close: @escaping () -> Void) {
         self.isAdd = isAdd
         self.close = close
-        _data = State(wrappedValue: account)
+        self._data = State(wrappedValue: account)
     }
 
     var body: some View {
