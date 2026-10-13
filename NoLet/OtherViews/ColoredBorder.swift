@@ -19,6 +19,9 @@ struct ColoredBorder: View {
     var bottomRight: Double
     var padding: Double
     var showAnimate: Bool = false
+    
+    @State private var rotation: Double = 0
+    @State private var lineWidth: Double = 3
 
     init(
         lineWidth: Double = 3,
@@ -28,35 +31,37 @@ struct ColoredBorder: View {
         bottomRight: Double,
         padding: Double = 1
     ) {
-        self.lineWidth = lineWidth
+        
         self.topLeft = topLeft
         self.topRight = topRight
         self.bottomLeft = bottomLeft
         self.bottomRight = bottomRight
         self.padding = padding
+        self._lineWidth = State(wrappedValue: lineWidth)
     }
 
     init(lineWidth: Double = 3, left: Double, right: Double, padding: Double = 1) {
-        self.lineWidth = lineWidth
+        
         topLeft = left
         topRight = right
         bottomLeft = left
         bottomRight = right
         self.padding = padding
+        self._lineWidth = State(wrappedValue: lineWidth)
     }
 
     init(lineWidth: Double = 3, top: Double, bottom: Double, padding: Double = 1) {
-        self.lineWidth = lineWidth
+        
         topLeft = top
         topRight = top
         bottomLeft = bottom
         bottomRight = bottom
         self.padding = padding
+        self._lineWidth = State(wrappedValue: lineWidth)
     }
 
     init(lineWidth: Double = 3, cornerRadius: Double? = nil, padding: Double = 1) {
-        self.lineWidth = lineWidth
-        self.padding = padding
+        
         if let cornerRadius {
             topLeft = cornerRadius
             topRight = cornerRadius
@@ -69,10 +74,11 @@ struct ColoredBorder: View {
             bottomLeft = data
             bottomRight = data
         }
+        self.padding = padding
+        self._lineWidth = State(wrappedValue: lineWidth)
     }
 
-    @State private var rotation: Double = 0
-    @State private var lineWidth: Double = 3
+    
 
     var body: some View {
         
