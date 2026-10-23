@@ -185,6 +185,79 @@ final class MessageDBManager: @unchecked Sendable {
         return result
     }
 
+    // MARK: - CloudKit 同步
+
+    /// 最近 N 条消息的 JSON 字典(与 pending/export 格式一致),供首次回填云端。
+    func recentJSON(limit: Int = 200) async -> [[AnyHashable: Any]] {
+        (try? await DB.read { ctx in
+            let request = MessageEntity.messageFetchRequest()
+            request.fetchLimit = limit
+            let rows = try ctx.fetch(request)
+            return rows.map { $0.jsonDictionary }
+        }) ?? []
+    }
+
+    /// 手表/其它设备经云端发来的消息入库。
+    /// 先按云端身份(recordName)查,再按 title+body 兜底去重;命中则只更新
+    /// read/createDate(取更早),未命中新建(ttl=-1,不参与本地过期)。
+    /// 返回是否产生了需要刷新 UI 的变更。
+    @discardableResult
+    func upsertCloudMessage(_ message: CloudMessage) async -> Bool {
+        do {
+            return try await DB.write { ctx -> Bool in
+                let byID = NSFetchRequest<MessageEntity>(entityName: MessageEntity.entityName)
+                byID.predicate = NSPredicate(format: "id == %@", message.id)
+                byID.fetchLimit = 1
+                if let existing = try ctx.fetch(byID).first {
+                    return Self.mergeCloud(message, into: existing)
+                }
+
+                if let title = message.title, !title.isEmpty {
+                    let byContent = NSFetchRequest<MessageEntity>(entityName: MessageEntity.entityName)
+                    byContent.predicate = NSPredicate(
+                        format: "title == %@ AND body == %@",
+                        title,
+                        message.body
+                    )
+                    byContent.fetchLimit = 1
+                    if let duplicate = try ctx.fetch(byContent).first {
+                        return Self.mergeCloud(message, into: duplicate)
+                    }
+                }
+
+                MessageEntity(context: ctx).apply(jsonDictionary: message.jsonDictionary)
+                return true
+            }
+        } catch {
+            logger.error("upsertCloudMessage failed: \(error)")
+            return false
+        }
+    }
+
+    private nonisolated static func mergeCloud(
+        _ message: CloudMessage,
+        into entity: MessageEntity
+    ) -> Bool {
+        var changed = false
+        if let date = entity.createDate, date > message.createDate {
+            entity.createDate = message.createDate
+            changed = true
+        }
+        if !entity.read, message.read {
+            entity.read = true
+            changed = true
+        }
+        if entity.title == nil, let title = message.title {
+            entity.title = title
+            changed = true
+        }
+        if entity.url == nil, let url = message.url {
+            entity.url = url
+            changed = true
+        }
+        return changed
+    }
+
     // MARK: - 写
 
     func upsert(_ payload: JSONMessage) async throws {

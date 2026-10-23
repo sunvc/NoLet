@@ -50,6 +50,7 @@
 		BAAA19462F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6342F31FCC600866562 /* Splash */; };
 		BAAA19472F391CB200E0D66F /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C63E2F32293F00866562 /* MarkdownUI */; };
 		BAAA19482F391CB200E0D66F /* Splash in Frameworks */ = {isa = PBXBuildFile; productRef = BA47C6402F32293F00866562 /* Splash */; };
+		BAAE25393081BC5200CBA6C4 /* Welet Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BAAE25383081BC5200CBA6C4 /* Welet Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BAC9B9F02FD6B35200E9ABDE /* Opus in Frameworks */ = {isa = PBXBuildFile; productRef = BAC9B9EF2FD6B35200E9ABDE /* Opus */; };
 		BAD497EB2F3CB043001E245A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E96E02F3993A800B6DF1B /* WebKit.framework */; };
 		BAED8C512FE21F56008FF77C /* PushToTalk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BAED8C502FE21F56008FF77C /* PushToTalk.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -84,6 +85,13 @@
 			remoteGlobalIDString = BA5D59E82FECE05200F89D1A;
 			remoteInfo = LocationExtension;
 		};
+		BAAE253A3081BC5200CBA6C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B58357EF2DEDD3B10066B32E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAAE25373081BC5200CBA6C4;
+			remoteInfo = "Welet Watch App";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -109,6 +117,17 @@
 				B5835B182DEDE07C0066B32E /* ServiceExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAE25463081BC5400CBA6C4 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				BAAE25393081BC5200CBA6C4 /* Welet Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BAB21AFF2EC6B7510003F7A3 /* Embed Watch Content */ = {
@@ -141,6 +160,8 @@
 		BA9E96DE2F3993A100B6DF1B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BA9E96E02F3993A800B6DF1B /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		BA9E96E22F3993BD00B6DF1B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BAAE25333081BC5200CBA6C4 /* Welet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Welet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAAE25383081BC5200CBA6C4 /* Welet Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Welet Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAC5A8162ED1B0DD00BCC38B /* translate.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = translate.py; sourceTree = "<group>"; };
 		BAED8C502FE21F56008FF77C /* PushToTalk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PushToTalk.framework; path = System/Library/Frameworks/PushToTalk.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -219,6 +240,7 @@
 		B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				CloudSync/CloudModels.swift,
 				Database/CloudKitConvertible.swift,
 				Database/PendingMessageStore.swift,
 				DefaultsBaseKeys.swift,
@@ -330,6 +352,17 @@
 			);
 			target = B58359E62DEDDF860066B32E /* ShareExtension */;
 		};
+		BAAE27013081BC5200CBA6C4 /* Exceptions for "Publics" folder in "Welet Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CloudSync/CloudModels.swift,
+				Database/CloudKitConvertible.swift,
+				Domap.swift,
+				Enums/PushParams.swift,
+				Models/PushServerModel.swift,
+			);
+			target = BAAE25373081BC5200CBA6C4 /* Welet Watch App */;
+		};
 		BAB6784A2EC1F5AB0023BD7B /* Exceptions for "Sounds" folder in "NoLet" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -411,6 +444,7 @@
 				B5835D442DEDF95D0066B32E /* Exceptions for "Publics" folder in "ServiceExtension" target */,
 				B5835D272DEDF0830066B32E /* Exceptions for "Publics" folder in "ContentExtension" target */,
 				BA5D59FE2FED17CE00F89D1A /* Exceptions for "Publics" folder in "LocationExtension" target */,
+				BAAE27013081BC5200CBA6C4 /* Exceptions for "Publics" folder in "Welet Watch App" target */,
 			);
 			path = Publics;
 			sourceTree = "<group>";
@@ -449,6 +483,11 @@
 				BA5D59F42FECE05200F89D1A /* Exceptions for "LocationExtension" folder in "LocationExtension" target */,
 			);
 			path = LocationExtension;
+			sourceTree = "<group>";
+		};
+		BAAE253C3081BC5200CBA6C4 /* Welet Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Welet Watch App";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -531,6 +570,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BAAE25353081BC5200CBA6C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -544,6 +590,7 @@
 				B5835B122DEDE07C0066B32E /* ServiceExtension */,
 				B5835B242DEDE0930066B32E /* ContentExtension */,
 				BA5D59EA2FECE05200F89D1A /* LocationExtension */,
+				BAAE253C3081BC5200CBA6C4 /* Welet Watch App */,
 				B58359B82DEDDB170066B32E /* Frameworks */,
 				B58357F82DEDD3B10066B32E /* Products */,
 				B5835BC12DEDE1020066B32E /* Sounds */,
@@ -558,6 +605,8 @@
 				B5835B112DEDE07C0066B32E /* ServiceExtension.appex */,
 				B5835B212DEDE0930066B32E /* ContentExtension.appex */,
 				BA5D59E92FECE05200F89D1A /* LocationExtension.appex */,
+				BAAE25333081BC5200CBA6C4 /* Welet.app */,
+				BAAE25383081BC5200CBA6C4 /* Welet Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -744,6 +793,47 @@
 			productReference = BA5D59E92FECE05200F89D1A /* LocationExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		BAAE25323081BC5200CBA6C4 /* Welet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAAE25473081BC5400CBA6C4 /* Build configuration list for PBXNativeTarget "Welet" */;
+			buildPhases = (
+				BAAE25313081BC5200CBA6C4 /* Resources */,
+				BAAE25463081BC5400CBA6C4 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAAE253B3081BC5200CBA6C4 /* PBXTargetDependency */,
+			);
+			name = Welet;
+			packageProductDependencies = (
+			);
+			productName = Welet;
+			productReference = BAAE25333081BC5200CBA6C4 /* Welet.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		BAAE25373081BC5200CBA6C4 /* Welet Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAAE25433081BC5400CBA6C4 /* Build configuration list for PBXNativeTarget "Welet Watch App" */;
+			buildPhases = (
+				BAAE25343081BC5200CBA6C4 /* Sources */,
+				BAAE25353081BC5200CBA6C4 /* Frameworks */,
+				BAAE25363081BC5200CBA6C4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BAAE253C3081BC5200CBA6C4 /* Welet Watch App */,
+			);
+			name = "Welet Watch App";
+			packageProductDependencies = (
+			);
+			productName = "Welet Watch App";
+			productReference = BAAE25383081BC5200CBA6C4 /* Welet Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -751,8 +841,8 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2600;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					B58357F62DEDD3B10066B32E = {
 						CreatedOnToolsVersion = 16.3;
@@ -769,6 +859,12 @@
 					};
 					BA5D59E82FECE05200F89D1A = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					BAAE25323081BC5200CBA6C4 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					BAAE25373081BC5200CBA6C4 = {
+						CreatedOnToolsVersion = 27.0;
 					};
 				};
 			};
@@ -800,6 +896,8 @@
 				B5835B102DEDE07C0066B32E /* ServiceExtension */,
 				B5835B202DEDE0930066B32E /* ContentExtension */,
 				BA5D59E82FECE05200F89D1A /* LocationExtension */,
+				BAAE25323081BC5200CBA6C4 /* Welet */,
+				BAAE25373081BC5200CBA6C4 /* Welet Watch App */,
 			);
 		};
 /* End PBXProject section */
@@ -834,6 +932,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BA5D59E72FECE05200F89D1A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAE25313081BC5200CBA6C4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAE25363081BC5200CBA6C4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -878,6 +990,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BAAE25343081BC5200CBA6C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -901,6 +1020,11 @@
 			target = BA5D59E82FECE05200F89D1A /* LocationExtension */;
 			targetProxy = BA5D59EE2FECE05200F89D1A /* PBXContainerItemProxy */;
 		};
+		BAAE253B3081BC5200CBA6C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAAE25373081BC5200CBA6C4 /* Welet Watch App */;
+			targetProxy = BAAE253A3081BC5200CBA6C4 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -912,7 +1036,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = NoLet/NoLet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1696;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FUWV6U942Q;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -948,7 +1072,7 @@
 					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -972,7 +1096,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = NoLet/NoLet.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1696;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FUWV6U942Q;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1008,7 +1132,7 @@
 					"$(PROJECT_DIR)/NoLet",
 					"$(PROJECT_DIR)",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1174,7 +1298,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1203,7 +1327,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1232,7 +1356,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1261,7 +1385,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1291,7 +1415,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1321,7 +1445,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.ContentExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1349,7 +1473,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1379,7 +1503,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.3.0;
+				MARKETING_VERSION = 2.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = me.uuneo.Meoworld.LocationExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1389,6 +1513,106 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BAAE25443081BC5400CBA6C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Welet Watch App/WeletWatchApp.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Welet;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uuneo.Welet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Debug;
+		};
+		BAAE25453081BC5400CBA6C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Welet Watch App/WeletWatchApp.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Welet;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uuneo.Welet.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Release;
+		};
+		BAAE25483081BC5400CBA6C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				INFOPLIST_KEY_CFBundleDisplayName = Welet;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uuneo.Welet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BAAE25493081BC5400CBA6C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FUWV6U942Q;
+				INFOPLIST_KEY_CFBundleDisplayName = Welet;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MARKETING_VERSION = 2.3.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uuneo.Welet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -1445,6 +1669,24 @@
 			buildConfigurations = (
 				BA5D59F22FECE05200F89D1A /* Debug */,
 				BA5D59F32FECE05200F89D1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAAE25433081BC5400CBA6C4 /* Build configuration list for PBXNativeTarget "Welet Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAAE25443081BC5400CBA6C4 /* Debug */,
+				BAAE25453081BC5400CBA6C4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAAE25473081BC5400CBA6C4 /* Build configuration list for PBXNativeTarget "Welet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAAE25483081BC5400CBA6C4 /* Debug */,
+				BAAE25493081BC5400CBA6C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

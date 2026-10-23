@@ -67,8 +67,9 @@ struct MarkdownCustomView: View {
     }
 }
 
-struct WebImageProvider: ImageProvider {
-    func makeImage(url: URL?) -> some View {
+
+struct WebImageProvider: @MainActor ImageProvider  {
+    @MainActor func makeImage(url: URL?) -> some View {
         WebImageView(url: url)
     }
 }
@@ -94,6 +95,7 @@ enum ImagePhase: Sendable {
     case success(UIImage)
     case failure(String)
 }
+
 
 struct WebImageView: View {
     var url: URL?

@@ -41,7 +41,7 @@ struct AddScriptsView: View {
                             allowedContentTypes: [.javaScript],
                             allowsMultipleSelection: false,
                             onCompletion: { result in
-                                Task.detached(priority: .userInitiated) {
+                                _ = Task.detached(priority: .userInitiated) {
                                     switch result {
                                     case .success(let files):
                                         guard let url = files.first else { return }

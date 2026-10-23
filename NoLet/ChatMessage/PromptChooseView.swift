@@ -58,30 +58,27 @@ struct PromptChooseView: View {
         NavigationStack {
             List {
                 if hasSearchResults {
-                    if #available(iOS 17.0, *) {
-                        ContentUnavailableView("没有找到相关提示词", systemImage: "magnifyingglass")
-                    } else {
-                        VStack {
-                            HStack {
-                                Spacer()
-                                Image(systemName: "magnifyingglass")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: 100)
-                                    .padding()
-                                Spacer()
-                            }
+                    
+                    VStack {
+                        HStack {
                             Spacer()
-                            HStack {
-                                Spacer()
-                                Text("没有找到相关提示词")
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                    .padding()
-                                Spacer()
-                            }
-                        }.frame(height: 300)
-                    }
+                            Image(systemName: "magnifyingglass")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 100)
+                                .padding()
+                            Spacer()
+                        }
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Text("没有找到相关提示词")
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .padding()
+                            Spacer()
+                        }
+                    }.frame(height: 300)
 
                 } else {
                    

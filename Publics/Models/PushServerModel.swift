@@ -113,7 +113,7 @@ extension PushServerModel {
 
     /// 在私有数据库注册静默推送订阅，幂等：已存在则跳过。
     static func registerChangesSubscription(
-        on database: CKDatabase = NCONFIG.privateCloudDatabase
+        on database: CKDatabase = CloudSchema.privateDB
     ) async throws {
         let existing = try await database.allSubscriptions()
         guard !existing.contains(where: { $0.subscriptionID == changesSubscriptionID }) else {
@@ -130,7 +130,7 @@ extension PushServerModel {
         info.shouldSendContentAvailable = true
         subscription.notificationInfo = info
 
-        try await database.save(subscription)
+        _ = try await database.save(subscription)
     }
 
     static func subHandler(

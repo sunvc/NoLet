@@ -457,7 +457,7 @@ final class PTTManager: NSObject, ObservableObject {
         currentPlayFile = message
         self.setStatus(message: message, read: true)
 
-        Task {
+        _ = Task {
             await send(.playStarted)
             if let currentUrl = message.filePath() {
                 // FIXME: - 播放引擎偶发挂起或者播放失败, 延迟一下

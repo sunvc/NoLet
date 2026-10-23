@@ -79,6 +79,7 @@ final class MessagesManager: ObservableObject {
             }
             await DB.deleteExpired()
             await applySnapshot(DB.loadSnapshot())
+            await CloudSyncManager.shared.upload(messages: items)
         }
     }
 

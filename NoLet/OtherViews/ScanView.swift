@@ -49,7 +49,7 @@ struct ScanView: View {
                         await Tone.play(.qrcode)
                     }
 
-                    Task { @MainActor in
+                    _ = Task { @MainActor in
                         try await Task.sleep(for: .seconds(0.5))
                         self.code = code
                         await response(code)

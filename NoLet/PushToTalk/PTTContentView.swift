@@ -199,7 +199,7 @@ struct PTTContentView: View {
                                 .foregroundStyle(networkIcon.1, networkIcon.2)
                                 .onTapGesture {
                                     if pttManager.powerState && pttManager.serverStatus == .failed {
-                                        Task {
+                                        _ = Task {
                                             try await pttManager.joinConnect()
                                         }
                                     }

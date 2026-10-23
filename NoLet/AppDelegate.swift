@@ -38,7 +38,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
 
         if !.isiOSAppOnMac {
             Task {
-                try await PTTChannelManager.shared.start()
+                do{
+                    try await PTTChannelManager.shared.start()
+                }catch{
+                    logger.error("\(error.localizedDescription)")
+                }
             }
         }
 
@@ -49,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
         }
 
         WeChatManager.shared.register()
+
+        CloudSyncManager.shared.start()
 
         return true
     }
@@ -78,9 +84,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
                 await AppManager.shared.register( deviceKey: IDManager.id)
             }
 
-            try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
+            do{
+                try await Defaults[.member].save(to: NCONFIG.publicCloudDatabase)
 
-            try? await PushServerModel.registerChangesSubscription()
+                try await PushServerModel.registerChangesSubscription()
+                try await CloudKitStore.shared.ensureSubscription(
+                    recordType: CloudSchema.RecordType.message,
+                    subscriptionID: CloudSchema.SubscriptionID.messageChanges
+                )
+            }catch{
+                logger.error("\(error.localizedDescription)")
+            }
         }
 
         logger.info("获取到设备Token: \(token)")
@@ -157,6 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, @MainActor UNUserNotifica
             PushServerModel.subHandler(userInfo) {
                 await AppManager.syncServer()
             }
+            await CloudSyncManager.shared.handleRemoteNotification(userInfo)
             await MessagesManager.shared.delete(userInfo)
             await AppManager.shared.registerForRemoteNotifications()
             completionHandler(.newData)

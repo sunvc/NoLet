@@ -91,7 +91,7 @@ final class PTTChannelManager: NSObject,
         reason: PTChannelJoinReason
     ) {
         logger.debug("Joined channel: \(channelUUID)")
-        Task {
+       _ =  Task {
             try await PTTManager.shared.joinConnect()
         }
     }
@@ -208,7 +208,7 @@ final class PTTChannelManager: NSObject,
     func channelDescriptor(
         restoredChannelUUID channelUUID: UUID
     ) -> PTChannelDescriptor {
-        Task {
+        _ = Task {
             try await PTTManager.shared.joinConnect()
         }
 

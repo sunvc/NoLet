@@ -235,7 +235,7 @@ struct CloudIcon: View {
                 withAnimation {
                     self.loading = true
                 }
-                Task.detached(priority: .userInitiated) {
+                _ = Task.detached(priority: .userInitiated) {
                     let userID = try await NCONFIG.container.userRecordID()
                     let icons = try await PushIcon.query(
                         NSPredicate(format: "creatorUserRecordID == %@", userID),

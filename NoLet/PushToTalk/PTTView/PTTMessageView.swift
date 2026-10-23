@@ -188,7 +188,7 @@ struct PTTMessageRow: View {
     }
 
     func getDuration() {
-        Task {
+       _ =  Task {
             guard let filePath = message.filePath() else { return }
             let asset = AVURLAsset(url: filePath)
             let duration = try await asset.load(.duration)

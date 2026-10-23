@@ -84,6 +84,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             await MessagesManager.shared.deleteExpired()
             await MessagesManager.shared.drainPendingMessages()
             await AppManager.syncServer()
+            await CloudSyncManager.shared.bootstrapIfNeeded()
             if let currentLang = Locale.preferredLanguages.first,
                Defaults[.lang] != currentLang
             {
